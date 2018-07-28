@@ -1,0 +1,62 @@
+Instructions!!
+Read This!!
+NOTE! Kailangan ng Internet.
+
+--------------
+Part 1
+Note: Install niyo muna latest version ng node js sa laragon
+Steps:
+1. Go to https://nodejs.org/en/download/ and click windows installer. Wag muna iinstall sa step 4 pa yun.
+2. go to C:\laragon\bin\nodejs
+3. Create a folder 'node-v8.11'
+4. Install the 'node-v8.11.3-x64.msi' file in the created folder 'C:\laragon\bin\nodejs\node-v8.11'
+5. right click the laragon icon in lower right corner, go to nodejs then select the node-v8.11 version.
+
+--------------
+Part 2
+Creating Project using laragon
+Steps:
+1. Right click the laragon icon in the lower right corner of the screen.
+2. Hover to quick create and click laravel
+3. Name your project: example 'Shei :)'
+4. go to your project folder: example 'C:\laragon\www\Shei'
+5. Delete all files except .env
+--------------
+Part 3
+Pulling Project in github
+1. Go to the project folder: example 'C:\laragon\www\Shei'
+2. Right click and click git bash here
+3. Open your browser go to project repository 'https://github.com/SheiShei/Captivate'
+4. type in the git terminal 'git init' then press enter
+5. type 'git remote add origin https://github.com/SheiShei/Captivate.git' press enter
+--------------
+Part 4
+Running The Project
+1. Open the project in VS Code
+2. Click ctrl+` to open terminal
+3. run "composer update" without "", to update dependencies specified in 'composer.json', after running it will create a 'vendor' folder
+4. run "npm install" to install node dependencies and for creation of 'node_modules' folder. see 'package.json' for list of node dependecies to be install.
+5. run "npm run dev" to run all Laravel Mix tasks
+6. if wala kayong .env file then duplicate the '.env.example' and rename to '.env' , and edit. kung meron na edit niyo na lang
+7.  run 'php artisan migrate'.
+
+NOTE!!
+-Di niyo na kailangan mag php artisan serve. Gamitin niyo yung pretty url na binigay ni laragon or kung hindi niyo nakita type niyo lang sa url "nameOfProject.test".
+
+-If nag karoon ng WARN sa npm install ayos lang yun. Pero! kapag ERR yung lumabas or error baka hindi updated yung nodejs niyo. 8.11 yung gagamitin natin ha yung LTS! hindi yung 10.7 na super latest! Kung nag error yung npm, check niyo na lang yung version ng nodejs then create kayo ulit ng new project.
+
+-If nag karoon kayo ng error like "no application encryption key has been specified." Run niyo lang sa terminal "php artisan key:generate"
+
+-If after niyo itype sa url yung "nameOfProject.test" tapos napunta kayo sa index/ ako na lang mag aayos :)
+
+USEFUL LINKS
+Pakibasa na lang to para mas magets natin yung laravel mix.
+-https://laravel.com/docs/5.6/mix
+-https://laravel.com/docs/5.6/frontend
+-https://laravelcollective.com/docs/master/html
+
+NOTE ULIT
+-If gusto niyong mag add ng cutom css/custom js Yung 'resources/assets/css/libs/custom.css' and 'resources/assets/js/libs/custom.js' yung iedit niyo. After ma edit Run niyo sa terminal yung 'npm run dev' or kung gusto niyong hindi irun yung npm run dev every may changes, run niy yung 'npm run watch' para matic na niyang i rurun kung may changes na nangyari. Pakibasa yung https://laravel.com/docs/5.6/mix para maintindihan maigi.
+
+Happy Coding
+---Shei :)
