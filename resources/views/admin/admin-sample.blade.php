@@ -2,7 +2,7 @@
 
 @section('title')
 Title
-@endsection
+@stop
 
 
 @section('content')
@@ -13,4 +13,4 @@ Title
         <hr>
     </div>
 
-@endsection
+@stop
