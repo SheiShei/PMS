@@ -29,6 +29,7 @@ Pulling Project in github
 3. Open your browser go to project repository 'https://github.com/SheiShei/Captivate'
 4. type in the git terminal 'git init' then press enter
 5. type 'git remote add origin https://github.com/SheiShei/Captivate.git' press enter
+6. type 'git pull origin master'
 --------------
 Part 4
 Running The Project
@@ -54,6 +55,7 @@ Pakibasa na lang to para mas magets natin yung laravel mix.
 -https://laravel.com/docs/5.6/mix
 -https://laravel.com/docs/5.6/frontend
 -https://laravelcollective.com/docs/master/html
+-https://www.tiny.cloud/docs/
 
 NOTE ULIT
 -If gusto niyong mag add ng cutom css/custom js Yung 'resources/assets/css/libs/custom.css' and 'resources/assets/js/libs/custom.js' yung iedit niyo. After ma edit Run niyo sa terminal yung 'npm run dev' or kung gusto niyong hindi irun yung npm run dev every may changes, run niy yung 'npm run watch' para matic na niyang i rurun kung may changes na nangyari. Pakibasa yung https://laravel.com/docs/5.6/mix para maintindihan maigi.
