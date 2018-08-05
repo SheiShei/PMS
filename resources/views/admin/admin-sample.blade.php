@@ -7,11 +7,10 @@ Title
 
 @section('content')
 
-    <div class="container">
         <hr>
         <h1>Content Section</h1>
+        <display></display>
         <hr>
-    </div>
 
 @stop
 
