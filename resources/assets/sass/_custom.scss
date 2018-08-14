@@ -1,5 +1,157 @@
 //All Custom CSS Here!
 
+//MY CARDS
+
+// .featcont{
+//     border-left: gray solid 3px;
+//     padding: 3px;
+//     height: auto;
+// }
+
+.mycard{
+    width: 100%;
+    height: 100px;
+    padding: 8px;
+    margin-top: 7px;
+    display:block;
+}
+
+.mycard-full-info{
+    background-color: #2196f3;
+    color: white;
+    border-left: #08528f solid 4px;
+}
+
+.mycard-full-primary{
+    background-color: #ab47bc;
+    color: white;
+    border-left: #7e358b solid 4px;
+}
+
+.mycard-full-success{
+    background-color: #05ce26;
+    color: white;
+    border-left: #128f27 solid 4px;
+}
+
+
+.mycard-sm{
+    width: 70%;
+    height: 60px;
+    padding: 8px;
+    margin-top: 7px;
+    display:block;
+}
+.mycard-outline-info{
+    border: #2196f3 solid 1px;
+    color: rgb(51, 51, 51);
+}
+
+
+//END OF MY CARD
+
+
+
+
+
+
+
+
+
+
 body{
     background-color: whitesmoke;
+    overflow: none;
+}
+.content{
+    display: block;
+    position:relative;
+    background-color: white;
+    width: 100%;
+    height: 95vh;
+    margin:0;
+    padding: 8px 10px;
+}
+
+.content-title{
+    display:relative;
+    
+}
+
+.admin-db{
+    padding: 2px 0;
+}
+
+.bg-dark{
+    color:white;
+   background:rgb(64,64,64);
+}
+::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #e0e0e0; 
+    width: 7px;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(190, 190, 190);
+    transition-delay: 0.3s; 
+}
+
+.sidebar-menu > li > a {
+    color: white;
+}
+
+.sidebar-menu > li > a {
+    list-style-type: none;
+    text-decoration: none;
+    padding: 2px 3px;
+}
+
+// .nav>li>a:hover{
+//     text-decoration: none;
+//     background-color: #757575;
+// }
+
+.sidebar-menu > li > a {
+    color: white;
+    padding: 2px 3px;
+}
+
+.sidebar-menu>li>a:hover {
+    color: black;
+}
+
+aside.main-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color:white;
+    padding-top: 10px;
+    min-height: 100%;
+    width: 100%;
+    z-index: 810;
+    -webkit-transition: -webkit-transform .3s ease-in-out,width .3s ease-in-out;
+    -moz-transition: -moz-transform .3s ease-in-out,width .3s ease-in-out;
+    -o-transition: -o-transform .3s ease-in-out,width .3s ease-in-out;
+    transition: transform .3s ease-in-out,width .3s ease-in-out;
+}
+
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
+    background-color: #222d32;
+}
+
+aside {
+    display: block;
 }

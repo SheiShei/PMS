@@ -5765,6 +5765,424 @@ a.version="2.14.1",b(rb),a.fn=Se,a.min=tb,a.max=ub,a.now=Fe,a.utc=j,a.unix=Jc,a.
  * Licensed under Apache-2.0 (https://github.com/jasny/bootstrap/blob/master/LICENSE)
  */
 if("undefined"==typeof jQuery)throw new Error("Jasny Bootstrap's JavaScript requires jQuery");+function(a){"use strict";function b(){var a=document.createElement("bootstrap"),b={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd otransitionend",transition:"transitionend"};for(var c in b)if(void 0!==a.style[c])return{end:b[c]};return!1}void 0===a.support.transition&&(a.fn.emulateTransitionEnd=function(b){var c=!1,d=this;a(this).one(a.support.transition.end,function(){c=!0});var e=function(){c||a(d).trigger(a.support.transition.end)};return setTimeout(e,b),this},a(function(){a.support.transition=b()}))}(window.jQuery),+function(a){"use strict";var b=function(c,d){this.$element=a(c),this.options=a.extend({},b.DEFAULTS,d),this.state=null,this.placement=null,this.options.recalc&&(this.calcClone(),a(window).on("resize",a.proxy(this.recalc,this))),this.options.autohide&&a(document).on("click",a.proxy(this.autohide,this)),this.options.toggle&&this.toggle(),this.options.disablescrolling&&(this.options.disableScrolling=this.options.disablescrolling,delete this.options.disablescrolling)};b.DEFAULTS={toggle:!0,placement:"auto",autohide:!0,recalc:!0,disableScrolling:!0},b.prototype.offset=function(){switch(this.placement){case"left":case"right":return this.$element.outerWidth();case"top":case"bottom":return this.$element.outerHeight()}},b.prototype.calcPlacement=function(){function b(a,b){if("auto"===e.css(b))return a;if("auto"===e.css(a))return b;var c=parseInt(e.css(a),10),d=parseInt(e.css(b),10);return c>d?b:a}if("auto"!==this.options.placement)return void(this.placement=this.options.placement);this.$element.hasClass("in")||this.$element.css("visiblity","hidden !important").addClass("in");var c=a(window).width()/this.$element.width(),d=a(window).height()/this.$element.height(),e=this.$element;this.placement=c>=d?b("left","right"):b("top","bottom"),"hidden !important"===this.$element.css("visibility")&&this.$element.removeClass("in").css("visiblity","")},b.prototype.opposite=function(a){switch(a){case"top":return"bottom";case"left":return"right";case"bottom":return"top";case"right":return"left"}},b.prototype.getCanvasElements=function(){var b=this.options.canvas?a(this.options.canvas):this.$element,c=b.find("*").filter(function(){return"fixed"===a(this).css("position")}).not(this.options.exclude);return b.add(c)},b.prototype.slide=function(b,c,d){if(!a.support.transition){var e={};return e[this.placement]="+="+c,b.animate(e,350,d)}var f=this.placement,g=this.opposite(f);b.each(function(){"auto"!==a(this).css(f)&&a(this).css(f,(parseInt(a(this).css(f),10)||0)+c),"auto"!==a(this).css(g)&&a(this).css(g,(parseInt(a(this).css(g),10)||0)-c)}),this.$element.one(a.support.transition.end,d).emulateTransitionEnd(350)},b.prototype.disableScrolling=function(){var b=a("body").width(),c="padding-"+this.opposite(this.placement);if(void 0===a("body").data("offcanvas-style")&&a("body").data("offcanvas-style",a("body").attr("style")||""),a("body").css("overflow","hidden"),a("body").width()>b){var d=parseInt(a("body").css(c),10)+a("body").width()-b;setTimeout(function(){a("body").css(c,d)},1)}},b.prototype.show=function(){if(!this.state){var b=a.Event("show.bs.offcanvas");if(this.$element.trigger(b),!b.isDefaultPrevented()){this.state="slide-in",this.calcPlacement();var c=this.getCanvasElements(),d=this.placement,e=this.opposite(d),f=this.offset();-1!==c.index(this.$element)&&(a(this.$element).data("offcanvas-style",a(this.$element).attr("style")||""),this.$element.css(d,-1*f),this.$element.css(d)),c.addClass("canvas-sliding").each(function(){void 0===a(this).data("offcanvas-style")&&a(this).data("offcanvas-style",a(this).attr("style")||""),"static"===a(this).css("position")&&a(this).css("position","relative"),"auto"!==a(this).css(d)&&"0px"!==a(this).css(d)||"auto"!==a(this).css(e)&&"0px"!==a(this).css(e)||a(this).css(d,0)}),this.options.disableScrolling&&this.disableScrolling();var g=function(){"slide-in"==this.state&&(this.state="slid",c.removeClass("canvas-sliding").addClass("canvas-slid"),this.$element.trigger("shown.bs.offcanvas"))};setTimeout(a.proxy(function(){this.$element.addClass("in"),this.slide(c,f,a.proxy(g,this))},this),1)}}},b.prototype.hide=function(){if("slid"===this.state){var b=a.Event("hide.bs.offcanvas");if(this.$element.trigger(b),!b.isDefaultPrevented()){this.state="slide-out";var c=a(".canvas-slid"),d=(this.placement,-1*this.offset()),e=function(){"slide-out"==this.state&&(this.state=null,this.placement=null,this.$element.removeClass("in"),c.removeClass("canvas-sliding"),c.add(this.$element).add("body").each(function(){a(this).attr("style",a(this).data("offcanvas-style")).removeData("offcanvas-style")}),this.$element.trigger("hidden.bs.offcanvas"))};c.removeClass("canvas-slid").addClass("canvas-sliding"),setTimeout(a.proxy(function(){this.slide(c,d,a.proxy(e,this))},this),1)}}},b.prototype.toggle=function(){"slide-in"!==this.state&&"slide-out"!==this.state&&this["slid"===this.state?"hide":"show"]()},b.prototype.calcClone=function(){this.$calcClone=this.$element.clone().html("").addClass("offcanvas-clone").removeClass("in").appendTo(a("body"))},b.prototype.recalc=function(){if("none"!==this.$calcClone.css("display")&&("slid"===this.state||"slide-in"===this.state)){this.state=null,this.placement=null;var b=this.getCanvasElements();this.$element.removeClass("in"),b.removeClass("canvas-slid"),b.add(this.$element).add("body").each(function(){a(this).attr("style",a(this).data("offcanvas-style")).removeData("offcanvas-style")})}},b.prototype.autohide=function(b){0===a(b.target).closest(this.$element).length&&this.hide()};var c=a.fn.offcanvas;a.fn.offcanvas=function(c){return this.each(function(){var d=a(this),e=d.data("bs.offcanvas"),f=a.extend({},b.DEFAULTS,d.data(),"object"==typeof c&&c);e||d.data("bs.offcanvas",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.offcanvas.Constructor=b,a.fn.offcanvas.noConflict=function(){return a.fn.offcanvas=c,this},a(document).on("click.bs.offcanvas.data-api","[data-toggle=offcanvas]",function(b){var c,d=a(this),e=d.attr("data-target")||b.preventDefault()||(c=d.attr("href"))&&c.replace(/.*(?=#[^\s]+$)/,""),f=a(e),g=f.data("bs.offcanvas"),h=g?"toggle":d.data();b.stopPropagation(),g?g.toggle():f.offcanvas(h)})}(window.jQuery),+function(a){"use strict";var b=function(c,d){this.$element=a(c),this.options=a.extend({},b.DEFAULTS,d),this.$element.on("click.bs.rowlink","td:not(.rowlink-skip)",a.proxy(this.click,this))};b.DEFAULTS={target:"a"},b.prototype.click=function(b){var c=a(b.currentTarget).closest("tr").find(this.options.target)[0];if(a(b.target)[0]!==c)if(b.preventDefault(),c.click)c.click();else if(document.createEvent){var d=document.createEvent("MouseEvents");d.initMouseEvent("click",!0,!0,window,0,0,0,0,0,!1,!1,!1,!1,0,null),c.dispatchEvent(d)}};var c=a.fn.rowlink;a.fn.rowlink=function(c){return this.each(function(){var d=a(this),e=d.data("bs.rowlink");e||d.data("bs.rowlink",e=new b(this,c))})},a.fn.rowlink.Constructor=b,a.fn.rowlink.noConflict=function(){return a.fn.rowlink=c,this},a(document).on("click.bs.rowlink.data-api",'[data-link="row"]',function(b){if(0===a(b.target).closest(".rowlink-skip").length){var c=a(this);c.data("bs.rowlink")||(c.rowlink(c.data()),a(b.target).trigger("click.bs.rowlink"))}})}(window.jQuery),+function(a){"use strict";var b=void 0!==window.orientation,c=navigator.userAgent.toLowerCase().indexOf("android")>-1,d="Microsoft Internet Explorer"==window.navigator.appName,e=function(b,d){c||(this.$element=a(b),this.options=a.extend({},e.DEFAULTS,d),this.mask=String(this.options.mask),this.init(),this.listen(),this.checkVal())};e.DEFAULTS={mask:"",placeholder:"_",definitions:{9:"[0-9]",a:"[A-Za-z]",w:"[A-Za-z0-9]","*":"."}},e.prototype.init=function(){var b=this.options.definitions,c=this.mask.length;this.tests=[],this.partialPosition=this.mask.length,this.firstNonMaskPos=null,a.each(this.mask.split(""),a.proxy(function(a,d){"?"==d?(c--,this.partialPosition=a):b[d]?(this.tests.push(new RegExp(b[d])),null===this.firstNonMaskPos&&(this.firstNonMaskPos=this.tests.length-1)):this.tests.push(null)},this)),this.buffer=a.map(this.mask.split(""),a.proxy(function(a){return"?"!=a?b[a]?this.options.placeholder:a:void 0},this)),this.focusText=this.$element.val(),this.$element.data("rawMaskFn",a.proxy(function(){return a.map(this.buffer,function(a,b){return this.tests[b]&&a!=this.options.placeholder?a:null}).join("")},this))},e.prototype.listen=function(){if(!this.$element.attr("readonly")){var b=(d?"paste":"input")+".mask";this.$element.on("unmask.bs.inputmask",a.proxy(this.unmask,this)).on("focus.bs.inputmask",a.proxy(this.focusEvent,this)).on("blur.bs.inputmask",a.proxy(this.blurEvent,this)).on("keydown.bs.inputmask",a.proxy(this.keydownEvent,this)).on("keypress.bs.inputmask",a.proxy(this.keypressEvent,this)).on(b,a.proxy(this.pasteEvent,this))}},e.prototype.caret=function(a,b){if(0!==this.$element.length){if("number"==typeof a)return b="number"==typeof b?b:a,this.$element.each(function(){if(this.setSelectionRange)this.setSelectionRange(a,b);else if(this.createTextRange){var c=this.createTextRange();c.collapse(!0),c.moveEnd("character",b),c.moveStart("character",a),c.select()}});if(this.$element[0].setSelectionRange)a=this.$element[0].selectionStart,b=this.$element[0].selectionEnd;else if(document.selection&&document.selection.createRange){var c=document.selection.createRange();a=0-c.duplicate().moveStart("character",-1e5),b=a+c.text.length}return{begin:a,end:b}}},e.prototype.seekNext=function(a){for(var b=this.mask.length;++a<=b&&!this.tests[a];);return a},e.prototype.seekPrev=function(a){for(;--a>=0&&!this.tests[a];);return a},e.prototype.shiftL=function(a,b){var c=this.mask.length;if(!(0>a)){for(var d=a,e=this.seekNext(b);c>d;d++)if(this.tests[d]){if(!(c>e&&this.tests[d].test(this.buffer[e])))break;this.buffer[d]=this.buffer[e],this.buffer[e]=this.options.placeholder,e=this.seekNext(e)}this.writeBuffer(),this.caret(Math.max(this.firstNonMaskPos,a))}},e.prototype.shiftR=function(a){for(var b=this.mask.length,c=a,d=this.options.placeholder;b>c;c++)if(this.tests[c]){var e=this.seekNext(c),f=this.buffer[c];if(this.buffer[c]=d,!(b>e&&this.tests[e].test(f)))break;d=f}},e.prototype.unmask=function(){this.$element.unbind(".mask").removeData("inputmask")},e.prototype.focusEvent=function(){this.focusText=this.$element.val();var a=this.mask.length,b=this.checkVal();this.writeBuffer();var c=this,d=function(){b==a?c.caret(0,b):c.caret(b)};d(),setTimeout(d,50)},e.prototype.blurEvent=function(){this.checkVal(),this.$element.val()!==this.focusText&&this.$element.trigger("change")},e.prototype.keydownEvent=function(a){var c=a.which;if(8==c||46==c||b&&127==c){var d=this.caret(),e=d.begin,f=d.end;return f-e===0&&(e=46!=c?this.seekPrev(e):f=this.seekNext(e-1),f=46==c?this.seekNext(f):f),this.clearBuffer(e,f),this.shiftL(e,f-1),!1}return 27==c?(this.$element.val(this.focusText),this.caret(0,this.checkVal()),!1):void 0},e.prototype.keypressEvent=function(a){var b=this.mask.length,c=a.which,d=this.caret();if(a.ctrlKey||a.altKey||a.metaKey||32>c)return!0;if(c){d.end-d.begin!==0&&(this.clearBuffer(d.begin,d.end),this.shiftL(d.begin,d.end-1));var e=this.seekNext(d.begin-1);if(b>e){var f=String.fromCharCode(c);if(this.tests[e].test(f)){this.shiftR(e),this.buffer[e]=f,this.writeBuffer();var g=this.seekNext(e);this.caret(g)}}return!1}},e.prototype.pasteEvent=function(){var a=this;setTimeout(function(){a.caret(a.checkVal(!0))},0)},e.prototype.clearBuffer=function(a,b){for(var c=this.mask.length,d=a;b>d&&c>d;d++)this.tests[d]&&(this.buffer[d]=this.options.placeholder)},e.prototype.writeBuffer=function(){return this.$element.val(this.buffer.join("")).val()},e.prototype.checkVal=function(a){for(var b=this.mask.length,c=this.$element.val(),d=-1,e=0,f=0;b>e;e++)if(this.tests[e]){for(this.buffer[e]=this.options.placeholder;f++<c.length;){var g=c.charAt(f-1);if(this.tests[e].test(g)){this.buffer[e]=g,d=e;break}}if(f>c.length)break}else this.buffer[e]==c.charAt(f)&&e!=this.partialPosition&&(f++,d=e);return!a&&d+1<this.partialPosition?(this.$element.val(""),this.clearBuffer(0,b)):(a||d+1>=this.partialPosition)&&(this.writeBuffer(),a||this.$element.val(this.$element.val().substring(0,d+1))),this.partialPosition?e:this.firstNonMaskPos};var f=a.fn.inputmask;a.fn.inputmask=function(b){return this.each(function(){var c=a(this),d=c.data("bs.inputmask");d||c.data("bs.inputmask",d=new e(this,b))})},a.fn.inputmask.Constructor=e,a.fn.inputmask.noConflict=function(){return a.fn.inputmask=f,this},a(document).on("focus.bs.inputmask.data-api","[data-mask]",function(){var b=a(this);b.data("bs.inputmask")||b.inputmask(b.data())})}(window.jQuery),+function(a){"use strict";var b="Microsoft Internet Explorer"==window.navigator.appName,c=function(b,c){if(this.$element=a(b),this.$input=this.$element.find(":file"),0!==this.$input.length){this.name=this.$input.attr("name")||c.name,this.$hidden=this.$element.find('input[type=hidden][name="'+this.name+'"]'),0===this.$hidden.length&&(this.$hidden=a('<input type="hidden">').insertBefore(this.$input)),this.$preview=this.$element.find(".fileinput-preview");var d=this.$preview.css("height");"inline"!==this.$preview.css("display")&&"0px"!==d&&"none"!==d&&this.$preview.css("line-height",d),this.original={exists:this.$element.hasClass("fileinput-exists"),preview:this.$preview.html(),hiddenVal:this.$hidden.val()},this.listen()}};c.prototype.listen=function(){this.$input.on("change.bs.fileinput",a.proxy(this.change,this)),a(this.$input[0].form).on("reset.bs.fileinput",a.proxy(this.reset,this)),this.$element.find('[data-trigger="fileinput"]').on("click.bs.fileinput",a.proxy(this.trigger,this)),this.$element.find('[data-dismiss="fileinput"]').on("click.bs.fileinput",a.proxy(this.clear,this))},c.prototype.change=function(b){var c=void 0===b.target.files?b.target&&b.target.value?[{name:b.target.value.replace(/^.+\\/,"")}]:[]:b.target.files;if(b.stopPropagation(),0===c.length)return void this.clear();this.$hidden.val(""),this.$hidden.attr("name",""),this.$input.attr("name",this.name);var d=c[0];if(this.$preview.length>0&&("undefined"!=typeof d.type?d.type.match(/^image\/(gif|png|jpeg)$/):d.name.match(/\.(gif|png|jpe?g)$/i))&&"undefined"!=typeof FileReader){var e=new FileReader,f=this.$preview,g=this.$element;e.onload=function(b){var e=a("<img>");e[0].src=b.target.result,c[0].result=b.target.result,g.find(".fileinput-filename").text(d.name),"none"!=f.css("max-height")&&e.css("max-height",parseInt(f.css("max-height"),10)-parseInt(f.css("padding-top"),10)-parseInt(f.css("padding-bottom"),10)-parseInt(f.css("border-top"),10)-parseInt(f.css("border-bottom"),10)),f.html(e),g.addClass("fileinput-exists").removeClass("fileinput-new"),g.trigger("change.bs.fileinput",c)},e.readAsDataURL(d)}else this.$element.find(".fileinput-filename").text(d.name),this.$preview.text(d.name),this.$element.addClass("fileinput-exists").removeClass("fileinput-new"),this.$element.trigger("change.bs.fileinput")},c.prototype.clear=function(a){if(a&&a.preventDefault(),this.$hidden.val(""),this.$hidden.attr("name",this.name),this.$input.attr("name",""),b){var c=this.$input.clone(!0);this.$input.after(c),this.$input.remove(),this.$input=c}else this.$input.val("");this.$preview.html(""),this.$element.find(".fileinput-filename").text(""),this.$element.addClass("fileinput-new").removeClass("fileinput-exists"),void 0!==a&&(this.$input.trigger("change"),this.$element.trigger("clear.bs.fileinput"))},c.prototype.reset=function(){this.clear(),this.$hidden.val(this.original.hiddenVal),this.$preview.html(this.original.preview),this.$element.find(".fileinput-filename").text(""),this.original.exists?this.$element.addClass("fileinput-exists").removeClass("fileinput-new"):this.$element.addClass("fileinput-new").removeClass("fileinput-exists"),this.$element.trigger("reset.bs.fileinput")},c.prototype.trigger=function(a){this.$input.trigger("click"),a.preventDefault()};var d=a.fn.fileinput;a.fn.fileinput=function(b){return this.each(function(){var d=a(this),e=d.data("bs.fileinput");e||d.data("bs.fileinput",e=new c(this,b)),"string"==typeof b&&e[b]()})},a.fn.fileinput.Constructor=c,a.fn.fileinput.noConflict=function(){return a.fn.fileinput=d,this},a(document).on("click.fileinput.data-api",'[data-provides="fileinput"]',function(b){var c=a(this);if(!c.data("bs.fileinput")){c.fileinput(c.data());var d=a(b.target).closest('[data-dismiss="fileinput"],[data-trigger="fileinput"]');d.length>0&&(b.preventDefault(),d.trigger("click.bs.fileinput"))}})}(window.jQuery);
+/*! =========================================================
+ *
+ * Material Kit PRO - V1.2.1
+ *
+ * =========================================================
+ *
+ * Product Page: https://www.creative-tim.com/product/material-kit-pro
+ * Available with purchase of license from http://www.creative-tim.com/product/material-kit-pro
+ * Copyright 2017 Creative Tim (https://www.creative-tim.com)
+ * License Creative Tim (https://www.creative-tim.com/license)
+ *
+ * ========================================================= */
+
+var big_image;
+
+ $(document).ready(function(){
+     BrowserDetect.init();
+
+     // Init Material scripts for buttons ripples, inputs animations etc, more info on the next link https://github.com/FezVrasta/bootstrap-material-design#materialjs
+     $.material.init();
+
+     window_width = $(window).width();
+
+     $navbar = $('.navbar[color-on-scroll]');
+     scroll_distance = $navbar.attr('color-on-scroll') || 500;
+
+     $navbar_collapse = $('.navbar').find('.navbar-collapse');
+
+     //  Activate the Tooltips
+     $('[data-toggle="tooltip"], [rel="tooltip"]').tooltip();
+
+     //    Activate bootstrap-select
+     if($(".selectpicker").length != 0){
+         $(".selectpicker").selectpicker();
+     }
+
+     // Activate Popovers
+     $('[data-toggle="popover"]').popover();
+
+     // Active Carousel
+ 	$('.carousel').carousel({
+       interval: 3000
+     });
+
+     //Activate tags
+     //removed class label and label-color from tag span and replaced with data-color
+     var tagClass = $('.tagsinput').data('color');
+
+     $('.tagsinput').tagsinput({
+         tagClass: ' tag-'+ tagClass +' '
+     });
+
+     if($('.navbar-color-on-scroll').length != 0){
+         $(window).on('scroll', materialKit.checkScrollForTransparentNavbar)
+     }
+
+     if (window_width >= 768){
+         big_image = $('.page-header[data-parallax="true"]');
+         if(big_image.length != 0){
+            $(window).on('scroll', materialKitDemo.checkScrollForParallax);
+         }
+
+     }
+ });
+
+ $(window).on("load", function() {
+      //initialise rotating cards
+      materialKit.initRotateCard();
+
+     //initialise colored shadow
+     materialKit.initColoredShadows();
+ });
+
+ $(document).on('click', '.card-rotate .btn-rotate', function(){
+     var $rotating_card_container = $(this).closest('.rotating-card-container');
+
+     if($rotating_card_container.hasClass('hover')){
+         $rotating_card_container.removeClass('hover');
+     } else {
+         $rotating_card_container.addClass('hover');
+     }
+ });
+
+ $(document).on('click', '.navbar-toggle', function(){
+     $toggle = $(this);
+
+     if(materialKit.misc.navbar_menu_visible == 1) {
+         $('html').removeClass('nav-open');
+         materialKit.misc.navbar_menu_visible = 0;
+         $('#bodyClick').remove();
+          setTimeout(function(){
+             $toggle.removeClass('toggled');
+          }, 550);
+
+         $('html').removeClass('nav-open-absolute');
+     } else {
+         setTimeout(function(){
+             $toggle.addClass('toggled');
+         }, 580);
+
+
+         div = '<div id="bodyClick"></div>';
+         $(div).appendTo("body").click(function() {
+             $('html').removeClass('nav-open');
+
+             if($('nav').hasClass('navbar-absolute')){
+                 $('html').removeClass('nav-open-absolute');
+             }
+             materialKit.misc.navbar_menu_visible = 0;
+             $('#bodyClick').remove();
+              setTimeout(function(){
+                 $toggle.removeClass('toggled');
+              }, 550);
+         });
+
+         if($('nav').hasClass('navbar-absolute')){
+             $('html').addClass('nav-open-absolute');
+         }
+
+         $('html').addClass('nav-open');
+         materialKit.misc.navbar_menu_visible = 1;
+     }
+ });
+
+ $(window).on('resize', function(){
+     materialKit.initRotateCard();
+ });
+
+ materialKit = {
+     misc:{
+         navbar_menu_visible: 0,
+         window_width: 0,
+         transparent: true,
+         colored_shadows: true,
+         fixedTop: false,
+         navbar_initialized: false,
+         isWindow: document.documentMode || /Edge/.test(navigator.userAgent)
+     },
+
+    initColoredShadows: function(){
+        if(materialKit.misc.colored_shadows == true){
+            if( !(BrowserDetect.browser == 'Explorer' && BrowserDetect.version <= 12) ){
+
+
+                $('.card:not([data-colored-shadow="false"]) .card-image').each(function(){
+                    $card_img = $(this);
+
+                    is_on_dark_screen = $(this).closest('.section-dark, .section-image').length;
+
+                    // we block the generator of the colored shadows on dark sections, because they are not natural
+                    if(is_on_dark_screen == 0){
+                        var img_source = $card_img.find('img').attr('src');
+                        var is_rotating = $card_img.closest('.card-rotate').length == 1 ? true : false;
+                        var $append_div = $card_img;
+
+                        var colored_shadow_div = $('<div class="colored-shadow"/>');
+
+                        if(is_rotating){
+                            var card_image_height = $card_img.height();
+                            var card_image_width = $card_img.width();
+
+                            $(this).find('.back').css({
+                                'height': card_image_height + 'px',
+                                'width': card_image_width + 'px'
+                            });
+                            var $append_div = $card_img.find('.front');
+                        }
+
+                        colored_shadow_div.css({'background-image': 'url(' + img_source +')'}).appendTo($append_div);
+
+                        if($card_img.width() > 700){
+                            colored_shadow_div.addClass('colored-shadow-big');
+                        }
+
+                        setTimeout(function(){
+                            colored_shadow_div.css('opacity',1);
+                        }, 200)
+                    }
+
+                });
+            }
+        }
+    },
+
+    initRotateCard: debounce(function(){
+        $('.rotating-card-container .card-rotate').each(function(){
+            var $this = $(this);
+
+            var card_width = $(this).parent().width();
+            var card_height = $(this).find('.front .card-content').outerHeight();
+
+            $this.parent().css({
+                'height': card_height + 'px',
+                'margin-bottom': 30 + 'px'
+            });
+
+            $this.find('.front').css({
+                'height': card_height + 'px',
+                'width': card_width + 'px',
+            });
+
+            $this.find('.back').css({
+                'height': card_height + 'px',
+                'width': card_width + 'px',
+            });
+        });
+    }, 50),
+
+     checkScrollForTransparentNavbar: debounce(function() {
+             if($(document).scrollTop() > scroll_distance ) {
+                 if(materialKit.misc.transparent) {
+                     materialKit.misc.transparent = false;
+                     $('.navbar-color-on-scroll').removeClass('navbar-transparent');
+                 }
+             } else {
+                 if( !materialKit.misc.transparent ) {
+                     materialKit.misc.transparent = true;
+                     $('.navbar-color-on-scroll').addClass('navbar-transparent');
+                 }
+             }
+     }, 17),
+
+     initFormExtendedDatetimepickers: function(){
+         $('.datetimepicker').datetimepicker({
+             icons: {
+                 time: "fa fa-clock-o",
+                 date: "fa fa-calendar",
+                 up: "fa fa-chevron-up",
+                 down: "fa fa-chevron-down",
+                 previous: 'fa fa-chevron-left',
+                 next: 'fa fa-chevron-right',
+                 today: 'fa fa-screenshot',
+                 clear: 'fa fa-trash',
+                 close: 'fa fa-remove',
+                 inline: true
+             }
+          });
+
+          $('.datepicker').datetimepicker({
+             format: 'MM/DD/YYYY',
+             icons: {
+                 time: "fa fa-clock-o",
+                 date: "fa fa-calendar",
+                 up: "fa fa-chevron-up",
+                 down: "fa fa-chevron-down",
+                 previous: 'fa fa-chevron-left',
+                 next: 'fa fa-chevron-right',
+                 today: 'fa fa-screenshot',
+                 clear: 'fa fa-trash',
+                 close: 'fa fa-remove',
+                 inline: true
+             }
+          });
+
+          $('.timepicker').datetimepicker({
+ //          format: 'H:mm',    // use this format if you want the 24hours timepicker
+             format: 'h:mm A',    //use this format if you want the 12hours timpiecker with AM/PM toggle
+             icons: {
+                 time: "fa fa-clock-o",
+                 date: "fa fa-calendar",
+                 up: "fa fa-chevron-up",
+                 down: "fa fa-chevron-down",
+                 previous: 'fa fa-chevron-left',
+                 next: 'fa fa-chevron-right',
+                 today: 'fa fa-screenshot',
+                 clear: 'fa fa-trash',
+                 close: 'fa fa-remove',
+                 inline: true
+
+             }
+          });
+     },
+
+     initSliders: function(){
+         // Sliders for demo purpose
+         var slider = document.getElementById('sliderRegular');
+
+         noUiSlider.create(slider, {
+             start: 40,
+             connect: [true,false],
+             range: {
+                 min: 0,
+                 max: 100
+             }
+         });
+
+         var slider2 = document.getElementById('sliderDouble');
+
+         noUiSlider.create(slider2, {
+             start: [ 20, 60 ],
+             connect: true,
+             range: {
+                 min:  0,
+                 max:  100
+             }
+         });
+     }
+ }
+
+
+
+
+ materialKitDemo = {
+
+     checkScrollForParallax: debounce(function(){
+         oVal = ($(window).scrollTop() / 3);
+         big_image.css({
+             'transform':'translate3d(0,' + oVal +'px,0)',
+             '-webkit-transform':'translate3d(0,' + oVal +'px,0)',
+             '-ms-transform':'translate3d(0,' + oVal +'px,0)',
+             '-o-transform':'translate3d(0,' + oVal +'px,0)'
+         });
+     }, 6),
+
+     initContactUsMap: function(){
+         var myLatlng = new google.maps.LatLng(44.433530, 26.093928);
+         var mapOptions = {
+           zoom: 14,
+           center: myLatlng,
+           styles:
+ [{"featureType":"water","stylers":[{"saturation":43},{"lightness":-11},{"hue":"#0088ff"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":99}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#808080"},{"lightness":54}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ece2d9"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#ccdca1"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#767676"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#b8cb93"}]},{"featureType":"poi.park","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"on"}]},{"featureType":"poi.medical","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","stylers":[{"visibility":"simplified"}]}],
+           scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
+         }
+         var map = new google.maps.Map(document.getElementById("contactUsMap"), mapOptions);
+
+         var marker = new google.maps.Marker({
+             position: myLatlng,
+             title:"Hello World!"
+         });
+         marker.setMap(map);
+     },
+
+     initContactUs2Map: function(){
+         var lat = 44.433530;
+         var long = 26.093928;
+
+         var centerLong = long - 0.025;
+
+         var myLatlng = new google.maps.LatLng(lat,long);
+         var centerPosition = new google.maps.LatLng(lat, centerLong);
+
+         var mapOptions = {
+           zoom: 14,
+           center: centerPosition,
+           styles:
+ [{"featureType":"water","stylers":[{"saturation":43},{"lightness":-11},{"hue":"#0088ff"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":99}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#808080"},{"lightness":54}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ece2d9"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#ccdca1"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#767676"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#b8cb93"}]},{"featureType":"poi.park","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"on"}]},{"featureType":"poi.medical","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","stylers":[{"visibility":"simplified"}]}],
+           scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
+         }
+         var map = new google.maps.Map(document.getElementById("contactUs2Map"), mapOptions);
+
+         var marker = new google.maps.Marker({
+             position: myLatlng,
+             title:"Hello World!"
+         });
+         marker.setMap(map);
+     }
+
+ }
+ // Returns a function, that, as long as it continues to be invoked, will not
+ // be triggered. The function will be called after it stops being called for
+ // N milliseconds. If `immediate` is passed, trigger the function on the
+ // leading edge, instead of the trailing.
+
+ function debounce(func, wait, immediate) {
+ 	var timeout;
+ 	return function() {
+ 		var context = this, args = arguments;
+ 		clearTimeout(timeout);
+ 		timeout = setTimeout(function() {
+ 			timeout = null;
+ 			if (!immediate) func.apply(context, args);
+ 		}, wait);
+ 		if (immediate && !timeout) func.apply(context, args);
+ 	};
+ };
+
+ var BrowserDetect = {
+     init: function () {
+         this.browser = this.searchString(this.dataBrowser) || "Other";
+         this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+     },
+     searchString: function (data) {
+         for (var i = 0; i < data.length; i++) {
+             var dataString = data[i].string;
+             this.versionSearchString = data[i].subString;
+
+             if (dataString.indexOf(data[i].subString) !== -1) {
+                 return data[i].identity;
+             }
+         }
+     },
+     searchVersion: function (dataString) {
+         var index = dataString.indexOf(this.versionSearchString);
+         if (index === -1) {
+             return;
+         }
+
+         var rv = dataString.indexOf("rv:");
+         if (this.versionSearchString === "Trident" && rv !== -1) {
+             return parseFloat(dataString.substring(rv + 3));
+         } else {
+             return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+         }
+     },
+
+     dataBrowser: [
+         {string: navigator.userAgent, subString: "Chrome", identity: "Chrome"},
+         {string: navigator.userAgent, subString: "MSIE", identity: "Explorer"},
+         {string: navigator.userAgent, subString: "Trident", identity: "Explorer"},
+         {string: navigator.userAgent, subString: "Firefox", identity: "Firefox"},
+         {string: navigator.userAgent, subString: "Safari", identity: "Safari"},
+         {string: navigator.userAgent, subString: "Opera", identity: "Opera"}
+     ]
+
+ };
+
+ var better_browser = '<div class="container"><div class="better-browser row"><div class="col-md-2"></div><div class="col-md-8"><h3>We are sorry but it looks like your Browser doesn\'t support our website Features. In order to get the full experience please download a new version of your favourite browser.</h3></div><div class="col-md-2"></div><br><div class="col-md-4"><a href="https://www.mozilla.org/ro/firefox/new/" class="btn btn-warning">Mozilla</a><br></div><div class="col-md-4"><a href="https://www.google.com/chrome/browser/desktop/index.html" class="btn ">Chrome</a><br></div><div class="col-md-4"><a href="http://windows.microsoft.com/en-us/internet-explorer/ie-11-worldwide-languages" class="btn">Internet Explorer</a><br></div><br><br><h4>Thank you!</h4></div></div>';
+
 /*
 * File: jquery.flexisel.js
 * Version: 2.1.0

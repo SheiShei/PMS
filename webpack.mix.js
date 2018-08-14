@@ -13,6 +13,7 @@ let mix = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')
+   .sass('resources/assets/sass/material-kit.scss', 'public/css/all.css')
 
 mix.scripts([
     'resources/assets/js/libs/custom.js',
@@ -23,8 +24,6 @@ mix.scripts([
     'resources/assets/js/libs/bootstrap-selectpicker.js',
     'resources/assets/js/libs/bootstrap-tagsinput.js',
     'resources/assets/js/libs/jasny-bootstrap.min.js',
-    'resources/assets/js/libs/material-kit.min.js',
+    'resources/assets/js/libs/material-kit.js',
     'resources/assets/js/libs/jquery.flexisel.js',
 ], 'public/js/all.js')
-    
-    .styles('resources/assets/css/libs/material-kit.css','public/css/all.css');
