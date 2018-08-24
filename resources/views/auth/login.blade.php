@@ -1,13 +1,17 @@
 @extends('layouts.lo_login')
 
-@section('login_body')
+@section('title')
+Login
+@stop
+
+@section('body')
 <body class="login-page">
-	<div class="page-header header-filter" style="background-image: url('{{asset('images/business_desk.jpg')}}'); background-size: cover; background-position: top center;">
+	<div class="page-header header-filter">
+		{{-- style="background-image: url('{{asset('images/business_desk.jpg')}}'); background-size: cover; background-position: top center;" --}}
 		<div class="container">
 			<div class="row">
 				<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 ml-auto mr-auto">
 					<div class="card card-signup">
-
 						<form class="form" method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}">
 						@csrf
 							<div class="header header-dark-blue text-center btn-tumblr">

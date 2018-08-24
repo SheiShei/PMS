@@ -3288,6 +3288,8 @@ select.form-control[multiple],
 .navbar {
   border: 0;
   border-radius: 0px;
+  -webkit-box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
   padding: 2px 0;
 }
 
@@ -4456,14 +4458,6 @@ h2.title {
 .carousel.carousel-full-nagivation .carousel-control .material-icons,
 .carousel.carousel-full-nagivation .carousel-control .fa {
   display: none;
-}
-
-.carousel.carousel-full-nagivation .left {
-  cursor: url(/images/arrow-left.png?685dd5355f0e5dee72ef62e59867839d), url(/arrow-left.cur?c720fb4f16d69cc3c5dba61bc96cdc0d), default !important;
-}
-
-.carousel.carousel-full-nagivation .right {
-  cursor: url(/images/arrow-right.png?61a2c5176cad43ffc0def5d09913aa67), url(/arrow-right.cur?ef69e791ae57424b1901a28e2ad4d708), default !important;
 }
 
 .carousel .carousel-control {
@@ -5734,8 +5728,8 @@ hr.on-light {
 
 .table > thead > tr > th {
   border-bottom-width: 1px;
-  font-size: 1.25em;
-  font-weight: 300;
+  font-size: 0.9em;
+  font-weight: 700;
 }
 
 .table .radio,
@@ -5757,7 +5751,7 @@ hr.on-light {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  padding: 12px 8px;
+  padding: 8px 5px;
   vertical-align: middle;
 }
 

@@ -1,12 +1,191 @@
 //All Custom CSS Here!
+.navbar{
+  margin-bottom:5px !important;
+  width: 83vw;
+}
 
-//MY CARDS
+#nav-admin{
+  float:left;
+  // width: 83vh;
+}
+.title-head,
+.first-row{
+  padding: 5px 10px;
+}
 
-// .featcont{
-//     border-left: gray solid 3px;
-//     padding: 3px;
-//     height: auto;
-// }
+.title-head > h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.first-row{
+  // width: 100%;
+  height: auto;
+  background-color: rgb(250, 250, 250);
+  margin-top: 7px;
+  margin-bottom: 3px;
+  // height: 200px;
+  border: 1px solid #d6d6d6;
+}
+
+.main-main-container{
+    width: 83vw;  
+    height: auto; 
+    float: left; 
+    position:relative;
+    padding: 10px;
+  } 
+  .pl-10 {
+    padding-left: 10px !important;
+  }
+  .pl-20{
+    padding-left: 20px !important;
+  }
+
+.nav-side-menu {
+    // overflow: auto;
+    font-family: verdana;
+    font-size: 12px;
+    font-weight: 200;
+    width:  17vw; 
+    height: 100vh; 
+    float: left; 
+    position: relative; 
+    background-color: #2e353d;
+    color: #fff;  
+  }
+  .nav-side-menu .brand {
+    background-color: #00161c;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .nav-side-menu .toggle-btn {
+    display: none;
+  }
+  .nav-side-menu ul,
+  .nav-side-menu li {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    line-height: 35px;
+    cursor: pointer;
+    /*    
+      .collapsed{
+         .arrow:before{
+                   font-family: FontAwesome;
+                   content: "\f053";
+                   display: inline-block;
+                   padding-left:10px;
+                   padding-right: 10px;
+                   vertical-align: middle;
+                   float:right;
+              }
+       }
+  */
+  }
+  .nav-side-menu ul :not(collapsed) .arrow:before,
+  .nav-side-menu li :not(collapsed) .arrow:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+    // float: right;
+  }
+  .nav-side-menu ul .active,
+  .nav-side-menu li .active {
+    border-left: 3px solid #00bcd4;
+    background-color: #4f5b69;
+  }
+  .nav-side-menu ul .sub-menu li.active,
+  .nav-side-menu li .sub-menu li.active {
+    // color: #d19b3d;
+    color: #75d3ff;
+
+  }
+  .nav-side-menu ul .sub-menu li.active a,
+  .nav-side-menu li .sub-menu li.active a {
+    color: #75d3ff;
+  }
+  .nav-side-menu ul .sub-menu li,
+  .nav-side-menu li .sub-menu li {
+    background-color: #181c20;
+    border: none;
+    line-height: 28px;
+    border-bottom: 1px solid #23282e;
+    margin-left: 0px;
+  }
+  .nav-side-menu ul .sub-menu li:hover,
+  .nav-side-menu li .sub-menu li:hover {
+    background-color: #020203;
+  }
+  .nav-side-menu ul .sub-menu li:before,
+  .nav-side-menu li .sub-menu li:before {
+    font-family: FontAwesome;
+    content: "\f105";
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+  }
+  .nav-side-menu li {
+    padding-left: 0px;
+    border-left: 3px solid #2e353d;
+    border-bottom: 1px solid #23282e;
+  }
+  .nav-side-menu li a {
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .nav-side-menu li a i {
+    padding-left: 10px;
+    width: 20px;
+    padding-right: 20px;
+  }
+  .nav-side-menu li:hover {
+    border-left: 3px solid #00bcd4;
+    background-color: #4f5b69;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5 s ease;
+  }
+  @media (max-width: 767px) {
+    .nav-side-menu {
+      position: relative;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .nav-side-menu .toggle-btn {
+      display: block;
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 10 !important;
+      padding: 3px;
+      background-color: #ffffff;
+      color: #000;
+      width: 40px;
+      text-align: center;
+    }
+    .brand {
+      text-align: left !important;
+      font-size: 22px;
+      padding-left: 20px;
+      line-height: 50px !important;
+    }
+  }
+  @media (min-width: 767px) {
+    .nav-side-menu .menu-list .menu-content {
+      display: block;
+    }
+  }
 
 .mycard{
     width: 100%;
@@ -50,18 +229,18 @@
 
 //END OF MY CARD
 
-
-
-
-
-
-
-
-
-
 body{
     background-color: whitesmoke;
     overflow: none;
+    height: 100vh;
+    float: left;
+    width: 100vw;
+    overflow-x: hidden !important;
+}
+
+hr{
+  margin-top: 10px !important;
+  margin-bottom: 8px !important;
 }
 .content{
     display: block;
@@ -109,49 +288,3 @@ body{
     transition-delay: 0.3s; 
 }
 
-.sidebar-menu > li > a {
-    color: white;
-}
-
-.sidebar-menu > li > a {
-    list-style-type: none;
-    text-decoration: none;
-    padding: 2px 3px;
-}
-
-// .nav>li>a:hover{
-//     text-decoration: none;
-//     background-color: #757575;
-// }
-
-.sidebar-menu > li > a {
-    color: white;
-    padding: 2px 3px;
-}
-
-.sidebar-menu>li>a:hover {
-    color: black;
-}
-
-aside.main-sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color:white;
-    padding-top: 10px;
-    min-height: 100%;
-    width: 100%;
-    z-index: 810;
-    -webkit-transition: -webkit-transform .3s ease-in-out,width .3s ease-in-out;
-    -moz-transition: -moz-transform .3s ease-in-out,width .3s ease-in-out;
-    -o-transition: -o-transform .3s ease-in-out,width .3s ease-in-out;
-    transition: transform .3s ease-in-out,width .3s ease-in-out;
-}
-
-.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
-    background-color: #222d32;
-}
-
-aside {
-    display: block;
-}

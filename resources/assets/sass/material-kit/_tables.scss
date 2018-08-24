@@ -1,8 +1,8 @@
 .table{
    > thead > tr > th{
        border-bottom-width: 1px;
-       font-size: $font-size-h5;
-       font-weight: $font-weight-light;
+       font-size: $font-size-h6;
+       font-weight: $font-weight-extra-bold;
    }
 
    .radio,
@@ -22,7 +22,8 @@
    > thead > tr > td,
    > tbody > tr > td,
    > tfoot > tr > td{
-       padding: 12px 8px;
+    //    padding: 12px 8px;
+       padding: 8px 5px;
        vertical-align: middle;
    }
 

@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     @include('includes/head')
-    <title>Login - Captivate</title>
+    <title>@yield('title') - Captivate</title>
+    <style>@yield('customcss')</style>
 </head>
 
-@yield('login_body')
+@yield('body')
 
     <script src="{{asset('js/app.js')}}"></script>
     <script src="{{asset('js/all.js')}}"></script>
