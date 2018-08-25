@@ -3,7 +3,7 @@
 .navbar {
   border: 0;
   border-radius: 0px;
-  //@include shadow-big-navbar();
+  @include shadow-big-navbar();
 
   @extend .animation-transition-fast;
 

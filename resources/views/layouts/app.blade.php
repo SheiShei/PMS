@@ -3,10 +3,12 @@
 <head>
     @include('includes/head')
     <title>@yield('title')</title>
+    <style>@yield('customcss')</style>
 </head>
 
-<body style="max-height:100vh; background-color:whitesmoke">
-    @include('includes/nav')
+<body>
+    @include('includes/sidebar')
+    @include('includes/topnav')
     @yield('content')
     {{-- @include('includes/footer') --}}
 </body>

@@ -1,0 +1,29 @@
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #9e9e9e1a !important;
+}
+
+.form-group{
+    margin-top: 3px !important;
+}
+
+ul#menu-content > li a,
+ul#projDetails > li a{
+    display: block;
+}
+
+
+@media (max-width: 768px){
+    .nav-side-menu{
+        height: auto;
+    }
+    .main-main-container,
+    .navbar{
+        width: 100vw;
+    }
+}
+
+@media (min-width: 769px){
+    .nav-side-menu{
+        height: 100vh;
+    }
+}

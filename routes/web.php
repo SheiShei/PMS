@@ -12,7 +12,15 @@
 */
 
 Route::get('/', function () {
-    return view('admin/admin-sample');
+    return view('admin/dash-admin');
+});
+
+Route::get('/users', function() {
+    return view('admin/users');
+});
+
+Route::get('/addproject', function() {
+    return view('addProject');
 });
 
 Auth::routes();
