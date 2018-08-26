@@ -1,17 +1,21 @@
 
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons");
 
 // Variables
 @import "variables";
 
 // Bootstrap
-//@import '~bootstrap/scss/bootstrap';
+// @import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+
+//font-awesome
+@import '~font-awesome-sass/assets/stylesheets/font-awesome';
 
 // Custom CSS
-@import 'custom';
-
-@import 'custom_users';
+@import 'custom/custom';
+@import 'custom/custom_users';
 
 .navbar-laravel {
   background-color: #fff;

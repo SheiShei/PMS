@@ -13,7 +13,7 @@ let mix = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')
-   .sass('resources/assets/sass/material-kit.scss', 'public/css/all.css')
+   .sass('resources/assets/sass/material-kit.scss','public/css/all.css')
 
 mix.scripts([
     'resources/assets/js/libs/custom.js',

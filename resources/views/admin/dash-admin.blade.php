@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-Dashboard - Admin
+Dashboard
 @stop
 
 @section('customcss')
@@ -100,7 +100,6 @@ Dashboard - Admin
         </div>
 
         {{-- </div> --}}
-    </div>
     </div>
     <div class="sec-column col-md-4 col-sm-12">
         {{-- <div class="col-md-12"> --}}

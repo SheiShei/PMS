@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-Manage Users - Captivate
+Manage Users
 @endsection
 
 @section('customcss')
