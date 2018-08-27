@@ -19,6 +19,8 @@ Route::get('/users', function() {
     return view('admin/users');
 });
 
+Route::get('/data', 'DataController@index')->name('data');
+
 Route::get('/addproject', function() {
     return view('addProject');
 });

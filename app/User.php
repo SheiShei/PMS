@@ -35,4 +35,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+    // created_at accessor
+    public function getCreatedAtAttribute($date){
+        return $date ? date('m/d/Y', strtotime($date)) : null;
+    } //end of create_at accessor
 }

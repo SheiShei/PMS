@@ -1,14 +1,13 @@
-@extends('layouts/app')
+@extends('layouts.app')
 
 @section('title')
-Title
+User DataTable
 @endsection
 
+@section('customcss')
+
+@stop
 
 @section('content')
-
-    <div class="jumbotron">
-        asdasd
-    </div>
-
+    <user-datatable></user-datatable>
 @endsection

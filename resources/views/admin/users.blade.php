@@ -15,53 +15,7 @@ Manage Users
 
     <div class="row">
         <div class="col-md-8">
-            <div class="first-row">
-                <h6><strong>USERS LIST</strong></h6>
-                <div class="table-responsive" style="height: 35vh; overflow:scoll">
-                        {{-- style="max-height: 250px; overflow:scoll" --}}
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">ID</th>
-                                <th class="">Name</th>
-                                <th>Email</th>
-                                <th>Created</th>
-                                <th class="text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                            <tr><a href="">
-                                <td class="text-center">1</td>
-                                <td>Johnny</td>
-                                <td><a href="#">johnny@captivategrp.com</a></td>
-                                <td>08-12-2019</td>
-                                <td class="td-actions text-right">
-                                    <button type="button" rel="tooltip" class="btn btn-success btn-round" data-original-title="" title="">
-                                        <i class="material-icons">edit</i>
-                                    </button>
-                                    <button type="button" rel="tooltip" class="btn btn-danger btn-round" data-original-title="" title="">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </td>
-                            </a></tr>
-                            <tr><a href="">
-                                <td class="text-center">1</td>
-                                <td>Johnny</td>
-                                <td><a href="#">johnny@captivategrp.com</a></td>
-                                <td>08-12-2019</td>
-                                <td class="td-actions text-right">
-                                    <button type="button" rel="tooltip" class="btn btn-success btn-round" data-original-title="" title="">
-                                        <i class="material-icons">edit</i>
-                                    </button>
-                                    <button type="button" rel="tooltip" class="btn btn-danger btn-round" data-original-title="" title="">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </td>
-                            </a></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <user-datatable></user-datatable>
             <div class="first-row">
                 <h6><strong>TEAMS LIST</strong></h6>
                 <div class="table-responsive" style="height: 30vh; overflow:scoll">
