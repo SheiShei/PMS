@@ -6,8 +6,7 @@ Login
 
 @section('body')
 <body class="login-page">
-	<div class="page-header header-filter">
-		{{-- style="background-image: url('{{asset('images/business_desk.jpg')}}'); background-size: cover; background-position: top center;" --}}
+	<div class="page-header header-filter" style="background-image: url('{{asset('images/bg2.jpeg')}}'); background-size: cover; background-position: top center;">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 ml-auto mr-auto">
