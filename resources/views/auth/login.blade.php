@@ -4,6 +4,7 @@
 
 @section('body')
 <body class="login-page">
+<<<<<<< HEAD
 <div class="page-header header-filter">
 {{-- <div class="page-header header-filter" style="background-image: url('{{ asset('images/business_desk.jpg') }}'); background-size: cover; background-position: top center;"> --}}
     <div class="container">
@@ -19,6 +20,23 @@
                         <div class="card-content">
 
                             {{--  email  --}}
+=======
+	<div class="page-header header-filter" style="background-image: url('{{asset('images/bg2.jpeg')}}'); background-size: cover; background-position: top center;">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 ml-auto mr-auto">
+					<div class="card card-signup">
+						<form class="form" method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}">
+						@csrf
+							<div class="header header-dark-blue text-center btn-tumblr">
+								{{-- <h4 class="card-title">{{ __('Login') }}</h4> --}}
+								<img class="mr-auto ml-auto" src="{{asset('images/logo.png')}}" style="width: 190px"/>
+								<h6 class="card-title">Project Management System</h6>
+							</div>
+	
+							<div class="card-content">
+								{{--  email  --}}
+>>>>>>> sam
 								<div class="input-group">
 									<span class="input-group-addon">
 										<i class="material-icons">email</i>
