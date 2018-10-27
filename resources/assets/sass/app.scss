@@ -2,7 +2,7 @@
 // Fonts
 // @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons");
-
+// @import 'fonts/vendor/gothic-sass/gothic/GOTHIC.TTF';
 // Variables
 @import "variables";
 
@@ -16,6 +16,7 @@
 // Custom CSS
 @import 'custom/custom';
 @import 'custom/custom_users';
+// @import 'custom/custom_sticky';
 
 .navbar-laravel {
   background-color: #fff;

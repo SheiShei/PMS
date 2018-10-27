@@ -31,6 +31,11 @@
                       <i class="material-icons">people</i>
                       Users</a>
               </li>
+              <li class="dropdown">
+                <a href="#pablo">
+                    <i class="material-icons">people</i>
+                    Clients</a>
+              </li>
             </ul>
             <form class="navbar-form navbar-right" role="search">
               <div class="form-group form-white">

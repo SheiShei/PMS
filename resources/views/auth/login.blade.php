@@ -4,7 +4,7 @@
 
 @section('body')
 <body class="login-page">
-<div class="page-header header-filter">
+<div class="page-header header-filter" style="background-image: url('{{ asset('images/business_desk.jpg') }}'); background-size: cover; background-position: top center;">
 {{-- <div class="page-header header-filter" style="background-image: url('{{ asset('images/business_desk.jpg') }}'); background-size: cover; background-position: top center;"> --}}
     <div class="container">
         <div class="row">
@@ -21,7 +21,8 @@
                             {{--  email  --}}
 								<div class="input-group">
 									<span class="input-group-addon">
-										<i class="material-icons">email</i>
+										{{-- <i class="material-icons">email</i> --}}
+										<i class="fa fa-envelope fa-lg"></i>
 									</span>
 									<div class="form-group is-empty">
 										<input type="email" id="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Email..." name="email" value="{{ old('email') }}" required autofocus aria-autocomplete="none">
@@ -37,7 +38,8 @@
 							{{-- password --}}
 								<div class="input-group">
 									<span class="input-group-addon">
-										<i class="material-icons">lock_outline</i>
+										{{-- <i class="material-icons">lock_outline</i> --}}
+										<i class="fa fa-lock fa-lg"></i>
 									</span>
 									<div class="form-group is-empty">
 										<input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="Password..." name="password" required>
