@@ -3288,7 +3288,7 @@ select.form-control[multiple],
 .navbar {
   border: 0;
   border-radius: 0px;
-  padding: 2px 0;
+  padding: 0px 0;
 }
 
 .navbar .navbar-brand {
@@ -5733,9 +5733,8 @@ hr.on-light {
 }
 
 .table > thead > tr > th {
-  border-bottom-width: 1px;
-  font-size: 1.25em;
-  font-weight: 300;
+  font-size: 0.9em;
+  font-weight: 500;
 }
 
 .table .radio,

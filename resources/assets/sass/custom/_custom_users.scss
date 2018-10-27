@@ -1,3 +1,7 @@
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 3px 8px !important;
+    vertical-align: middle;
+}
 .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: #9e9e9e1a !important;
 }
@@ -8,7 +12,7 @@
 
 ul#menu-content > li a,
 ul#projDetails > li a{
-    display: block;
+    display: inline-block;
 }
 
 
