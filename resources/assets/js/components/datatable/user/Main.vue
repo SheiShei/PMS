@@ -1,10 +1,23 @@
 <template>
-    <div class="first-row">
-        <h6><strong>USERS LIST</strong></h6>
-        <input type="text" class="form-control" v-model="tableData.search" placeholder="Search Table" @input="search()">
-        
-        <div class="table-responsive" style="height: 35vh; overflow:scoll">
-            <main-table :columns="columns">
+    <div class="mybox">
+        <div class="mybox-head userlist row">
+            <div class="ul-item col-md-6">
+                <h6><strong>USERS LIST</strong></h6> 
+            </div>
+            <div class="ul-item pull-right col-md-6">
+                <div class="input-group">
+                    <div class="form-group is-empty">
+                        <input type="text" class="form-control" v-model="tableData.search" placeholder="Search Table" @input="search()">
+                    </div>
+                    <div class="input-group-addon">
+                        <span class="fa fa-search"></span>                
+                    </div>
+                </div>             
+            </div>       
+        </div>
+        <div class="mybox-body white-white-bg">
+            <div class="table-responsive" style="max-height: 28vh; overflow:auto">
+            <main-table :columns="columns" class="table table-bordered table-brands">
                 <tbody>
                     <tr v-for="user in users" :key="user.id">
                             <td>{{user.id}}</td>
@@ -12,22 +25,25 @@
                             <td><a href="#">{{user.email}}</a></td>
                             <td>{{user.created_at}}</td>
                             <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" class="btn btn-success btn-round" data-original-title="" title="">
-                                    <i class="material-icons">edit</i>
-                                </button>
-                                <button type="button" rel="tooltip" class="btn btn-danger btn-round" data-original-title="" title="">
-                                    <i class="material-icons">delete</i>
-                                </button>
+                                 <button type="button" rel="tooltip" class="btn btn-success btn-fab-mini btn-simple btn-xs" data-original-title="" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                 <button type="button" rel="tooltip" class="btn btn-danger btn-fab-mini btn-simple btn-xs" data-original-title="" title="Archive">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
                             </td>
                     </tr>
                     
                 </tbody>
             </main-table>
         </div>
-        <main-pagination :pagination="pagination"
+        </div>
+        <div class="mybox-footer userlist-ft">
+            <main-pagination :pagination="pagination"
                         @prev="getUsers(pagination.prevPageUrl)"
                         @next="getUsers(pagination.nextPageUrl)">
         </main-pagination>
+        </div>
     </div>
 </template>
 
