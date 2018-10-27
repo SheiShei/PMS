@@ -32,7 +32,8 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">lock_outline</i>
+                                                <!-- <i class="material-icons">lock_outline</i> -->
+                                                <i class="fa fa-lock fa-lg"></i>
                                             </span>
                                             <div class="form-group is-empty">
                                                 <input v-model="form.password" id="password" type="password" class="form-control" placeholder="Password..." name="password" required>

@@ -18,42 +18,50 @@
 // Route::get('/users', function() {
 //     return view('admin/users');
 // });
-Route::get('/users', function() {
-    return view('admin/users');
-});
-Route::get('/brands', function(){
-    return view('/brandsOverview');
-});
-Route::get('/brands/add', function(){
-    return view('/admin/addBrand');
-});
-Route::get('/brands/jos', function(){
-    return view('/JOs');
-});
-Route::get('/sticky-notes', function(){
-    return view('/stickyNotes');
-});
+
+// eto
+// Route::get('/users', function() {
+//     return view('admin/users');
+// });
+// Route::get('/brands', function(){
+//     return view('/brandsOverview');
+// });
+// Route::get('/brands/add', function(){
+//     return view('/admin/addBrand');
+// });
+// Route::get('/brands/jos', function(){
+//     return view('/JOs');
+// });
+// Route::get('/sticky-notes', function(){
+//     return view('/stickyNotes');
+// });
+// eto end
 
 // Route::get('/data', 'DataController@index')->name('data');
 
 // Route::get('/addproject', function() {
 //     return view('addProject');
 // });
-Route::get('/new-jo-web', function() {
-    return view('newjoWeb');
-});
 
-Route::get('/new-jo-crea', function() {
-    return view('newjoCrea');
-});
 
-Route::get('/view-jo', function() {
-    return view('view-jo');
-});
+// eto ulit
+// Route::get('/new-jo-web', function() {
+//     return view('newjoWeb');
+// });
 
-Route::get('/add-client', function(){
-    return view('admin/addClient');
-});
+// Route::get('/new-jo-crea', function() {
+//     return view('newjoCrea');
+// });
+
+// Route::get('/view-jo', function() {
+//     return view('view-jo');
+// });
+
+// Route::get('/add-client', function(){
+//     return view('admin/addClient');
+// });
+// eto ulit end
+
 
 // // Auth::routes();
 

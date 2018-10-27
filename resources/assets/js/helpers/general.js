@@ -33,7 +33,8 @@ export function initialize(store, router) {
     if(store.state.loggedUser){
         checkToken(store.state.loggedUser.token)
             .then(response => {
-                this.$router.push('/login');
+                // router.push('/login');
+                // console.log(response);
             })
             .catch(error => {
                 // console.log(error);

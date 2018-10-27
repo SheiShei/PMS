@@ -35,7 +35,7 @@ const router = new VueRouter({
 
 });
 
-Vue.component('user-datatable', require('./components/datatable/user/Main.vue'));
+// Vue.component('user-datatable', require('./components/datatable/user/Main.vue'));
 
 initialize(store, router);
 
