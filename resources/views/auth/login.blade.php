@@ -3,9 +3,10 @@
 @section('title') Login @stop
 
 @section('body')
-<body class="login-page">
-<div class="page-header header-filter">
-{{-- <div class="page-header header-filter" style="background-image: url('{{ asset('images/business_desk.jpg') }}'); background-size: cover; background-position: top center;"> --}}
+<body>
+	<div class="login-page">
+		{{-- <div class="page-header header-filter"> --}}
+<div class="page-header header-filter" style="background-image: url('{{ asset('images/business_desk.jpg') }}'); background-size: cover; background-position: top center;">
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
@@ -75,6 +76,8 @@
         </div>
     </div>
 </div>
+	</div>
+
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/all.js')}}"></script>
 </body>

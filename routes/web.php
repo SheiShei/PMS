@@ -11,20 +11,24 @@
 |
 */
 
-Route::get('/', function () {
-    return view('admin/dash-admin');
-});
+// Route::get('/', function () {
+//     return view('admin/dash-admin');
+// });
 
-Route::get('/users', function() {
-    return view('admin/users');
-});
+// Route::get('/users', function() {
+//     return view('admin/users');
+// });
 
-Route::get('/data', 'DataController@index')->name('data');
+// Route::get('/data', 'DataController@index')->name('data');
 
-Route::get('/addproject', function() {
-    return view('addProject');
-});
+// Route::get('/addproject', function() {
+//     return view('addProject');
+// });
 
-Auth::routes();
+// // Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('{any}', function () {
+    return view('welcome');
+})->where('any', '.*');

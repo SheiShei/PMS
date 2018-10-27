@@ -11706,6 +11706,14 @@ hr {
           transition-delay: 0.3s;
 }
 
+/* Login */
+
+.login-page > .page-header.header-filter {
+  background-image: url("/images/business_desk.jpg");
+  background-size: cover;
+  background-position: top center;
+}
+
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #9e9e9e1a !important;
 }

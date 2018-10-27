@@ -1,23 +1,49 @@
-
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from "vue";
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+/* import all vue libraries */
+import VueRouter from "vue-router";
+import Vuex from "vuex";
+import Toaster from 'v-toaster'
+    // toaster css
+    import 'v-toaster/dist/v-toaster.css'
+/* end of import all vue libraries */
 
-// Vue.component('display', require('./components/display.vue'));
+/* next import all modules */
+import {routes} from './routes';
+import StoreData from './store/store';
+import {initialize} from './helpers/general';
+/* end of import modules */
+
+import MainApp from './components/MainApp.vue'
+
+
+Vue.use(VueRouter);
+Vue.use(Vuex);
+
+// optional set default imeout, the default is 10000 (10 seconds).
+Vue.use(Toaster, {timeout: 5000})
+
+const store = new Vuex.Store(StoreData);
+
+// create a router
+const router = new VueRouter({
+
+    routes,
+    mode: 'history',
+
+});
+
 Vue.component('user-datatable', require('./components/datatable/user/Main.vue'));
 
+initialize(store, router);
+
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router,
+    store,
+    components : {
+        mainApp : MainApp
+    }
 });
