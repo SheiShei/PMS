@@ -1,6 +1,7 @@
 <template>
     
     <section class="main-main-container" style="">
+        <button class="btn btn-success btn-sm" type="button" @click="newNote">+ ADD</button>
         <ul>
             <draggable v-model="notes">
                 <li v-for="note in notes" :key="note.id">
@@ -120,6 +121,14 @@ export default {
                 {id: 5, title: 'title 5', body: 'Text Content #5', color: '#4bce00'},
                 {id: 6, title: 'title 6', body: 'Text Content #6', color: '#ce4100'},
             ]
+        }
+    },
+
+    methods: {
+        newNote() {
+            let noteLength = this.notes.length + 1;
+            this.notes.unshift({id: noteLength, title: 'title '+noteLength, body: 'Text Content #'+noteLength, color:'#ffc'})
+            this.$toaster.success('New note added!.')
         }
     }
 }
