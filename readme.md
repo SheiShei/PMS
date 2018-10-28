@@ -9,3 +9,7 @@
           PASSPORT_CLIENT_SECRET=paste here the client secret
 
 <p><strong>Step 6 </strong>run 'npm install </p> 
+
+          ***sample account
+                    email: 'test@test.com'
+                    password: 'testpass'
