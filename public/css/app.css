@@ -11924,6 +11924,14 @@ hr {
 
 /*./SCROLLBAR*/
 
+/* Login */
+
+.login-page > .page-header.header-filter {
+  background-image: url("/images/business_desk.jpg");
+  background-size: cover;
+  background-position: top center;
+}
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,

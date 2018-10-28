@@ -11,44 +11,62 @@
 |
 */
 
-Route::get('/', function () {
-    return view('admin/dash-admin');
-});
+// Route::get('/', function () {
+//     return view('admin/dash-admin');
+// });
 
-Route::get('/users', function() {
-    return view('admin/users');
-});
-Route::get('/brands', function(){
-    return view('/brandsOverview');
-});
-Route::get('/brands/add', function(){
-    return view('/admin/addBrand');
-});
-Route::get('/brands/jos', function(){
-    return view('/JOs');
-});
-Route::get('/sticky-notes', function(){
-    return view('/stickyNotes');
-});
+// Route::get('/users', function() {
+//     return view('admin/users');
+// });
 
-Route::get('/data', 'DataController@index')->name('data');
+// eto
+// Route::get('/users', function() {
+//     return view('admin/users');
+// });
+// Route::get('/brands', function(){
+//     return view('/brandsOverview');
+// });
+// Route::get('/brands/add', function(){
+//     return view('/admin/addBrand');
+// });
+// Route::get('/brands/jos', function(){
+//     return view('/JOs');
+// });
+// Route::get('/sticky-notes', function(){
+//     return view('/stickyNotes');
+// });
+// eto end
 
-Route::get('/new-jo-web', function() {
-    return view('newjoWeb');
-});
+// Route::get('/data', 'DataController@index')->name('data');
 
-Route::get('/new-jo-crea', function() {
-    return view('newjoCrea');
-});
+// Route::get('/addproject', function() {
+//     return view('addProject');
+// });
 
-Route::get('/view-jo', function() {
-    return view('view-jo');
-});
 
-Route::get('/add-client', function(){
-    return view('admin/addClient');
-});
+// eto ulit
+// Route::get('/new-jo-web', function() {
+//     return view('newjoWeb');
+// });
 
-Auth::routes();
+// Route::get('/new-jo-crea', function() {
+//     return view('newjoCrea');
+// });
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/view-jo', function() {
+//     return view('view-jo');
+// });
+
+// Route::get('/add-client', function(){
+//     return view('admin/addClient');
+// });
+// eto ulit end
+
+
+// // Auth::routes();
+
+// Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('{any}', function () {
+    return view('welcome');
+})->where('any', '.*');
