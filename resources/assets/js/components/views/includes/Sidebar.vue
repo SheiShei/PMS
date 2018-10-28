@@ -96,11 +96,24 @@
                 </li>
 
                 <li class="">
-                    <router-link :to="{ name: 'dashboard' }">
+                    <a @click.prevent="logout">
                         <i class="fa fa-sign-out fa-lg"></i> Log Out
-                    </router-link>
+                    </a>
                 </li>
             </ul>
         </div>
     </section>
 </template>
+
+<script>
+export default {
+    methods: {
+        logout() {
+            this.$store.dispatch('removeToken')
+                .then(response => {
+                    this.$router.push('/login');
+                })
+        }
+    }
+}
+</script>

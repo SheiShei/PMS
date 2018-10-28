@@ -14,7 +14,7 @@ class AuthController extends Controller
 
         $http = new \GuzzleHttp\Client;
         try {
-            $response = $http->post(config('services.passport.login_endpoint'), [
+            $response = $http->post(config('services.passport.login_endpoint').'oauth/token', [
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         $user = new \GuzzleHttp\Client;
         try{
-            $userResponse = $user->request('GET', 'http://captivate.test/api/user', [
+            $userResponse = $user->request('GET', config('services.passport.login_endpoint').'api/user', [
                 'headers' => [
                     'Accept' => 'application/json',
                     'Authorization' => 'Bearer '.$request->token,

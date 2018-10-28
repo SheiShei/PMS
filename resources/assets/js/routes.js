@@ -5,6 +5,7 @@ import Dashboard from './components/views/pages/Dashboard.vue';
 import Users from './components/views/pages/Users.vue';
 import Brands from './components/views/pages/Brands.vue';
 import JobOrders from './components/views/pages/JobOrders.vue';
+import StickyNotes from './components/views/pages/StickyNotes.vue';
 import AddBrand from './components/views/pages/brands/AddBrand.vue';
 import ViewJobOrder from './components/views/pages/joborders/ViewJobOrder.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
@@ -72,7 +73,7 @@ export const routes = [
             {
                 path: 'stiky-notes',
                 name: 'sticky_notes',
-                component: Dashboard,
+                component: StickyNotes,
                 meta: {
                     requiresAuth: true
                 },

@@ -38,7 +38,9 @@ export function initialize(store, router) {
             })
             .catch(error => {
                 // console.log(error);
+                window.location.href = '/login';
                 localStorage.removeItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f');
+                
             })
     }
 }
