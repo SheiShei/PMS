@@ -18,4 +18,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/logout', 'AuthController@logout');
     Route::post('/logoutall', 'AuthController@logoutAll');   
 
+    Route::post('/shittycaptivateusers', 'AdminController@getUsersList');
+    Route::post('/addusers', 'AdminController@addUsers');
+    Route::patch('/updateuser', 'AdminController@updateUser');
+    Route::patch('/deleteuser', 'AdminController@deleteUser');
+
 });
