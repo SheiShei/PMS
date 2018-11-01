@@ -1,4 +1,5 @@
 /*  import vue components */
+import Error404 from './components/Error.vue'
 import Login from './components/auth/Login.vue'
 import User from './components/views/User.vue';
 import Dashboard from './components/views/pages/Dashboard.vue';
@@ -119,6 +120,11 @@ export const routes = [
         meta: {
             requiresGuest: true
         },
+    },
+    {
+        path: '*',
+        name:'error404', 
+        component: Error404
     }
 
 ];

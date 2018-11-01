@@ -19,7 +19,7 @@ export function initialize(store, router) {
             else {
                 next()
             }
-        } 
+        }
         else {
             next()
         }
@@ -47,14 +47,15 @@ export function initialize(store, router) {
 
 export function setAuthorization(token) {
     // console.log(token);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.common["Accept"] = 'application/json';
 }
 
 export function __initializeUser() {
     const _5f414e475f554c4f4c5f4e415f53495f4b57494e495f = localStorage.getItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f');
 
     if(!_5f414e475f554c4f4c5f4e415f53495f4b57494e495f){
-        return null
+        return null;
     }
     return JSON.parse(_5f414e475f554c4f4c5f4e415f53495f4b57494e495f);
 }
