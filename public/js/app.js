@@ -49464,6 +49464,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -49476,7 +49479,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return {
             data: {
                 filter: '',
-                search: ''
+                search: '',
+                notArchive: true
             },
             form: {
                 name: '',
@@ -49586,6 +49590,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
             this.$store.dispatch('deleteUser', id).then(function (response) {
                 _this3.$toaster.warning('User deleted succesfully!.');
+            }).catch(function (error) {
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+        archiveList: function archiveList() {
+            this.data.notArchive = !this.data.notArchive;
+            var data = this.data;
+            this.$store.dispatch('setUsers', { url: '/api/shittycaptivateusers', data: data });
+        },
+        restoreUser: function restoreUser(id) {
+            var _this4 = this;
+
+            this.$store.dispatch('restoreUser', id).then(function (response) {
+                _this4.$toaster.success('User restored succesfully!.');
+            }).catch(function (error) {
+                alert('Something went wrong, try reloading the page');
             });
         }
     }
@@ -49879,7 +49899,32 @@ var render = function() {
         "div",
         { staticClass: "mybox" },
         [
-          _vm._m(1),
+          _c("div", { staticClass: "mybox-head userlist row" }, [
+            _c("div", { staticClass: "ul-item col-md-6" }, [
+              _c("h6", [
+                _c("strong", [_vm._v("USERS LIST")]),
+                _vm._v(" "),
+                _c("span", [
+                  _c("small", [
+                    _vm._v("| "),
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.archiveList($event)
+                          }
+                        }
+                      },
+                      [_vm._v("Archive")]
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ]),
           _vm._v(" "),
           _c(
             "users-table",
@@ -49898,43 +49943,68 @@ var render = function() {
                 _c("td", [_vm._v(_vm._s(user.created_at))]),
                 _vm._v(" "),
                 _c("td", { staticClass: "td-actions text-right" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success btn-simple btn-xs",
-                      attrs: {
-                        type: "button",
-                        rel: "tooltip",
-                        "data-original-title": "",
-                        title: "Edit"
-                      },
-                      on: {
-                        click: function($event) {
-                          _vm.updateUser(user)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "fa fa-edit" })]
-                  ),
+                  _vm.data.notArchive
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success btn-simple btn-xs",
+                          attrs: {
+                            type: "button",
+                            rel: "tooltip",
+                            "data-original-title": "",
+                            title: "Edit"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.updateUser(user)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-edit" })]
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger btn-simple btn-xs",
-                      attrs: {
-                        type: "button",
-                        rel: "tooltip",
-                        "data-original-title": "",
-                        title: "Archive"
-                      },
-                      on: {
-                        click: function($event) {
-                          _vm.deleteUser(user.id)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "fa fa-trash-o" })]
-                  )
+                  _vm.data.notArchive
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger btn-simple btn-xs",
+                          attrs: {
+                            type: "button",
+                            rel: "tooltip",
+                            "data-original-title": "",
+                            title: "Archive"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.deleteUser(user.id)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-trash-o" })]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.data.notArchive
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger btn-simple btn-xs",
+                          attrs: {
+                            type: "button",
+                            rel: "tooltip",
+                            "data-original-title": "",
+                            title: "Restore"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.restoreUser(user.id)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-refresh" })]
+                      )
+                    : _vm._e()
                 ])
               ])
             })
@@ -50291,16 +50361,6 @@ var staticRenderFns = [
         _c("span", { staticClass: "fa fa-user-o" }),
         _vm._v(" Employees "),
         _c("small", [_vm._v("Manage Employees")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mybox-head userlist row" }, [
-      _c("div", { staticClass: "ul-item col-md-6" }, [
-        _c("h6", [_c("strong", [_vm._v("USERS LIST")])])
       ])
     ])
   }
@@ -52444,7 +52504,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n*[data-v-72bba176]{\n    margin:0;\n    padding:0;\n}\n/* h2,p{\n    font-size:100%;\n    font-weight:normal;\n} */\nul[data-v-72bba176],li[data-v-72bba176]{\n    list-style:none;\n}\nul[data-v-72bba176]{\n    overflow:hidden;\n    padding:3em;\n}\nul li a[data-v-72bba176]{\n    overflow:auto;    \n    text-decoration:none;\n    color:#000;\n    background:#ffc;\n    display:block;\n    height:20em;\n    width:20em;\n    padding:1em;\n    -webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);\n    box-shadow: 5px 5px 7px rgba(33,33,33,.7);\n    -moz-transition:-moz-transform .15s linear;\n    -o-transition:-o-transform .15s linear;\n    -webkit-transition:-webkit-transform .15s linear;\n}\nul li[data-v-72bba176]{\n    margin:1em;\n    float:left;\n}\nul li h2[data-v-72bba176]{\n    font-size:140%;\n    font-weight:bold;\n    padding-bottom:10px;\n}\nul li p[data-v-72bba176]{\n    font-family:\"Reenie Beanie\",arial,sans-serif;\n    font-size:180%;\n}\nul li a[data-v-72bba176]{\n    /* -webkit-transform: rotate(-6deg);\n    -o-transform: rotate(-6deg);\n    -moz-transform:rotate(-6deg); */\n}\n/* ul li:nth-child(even) a{\n    -o-transform:rotate(4deg);\n    -webkit-transform:rotate(4deg);\n    -moz-transform:rotate(4deg);\n    position:relative;\n    top:5px;\n    background:#cfc;\n} */\n/* ul li:nth-child(3n) a{\n    -o-transform:rotate(-3deg);\n    -webkit-transform:rotate(-3deg);\n    -moz-transform:rotate(-3deg);\n    position:relative;\n    top:-5px;\n    background:#ccf;\n} */\n/* ul li:nth-child(5n) a{\n    -o-transform:rotate(5deg);\n    -webkit-transform:rotate(5deg);\n    -moz-transform:rotate(5deg);\n    position:relative;\n    top:-10px;\n} */\nul li a[data-v-72bba176]:hover,ul li a[data-v-72bba176]:focus{\n    box-shadow:10px 10px 7px rgba(0,0,0,.7);\n    -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);\n    -webkit-box-shadow: 10px 10px 7px rgba(0,0,0,.7);\n    -webkit-transform: scale(1.25);\n    -moz-transform: scale(1.25);\n    -o-transform: scale(1.25);\n    position:relative;\n    z-index:5;\n}\nol[data-v-72bba176]{text-align:center;\n}\nol li[data-v-72bba176]{display:inline;padding-right:1em;\n}\nol li a[data-v-72bba176]{color:#fff;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* animation */\n.slide-enter-active[data-v-72bba176], .slide-leave-active[data-v-72bba176] {\n    -webkit-transition: opacity 1s ease-out, -webkit-transform 1s ease-out;\n    transition: opacity 1s ease-out, -webkit-transform 1s ease-out;\n    transition: transform 1s ease-out, opacity 1s ease-out;\n    transition: transform 1s ease-out, opacity 1s ease-out, -webkit-transform 1s ease-out;\n}\n.slide-enter-active[data-v-72bba176] {\n    -webkit-transition-delay: .5s;\n            transition-delay: .5s;\n}\n.slide-leave-active[data-v-72bba176] {\n    -webkit-transition-delay: .5s;\n            transition-delay: .5s;\n}\n.slide-enter[data-v-72bba176], .slide-leave-to[data-v-72bba176] {\n    -webkit-transform: scale(0);\n            transform: scale(0);\n    opacity: 0;\n}\n/* end of animation */\ni[data-v-72bba176]:hover{\n    color: red\n}\n*[data-v-72bba176]{\n    margin:0;\n    padding:0;\n}\n/* h2,p{\n    font-size:100%;\n    font-weight:normal;\n} */\nul[data-v-72bba176],li[data-v-72bba176]{\n    list-style:none;\n}\nul[data-v-72bba176]{\n    overflow:hidden;\n    padding:3em;\n}\nul li a[data-v-72bba176]{\n    overflow:hidden;    \n    text-decoration:none;\n    color:#000;\n    background:#ffc;\n    display:block;\n    height:20em;\n    width:20em;\n    padding:1em;\n    -webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);\n    box-shadow: 5px 5px 7px rgba(33,33,33,.7);\n    -moz-transition:-moz-transform .15s linear;\n    -o-transition:-o-transform .15s linear;\n    -webkit-transition:-webkit-transform .15s linear;\n}\nul li[data-v-72bba176]{\n    margin:1em;\n    float:left;\n}\n/* ul li h2{\n    font-size:140%;\n    font-weight:bold;\n    padding-bottom:10px;\n} */\nul li input[data-v-72bba176]{\n    font-size:140%;\n    font-weight:bold;\n    padding-bottom:10px;\n    background: transparent;\n    outline: none;\n    border: none;\n}\n/* ul li p{\n    font-family:\"Reenie Beanie\",arial,sans-serif;\n    font-size:180%;\n} */\nul li textarea[data-v-72bba176]{\n    font-family:\"Reenie Beanie\",arial,sans-serif;\n    font-size:180%;\n    background: transparent;\n    outline: none;\n    border: none;\n}\nul li a[data-v-72bba176]{\n    /* -webkit-transform: rotate(-6deg);\n    -o-transform: rotate(-6deg);\n    -moz-transform:rotate(-6deg); */\n}\n/* ul li:nth-child(even) a{\n    -o-transform:rotate(4deg);\n    -webkit-transform:rotate(4deg);\n    -moz-transform:rotate(4deg);\n    position:relative;\n    top:5px;\n    background:#cfc;\n} */\n/* ul li:nth-child(3n) a{\n    -o-transform:rotate(-3deg);\n    -webkit-transform:rotate(-3deg);\n    -moz-transform:rotate(-3deg);\n    position:relative;\n    top:-5px;\n    background:#ccf;\n} */\n/* ul li:nth-child(5n) a{\n    -o-transform:rotate(5deg);\n    -webkit-transform:rotate(5deg);\n    -moz-transform:rotate(5deg);\n    position:relative;\n    top:-10px;\n} */\nul li a[data-v-72bba176]:hover{\n    box-shadow:10px 10px 7px rgba(0,0,0,.7);\n    -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);\n    -webkit-box-shadow: 10px 10px 7px rgba(0,0,0,.7);\n    -webkit-transform: scale(1.25);\n    -moz-transform: scale(1.25);\n    -o-transform: scale(1.25);\n    position:relative;\n    z-index:5;\n}\nol[data-v-72bba176]{text-align:center;\n}\nol li[data-v-72bba176]{display:inline;padding-right:1em;\n}\nol li a[data-v-72bba176]{color:#fff;\n}\n", ""]);
 
 // exports
 
@@ -52457,6 +52517,7 @@ exports.push([module.i, "\n*[data-v-72bba176]{\n    margin:0;\n    padding:0;\n}
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuedraggable__ = __webpack_require__(91);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuedraggable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuedraggable__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -52563,6 +52624,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -52572,17 +52673,96 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            notes: [{ id: 1, title: 'title 1', body: 'Text Content #1', color: '#ffc' }, { id: 2, title: 'title 2', body: 'Text Content #2', color: '#cfc;' }, { id: 3, title: 'title 3', body: 'Text Content #3', color: '#ccf' }, { id: 4, title: 'title 4', body: 'Text Content #4', color: '#c400ce' }, { id: 5, title: 'title 5', body: 'Text Content #5', color: '#4bce00' }, { id: 6, title: 'title 6', body: 'Text Content #6', color: '#ce4100' }]
+            notes: [],
+            options: {
+                group: 'notes'
+            }
         };
+    },
+    created: function created() {
+        this.getNotes();
     },
 
 
     methods: {
         newNote: function newNote() {
+            var _this = this;
+
             var noteLength = this.notes.length + 1;
-            this.notes.unshift({ id: noteLength, title: 'title ' + noteLength, body: 'Text Content #' + noteLength, color: '#ffc' });
-            this.$toaster.success('New note added!.');
-        }
+            var newNote = {
+                id: '',
+                title: '',
+                content: '',
+                order: noteLength
+            };
+            this.notes.unshift(newNote);
+
+            axios.post('/api/addnote', newNote).then(function (response) {
+                // console.log(response);
+                newNote.id = response.data.id;
+                _this.update();
+                _this.$toaster.success('New note added!');
+            }).catch(function (error) {
+                console.log(error);
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+        update: function update() {
+            // console.log(this.notes);
+            this.notes.map(function (note, index) {
+                note.order = index + 1;
+            });
+            // console.log(this.notes);
+
+            axios.patch('/api/updatenoteorder', {
+                notes: this.notes
+            }).then(function (response) {
+                // console.log(response);
+                // this.notes = response.data
+            }).catch(function (error) {
+                console.log(error);
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+        getNotes: function getNotes() {
+            var _this2 = this;
+
+            axios.post('/api/usernotes').then(function (response) {
+                // console.log(response);
+                _this2.notes = response.data;
+            }).catch(function (error) {
+                console.log(error);
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+        updateNote: function updateNote(note) {
+            // console.log(note)
+            axios.patch('/api/updatenote', note).then(function (response) {
+                // console.log(response);
+
+            }).catch(function (error) {
+                console.log(error);
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+        deleteNote: function deleteNote(id) {
+            var _this3 = this;
+
+            // console.log(id);
+            axios.delete('/api/deletenote', { data: { id: id } }).then(function (response) {
+                var index = _.findIndex(_this3.notes, { id: id });
+                _this3.notes.splice(index, 1);
+                _this3.update();
+                _this3.$toaster.warning('deleted!');
+            }).catch(function (error) {
+                alert('Something went wrong, try reloading the page');
+            });
+        },
+
+
+        editNote: _.debounce(function (e) {
+            this.updateNote(e);
+        }, 700)
     }
 });
 
@@ -54574,6 +54754,8 @@ var render = function() {
         _c(
           "draggable",
           {
+            attrs: { options: _vm.options, element: "li" },
+            on: { change: _vm.update },
             model: {
               value: _vm.notes,
               callback: function($$v) {
@@ -54582,19 +54764,89 @@ var render = function() {
               expression: "notes"
             }
           },
-          _vm._l(_vm.notes, function(note) {
-            return _c("li", { key: note.id }, [
+          _vm._l(_vm.notes, function(note, index) {
+            return _c("li", { key: index }, [
               _c(
                 "a",
-                { style: "background:" + note.color, attrs: { href: "#" } },
+                {
+                  attrs: { href: "" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                    }
+                  }
+                },
                 [
-                  _c("h2", { attrs: { contenteditable: "true" } }, [
-                    _vm._v(_vm._s(note.title))
-                  ]),
+                  _c(
+                    "i",
+                    {
+                      staticClass: "pull-right",
+                      on: {
+                        click: function($event) {
+                          _vm.deleteNote(note.id)
+                        }
+                      }
+                    },
+                    [_vm._v("×")]
+                  ),
                   _vm._v(" "),
-                  _c("p", { attrs: { contenteditable: "true" } }, [
-                    _vm._v(_vm._s(note.body))
-                  ])
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: note.title,
+                        expression: "note.title"
+                      }
+                    ],
+                    attrs: { type: "text", placeholder: "Title" },
+                    domProps: { value: note.title },
+                    on: {
+                      input: [
+                        function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(note, "title", $event.target.value)
+                        },
+                        function($event) {
+                          _vm.editNote(note)
+                        }
+                      ]
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: note.content,
+                        expression: "note.content"
+                      }
+                    ],
+                    attrs: {
+                      name: "",
+                      id: "",
+                      cols: "26",
+                      rows: "10",
+                      placeholder: "Take a note..."
+                    },
+                    domProps: { value: note.content },
+                    on: {
+                      input: [
+                        function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(note, "content", $event.target.value)
+                        },
+                        function($event) {
+                          _vm.editNote(note)
+                        }
+                      ]
+                    }
+                  })
                 ]
               )
             ])
@@ -56534,14 +56786,18 @@ var actions = {
     setUsers: function setUsers(_ref, data) {
         var commit = _ref.commit;
 
+        // console.log(data);
+
         axios.post(data.url, {
             filter: data.data.filter,
-            search: data.data.search
+            search: data.data.search,
+            notArchive: data.data.notArchive
         }).then(function (response) {
             // console.log(response.data);
             commit('setUsers', response.data.data);
         }).catch(function (error) {
             console.log(error);
+            alert('Something went wrong, try reloading the page');
         });
     },
     addUser: function addUser(_ref2, data) {
@@ -56597,8 +56853,26 @@ var actions = {
         var commit = _ref4.commit;
 
         return new Promise(function (resolve, reject) {
-            axios.patch('/api/deleteuser', {
-                id: id
+            axios.delete('/api/deleteuser', {
+                data: { id: id }
+            }).then(function (response) {
+                console.log(response);
+                commit('deleteUser', id);
+                resolve(response);
+            }).catch(function (error) {
+                if (error.response.status == 422) {
+                    console.log(error);
+                    reject(error);
+                }
+            });
+        });
+    },
+    restoreUser: function restoreUser(_ref5, id) {
+        var commit = _ref5.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/restoreuser', {
+                data: { id: id }
             }).then(function (response) {
                 // console.log(response);
                 commit('deleteUser', id);

@@ -34,19 +34,19 @@ class StickyNotesTableSeeder extends Seeder
             'title'=>'Test 4',
             'content'=>'Hello World',
             'order'=>4,
-            'user_id'=>1
+            'user_id'=>4
         ]);
         StickyNote::create([
             'title'=>'Test 5',
             'content'=>'Shei The Great',
             'order'=>5,
-            'user_id'=>1
+            'user_id'=>4
         ]);
         StickyNote::create([
             'title'=>'Test 6',
             'content'=>'Hello World',
             'order'=>6,
-            'user_id'=>1
+            'user_id'=>4
         ]);
     }
 }

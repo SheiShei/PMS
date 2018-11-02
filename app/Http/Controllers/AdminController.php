@@ -9,7 +9,12 @@ use Hash;
 class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
-        $query = User::with('role:id,name')->orderBy('created_at', 'desc');
+        if($request->notArchive){
+            $query = User::with('role:id,name')->orderBy('created_at', 'desc');
+        }
+        else {
+            $query = User::onlyTrashed()->with('role:id,name')->orderBy('deleted_at', 'desc');
+        }
 
         if($request->filter) {
             $query->whereHas('role', function($role) use ($request) {
@@ -70,6 +75,12 @@ class AdminController extends Controller
         // return $request;
         $user = User::findOrFail($request->id);
         $user->delete();
+        return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
+    }
+
+    public function restoreUser(Request $request) {
+        // return $request->data['id'];
+        $user = User::onlyTrashed()->where('id' , $request->data['id'])->restore();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 }

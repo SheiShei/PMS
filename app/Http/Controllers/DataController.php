@@ -4,28 +4,60 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\StickyNote;
 
 class DataController extends Controller
 {
-    public function index(Request $request)
-    {
-        // $columns = ['name', 'email', 'created_at'];
+    public function getNotes() {
+        $notes = auth()->user()->sticky_notes()->select('id', 'title', 'content', 'order')->orderBy('order', 'asc')->get();
+        return $notes;
+    }
 
-        // $length = $request->input('length');
-        // $column = $request->input('column'); //Index
-        // $dir = $request->input('dir');
-        $searchValue = $request->input('search');
+    public function updateNoteOrder(Request $request) {
+        // return $request;
 
-        $query = User::select('id', 'created_at', 'name', 'email')->orderBy( 'created_at' , 'desc');
+        $notes = auth()->user()->sticky_notes()->get();
 
-        if ($searchValue) {
-            $query->where(function($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('email', 'like', '%' . $searchValue . '%');
-            });
+        foreach ($notes as $key => $note) {
+            $id = $note->id;
+            foreach ($request->notes as $updateNote) {
+                if($updateNote['id'] == $id) {
+                    $note->update(['order' => $updateNote['order']]);
+                }
+            }
         }
 
-        $users = $query->paginate(15);
-        return ['data' => $users, 'draw' => $request->input('draw')];
+        return response('Updated Successfully.', 200);
+    }
+
+    public function addNote(Request $request) {
+        // return $request;
+        $newNote = StickyNote::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'order' => $request->order,
+            'user_id' => auth()->user()->id
+        ]);
+
+        return $newNote;
+    }
+
+    public function updateNote(Request $request) {
+        $note = StickyNote::findOrFail($request->id);
+
+        $note->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'order' => $request->order,
+            'user_id' => auth()->user()->id
+        ]);
+
+        return $note;
+    }
+
+    public function deleteNote(Request $request) {
+        $note = StickyNote::findOrFail($request->id);
+        $note->delete();
+        return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 }
