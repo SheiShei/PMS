@@ -31,9 +31,12 @@ const mutations = {
 
 const actions = {
     setUsers({commit}, data) {
+        // console.log(data);
+        
         axios.post(data.url, {
             filter: data.data.filter,
-            search: data.data.search
+            search: data.data.search,
+            notArchive: data.data.notArchive
         })
             .then((response) => {
                 // console.log(response.data);
@@ -41,6 +44,7 @@ const actions = {
             })
             .catch((error) => {
                 console.log(error);
+                alert('Something went wrong, try reloading the page');
             });
     },
 
@@ -101,8 +105,28 @@ const actions = {
 
     deleteUser({commit}, id) {
         return new Promise((resolve, reject) => {
-            axios.patch('/api/deleteuser', {
-                id: id
+            axios.delete('/api/deleteuser', { 
+                data: { id: id}
+            })
+                .then((response) => {
+                    console.log(response);
+                    commit('deleteUser', id);
+                    resolve(response);
+                })
+
+                .catch((error) => {
+                    if(error.response.status == 422){
+                        console.log(error);
+                        reject(error);
+                    }
+                })
+        });
+    },
+
+    restoreUser({commit}, id) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/restoreuser', { 
+                data: { id: id}
             })
                 .then((response) => {
                     // console.log(response);

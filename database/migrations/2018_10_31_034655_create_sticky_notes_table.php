@@ -15,8 +15,8 @@ class CreateStickyNotesTable extends Migration
     {
         Schema::create('sticky_notes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->text('content');
+            $table->string('title')->nullable();
+            $table->text('content')->nullable();
             $table->tinyInteger('order');
             $table->unsignedInteger('user_id');
             $table->timestamps();

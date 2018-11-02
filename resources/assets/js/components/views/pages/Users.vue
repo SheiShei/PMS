@@ -8,7 +8,7 @@
             <div class="mybox">
                 <div class="mybox-head userlist row">
                     <div class="ul-item col-md-6">
-                        <h6><strong>USERS LIST</strong></h6> 
+                        <h6><strong>USERS LIST</strong>&nbsp;<span><small>| <a @click.prevent="archiveList" href="">Archive</a></small></span></h6>
                     </div>  
                 </div>
                 <users-table>
@@ -19,11 +19,14 @@
                         <td>{{ user.role.name }}</td>
                         <td>{{ user.created_at }}</td>
                         <td class="td-actions text-right">
-                            <button @click="updateUser(user)" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                            <button v-if="data.notArchive" @click="updateUser(user)" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button @click="deleteUser(user.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                            <button v-if="data.notArchive" @click="deleteUser(user.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                 <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button @click="restoreUser(user.id)" v-if="!data.notArchive" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Restore">
+                                <i class="fa fa-refresh"></i>
                             </button>
                         </td>
                     </tr>                       
@@ -109,6 +112,7 @@ export default {
             data: {
                 filter: '',
                 search: '',
+                notArchive: true
             },
             form: {
                 name: '',
@@ -121,7 +125,7 @@ export default {
             isTeam: true,
             errors: [],
             eUser: '',
-            add: true
+            add: true,
 
         }
     },  
@@ -228,6 +232,25 @@ export default {
             this.$store.dispatch('deleteUser', id)
                 .then((response) => {
                     this.$toaster.warning('User deleted succesfully!.')
+                })
+                .catch((error) => {
+                    alert('Something went wrong, try reloading the page');
+                })
+        },
+
+        archiveList() {
+            this.data.notArchive = !this.data.notArchive;
+            let data = this.data;
+            this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
+        },
+
+        restoreUser(id) {
+            this.$store.dispatch('restoreUser', id)
+                .then((response) => {
+                    this.$toaster.success('User restored succesfully!.')
+                })
+                .catch((error) => {
+                    alert('Something went wrong, try reloading the page');
                 })
         }
     }

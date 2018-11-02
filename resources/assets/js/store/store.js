@@ -60,6 +60,6 @@ export default {
     },
 
     modules: {
-        users
+        users,
     }
 }
