@@ -1,6 +1,7 @@
 import { __initializeUser } from "../helpers/general";
 import { setAuthorization } from "../helpers/general";
 import users from "./modules/users";
+import brands from "./modules/brands";
 
 const user = __initializeUser();
 export default {
@@ -61,5 +62,6 @@ export default {
 
     modules: {
         users,
+        brands
     }
 }
