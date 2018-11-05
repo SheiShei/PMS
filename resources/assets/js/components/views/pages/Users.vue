@@ -11,7 +11,7 @@
                         <h6><strong>USERS LIST</strong>&nbsp;<span><small>| <a @click.prevent="archiveList" href="">Archive</a></small></span></h6>
                     </div>  
                 </div>
-                <users-table>
+                <users-table :data="data">
                     <tr v-for="user in users" :key="user.id">
                         <td class="text-center">{{ user.id }}</td>
                         <td>{{ user.name }}</td>

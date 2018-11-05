@@ -46,12 +46,10 @@ import {mapActions} from 'vuex';
 import _ from 'lodash'
 export default {
 
+    props: ['data'],
     data() {
         return {
-            data: {
-                filter: '',
-                search: '',
-            }
+            
         }
     },
 
