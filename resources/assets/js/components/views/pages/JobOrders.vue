@@ -187,9 +187,9 @@
                             <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
                             <!-- <div class="form-group">
                                 <select class="selectpicker" ref="shei" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                    <option selected disabled="">-- JO Form Type --</option>
-                                    <option value="">JO (Web)</option>
-                                    <option value="">JO (Creatives)</option>
+                                    <option disabled="">-- JO Form Type --</option>
+                                    <option value="web">JO (Web)</option>
+                                    <option value="creatives">JO (Creatives)</option>
                                 </select>
                             </div> -->
                         </div>

@@ -80,8 +80,6 @@
                         </div>
                     </form>
                     <div class="table-responsive" style="margin-top: 10px; max-height: 35vh; overflow:auto">
-                    
-                        
                         <table class="table table-bordered table-brands">
                             <thead>
                                 <th>ID</th>
@@ -256,10 +254,10 @@
                             <p class="note">Select a JO type to create new Job Order form.</p>
                             <!-- <div class="form-group">
                                 <div class="btn-group bootstrap-select">
-                                    <select class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                        <option selected disabled="">-- JO Form Type --</option>
-                                        <option value="">JO (Web)</option>
-                                        <option value="">JO (Creatives)</option>
+                                    <select v-model="jo" @change="isNull" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                        <option disabled="">-- JO Form Type --</option>
+                                        <option value="web">JO (Web)</option>
+                                        <option value="creatives">JO (Creatives)</option>
                                     </select>
                                 </div>
                             </div> -->
@@ -282,6 +280,7 @@
                     <div class="row text-center">
                         <div class="col-md-12">
                             <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md">+ Create New JO</router-link>
+                            <a @click.prevent="redirectJO" :disabled="disabled"  class="btn btn-sm btn-info btn-md">+ Create New JO</a>
                         </div>
                     </div>
                 </div>                                      -->
@@ -290,3 +289,35 @@
 
     </section>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            jo: '',
+            disabled: true
+        }
+    },
+
+    computed: {
+        redirectJO() {
+            if(this.jo === 'web' ){
+                this.$router.push({name: 'new_jo_web'});
+            }
+            else if(this.jo === 'creatives') {
+                this.$router.push({name: 'new_jo_creative'});
+            }
+        },
+
+        isNull() {
+            if(this.jo){
+                this.disabled = false;
+            }
+        }
+    },
+
+    methods: {
+        
+    }
+}
+</script>
