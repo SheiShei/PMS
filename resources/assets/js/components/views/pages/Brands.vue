@@ -97,9 +97,9 @@
                                     <td>Dec. 7, 2018</td>
                                     <td>9</td>
                                     <td class="td-actions">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </button>
+                                        </router-link>
                                         <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -114,9 +114,9 @@
                                     <td>Sept. 15, 2018</td>
                                     <td>18</td>
                                     <td class="td-actions">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </button>
+                                        </router-link>
                                         <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -131,9 +131,9 @@
                                     <td>March. 2, 2016</td>
                                     <td>67</td>
                                     <td class="td-actions">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </button>
+                                        </router-link>
                                         <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -148,9 +148,13 @@
                                     <td>Jan. 10, 2017</td>
                                     <td>2</td>
                                     <td class="td-actions">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        
+                                        <!-- <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </button>
+                                        </button> -->
+                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </router-link>
                                         <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -165,9 +169,9 @@
                                     <td>Feb. 12, 2018</td>
                                     <td>7</td>
                                     <td class="td-actions">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </button>
+                                        </router-link>
                                         <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -250,7 +254,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="note">Select a JO type to create new Job Order form.</p>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <div class="btn-group bootstrap-select">
                                     <select class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                         <option selected disabled="">-- JO Form Type --</option>
@@ -258,17 +262,29 @@
                                         <option value="">JO (Creatives)</option>
                                     </select>
                                 </div>
+                            </div> -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-xs full-btn">
+                                        Web JO
+                                    </router-link>
+                                </div>
+                                <div class="col-md-6">
+                                    <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-xs full-btn">
+                                        Creatives JO
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
                     </div> 
                 </div> 
-                <div class="mybox-footer">
+                <!-- <div class="mybox-footer">
                     <div class="row text-center">
                         <div class="col-md-12">
                             <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md">+ Create New JO</router-link>
                         </div>
                     </div>
-                </div>                                     
+                </div>                                      -->
             </div>
         </div>
 
