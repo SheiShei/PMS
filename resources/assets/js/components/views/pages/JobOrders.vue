@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-user-o"></span> Job Orders <small>List</small></h2>
+            <h2><span class="fa fa-copy"></span> Job Orders <small>List</small></h2>
         </div>
         <div class="col-md-9">
             <div class="mybox">
@@ -183,24 +183,27 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="note">Select a JO type to create a new Job Order form.</p>
-                            <div class="form-group">
+                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Web JO</router-link>
+                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
+                            <!-- <div class="form-group">
                                 <select class="selectpicker" ref="shei" data-style="btn btn-sm btn-info btn-simple" type="text">
                                     <option disabled="">-- JO Form Type --</option>
                                     <option value="web">JO (Web)</option>
                                     <option value="creatives">JO (Creatives)</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                                     
                     </div> 
                 </div>
-                <div class="mybox-footer">
+                <!-- <div class="mybox-footer">
                     <div class="row text-center">
                         <div class="col-md-12">
-                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md">+ Create New JO</router-link>
+                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Web JO</router-link>
+                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
@@ -208,16 +211,19 @@
 
 <style scoped>
     .userslist{
-        justify-contents: space-evenly;
+        justify-content: space-evenly;
     }
     .userlist-ft{
-        justify-contents: center !important;
+        justify-content: center !important;
     }
     .ul-item{
         display: inline-block !important;
     }
     .ul-item > input span {
         display: block !important;
+    }
+    .full-btn{
+        width: 100%;
     }
 </style>
 

@@ -11,6 +11,8 @@ import AddBrand from './components/views/pages/brands/AddBrand.vue';
 import ViewJobOrder from './components/views/pages/joborders/ViewJobOrder.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
+import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
+import Messages from './components/views/pages/Messages.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -111,6 +113,22 @@ export const routes = [
                     requiresAuth: true
                 },
             },
+            {
+                path: 'brand-profile',
+                name: 'brand_profile',
+                component: BrandProfile,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'messages',
+                name: 'messages',
+                component: Messages,
+                meta: {
+                    requiresAuth: true
+                },
+            }
         ]
     },
     {

@@ -49,7 +49,8 @@
 
     &:not(.nav-pills-icons){
         > li > a{
-            border-radius: $border-radius-extreme;
+            // border-radius: $border-radius-extreme;
+            border-radius: $border-radius-base;
         }
     }
 

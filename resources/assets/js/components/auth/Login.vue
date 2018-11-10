@@ -17,13 +17,13 @@
                         <div class="card card-signup">
                             <form class="form" @submit.prevent="login">
                                 <div class="header header-dark-blue text-center btn-tumblr">
-                                    <img class="mr-auto ml-auto" src="/images/logo.png" style="width: 190px"/>
-                                    <h6 class="card-title">Project Management System</h6>
+                                    <img class="mr-auto ml-auto" src="/images/logooo2.png" style="width: 200px"/>
+                                    <h6 class="text-bold">Project Management System</h6>
                                 </div>
                                 <div class="card-content">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">email</i>
+                                                <i class="fa fa-envelope-o"></i>
                                             </span>
                                             <div class="form-group is-empty">
                                                 <input v-model="form.email" type="email" id="email" class="form-control" placeholder="Email..." name="email" required autofocus aria-autocomplete="none">
@@ -126,6 +126,7 @@ export default {
         color: #66757f;
         opacity: .6;
         -ms-filter: "alpha(opacity=60)";
+        filter: "alpha(opacity=60)";
         position: relative;
         left: 90%;
     }

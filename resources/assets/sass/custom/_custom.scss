@@ -476,17 +476,20 @@ hr{
   }
     /* Track */
   ::-webkit-scrollbar-track {
-    background: #e0e0e0; 
+    // background: #e0e0e0; 
+    background: #fdfdfd;
   }
     /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: rgb(168, 168, 168);    
+    // background: rgb(168, 168, 168);  
+    background: #ececec;  
     width: 9px;
     border-radius: 10px;
   }
     /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(104, 104, 104);
+    // background: rgb(104, 104, 104);
+    background: #cfcfcf;
     transition: 0.3s ease-in-out; 
   }
 /*./SCROLLBAR*/

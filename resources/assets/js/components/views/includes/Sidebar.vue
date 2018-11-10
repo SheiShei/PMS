@@ -43,12 +43,12 @@
                 <ul class="sub-menu collapse" id="brandsList">
                     <li data-toggle="collapse" class="collapsed">
                         <router-link :to="{ name: 'brands' }">
-                            <i class="fa fa-user-o fa-lg"></i> Overview
+                            <i class="fa fa-circle-o fa-lg"></i> Overview
                         </router-link>
                     </li>
                     <li data-toggle="collapse" class="collapsed">
                         <router-link :to="{ name: 'brands' }">
-                            <i class="fa fa-user-o fa-lg"></i> Blue Books
+                            <i class="fa fa-circle-o fa-lg"></i> Blue Books
                         </router-link>
                     </li>
                 </ul>
@@ -60,7 +60,7 @@
                 </li>
 
                 <li class="">
-                    <router-link :to="{ name: 'dashboard' }">
+                    <router-link :to="{ name: 'messages' }">
                         <i class="fa fa-commenting-o fa-lg"></i> Messages
                     </router-link>
                 </li>

@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
     @include('includes/head')
-    <title>Captivate | @yield('title')</title>
+    <title>Captivate Project Management System @yield('title')</title>
     <link href="https://fonts.googleapis.com/css?family=Reenie+Beanie" rel="stylesheet">
+    <style>
+        .full-btn{
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     {{-- div id=app for vue components rendering. do not remove pls --}}
