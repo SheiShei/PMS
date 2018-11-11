@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\StickyNote;
+use App\Conversation;
 
 class DataController extends Controller
 {
@@ -60,4 +61,29 @@ class DataController extends Controller
         $note->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
+
+    public function addconvo(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:150'
+        ]);
+        
+        $newConvo = Conversation::create([
+            'name' => $request->name,
+            'type' => 2,
+            'created_by' => auth()->id
+        ]);
+
+        return $newConvo;
+    }
+
+    public function getConvoList(Request $request) {
+        if($request->search){
+            $convos = auth()->user()->created_conversation()->where('name', 'like', $request->search.'%')->get();
+        }
+        else{
+            $convos = auth()->user()->created_conversation()->get();
+        }
+        return $convos;
+    }
+
 }

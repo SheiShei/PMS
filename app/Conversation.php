@@ -24,4 +24,8 @@ class Conversation extends Model
             ]
         ];
     }
+
+    public function created_by() {
+        return $this->belongsTo('App\User', 'created_by');
+    }
 }

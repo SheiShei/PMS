@@ -16,8 +16,10 @@ class AddConversationsUserForeignKeys extends Migration
         Schema::table('conversation_user', function (Blueprint $table) {
             $table->index('user_id');
             $table->index('conversation_id');
+            $table->index('added_by');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
         });
     }

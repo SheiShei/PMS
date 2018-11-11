@@ -17,6 +17,8 @@ class CreateMessagesTable extends Migration
             $table->increments('id');
             $table->text('text')->nullable();
             $table->string('file')->nullable();
+            $table->dateTime('seen')->nullable();
+            $table->dateTime('read')->nullable();
             $table->unsignedInteger('conversation_id');
             $table->unsignedInteger('sender_id');
             $table->timestamps();

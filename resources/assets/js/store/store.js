@@ -2,6 +2,7 @@ import { __initializeUser } from "../helpers/general";
 import { setAuthorization } from "../helpers/general";
 import users from "./modules/users";
 import brands from "./modules/brands";
+import messages from "./modules/messages";
 
 const user = __initializeUser();
 export default {
@@ -10,6 +11,9 @@ export default {
         isLoggedIn: !!user
     },
     getters: {
+        currentUser: state => {
+            return state.loggedUser;
+        }
     },
     mutations: {
         storeTokenLogin(state, payload) {
@@ -62,6 +66,7 @@ export default {
 
     modules: {
         users,
-        brands
+        brands,
+        messages
     }
 }

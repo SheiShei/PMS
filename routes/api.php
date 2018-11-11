@@ -32,4 +32,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/addnote', 'DataController@addNote');
     Route::delete('/deletenote', 'DataController@deleteNote');
 
+    //messages
+    Route::post('/addconversation', 'DataController@addconvo');
+    Route::post('/getConvoList', 'DataController@getConvoList');
+
 });

@@ -122,7 +122,7 @@ export const routes = [
                 },
             },
             {
-                path: 'messages',
+                path: 'messages/:convo_id',
                 name: 'messages',
                 component: Messages,
                 meta: {

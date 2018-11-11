@@ -79,4 +79,12 @@ class User extends Authenticatable
     public function department() {
         return $this->belongsTo('App\Department');
     }
+
+    public function created_conversation() {
+        return $this->hasMany('App\Conversation', 'created_by');
+    }
+
+    public function getPictureAttribute($pic) {
+        return '/images/'.$pic;
+    }
 }

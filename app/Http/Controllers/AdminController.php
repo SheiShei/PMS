@@ -10,10 +10,10 @@ class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
         if($request->notArchive){
-            $query = User::with('role:id,name')->orderBy('created_at', 'desc');
+            $query = User::with('role:id,name')->with('department:id,name')->orderBy('created_at', 'desc');
         }
         else {
-            $query = User::onlyTrashed()->with('role:id,name')->orderBy('deleted_at', 'desc');
+            $query = User::onlyTrashed()->with('role:id,name')->with('department:id,name')->orderBy('deleted_at', 'desc');
         }
 
         if($request->filter) {
@@ -48,7 +48,7 @@ class AdminController extends Controller
             'department_id' => $request->team
         ]);
 
-        return User::with('role:id,name')->where('id', $user->id)->get();
+        return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();
     }
 
     public function updateUser(Request $request) {
@@ -68,7 +68,7 @@ class AdminController extends Controller
             ]);
         // }
 
-        return User::with('role:id,name')->where('id', $user->id)->get();
+        return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();
     }
 
     public function deleteUser(Request $request) {

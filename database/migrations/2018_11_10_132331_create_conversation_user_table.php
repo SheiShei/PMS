@@ -17,6 +17,7 @@ class CreateConversationUserTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('conversation_id');
+            $table->unsignedInteger('added_by');
             $table->timestamps();
         });
     }
