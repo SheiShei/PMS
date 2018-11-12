@@ -4,6 +4,7 @@ import users from "./modules/users";
 import brands from "./modules/brands";
 import messages from "./modules/messages";
 
+
 const user = __initializeUser();
 export default {
     state: {
@@ -39,7 +40,7 @@ export default {
 
                     })
                     .catch(error => {
-                        console.log(error);
+                        // console.log(error);
                         reject(error);
                     });
             });
@@ -56,7 +57,7 @@ export default {
 
                     })
                     .catch(error => {
-                        console.log(error);
+                        // console.log(error);
                         // localStorage.removeItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f')
                         reject(error);
                     });

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\StickyNote;
 use App\Conversation;
+use App\Events\AddConversationEvent;
 
 class DataController extends Controller
 {
@@ -70,19 +71,42 @@ class DataController extends Controller
         $newConvo = Conversation::create([
             'name' => $request->name,
             'type' => 2,
-            'created_by' => auth()->id
+            'created_by' => auth()->user()->id
         ]);
 
-        return $newConvo;
+        $newConvo->users()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+
+        if($request->ids) {
+            $newConvo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
+        }
+
+        $newConvo->activities()->create([
+            'main' => auth()->user()->id,
+            'action' => 1
+        ]);
+
+        $users = $newConvo->users()->select('slug')->get();
+
+        $newConversation = [
+            'newConvo' => $newConvo,
+            'users' => $users
+        ];
+
+        event(new AddConversationEvent($newConversation));
+
+        return $newConvo->only(['id', 'name', 'slug', 'type', 'created_at']);
+
+        // return $request->ids;
     }
 
     public function getConvoList(Request $request) {
         if($request->search){
-            $convos = auth()->user()->created_conversation()->where('name', 'like', $request->search.'%')->get();
+            $convos = auth()->user()->conversations()->where('name', 'like', $request->search.'%')->get();
         }
         else{
-            $convos = auth()->user()->created_conversation()->get();
+            $convos = auth()->user()->conversations()->get();
         }
+        
         return $convos;
     }
 

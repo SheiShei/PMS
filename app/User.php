@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'brand_id', 'department_id'
+        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture'
     ];
 
     /**
@@ -82,6 +82,18 @@ class User extends Authenticatable
 
     public function created_conversation() {
         return $this->hasMany('App\Conversation', 'created_by');
+    }
+
+    public function conversations() {
+        return $this->belongsToMany('App\Conversation')->withPivot('added_by')->withTimestamps();
+    }
+
+    public function mains() {
+        return $this->hasMany('App\ConversationActivity', 'main');
+    }
+
+    public function supports() {
+        return $this->hasMany('App\ConversationActivity', 'support');
     }
 
     public function getPictureAttribute($pic) {

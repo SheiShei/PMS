@@ -11,6 +11,10 @@ const getters = {
 const mutations = {
     setConvos(state, data) {
         state.conversations = data
+    },
+
+    addConvo(state, data) {
+        state.conversations.push(data);
     }
 };
 
@@ -25,6 +29,23 @@ const actions = {
                     console.log(error);
                 })
         // })
+    },
+
+    addConvo({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/addconversation', {
+                name: data.name,
+                ids: data.ids
+            })
+                .then ((response) => {
+                    // console.log(response);
+                    commit('addConvo', response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    
+                })
+        })
     }
     
 };

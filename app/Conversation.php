@@ -28,4 +28,12 @@ class Conversation extends Model
     public function created_by() {
         return $this->belongsTo('App\User', 'created_by');
     }
+
+    public function users() {
+        return $this->belongsToMany('App\User')->withPivot('added_by')->withTimestamps();
+    }
+
+    public function activities() {
+        return $this->hasMany('App\ConversationActivity');
+    }
 }
