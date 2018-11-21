@@ -17,10 +17,12 @@ import {initialize} from './helpers/general';
 /* end of import modules */
 
 import MainApp from './components/MainApp.vue'
+import VeeValidate from 'vee-validate';
 
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
+Vue.use(VeeValidate);
 
 // optional set default imeout, the default is 10000 (10 seconds).
 Vue.use(Toaster, {timeout: 5000})
