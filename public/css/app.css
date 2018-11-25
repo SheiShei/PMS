@@ -11438,7 +11438,7 @@ div.bootstrap-select > .btn.btn-info.btn-simple {
 }
 
 .my-input {
-  height: 26px;
+  height: 28px;
   padding: 3px 7px;
   border: 1px solid #5fa6db;
   color: black;
@@ -11447,16 +11447,17 @@ div.bootstrap-select > .btn.btn-info.btn-simple {
 
 .my-input:focus,
 .my-text-area:focus {
-  background-color: #f5f9fc;
+  background-color: #f8fcff;
   -webkit-transition: background-color 0.5s;
   transition: background-color 0.5s;
 }
 
 .my-text-area {
   padding: 3px 7px;
-  border: 1px solid #5fa6db;
+  border: 1px solid #b9b9b9;
   color: black;
   border-radius: 3px;
+  resize: none;
 }
 
 .form-group label {
@@ -11895,32 +11896,11 @@ hr {
 
 /*SCROLLBAR*/
 
-::-webkit-scrollbar {
-  width: 9px;
-  border-radius: 4px;
-}
-
 /* Track */
-
-::-webkit-scrollbar-track {
-  background: #fdfdfd;
-}
 
 /* Handle */
 
-::-webkit-scrollbar-thumb {
-  background: #ececec;
-  width: 9px;
-  border-radius: 10px;
-}
-
 /* Handle on hover */
-
-::-webkit-scrollbar-thumb:hover {
-  background: #cfcfcf;
-  -webkit-transition: 0.3s ease-in-out;
-  transition: 0.3s ease-in-out;
-}
 
 /*./SCROLLBAR*/
 
@@ -12282,6 +12262,146 @@ hr {
 
 #message-component .filedisp:hover {
   font-size: 15px;
+}
+
+.taskimgdiv {
+  /* max-width:fit-content; 
+  max-height: fit-content;  */
+  max-width: 100%;
+  overflow-x: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  /* background-color:darkgray; */
+}
+
+.task-img {
+  height: 100%;
+  max-height: 200px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.taskdesattach {
+  width: 93%;
+  padding: 10px 5px 15px 5px;
+}
+
+.taskno-cir {
+  width: 6%;
+  background-color: #408690;
+  color: white;
+  padding: 7px 10px;
+  height: 35px;
+  width: 35px;
+  text-align: center;
+  margin-right: 10px;
+  border-radius: 50%;
+  margin: 8px;
+  /* border-radius: 30px; */
+}
+
+.taskattach {
+  /* background-color: #e5f0f5; */
+  padding: 10px 6px;
+  width: auto;
+  color: gray;
+}
+
+.taskdesc {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  clear: both;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  border: 1px solid #e2e7ea;
+  border-radius: 10px;
+  margin: 10px;
+  border-left: 3px solid #e2e7ea;
+}
+
+.taskdesc:hover > .taskno-cir {
+  background-color: white;
+  color: #408690;
+  border: 2px solid #408690;
+  transition: background-color 0.5s;
+  -webkit-transition: background-color 0.5s;
+  -moz-transition: background-color 0.5s;
+  -o-transition: background-color 0.5s;
+  transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+}
+
+.joform {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 100%;
+  min-height: 65vh;
+  background-color: white;
+  border: 1px solid white;
+  /* padding: 10px 20px; */
+  margin-left: 5px;
+  margin-top: 20px;
+  padding-bottom: 70px;
+  /* padding-bottom: 270px; */
+  position: relative;
+}
+
+.jo-head {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2px 20px;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.jo-body {
+  position: relative;
+  /* height: auto; */
+  width: 100%;
+  padding: 10px 20px;
+  margin: 0;
+}
+
+.mr-10 {
+  margin-right: 13px;
+}
+
+#addtaskdiv {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.taskcard {
+  padding: 15px;
+  border: 2px solid #d3d3d3;
+}
+
+.taskcard h5 {
+  margin-top: 5px;
+}
+
+.taskcard textarea {
+  height: 90px;
+  resize: none;
+  white-space: pre;
+}
+
+.taskcard select,
+.taskcard input,
+.taskcard textarea {
+  border: 2px solid #d3d3d3;
+  border-radius: 5px;
+  padding: 4px 5px;
+}
+
+.txt-bold {
+  font-weight: bold !important;
+  font-size: 12px;
 }
 
 .table > thead > tr > th,
