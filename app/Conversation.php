@@ -7,7 +7,9 @@ use Cviebrock\EloquentSluggable\Sluggable;
 
 class Conversation extends Model
 {
-    use Sluggable;
+    use Sluggable, Uuids;
+
+    public $incrementing = false;
 
     protected $fillable = ['name', 'slug', 'type', 'created_by'];
 
@@ -31,9 +33,5 @@ class Conversation extends Model
 
     public function users() {
         return $this->belongsToMany('App\User')->withPivot('added_by')->withTimestamps();
-    }
-
-    public function activities() {
-        return $this->hasMany('App\ConversationActivity');
     }
 }

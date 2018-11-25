@@ -9,23 +9,24 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcast
+class DirectMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newConversation;
-
+    public $message;
+    public $conversation;
+    public $receiver;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newConversation)
-    {
-        $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+    public function __construct($message, $receiver, $conversation)
+    {   
+        $this->message = $message;
+        $this->receiver = $receiver;
+        $this->conversation = $conversation;
     }
 
     /**
@@ -35,6 +36,9 @@ class AddConversationEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('addconvo');
+        if($this->conversation){
+            return new PrivateChannel('message.'.$this->conversation->id);
+        }
+        return new PrivateChannel('message.'.$this->receiver->slug);
     }
 }

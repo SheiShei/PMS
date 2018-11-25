@@ -40,7 +40,7 @@
                                             </form>
                                         </div>
 
-                                        <router-link ref="you_convo" :to="{ name: 'messages', params: {convo_id: currentUser.slug} }" href="" class="cont-name">
+                                        <router-link ref="you_convo" :to="{ name: 'convo-view', params: {convo_id: currentUser.slug} }" href="" class="cont-name">
                                             <div class="media">
 		        					            <a @click.prevent class="pull-left" href="">
 		        						            <div class="avatar">
@@ -54,7 +54,7 @@
 		        					        </div>
                                         </router-link>
 
-                                        <router-link ref="dm_convo1"  v-for="user in users" :key="user.id" v-if="currentUser.id != user.id" :to="{ name: 'messages', params: {convo_id: user.slug} }"  href="" class="cont-name">
+                                        <router-link ref="dm_convo1"  v-for="user in users" :key="user.id" v-if="currentUser.id != user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"  href="" class="cont-name">
                                             <div class="media">
 		        					            <a @click.prevent class="pull-left" href="">
 		        						            <div class="avatar">
@@ -83,10 +83,10 @@
                                         </div>
 
                                         <!-- <div > -->
-                                            <router-link v-for="convo in conversations" :key="convo.id" :to="{ name: 'messages', params: {convo_id: convo.slug} }" href="" class="cont-name">
+                                            <router-link v-for="convo in conversations" :key="convo.id" :to="{ name: 'convo-view', params: {convo_id: convo.id} }" href="" class="cont-name">
                                                 <div class="media">
                                                     <div class="media-body thread-head">
-                                                        <h4 class="media-head">#{{ convo.name }}<small></small></h4>
+                                                        <h4 class="media-head">{{ convo.name }}<small></small></h4>
                                                     </div>
                                                 </div>
                                             </router-link >
@@ -101,7 +101,7 @@
 	                    	    </div>
                             </div>
 	                    </div>
-                        <message-conversation></message-conversation>
+                        <router-view></router-view>
 
                     </div>
                        
@@ -117,7 +117,7 @@
                         <div class="mybox-body white-white-bg">
                             <div class="form-group is-empty">
                                 <label class="control-label">Group Name</label> 
-                                <input v-model="credentials.name" type="text" class="form-control"> 
+                                <input v-model="credentials.name" type="text" class="form-control" required> 
                                 <span class="material-input"></span>
                                 <span class="material-input"></span>
                             </div>
@@ -277,7 +277,7 @@ export default {
                         return element.slug == _this.currentUser.slug
                     });
                     if(found) {
-                        console.log(e);
+                        // console.log(e);
                         this.$store.commit('addConvo', e.newConversation.newConvo);
                     }
                 })

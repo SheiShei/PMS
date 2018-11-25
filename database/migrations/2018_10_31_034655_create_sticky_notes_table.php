@@ -18,7 +18,7 @@ class CreateStickyNotesTable extends Migration
             $table->string('title')->nullable();
             $table->text('content')->nullable();
             $table->tinyInteger('order');
-            $table->unsignedInteger('user_id');
+            $table->char('user_id', 36);
             $table->timestamps();
         });
     }

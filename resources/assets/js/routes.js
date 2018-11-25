@@ -13,6 +13,9 @@ import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vu
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
 import Messages from './components/views/pages/Messages.vue';
+import Conversation from './components/views/pages/messages/Conversation.vue';
+import Welcome from './components/views/pages/messages/Welcome.vue';
+import Axios from 'axios';
 /* end of import vue components */
 
 export const routes = [
@@ -122,12 +125,46 @@ export const routes = [
                 },
             },
             {
-                path: 'messages/:convo_id',
-                name: 'messages',
+                path: 'messages',
                 component: Messages,
                 meta: {
                     requiresAuth: true
                 },
+                children: [
+                    {
+                        path: '',
+                        name: 'messages',
+                        component: Welcome,
+                        meta: {
+                            requiresAuth: true
+                        },
+
+                    },
+                    {
+                        path: ':convo_id',
+                        name: 'convo-view',
+                        component: Conversation,
+                        meta: {
+                            requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.convo_id;
+                            axios.post('/api/verifyConvoUsers', {
+                                slug: param
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        }
+
+                    }
+                ]
             }
         ]
     },
@@ -146,3 +183,7 @@ export const routes = [
     }
 
 ];
+
+export function verifyUser() {
+    
+}

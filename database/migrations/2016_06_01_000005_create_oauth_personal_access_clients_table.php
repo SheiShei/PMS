@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConversationActivitiesTable extends Migration
+class CreateOauthPersonalAccessClientsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateConversationActivitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('conversation_activities', function (Blueprint $table) {
+        Schema::create('oauth_personal_access_clients', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('conversation_id');
-            $table->unsignedInteger('main')->nullable();
-            $table->unsignedInteger('support')->nullable();
-            $table->tinyInteger('action');
+            $table->integer('client_id')->index();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateConversationActivitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conversation_activities');
+        Schema::dropIfExists('oauth_personal_access_clients');
     }
 }

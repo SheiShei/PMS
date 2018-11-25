@@ -7,9 +7,13 @@ use App\User;
 use App\StickyNote;
 use App\Conversation;
 use App\Events\AddConversationEvent;
+use App\Events\DirectMessageEvent;
+use App\Message;
+use Webpatser\Uuid\Uuid;
 
 class DataController extends Controller
 {
+    // notes
     public function getNotes() {
         $notes = auth()->user()->sticky_notes()->select('id', 'title', 'content', 'order')->orderBy('order', 'asc')->get();
         return $notes;
@@ -62,7 +66,9 @@ class DataController extends Controller
         $note->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
+    // end of notes
 
+    // message tab
     public function addconvo(Request $request) {
         $request->validate([
             'name' => 'required|string|max:150'
@@ -77,12 +83,25 @@ class DataController extends Controller
         $newConvo->users()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
 
         if($request->ids) {
+            $data = array();
+            foreach ($request->ids as $key => $id) {
+                array_push($data, [
+                    'id' => Uuid::generate()->string,
+                    'sender_id' => auth()->user()->id,
+                    'receiver_id' => $id,
+                    'action' => 3,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=> date('Y-m-d H:i:s')
+                ]);
+            }
+            Message::insert($data);
+
             $newConvo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
         }
 
-        $newConvo->activities()->create([
-            'main' => auth()->user()->id,
-            'action' => 1
+        Message::create([
+            'sender_id' => auth()->user()->id,
+            'action' => 2
         ]);
 
         $users = $newConvo->users()->select('slug')->get();
@@ -109,5 +128,192 @@ class DataController extends Controller
         
         return $convos;
     }
+
+    public function getConvoUsers(Request $request) {
+        $users = Conversation::where('id' , $request->slug)->with('created_by:id,name,slug')->first();
+        if($users) {
+            $members = $users->users()->get();
+            return response()->json(['convo' => $users, 'users' => $members], 200);
+        }
+
+        $receiver = User::where('slug' , $request->slug)->first();
+        return response()->json(['receiver' => $receiver], 200);
+        // return $request->slug;
+
+    }
+
+    public function getNotMembers(Request $request) {
+        $users = Conversation::where('id' , $request->slug)->with('created_by:id,name,slug')->first();
+        if($users) {
+            $members = $users->users()->get();
+            $memberId = [];
+            foreach($members as $user) {
+                array_push($memberId, $user->id);
+            }
+            $notMember = User::whereNotIn('id', $memberId)->select('id','name','slug')->get();
+            return $notMember;
+        }
+
+        // return $request;
+    }
+
+    public function addConvoMember(Request $request) {
+        $convo = Conversation::where('id' , $request->slug)->first();
+        $data = array();
+        foreach ($request->ids as $id) {
+            array_push($data, [
+                'id' => Uuid::generate()->string,
+                'sender_id' => auth()->user()->id,
+                'receiver_id' => $id,
+                'action' => 3,
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=> date('Y-m-d H:i:s')
+            ]);
+        }
+        Message::insert($data);
+
+        $convo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
+
+        return $request;
+    }
+
+    public function removeConvoMember(Request $request) {
+        $convo = Conversation::where('id' , $request->slug)->first();
+        $convo->users()->detach($request->ids);
+
+        $data = array();
+        foreach ($request->ids as $id) {
+            array_push($data, [
+                'id' => Uuid::generate()->string,
+                'sender_id' => auth()->user()->id,
+                'receiver_id' => $id,
+                'action' => 4,
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=> date('Y-m-d H:i:s')
+            ]);
+        }
+        Message::insert($data);
+
+        return $request;
+    }
+
+    public function verifyConvoUsers(Request $request) {
+        $users = Conversation::where('id' , $request->slug)->first();
+        
+        if($users) {
+            $verify = $users->users()->whereIn('user_id', [auth()->user()->id])->first();
+            if($verify) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+        }
+
+        $users = User::where('slug' , $request->slug)->first();
+
+        if($users) {
+            return response()->json(['status' => 'authenticated'], 200);
+        }
+        return response()->json(['status' => 'error'], 200);
+    }
+
+    public function getConvoMessages(Request $request) {
+        $convo = Conversation::find($request->slug);
+
+        if(!$convo) {
+            $receiverId = User::where('slug', $request->slug)->first()->id;
+            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->with('sender:id,name,picture')->orderBy('created_at', 'asc')->get();
+            
+            return $messages;
+        } 
+
+        $messages = Message::with('sender:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->get();
+        return $messages;
+    }
+
+    public function newMessage(Request $request) {
+        $convo = Conversation::find($request->convo);
+
+        $messages = auth()->user()->sender()->create([
+            'text' => $request->text,
+            'conversation_id' => $request->convo,
+            'receiver_id' => $request->receiver
+        ]);
+
+        if(!$convo) {
+            $receiverData = User::find($request->receiver);
+            event(new DirectMessageEvent($messages, $receiverData, NULL));
+        }
+        else {
+            $convoData = Conversation::find($request->convo);
+            event(new DirectMessageEvent($messages, NULL, $convoData));
+        }
+
+        return $messages;
+    }
+
+    public function updateRead(Request $request) {
+
+        // $convo = Conversation::find($request->slug);
+        // $now = Carbon\Carbon::now();
+        // if(!$convo) {
+        //     $messages = Message::where('sender_id', auth()->user()->id)
+        //                         ->where('receiver_id', $request->slug)
+        //                         ->where('read', NULL)
+        //                         ->update([
+        //                             'read' => $now
+        //                         ]);
+            
+        //     return $messages;
+        // } 
+
+        // $messages = Message::where('conversation_id', $request->slug)->get();
+        // return $messages;
+    }
+
+    public function sendFiles(Request $request) {
+        if($files = $request->file('files')){
+            $convo = Conversation::find($request->convo);
+
+            $data = array();
+
+            if(!$convo) {
+                foreach ($files as $key => $file) {
+                    $originalName = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $messages = auth()->user()->sender()->create([
+                        'original_filename' => $originalName,
+                        'new_filename' => Uuid::generate()->string . '.' . $extension,
+                        'extension' => $extension,
+                        'receiver_id' => $request->receiver,
+                    ]);
+
+                    $receiverData = User::find($request->receiver);
+                    event(new DirectMessageEvent($messages, $receiverData, NULL));
+                }
+            }
+            else {
+                foreach ($files as $key => $file) {
+                    $originalName = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $newName = Uuid::generate()->string . '.' . $extension;
+                    $file->move('storage/messages/', $newName);
+                    $messages = auth()->user()->sender()->create([
+                        'original_filename' => $originalName,
+                        'new_filename' => $newName,
+                        'extension' => $extension,
+                        'conversation_id' => $request->convo
+                    ]);
+
+                    $convoData = Conversation::find($request->convo);
+                    event(new DirectMessageEvent($messages, NULL, $convoData));
+                }
+            }
+
+            return $messages;
+            // return 'shei';
+        }
+    }
+
+    // edn of message tab
 
 }

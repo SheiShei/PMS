@@ -17,6 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TandemsTableSeeder::class);
         $this->call(BrandsTableSeeder::class);
         $this->call(StickyNotesTableSeeder::class);
-        $this->call(ConversationsTableSeeder::class);
+        // $this->call(ConversationsTableSeeder::class);
     }
 }

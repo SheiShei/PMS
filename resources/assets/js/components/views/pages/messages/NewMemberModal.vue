@@ -11,49 +11,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
+                                    <input v-model="searchNotMember" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
                                 </div>
                                 <div class="choose-mem" style="max-height: 200px; overflow:auto">
-                                    <div class="checkbox">
+                                    <div class="checkbox" v-for="member in notMembers" :key="member.id">
                                         <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
+                                            <input type="checkbox" v-model="checkedNotMember" :value="member.id" name="optionsCheckboxes">
                                             <span class="check"></span>
-                                            Bryxx
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
-                                            <span class="check"></span>
-                                            Yanna
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
-                                            <span class="check"></span>
-                                            Yce
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
-                                            <span class="check"></span>
-                                            Lyching
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
-                                            <span class="check"></span>
-                                            Hux
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="optionsCheckboxes">
-                                            <span class="check"></span>
-                                            Kent
+                                            {{ member.name }}
                                         </label>
                                     </div>
                                 </div>
@@ -67,7 +32,7 @@
                             <button type="button" class="btn btn-block btn-default btn-simple btn-sm" data-dismiss="modal">Close</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-block btn-info btn-sm">Add</button>
+                            <button type="button" class="btn btn-block btn-info btn-sm" @click="addNotMembers()">Add</button>
                         </div>
                     </div>
                 </div>
@@ -75,3 +40,48 @@
         </div>
     </div>
 </template>
+
+<script>
+import {mapGetters} from 'vuex';
+export default {
+    data() {
+        return {
+            searchNotMember: '',
+            checkedNotMember: [],
+        }
+    },
+    watch: {
+        '$route' (to, from) {
+            this.getNotMembers();
+        }
+    },
+    created() {
+        this.getNotMembers();
+    },
+    computed: {
+        ...mapGetters({
+                notMembers: 'getNotMembers',
+            }),
+    },
+    methods: {
+        getNotMembers() {
+            let data = {
+                slug: this.$route.params.convo_id,
+                search: this.searchNotMember
+            };
+            this.$store.dispatch('getNotMembers', data)
+        },
+
+        addNotMembers() {
+            let data = {
+                slug: this.$route.params.convo_id,
+                ids: this.checkedNotMember
+            };
+            this.$store.dispatch('addConvoMember', data)
+        },
+        search: _.debounce(function (e) {
+            this.getNotMembers();
+        }, 500),
+    }
+}
+</script>

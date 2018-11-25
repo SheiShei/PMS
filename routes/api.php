@@ -35,5 +35,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');
+    Route::post('/getConvoUsers', 'DataController@getConvoUsers');
+    Route::post('/getNotMembers', 'DataController@getNotMembers');
+    Route::post('/addConvoMember', 'DataController@addConvoMember');
+    Route::post('/verifyConvoUsers', 'DataController@verifyConvoUsers');
+    Route::delete('/removeMember', 'DataController@removeConvoMember');
+
+    Route::post('/getConvoMessages', 'DataController@getConvoMessages');
+    Route::post('/newMessage', 'DataController@newMessage');
+    Route::patch('/updateRead', 'DataController@updateRead');
+    Route::post('/sendFiles', 'DataController@sendFiles');
+
 
 });
