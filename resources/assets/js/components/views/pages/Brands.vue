@@ -242,6 +242,8 @@ export default {
     created() {
         let data = this.data;
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+        this.$store.dispatch('getTandemsList');
+
             }, 
 
     methods: {

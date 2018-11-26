@@ -19615,7 +19615,6 @@ __webpack_require__(18);
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex__["a" /* default */]);
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(VeeValidate);
 
 // optional set default imeout, the default is 10000 (10 seconds).
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_v_toaster___default.a, { timeout: 5000 });
@@ -60548,6 +60547,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     created: function created() {
         var data = this.data;
         this.$store.dispatch('setBrands', { url: '/api/getbrands', data: data });
+        this.$store.dispatch('getTandemsList');
     },
 
 
@@ -61038,7 +61038,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 _this.brand.telephone = '';
                 _this.brand.mobile = '';
                 _this.brand.tandem_id = '';
-                _this.brand.logo = '';
+                _this.brand.logo = 'logooo2.png';
                 _this.brand.about = '';
                 _this.$toaster.success('New Brand added!.');
             }).catch(function (error) {
