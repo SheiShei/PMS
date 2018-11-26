@@ -17,7 +17,6 @@ import {initialize} from './helpers/general';
 /* end of import modules */
 
 import MainApp from './components/MainApp.vue'
-import VeeValidate from 'vee-validate';
 
 
 Vue.use(VueRouter);
