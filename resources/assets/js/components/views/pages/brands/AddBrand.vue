@@ -137,7 +137,7 @@ methods: {
                     this.brand.telephone = '';
                     this.brand.mobile = '';
                     this.brand.tandem_id = '';
-                    this.brand.logo = '';
+                    this.brand.logo = 'logooo2.png';
                     this.brand.about = ''
                     this.$toaster.success('New Brand added!.')
                 })
