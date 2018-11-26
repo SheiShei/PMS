@@ -153,7 +153,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="note">Select a JO type to create new Job Order form.</p>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <div class="btn-group bootstrap-select">
                                     <select v-model="jo" @change="isNull()" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                         <option disabled="">-- JO Form Type --</option>
@@ -161,18 +161,30 @@
                                         <option value="creatives">JO (Creatives)</option>
                                     </select>
                                 </div>
+                            </div> -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-xs full-btn">
+                                        Web JO
+                                    </router-link>
+                                </div>
+                                <div class="col-md-6">
+                                    <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-xs full-btn">
+                                        Creatives JO
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
                     </div> 
                 </div> 
-                <div class="mybox-footer">
+                <!-- <div class="mybox-footer">
                     <div class="row text-center">
                         <div class="col-md-12">
-                            <!-- <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md">+ Create New JO</router-link> -->
+                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md">+ Create New JO</router-link>
                             <a @click.prevent="redirectJO" :disabled="disabled"  class="btn btn-sm btn-info btn-md">+ Create New JO</a>
                         </div>
                     </div>
-                </div>                                     
+                </div>                                      -->
             </div>
         </div>
 

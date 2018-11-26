@@ -3234,7 +3234,7 @@ select.form-control[multiple],
 }
 
 .nav-pills:not(.nav-pills-icons) > li > a {
-  border-radius: 30px;
+  border-radius: 3px;
 }
 
 .nav-pills.nav-stacked > li + li {
@@ -4308,6 +4308,14 @@ h2.title {
 
 .text-gray {
   color: #999999;
+}
+
+.text-white {
+  color: #FFFFFF;
+}
+
+.text-white:hover {
+  color: #FFFFFF;
 }
 
 .nav-tabs {

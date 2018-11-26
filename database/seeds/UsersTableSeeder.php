@@ -17,7 +17,8 @@ class UsersTableSeeder extends Seeder
             'email'=>'s.cmanawit@gmail.com',
             'password'=>bcrypt('sheipass'),
             'role_id'=>1,
-            'department_id'=>1
+            'department_id'=>1,
+            'picture'=>'default.png'
         ]);
 
         User::create([
@@ -25,7 +26,8 @@ class UsersTableSeeder extends Seeder
             'email'=>'sinfuegojenella@gmail.com',
             'password'=>bcrypt('jenpass'),
             'role_id'=>2,
-            'department_id'=>2
+            'department_id'=>2,
+            'picture'=>'default.png'
         ]);
 
         User::create([
@@ -33,21 +35,24 @@ class UsersTableSeeder extends Seeder
             'email'=>'sammillos@gmail.com',
             'password'=>bcrypt('sampass'),
             'role_id'=>3,
-            'department_id'=>2
+            'department_id'=>2,
+            'picture'=>'default.png'
         ]);
 
         User::create([
             'name'=>'test',
             'email'=>'test@test.com',
             'password'=>bcrypt('testpass'),
-            'role_id'=>1
+            'role_id'=>1,
+            'picture'=>'default.png'
         ]);
 
         User::create([
             'name'=>'Luljetta',
             'email'=>'luljetta@test.com',
             'password'=>bcrypt('luljettapass'),
-            'role_id'=>4
+            'role_id'=>4,
+            'picture'=>'luljetta.png'
         ]);
 
 

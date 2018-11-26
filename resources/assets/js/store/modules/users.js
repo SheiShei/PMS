@@ -32,20 +32,23 @@ const mutations = {
 const actions = {
     setUsers({commit}, data) {
         // console.log(data);
-        
-        axios.post(data.url, {
-            filter: data.data.filter,
-            search: data.data.search,
-            notArchive: data.data.notArchive
-        })
-            .then((response) => {
-                // console.log(response.data);
-                commit('setUsers', response.data.data)
+        return new Promise((resolve, reject) => {
+            axios.post(data.url, {
+                filter: data.data.filter,
+                search: data.data.search,
+                notArchive: data.data.notArchive
             })
-            .catch((error) => {
-                console.log(error);
-                alert('Something went wrong, try reloading the page');
-            });
+                .then((response) => {
+                    // console.log(response.data);
+                    commit('setUsers', response.data.data)
+                    resolve(response)
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                    alert('Something went wrong, try reloading the page');
+                });
+        });
     },
 
     addUser({commit}, data) {

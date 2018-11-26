@@ -1,0 +1,270 @@
+<template>
+        <section class="main-main-container" id="message-component">
+            <div class="title-head">
+                <h2><span class="fa fa-commenting-o"></span> Messages <small></small></h2>
+            </div>
+            <div class="col-md-9">
+                <div class="mybox">
+                    <div class="mybox-body msg-main-body white-white-bg">
+
+                        <div class="contacts-cont">
+                            <div class="cont-head" style="background-color: rgba(200, 200, 200, 0.2);">
+                                <ul class="nav nav-pills nav-pills-primary">
+                                    <li class="active"><a href="#pill2" class="btn-block" data-toggle="tab">
+                                        <span class="fa fa-users"></span>
+                                        <span class="hidden-sm hidden-xs">Group</span></a>
+                                    </li>
+	                                <li>
+                                        <a href="#pill1" class="btn-block" data-toggle="tab">
+                                            <span class="fa fa-user-o"></span>
+                                            <span class="hidden-sm hidden-xs">People</span>
+                                        </a>
+                                    </li>
+	                            </ul>
+                            </div>
+
+                            <div class="cont-body">
+                                <div class="tab-content">
+
+	                    	        <div class="tab-pane" id="pill1">
+
+                                        <div class="cont-search">
+                                            <form action="">
+                                                <div class="input-group">
+	        									    <div class="form-group is-empty">
+                                                        <input v-model="data.search" @input="search()" type="search" value="" placeholder="Search people..." class="form-control">
+                                                        <span class="material-input"></span>
+                                                    </div>
+                                                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <a ref="you_convo" @click.prevent  href="" class="cont-name">
+                                            <div class="media">
+		        					            <a @click.prevent class="pull-left" href="">
+		        						            <div class="avatar">
+		        							            <img class="media-object" :alt="currentUser.name+'profile picture'" :src="currentUser.picture">
+		        						            </div>
+		        					            </a>
+		        					            <div class="media-body">
+		        						            <h4 class="media-head">You <small class=""><span class="label label-success unread-label">2</span></small></h4>
+		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
+                                                </div>
+		        					        </div>
+                                        </a>
+
+                                        <a ref="dm_convo1" @click.prevent v-for="user in users" :key="user.id" v-if="currentUser.id != user.id"  href="" class="cont-name">
+                                            <div class="media">
+		        					            <a @click.prevent class="pull-left" href="">
+		        						            <div class="avatar">
+		        							            <img class="media-object" :alt="user.name+'profile picture'" :src="user.picture">
+		        						            </div>
+		        					            </a>
+		        					            <div class="media-body">
+		        						            <h4 class="media-head">{{ user.name }} <small class=""><span class="label label-success unread-label">2</span></small></h4>
+		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
+                                                </div>
+		        					        </div>
+                                        </a>
+
+	                    	        </div>
+
+	                    	        <div class="tab-pane active" id="pill2">
+                                        <div class="cont-search">
+                                            <form action="">
+                                                <div class="input-group">
+	        									    <div class="form-group is-empty"><input v-model="searchGroup" @input="searchGroupM()" type="search" value="" placeholder="Search group..." class="form-control"><span class="material-input"></span></div>
+                                                    <span class="input-group-addon">
+	        									        <i class="fa fa-search"></i>
+	        									    </span>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <a @click.prevent v-for="convo in conversations" :key="convo.id" href="" class="cont-name">
+                                            <div class="media">
+		        					            <div class="media-body thread-head">
+		        						            <h4 class="media-head">#{{ convo.name }}<small></small></h4>
+		        					            </div>
+		        					        </div>
+                                        </a>
+
+                                        <div class="cont-footer">
+                                            <button @click="showThreadForm = !showThreadForm" class="btn btn-xs btn-block btn-info">
+                                                <span class="fa fa-plus fa-sm"></span>&nbsp;New Group Chat
+                                            </button>
+                                        </div>
+                                    </div>
+	                    	    </div>
+                            </div>
+	                    </div>
+                        <message-conversation></message-conversation>
+
+                    </div>
+                       
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <transition name="slide">
+                    <div class="mybox" v-show="showThreadForm">
+                        <div class="mybox-head">
+                            <h6><strong>NEW GROUP CHAT</strong></h6>
+                        </div>
+                        <div class="mybox-body white-white-bg">
+                            <div class="form-group is-empty">
+                                <label class="control-label">Group Name</label> 
+                                <input v-model="credentials.name" type="text" class="form-control"> 
+                                <span class="material-input"></span>
+                                <span class="material-input"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Share with</label> 
+                                <div class="btn-group bootstrap-select">
+                                    <select @change="checkBox" class="selectpicker" v-model="privacy" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                        <!-- <option selected disabled="">Privacy</option> -->
+                                        <option value="all">All</option>
+                                        <option value="web">Web Team</option>
+                                        <option value="creative">Creatives Team</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div >
+                                <div class="form-group">
+                                    <input v-model="data.search" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
+                                </div>
+                                <div class="choose-mem" style="max-height: 130px; overflow:auto">
+                                    <div class="checkbox" v-for="user in users" :key="user.id" >
+                                        <label>
+                                            <input type="checkbox" v-model="credentials.checkedNames" :value="user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id">
+                                            <span class="check"></span>
+                                            {{ user.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mybox-footer">
+                            <div class="row form-group text-center">
+                                <div class="col-md-12">
+                                    <button @click="showThreadForm = !showThreadForm" class="btn btn-info btn-simple btn-sm" type="button" value="submit">Close</button>
+                                    <button class="btn btn-info btn-sm" type="button" value="">OK!</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+
+        </section>
+</template>
+
+<script>
+import {mapGetters} from 'vuex';
+import Conversation from "./messages/Conversation.vue";
+export default {
+    components: {
+        messageConversation: Conversation
+    },
+    data () {
+        return {
+            privacy: 'all',
+            showThreadForm: false,
+            showFileChoser: false,
+            data: {
+                filter: '',
+                search: '',
+                notArchive: true
+            },
+            credentials: {
+                name: '',
+                checkedNames: [],
+            },
+            searchGroup: ''
+        }
+    },
+    created() {
+        this.getConversationsList();
+    },
+    mounted () {
+        this.getUsersData();
+    },
+    computed: {
+        ...mapGetters({
+                users: 'usersList',
+                currentUser: 'currentUser',
+                conversations: 'conversationsList'
+            }),
+            checkedUser() {
+                return this.users.map(
+                    user => user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id
+                );
+            }
+    },
+    methods: {
+        getUsersData() {
+            let data = this.data
+            this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data})
+                .then((response) => {
+                    this.checkBox();
+                })
+        },
+        getConversationsList() {
+            this.$store.dispatch('getAllConvo', this.searchGroup)
+        },
+        checkBox() {
+            this.credentials.checkedNames = this.checkedUser;
+            if(this.privacy == 'all'){
+                this.credentials.checkedNames = this.checkedUser;
+            }
+            else if(this.privacy == 'web'){
+                this.credentials.checkedNames = [];
+                this.checkedUser.forEach(user => {
+                    if(user.includes('Web')){
+                        this.credentials.checkedNames.push(user);
+                    }
+                });
+            }
+            else if(this.privacy == 'creative'){
+                this.credentials.checkedNames = [];  
+                this.checkedUser.forEach(user => {
+                    if(user.includes('Creatives')){
+                        this.credentials.checkedNames.push(user);
+                    }
+                });          
+            }
+            else if(this.privacy == 'custom'){
+                this.credentials.checkedNames = [];
+            }
+            // console.log(this.credentials.checkedNames);
+            
+        },
+
+        setFocus() {
+            // this.$refs.dm_convo.$el.focus();
+
+        },
+
+        search: _.debounce(function (e) {
+            this.getUsersData();
+        }, 500),
+
+        searchGroupM: _.debounce(function (e) {
+            this.getConversationsList();
+        }, 500),
+    }
+}
+</script>
+
+<style scoped>
+    .slide-enter-active, .slide-leave-active {
+        transition: transform .5s ease-out, opacity .5s ease-out;
+    }
+
+    .slide-enter, .slide-leave-to {
+        transform: scale(0);
+        opacity: 0;
+    }
+</style>

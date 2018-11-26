@@ -10,8 +10,11 @@ import StickyNotes from './components/views/pages/StickyNotes.vue';
 import AddBrand from './components/views/pages/brands/AddBrand.vue';
 import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
 import ViewJobOrder from './components/views/pages/joborders/ViewJobOrder.vue';
+import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
+import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
+import Messages from './components/views/pages/Messages.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -113,9 +116,33 @@ export const routes = [
                 },
             },
             {
+                path: 'jo-creatives/',
+                name: 'jo-creatives',
+                component: ViewJoCrea,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
                 path: 'clients/add',
                 name: 'new_client',
                 component: Dashboard,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'brand-profile',
+                name: 'brand_profile',
+                component: BrandProfile,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'messages/:convo_id',
+                name: 'messages',
+                component: Messages,
                 meta: {
                     requiresAuth: true
                 },
