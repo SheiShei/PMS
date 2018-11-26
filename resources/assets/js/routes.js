@@ -8,6 +8,7 @@ import Brands from './components/views/pages/Brands.vue';
 import JobOrders from './components/views/pages/JobOrders.vue';
 import StickyNotes from './components/views/pages/StickyNotes.vue';
 import AddBrand from './components/views/pages/brands/AddBrand.vue';
+import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
 import ViewJobOrder from './components/views/pages/joborders/ViewJobOrder.vue';
 import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
@@ -54,6 +55,14 @@ export const routes = [
                 path: 'brands/add',
                 name: 'new_brand',
                 component: AddBrand,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'brands/profile/:brandId',
+                name: 'brand_profile',
+                component: BrandProfile,
                 meta: {
                     requiresAuth: true
                 },

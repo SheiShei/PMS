@@ -8,7 +8,7 @@
         <div class="first-column col-md-8 col-sm-12"> 
             <div class="mybox">
                 <div class="mybox-head">
-                    <h6><strong>SUMMARY</strong></h6>
+                    <h6><strong>SUMMARY </strong></h6>
                 </div>
                 <div class="mybox-body">
                     <div class="mycard mycard-full-info">
@@ -59,129 +59,30 @@
 
             <div class="mybox">
                 <div class="mybox-head">
-                    <h6><strong>BRANDS OVERVIEW</strong></h6>
+                    <h6><strong>BRANDS OVERVIEW</strong>&nbsp;<span><small>| <a @click.prevent="archiveBrands" href="">Archive</a></small></span></h6>
                 </div>
-                <div class="mybox-body">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span>Sort by:</span>
-                                <select class="my-input" name="" id="">
-                                    <option value="">Name (A - Z)</option>
-                                    <option value="">Name (Z - A)</option>
-                                    <option value="">Date (Ascending)</option>
-                                    <option value="">Date (Descending)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <input type="search" class="my-input" placeholder="Search...">
-                                <span class="fa fa-search"></span>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="table-responsive" style="margin-top: 10px; max-height: 35vh; overflow:auto">
-                        <table class="table table-bordered table-brands">
-                            <thead>
-                                <th>ID</th>
-                                <th>Brand Name</th>
-                                <th>Deadline</th>
-                                <th>Total JO</th>
-                                <th>Actions</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Furnitalia</td>
-                                    <td>Dec. 7, 2018</td>
+                <brands-filter-search :data="data">
+                                <tr v-for="brand in brands" :key="brand.id">
+                                    <td>{{brand.id}}</td>
+                                    <td>{{brand.name}}</td>
+                                    <td>November 9, 2018</td>
                                     <td>9</td>
                                     <td class="td-actions">
-                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </router-link>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                                        <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id }}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                            <i class="fa fa-eye"></i></router-link>
+                                        <button v-if="data.notArchive" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                        <button v-if="data.notArchive" type="button" rel="tooltip"  @click="deleteBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
+                                        <button v-if="!data.notArchive" type="button" rel="tooltip" @click="restoreBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Restore">
+                                            <i class="fa fa-refresh"></i>
+                                         </button>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Mowelfund</td>
-                                    <td>Sept. 15, 2018</td>
-                                    <td>18</td>
-                                    <td class="td-actions">
-                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </router-link>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Fil-Global</td>
-                                    <td>March. 2, 2016</td>
-                                    <td>67</td>
-                                    <td class="td-actions">
-                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </router-link>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Potato Corner</td>
-                                    <td>Jan. 10, 2017</td>
-                                    <td>2</td>
-                                    <td class="td-actions">
-                                        
-                                        <!-- <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </button> -->
-                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </router-link>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Allele White</td>
-                                    <td>Feb. 12, 2018</td>
-                                    <td>7</td>
-                                    <td class="td-actions">
-                                        <router-link :to="{name: 'brand_profile'}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </router-link>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> 
-                </div>
+                </brands-filter-search>       
+             </div>
                 <div class="mybox-footer">
                     <div class="row">
                         <div class="col-md-12">
@@ -190,7 +91,7 @@
                     </div> 
                 </div>
             </div>
-        </div>
+        
         <div class="sec-column col-md-4 col-sm-12">
             <div class="mybox">
                 <div class="mybox-head">
@@ -254,7 +155,7 @@
                             <p class="note">Select a JO type to create new Job Order form.</p>
                             <!-- <div class="form-group">
                                 <div class="btn-group bootstrap-select">
-                                    <select v-model="jo" @change="isNull" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                    <select v-model="jo" @change="isNull()" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                         <option disabled="">-- JO Form Type --</option>
                                         <option value="web">JO (Web)</option>
                                         <option value="creatives">JO (Creatives)</option>
@@ -291,15 +192,37 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
+import BrandsFilterSearch from "./brands/BrandsFilterSearch.vue";
+import AddBrand from "./brands/AddBrand.vue";
+
+
 export default {
+    components:{
+        BrandsFilterSearch: BrandsFilterSearch,
+        AddBrand: AddBrand
+    },
+
     data() {
         return {
             jo: '',
-            disabled: true
+            disabled: true,
+            data: {
+                filter: {position: 'asc', category:'name'},
+                search: '',
+                notArchive: true,
+                id:''
+            },
+           // errors: [],
+            
         }
     },
 
     computed: {
+         ...mapGetters({
+                brands: 'brandsList'
+            }),
+
         redirectJO() {
             if(this.jo === 'web' ){
                 this.$router.push({name: 'new_jo_web'});
@@ -314,10 +237,44 @@ export default {
                 this.disabled = false;
             }
         }
+
     },
+    created() {
+        let data = this.data;
+        this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+            }, 
 
     methods: {
-        
+         getsData() {
+             
+            let data = this.data
+            this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+
+        },
+
+        deleteBrand(id) {
+            this.$store.dispatch('deleteBrand', id)
+                .then((response) => {
+                    this.$toaster.warning('Brand deleted succesfully, see Archive List to restore!!.')
+                })
+                .catch((error) => {
+                    alert('Something went wrong, try reloading the page');
+                })
+        },
+        archiveBrands() {
+            this.data.notArchive = !this.data.notArchive;
+            let data = this.data;
+            this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+        },
+        restoreBrand(id) {
+            this.$store.dispatch('restoreBrand', id)
+                .then((response) => {
+                    this.$toaster.success('Brand restored succesfully!.')
+                })
+                .catch((error) => {
+                    alert('Something went wrong, try reloading the page');
+                })
+        }
     }
 }
 </script>

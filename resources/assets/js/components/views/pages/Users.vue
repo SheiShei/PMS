@@ -130,10 +130,6 @@ export default {
         }
     },  
 
-    created() {
-        let data = this.data;
-        this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
-    },
 
     computed: {
         ...mapGetters({

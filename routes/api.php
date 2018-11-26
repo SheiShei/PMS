@@ -32,6 +32,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/addnote', 'DataController@addNote');
     Route::delete('/deletenote', 'DataController@deleteNote');
 
+    // brands
+    Route::post('/getbrands', 'BrandsController@getBrands'); 
+    Route::post('/addbrands', 'BrandsController@addBrands');
+    Route::delete('/deletebrands', 'BrandsController@deleteBrands');
+    Route::post('/restorebrands', 'BrandsController@restoreBrands');
+    Route::get('/getTandemsList', 'BrandsController@getTandemsList');
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');

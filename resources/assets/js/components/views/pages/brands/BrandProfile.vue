@@ -7,9 +7,9 @@
         <div class="col-md-3">
             <div class="mybox">
                
-                <div class="mybox-body white-white-bg">
+                <div v-for="brandProf in brandProfile" :key="brandProf.id" class="mybox-body white-white-bg">
                     <div class="br-prof text-center">
-                            <p class="info-name">MOWELFUND FILM INSTITUTE</p>
+                            <p  class="info-name">{{brandProf.name}}</p>
                         <img src="/images/mfilogo.png" style="height: 60px; margin-bottom: 5px;" alt="">
                        
                     </div>
@@ -17,14 +17,12 @@
                     
                     
 
-                    <p class="other-info"><span class="">Brand Owner: </span>Aya, Lysan</p>
-                    <p class="other-info"><span>Client: </span>Robert Dy</p>
-                    <p class="other-info"><span>Email: </span>mfi@gmail.com</p>
-                    <p class="other-info"><span>Telephone: </span>827-697</p>
-                    <p class="other-info"><span>Mobile: </span>+639263668600</p>
+                    <p class="other-info"><span class="">Brand Owner: </span>{{brandProf.tandem.name}}</p>
+                    <p class="other-info"><span>Client: </span>{{brandProf.contact_person}}</p>
+                    <p class="other-info"><span>Telephone: </span>{{brandProf.telephone}}</p>
+                    <p class="other-info"><span>Mobile: </span>{{brandProf.mobile}}</p>
                     <p class="other-info"><span>Description: </span>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque eius et at ad, tenetur minus odit eum excepturi nemo? Consectetur voluptatem soluta quod totam laborum, eum ducimus itaque provident minima?
-                    </p>
+                     {{brandProf.about}}                    </p>
                    
                     
 
@@ -238,12 +236,38 @@
 </style>
 
 <script>
+import {mapGetters} from 'vuex';
+
 export default {
     updated () {
         // $(this.$refs.select).selectpicker('refresh')
         // let sel  = this.$refs.select;
         // console.log(this.$refs);
         console.log('updated');
-	}
+    
+    },
+    data () {
+            return {
+            data: {
+                id: this.$route.params.brandId,
+                filter: '',
+                search: '',
+                notArchive: ''
+                }
+            }
+        },
+    created() {
+           // this.data.id = this.$route.params.brandId;
+            let data = this.data;
+            this.$store.dispatch('setBrands', {url : '/api/getbrands', data}); 
+
+        },
+    computed: {
+         ...mapGetters({
+                brandProfile: 'brandsList'
+            }),
+    },
+
+    
 }
 </script>
