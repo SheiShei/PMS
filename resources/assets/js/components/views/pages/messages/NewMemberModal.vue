@@ -78,6 +78,10 @@ export default {
                 ids: this.checkedNotMember
             };
             this.$store.dispatch('addConvoMember', data)
+                .then ((response) => {
+                    this.checkedNotMember = [];
+                    $('#membersAddModal').modal('hide');
+                })
         },
         search: _.debounce(function (e) {
             this.getNotMembers();

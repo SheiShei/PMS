@@ -55,6 +55,23 @@ const mutations = {
 
     setConvoMessages(state, data) {
         state.messages = data
+    },
+
+    newMessage(state, data) {
+        state.messages.push(data);
+    },
+
+    leaveConvo(state, data) {
+        var index = _.findIndex(state.conversations, {id: data});
+        state.conversations.splice(index, 1);
+    },
+
+    messageDestroy(state) {
+        state.convoUsers = [];
+        state.selectedConvo = null;
+        state.receiverData = null;
+        state.notMembers =[];
+        state.messages = [];
     }
 };
 
@@ -118,31 +135,39 @@ const actions = {
     },
 
     addConvoMember({commit}, data) {
-        axios.post('/api/addConvoMember', {
-            slug: data.slug,
-            ids: data.ids
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/addConvoMember', {
+                slug: data.slug,
+                ids: data.ids
+            })
+                .then( (response) => {
+                    // console.log(response);
+                    resolve(response);
+                })
+                .catch( (error) => {
+                    console.log(error);
+                    reject(error);
+                })
         })
-            .then( (response) => {
-                console.log(response);
-            })
-            .catch( (error) => {
-                console.log(error);
-            })
     },
 
     removeMember({commit}, data) {
-        axios.delete('/api/removeMember', { 
-            data: {
-                slug: data.slug,
-                ids: data.ids
-            }
+        return new Promise ((resolve, reject) => {
+            axios.delete('/api/removeMember', { 
+                data: {
+                    slug: data.slug,
+                    ids: data.ids
+                }
+            })
+                .then( (response) => {
+                    console.log(response);
+                    resolve(response);
+                })
+                .catch( (error) => {
+                    console.log(error);
+                    reject(error);
+                })
         })
-            .then( (response) => {
-                console.log(response);
-            })
-            .catch( (error) => {
-                console.log(error);
-            })
     },
 
     getMessages({commit}, data) {
@@ -161,20 +186,22 @@ const actions = {
     },
 
     sendMessage({commit}, data) {
-        axios.post('/api/newMessage', {
-            text: data.text,
-            convo: data.convo,
-            receiver: data.receiver,
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/newMessage', {
+                text: data.text,
+                convo: data.convo,
+                receiver: data.receiver,
+            })
+                .then((response) => {
+                    // console.log(response);
+                    commit('newMessage', response.data);
+                    resolve(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                })
         })
-            .then((response) => {
-                console.log(response);
-                // commit('setConvoMessages', response.data);
-                
-            })
-            .catch((error) => {
-                console.log(error);
-                
-            })
     },
 
     sendFiles({commit}, data) {
@@ -182,7 +209,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/sendFiles', data, config)
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     // commit('setConvoMessages', response.data);
                     resolve(response);
 

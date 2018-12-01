@@ -14,8 +14,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.4.0",
         "pusher/pusher-php-server": "~3.0",
-        "webpatser/laravel-uuid": "^3.0",
-        "yajra/laravel-datatables-oracle": "~8.0"
+        "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

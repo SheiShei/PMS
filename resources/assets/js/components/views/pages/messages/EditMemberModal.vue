@@ -65,6 +65,10 @@ export default {
                 ids: this.checkedRemoveMember
             };
             this.$store.dispatch('removeMember', data)
+                .then ((response) => {
+                    this.checkedRemoveMember = [];
+                    $('#membersEditModal').modal('hide');
+                })
         },
     }
 }

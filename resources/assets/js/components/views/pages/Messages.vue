@@ -49,7 +49,7 @@
 		        					            </a>
 		        					            <div class="media-body">
 		        						            <h4 class="media-head">You <small class=""><span class="label label-success unread-label">2</span></small></h4>
-		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
+		        						            <!-- <p class="prev-msg"> Don't forget, You're Aweso...</p> -->
                                                 </div>
 		        					        </div>
                                         </router-link>
@@ -111,6 +111,7 @@
             <div class="col-md-3">
                 <transition name="slide">
                     <div class="mybox" v-show="showThreadForm">
+                        <form @submit.prevent="addConvo" >
                         <div class="mybox-head">
                             <h6><strong>NEW GROUP CHAT</strong></h6>
                         </div>
@@ -152,10 +153,11 @@
                             <div class="row form-group text-center">
                                 <div class="col-md-12">
                                     <button @click="showThreadForm = !showThreadForm" class="btn btn-info btn-simple btn-sm" type="button" value="submit">Close</button>
-                                    <button @click="addConvo" class="btn btn-info btn-sm" type="button" value="">OK!</button>
+                                    <button class="btn btn-info btn-sm" type="submit" value="">OK!</button>
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </transition>
             </div>
@@ -194,6 +196,9 @@ export default {
     },
     mounted () {
         this.listenEcho();
+    },
+    destroyed() {
+        this.$store.commit('messageDestroy');
     },
     computed: {
         ...mapGetters({
@@ -267,6 +272,8 @@ export default {
                 ids: newId
             }
             this.$store.dispatch('addConvo', data);
+            // this.credentials.checkedNames = [];
+            this.credentials.name = '';
         },
 
         listenEcho() {

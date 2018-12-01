@@ -82,6 +82,12 @@ class DataController extends Controller
 
         $newConvo->users()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
 
+        Message::create([
+            'sender_id' => auth()->user()->id,
+            'conversation_id' => $newConvo->id,
+            'action' => 2
+        ]);
+
         if($request->ids) {
             $data = array();
             foreach ($request->ids as $key => $id) {
@@ -89,6 +95,7 @@ class DataController extends Controller
                     'id' => Uuid::generate()->string,
                     'sender_id' => auth()->user()->id,
                     'receiver_id' => $id,
+                    'conversation_id' => $newConvo->id,
                     'action' => 3,
                     'created_at'=>date('Y-m-d H:i:s'),
                     'updated_at'=> date('Y-m-d H:i:s')
@@ -98,11 +105,6 @@ class DataController extends Controller
 
             $newConvo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
         }
-
-        Message::create([
-            'sender_id' => auth()->user()->id,
-            'action' => 2
-        ]);
 
         $users = $newConvo->users()->select('slug')->get();
 
@@ -159,42 +161,54 @@ class DataController extends Controller
 
     public function addConvoMember(Request $request) {
         $convo = Conversation::where('id' , $request->slug)->first();
-        $data = array();
+        // $data = array();
+        // foreach ($request->ids as $id) {
+        //     array_push($data, [
+        //         'id' => Uuid::generate()->string,
+        //         'sender_id' => auth()->user()->id,
+        //         'conversation_id' => $convo->id,
+        //         'receiver_id' => $id,
+        //         'action' => 3,
+        //         'created_at'=>date('Y-m-d H:i:s'),
+        //         'updated_at'=> date('Y-m-d H:i:s')
+        //     ]);
+        // }
+        // Message::insert($data);
+
         foreach ($request->ids as $id) {
-            array_push($data, [
-                'id' => Uuid::generate()->string,
+            $messages = $convo->messages()->create([
                 'sender_id' => auth()->user()->id,
                 'receiver_id' => $id,
                 'action' => 3,
-                'created_at'=>date('Y-m-d H:i:s'),
-                'updated_at'=> date('Y-m-d H:i:s')
             ]);
+
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->with('receiver:id,name,picture')->first();
+            event(new DirectMessageEvent($message, NULL, $convo));
         }
-        Message::insert($data);
 
         $convo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
 
-        return $request;
+        // return $request;
     }
 
     public function removeConvoMember(Request $request) {
         $convo = Conversation::where('id' , $request->slug)->first();
-        $convo->users()->detach($request->ids);
 
-        $data = array();
         foreach ($request->ids as $id) {
-            array_push($data, [
-                'id' => Uuid::generate()->string,
+            $messages = $convo->messages()->create([
                 'sender_id' => auth()->user()->id,
                 'receiver_id' => $id,
                 'action' => 4,
-                'created_at'=>date('Y-m-d H:i:s'),
-                'updated_at'=> date('Y-m-d H:i:s')
             ]);
-        }
-        Message::insert($data);
 
-        return $request;
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->with('receiver:id,name,picture')->first();
+            event(new DirectMessageEvent($message, NULL, $convo));
+
+        }
+
+        $convo->users()->detach($request->ids);
+        
+        // return $request;
     }
 
     public function verifyConvoUsers(Request $request) {
@@ -221,12 +235,12 @@ class DataController extends Controller
 
         if(!$convo) {
             $receiverId = User::where('slug', $request->slug)->first()->id;
-            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->with('sender:id,name,picture')->orderBy('created_at', 'asc')->get();
+            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->with('sender:id,name,picture')->with('receiver:id,name,picture')->orderBy('created_at', 'asc')->get();
             
             return $messages;
         } 
 
-        $messages = Message::with('sender:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->get();
+        $messages = Message::with('sender:id,name,picture')->with('receiver:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->get();
         return $messages;
     }
 
@@ -241,14 +255,18 @@ class DataController extends Controller
 
         if(!$convo) {
             $receiverData = User::find($request->receiver);
-            event(new DirectMessageEvent($messages, $receiverData, NULL));
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+            // event(new DirectMessageEvent($message, $receiverData, NULL));
+            broadcast(new DirectMessageEvent($message, $receiverData, NULL))->toOthers();
         }
         else {
             $convoData = Conversation::find($request->convo);
-            event(new DirectMessageEvent($messages, NULL, $convoData));
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+            // event(new DirectMessageEvent($message, NULL, $convoData));
+            broadcast(new DirectMessageEvent($message, NULL, $convoData))->toOthers();
         }
 
-        return $messages;
+        return Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
     }
 
     public function updateRead(Request $request) {
@@ -286,9 +304,10 @@ class DataController extends Controller
                         'extension' => $extension,
                         'receiver_id' => $request->receiver,
                     ]);
-
+                    
+                    $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
                     $receiverData = User::find($request->receiver);
-                    event(new DirectMessageEvent($messages, $receiverData, NULL));
+                    event(new DirectMessageEvent($message, $receiverData, NULL));
                 }
             }
             else {
@@ -304,8 +323,9 @@ class DataController extends Controller
                         'conversation_id' => $request->convo
                     ]);
 
+                    $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
                     $convoData = Conversation::find($request->convo);
-                    event(new DirectMessageEvent($messages, NULL, $convoData));
+                    event(new DirectMessageEvent($message, NULL, $convoData));
                 }
             }
 

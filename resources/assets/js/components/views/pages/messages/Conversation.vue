@@ -28,16 +28,16 @@
                         <div class="ripple-container"></div>
                     </button>
 	                <ul id="membersDrop" class="dropdown-menu dropdown-menu-left">
-	                    <router-link style="color:white" :to="{ name: 'convo-view', params: {convo_id: selectedConvo.created_by.slug} }"><li><p class="memDrop"><span class="fa fa-star-o"></span> {{ selectedConvo.created_by.name }}</p></li></router-link>
-	                    <li class="divider"></li>
-	                    <router-link style="color:white" v-for="user in convoUsers" :key="user.id" v-if="selectedConvo.created_by.id != user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
+	                    <router-link style="color:white" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
 	                </ul>
                 </div>
             </div>
         </div>
             
-        <div class="msg-display">
+        <div class="msg-display" v-chat-scroll>
             <div v-for="message in messages" :key="message.id">
+
+                <!-- normal message -->
                 <div v-if="message.action == 1">
                     <!-- if my message -->
                     <div v-if="message.sender_id == cUser.id">
@@ -53,7 +53,7 @@
                                     <p class="msg-text text-right">{{ message.text }}</p>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
                             </div>
                         </div>
@@ -67,12 +67,12 @@
                                     </div>
                                 </div>
                                 <div class="media-body my-msg">
-                                    <a :href="'/storage/messages/'+message.new_filename" title="Click to download" download>
-                                        <img :src="'/storage/messages/'+message.new_filename" class="msg-img" alt="" sizes="" srcset="">
+                                    <a :href="message.new_filename" title="Click to download" download>
+                                        <img :src="message.new_filename" class="msg-img" alt="" sizes="" srcset="">
                                     </a>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                                     </a>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                                 </div>
 
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
 
                             </div>
@@ -128,12 +128,12 @@
                                     </div>
                                 </div>
                                 <div class="media-body their-msg">
-                                    <a :href="'/storage/messages/'+message.new_filename" title="Click to download" download>
-                                        <img :src="'/storage/messages/'+message.new_filename" class="msg-img" alt="" sizes="" srcset="">
+                                    <a :href="message.new_filename" title="Click to download" download>
+                                        <img :src="message.new_filename" class="msg-img" alt="" sizes="" srcset="">
                                     </a>
                                 </div>
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
                             </div>
                         </div>
@@ -152,10 +152,57 @@
                                     </a>
                                 </div>
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;3:15 PM</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- created conversation -->
+                <div v-else-if="message.action == 2">
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto">
+                            {{ message.sender.name }} created this group.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add member -->
+                <div v-else-if="message.action == 3">
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto">
+                            {{ message.sender.name }} added {{ message.receiver.name }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- leave or remove -->
+                <div v-else-if="message.action == 4">
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto" v-if="message.sender_id == message.receiver_id">
+                            {{ message.sender.name }} leave the group.
+                        </div>
+                        <div class="date-sent mr-auto ml-auto" v-else>
+                            {{ message.sender.name }} remove {{ message.receiver.name }}.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- date -->
+                <div v-else>
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto">
+                            September 7, 2018
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div v-if="isTyping">
+                <div class="msg-wrap">
+                    <div class="date-sent mr-auto ml-auto">
+                        typing...
                     </div>
                 </div>
             </div>
@@ -215,12 +262,16 @@ export default {
         return {
             messageTxt: '',
             attachments:[],
-            form: new FormData
+            form: new FormData,
+            isTyping: false
         }
     },
     created() {
         this.getConvoUsers();
         this.getMessages();
+    },
+    mounted () {
+        this.listenMessages();
     },
     watch: {
         '$route' (to, from) {
@@ -301,7 +352,28 @@ export default {
                 }
             }
 
-            this.$store.dispatch('sendMessage', data);
+            this.$store.dispatch('sendMessage', data)
+                .then ((response) => {
+                    this.messageTxt = '';
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    alert('Something went wrong');
+                }) 
+        },
+
+        listenMessages() {
+            var _this = this
+            // if(this.selectedConvo) {
+            Echo.private('message.'+this.$route.params.convo_id)
+                .listen('DirectMessageEvent', (e) => {
+                    let index = _.findIndex(this.messages, {id: e.message.id});
+                    if(index === -1) {
+                        console.log(e);
+                        this.$store.commit('newMessage', e.message);
+                    }
+                })
+            // }
         }
     }
 }

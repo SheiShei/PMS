@@ -5,6 +5,7 @@ import Vue from "vue";
 /* import all vue libraries */
 import VueRouter from "vue-router";
 import Vuex from "vuex";
+import VueChatScroll from 'vue-chat-scroll';
 import Toaster from 'v-toaster'
     // toaster css
     import 'v-toaster/dist/v-toaster.css'
@@ -21,6 +22,7 @@ import MainApp from './components/MainApp.vue'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
+Vue.use(VueChatScroll);
 
 // optional set default imeout, the default is 10000 (10 seconds).
 Vue.use(Toaster, {timeout: 5000})
