@@ -12,13 +12,13 @@
                     </router-link>
                 </li>
             
-                <li class="">
+                <li class="" v-if="cUser.role.id === 1">
                     <router-link :to="{ name: 'users' }">
                         <i class="fa fa-user-o fa-lg"></i> Employees
                     </router-link>
                 </li>
 
-                <li data-toggle="collapse" data-target="#boardsList" class="collapsed">
+                <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#boardsList" class="collapsed">
                     <a><i class="fa fa-trello fa-lg"></i> Boards <span class="arrow"></span></a>
                 </li>
                 
@@ -36,7 +36,7 @@
                     <li data-toggle="collapse" data-target="#" class="collapsed">Creatives Team</li>
                 </ul> 
 
-                <li data-toggle="collapse" data-target="#brandsList" class="collapsed">
+                <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#brandsList" class="collapsed">
                     <a><i class="fa fa-suitcase fa-lg"></i> Brands <span class="arrow"></span></a>
                 </li> 
 
@@ -53,7 +53,7 @@
                     </li>
                 </ul>
 
-                <li class="">
+                <li v-if="cUser.role.id !== 4" class="">
                     <router-link :to="{ name: 'dashboard' }">
                         <i class="fa fa-align-left fa-lg"></i> Workload
                     </router-link>
@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
     methods: {
         logout() {
@@ -114,6 +115,13 @@ export default {
                     this.$router.push('/login');
                 })
         }
+    },
+
+    computed: {
+        ...mapGetters({
+                cUser: 'currentUser'
+            }),
     }
+
 }
 </script>

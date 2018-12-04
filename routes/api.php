@@ -11,7 +11,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //get current user logged in
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        // return auth()->user()->role()->first();
+        return response()->json(['user' => auth()->user(), 'role' => auth()->user()->role()->first()]);
     });
 
     //obviously for logout function

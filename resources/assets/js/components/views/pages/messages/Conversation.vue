@@ -35,17 +35,17 @@
         </div>
             
         <div id="asdasd" class="msg-display" v-chat-scroll @scroll="infiniteHandler()">
-            <!-- <div v-if="messages[0]">
+            
+            <!-- <infinite-loading direction="top" @infinite="infiniteHandler"></infinite-loading> -->
+            <div v-if="messages[0]">
                     <div class="msg-wrap">
                         <div class="date-sent mr-auto ml-auto">
-                            <div v-if="message.message_date !== messages[0].message_date">
-                                {{ message.message_date }}  
-                            </div>
+                            <!-- <div v-if="message.message_date !== messages[index-1].message_date"> -->
+                                {{ messages[0].message_date }}  
+                            <!-- </div> -->
                         </div>
                     </div>
-                </div> -->
-
-            <!-- <infinite-loading direction="top" @infinite="infiniteHandler"></infinite-loading> -->
+                </div>
 
             <div v-for="(message, index) in messages" :key="message.id">
                 
@@ -180,6 +180,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- created conversation -->
@@ -211,8 +212,6 @@
                         </div>
                     </div>
                 </div>
-
-                
             </div>
             <div v-if="isTyping">
                 <div class="msg-wrap">

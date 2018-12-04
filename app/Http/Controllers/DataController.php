@@ -237,13 +237,13 @@ class DataController extends Controller
         if(!$convo) {
             $receiverId = User::where('slug', $request->slug)->first()->id;
             if($request->page == '') {
-                $lastpage = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->orderBy('created_at', 'asc')->paginate(10)->lastPage();
+                $lastpage = Message::whereIn('sender_id', [auth()->user()->id, $receiverId])->whereIn('receiver_id', [auth()->user()->id, $receiverId])->where('action', 1)->orderBy('created_at', 'asc')->paginate(10)->lastPage();
                 Paginator::currentPageResolver(function () use ($lastpage) {
                     return $lastpage;
                 });
             }
     
-            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->with('sender:id,name,picture')->with('receiver:id,name,picture')->orderBy('created_at', 'asc')->paginate(10);
+            $messages = Message::whereIn('sender_id', [auth()->user()->id, $receiverId])->whereIn('receiver_id', [auth()->user()->id, $receiverId])->where('action', 1)->with('sender:id,name,picture')->with('receiver:id,name,picture')->orderBy('created_at', 'asc')->paginate(10);
             return response()->json($messages);
         } 
 
