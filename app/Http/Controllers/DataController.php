@@ -10,6 +10,7 @@ use App\Events\AddConversationEvent;
 use App\Events\DirectMessageEvent;
 use App\Message;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Pagination\Paginator;
 
 class DataController extends Controller
 {
@@ -235,13 +236,26 @@ class DataController extends Controller
 
         if(!$convo) {
             $receiverId = User::where('slug', $request->slug)->first()->id;
-            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->with('sender:id,name,picture')->with('receiver:id,name,picture')->orderBy('created_at', 'asc')->get();
-            
-            return $messages;
+            if($request->page == '') {
+                $lastpage = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->orderBy('created_at', 'asc')->paginate(10)->lastPage();
+                Paginator::currentPageResolver(function () use ($lastpage) {
+                    return $lastpage;
+                });
+            }
+    
+            $messages = Message::where('sender_id', auth()->user()->id)->where('receiver_id', $receiverId)->where('action', 1)->with('sender:id,name,picture')->with('receiver:id,name,picture')->orderBy('created_at', 'asc')->paginate(10);
+            return response()->json($messages);
         } 
 
-        $messages = Message::with('sender:id,name,picture')->with('receiver:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->get();
-        return $messages;
+        if($request->page == '') {
+            $lastpage = Message::with('sender:id,name,picture')->with('receiver:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->paginate(10)->lastPage();
+            Paginator::currentPageResolver(function () use ($lastpage) {
+                return $lastpage;
+            });
+        }
+
+        $messages = Message::with('sender:id,name,picture')->with('receiver:id,name,picture')->where('conversation_id', $request->slug)->orderBy('created_at', 'asc')->paginate(10);
+        return response()->json($messages);
     }
 
     public function newMessage(Request $request) {

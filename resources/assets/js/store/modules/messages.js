@@ -30,7 +30,7 @@ const getters = {
 
     getConvoMessages: state => {
         return state.messages;
-    }
+    },
 };
 
 const mutations = {
@@ -54,7 +54,7 @@ const mutations = {
     },
 
     setConvoMessages(state, data) {
-        state.messages = data
+        state.messages = data.data;
     },
 
     newMessage(state, data) {
@@ -72,6 +72,10 @@ const mutations = {
         state.receiverData = null;
         state.notMembers =[];
         state.messages = [];
+    },
+
+    insertLoadMessage(state, data) {
+        state.messages.unshift(data);
     }
 };
 
@@ -171,18 +175,21 @@ const actions = {
     },
 
     getMessages({commit}, data) {
-        axios.post('/api/getConvoMessages', {
-            slug: data
+        return new Promise ((resolve, reject) => {
+            axios.get('/api/getConvoMessages', { params: {
+                slug: data
+            }
+            })
+                .then((response) => {
+                    // console.log(response);
+                    commit('setConvoMessages', response.data);
+                    resolve(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    
+                })
         })
-            .then((response) => {
-                // console.log(response);
-                commit('setConvoMessages', response.data);
-                
-            })
-            .catch((error) => {
-                console.log(error);
-                
-            })
     },
 
     sendMessage({commit}, data) {

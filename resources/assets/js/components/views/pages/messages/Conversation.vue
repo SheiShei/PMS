@@ -34,8 +34,31 @@
             </div>
         </div>
             
-        <div class="msg-display" v-chat-scroll>
-            <div v-for="message in messages" :key="message.id">
+        <div id="asdasd" class="msg-display" v-chat-scroll @scroll="infiniteHandler()">
+            <!-- <div v-if="messages[0]">
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto">
+                            <div v-if="message.message_date !== messages[0].message_date">
+                                {{ message.message_date }}  
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+            <!-- <infinite-loading direction="top" @infinite="infiniteHandler"></infinite-loading> -->
+
+            <div v-for="(message, index) in messages" :key="message.id">
+                
+                <!-- date -->
+                <div v-if="messages[index-1]">
+                    <div class="msg-wrap">
+                        <div class="date-sent mr-auto ml-auto">
+                            <div v-if="message.message_date !== messages[index-1].message_date">
+                                {{ message.message_date }}  
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- normal message -->
                 <div v-if="message.action == 1">
@@ -53,7 +76,7 @@
                                     <p class="msg-text text-right">{{ message.text }}</p>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +95,7 @@
                                     </a>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +114,7 @@
                                     </a>
                                 </div>
                                 <div class="my-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +136,7 @@
                                 </div>
 
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
 
                             </div>
@@ -133,7 +156,7 @@
                                     </a>
                                 </div>
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +175,7 @@
                                     </a>
                                 </div>
                                 <div class="their-time-sent-div">
-                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.created_at }}</p>
+                                    <p class="time-sent"><span class="fa fa-clock-o"></span>&nbsp;{{ message.message_sent }}</p>
                                 </div>
                             </div>
                         </div>
@@ -189,20 +212,12 @@
                     </div>
                 </div>
 
-                <!-- date -->
-                <div v-else>
-                    <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto">
-                            September 7, 2018
-                        </div>
-                    </div>
-                </div>
                 
             </div>
             <div v-if="isTyping">
                 <div class="msg-wrap">
                     <div class="date-sent mr-auto ml-auto">
-                        typing...
+                        <i>typing...</i>
                     </div>
                 </div>
             </div>
@@ -263,7 +278,9 @@ export default {
             messageTxt: '',
             attachments:[],
             form: new FormData,
-            isTyping: false
+            isTyping: false,
+            last_page: 0,
+            prev: ''
         }
     },
     created() {
@@ -277,6 +294,13 @@ export default {
         '$route' (to, from) {
             this.getConvoUsers();
             this.getMessages();
+        },
+
+        messageTxt(){
+            Echo.private('message.'+this.$route.params.convo_id)
+                .whisper('typing', {
+                    name: this.messageTxt
+                });
         }
     },
     computed: {
@@ -332,7 +356,17 @@ export default {
 
         getMessages() {
             let slug = this.$route.params.convo_id;
-            this.$store.dispatch('getMessages', slug);
+            this.$store.dispatch('getMessages', slug)
+                .then ((response) => {
+                    this.last_page = response.last_page;
+                    // this.infiniteHandler();
+                    this.prev = response.prev_page_url;
+                    if(response.data.length < 10) {
+                        this.lazyLoading();
+                        // console.log('less 13');
+                        
+                    }
+                })
         },
 
         messageSend() {
@@ -373,7 +407,49 @@ export default {
                         this.$store.commit('newMessage', e.message);
                     }
                 })
+                .listenForWhisper('typing', (e) => {
+                    this.isTyping = Boolean(e.name);
+                });
             // }
+        }, 
+
+        infiniteHandler(event) {
+            // this.last_page--;
+            // console.log(this.last_page);
+            
+            
+            const element = document.getElementById("asdasd");
+            if(element.scrollTop === 0){
+                // console.log('test');
+                if(this.prev){
+                this.lazyLoading()
+                }
+            }
+            
+        },
+
+        lazyLoading() {
+            if(this.prev) {
+                this.last_page--;
+                axios.get(this.prev, {params: {
+                    slug: this.$route.params.convo_id
+                }})
+                    .then ((response) => {
+                        // console.log(response);
+                        var _this = this;
+                        let loadMessage = response.data.data;
+                        for (let i = loadMessage.length-1; i >= 0 ; i--) {
+                            const element = loadMessage[i];
+                            _this.$store.commit('insertLoadMessage', element)
+                            // console.log(element);
+                        }
+                        this.prev = response.data.prev_page_url;
+                    })
+                    .catch ((error) => {
+                        console.log(error);
+                    })
+            }
+            
         }
     }
 }

@@ -13,6 +13,8 @@ class Message extends Model
     
     protected $fillable = ['text', 'action', 'original_filename', 'new_filename', 'extension', 'conversation_id', 'sender_id', 'receiver_id', 'seen', 'read'];
 
+    protected $appends = array('message_date', 'message_sent');
+
     public function sender(){
         return $this->belongsTo('App\User', 'sender_id');
     }
@@ -32,8 +34,14 @@ class Message extends Model
         return null;
     }
 
-    public function getCreatedAtAttribute($date) {
-        return Carbon::parse($date)->format('h:i a');
+    public function getMessageSentAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('h:i a');
+    }
+
+    public function getMessageDateAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('F d Y');
     }
 
 }

@@ -41,7 +41,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/verifyConvoUsers', 'DataController@verifyConvoUsers');
     Route::delete('/removeMember', 'DataController@removeConvoMember');
 
-    Route::post('/getConvoMessages', 'DataController@getConvoMessages');
+    Route::get('/getConvoMessages', 'DataController@getConvoMessages');
+    Route::get('/getMessages', 'DataController@getMessages');
     Route::post('/newMessage', 'DataController@newMessage');
     Route::patch('/updateRead', 'DataController@updateRead');
     Route::post('/sendFiles', 'DataController@sendFiles');
