@@ -19,4 +19,8 @@ class Tandem extends Model
     public function brands() {
         return $this->hasMany('App\Brand');
     }
+
+    public function jos() {
+        return $this->hasMany('App\JobOrder');
+    }
 }

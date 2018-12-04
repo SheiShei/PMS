@@ -84,6 +84,26 @@ class User extends Authenticatable
         return $this->hasMany('App\Conversation', 'created_by');
     }
 
+    public function client_jos() {
+        return $this->hasMany('App\JobOrder', 'client_id');
+    }
+
+    public function created_jos() {
+        return $this->hasMany('App\JobOrder', 'created_by');
+    }
+
+    public function signed_creativejos() {
+        return $this->hasMany('App\JoCreative', 'signed_by');
+    }
+
+    public function proofed_webs() {
+        return $this->hasMany('App\JoWeb', 'web_proofed_by');
+    }
+
+    public function proofed_acmas() {
+        return $this->hasMany('App\JoWeb', 'acma_proofed_by');
+    }
+
     public function getPictureAttribute($pic) {
         return '/images/'.$pic;
     }

@@ -14,4 +14,8 @@ class Brand extends Model
     public function tandem() {
         return $this->belongsTo('App\Tandem');
     }
+
+    public function jos() {
+        return $this->hasMany('App\JobOrder');
+    }
 }
