@@ -20,6 +20,7 @@ class CreateJoCreativesTable extends Migration
             $table->string('ad_type')->nullable();
             $table->string('file_type')->nullable();
             $table->text('copy')->nullable();
+            $table->text('post_caption')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->text('revisions')->nullable();
             $table->dateTime('completed_at')->nullable();

@@ -20,7 +20,4 @@ class Tandem extends Model
         return $this->hasMany('App\Brand');
     }
 
-    public function jos() {
-        return $this->hasMany('App\JobOrder');
-    }
 }

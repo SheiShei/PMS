@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobOrdersTable extends Migration
+class CreateSprintsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,15 @@ class CreateJobOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('job_orders', function (Blueprint $table) {
+        Schema::create('sprints', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('board_id')->index();
             $table->string('name');
-            $table->unsignedInteger('brand_id')->index();
-            $table->date('date_in');
-            $table->date('date_due');
-            $table->tinyInteger('status')->default('1');
             $table->unsignedInteger('created_by')->index();
-            $table->tinyInteger('type');
-            $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('board_id')->references('id')->on('boards')->onDelete('cascade');
         });
     }
 
@@ -37,6 +32,6 @@ class CreateJobOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_orders');
+        Schema::dropIfExists('sprints');
     }
 }

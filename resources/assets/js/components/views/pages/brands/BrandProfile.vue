@@ -243,7 +243,7 @@ export default {
         // $(this.$refs.select).selectpicker('refresh')
         // let sel  = this.$refs.select;
         // console.log(this.$refs);
-        console.log('updated');
+        // console.log('updated');
     
     },
     data () {

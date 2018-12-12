@@ -20,6 +20,12 @@ class CreateJoWebsTable extends Migration
             $table->tinyInteger('tech')->nullable();
             $table->tinyInteger('domain_transfer')->nullable();
             $table->tinyInteger('domain_renewal')->nullable();
+            $table->string('old_cpanel_uname')->nullable();
+            $table->string('new_cpanel_uname')->nullable();
+            $table->string('old_cpanel_password')->nullable();
+            $table->string('new_cpanel_password')->nullable();
+            $table->date('date_commerced')->nullable();
+            $table->date('date_ended')->nullable();
             $table->text('action_points')->nullable();
             $table->string('target_list')->nullable();
             $table->datetime('web_proofed_at')->nullable();

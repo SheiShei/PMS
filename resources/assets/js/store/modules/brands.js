@@ -37,7 +37,7 @@ const mutations = {
 const actions = {
     
     setBrands({commit}, databrands) {
-        console.log(databrands.data)
+        // console.log(databrands.data)
         axios.post(databrands.url, {
             filterposition: databrands.data.filter.position,
             filtercategory: databrands.data.filter.category,
@@ -48,7 +48,7 @@ const actions = {
         })
         
             .then((response) => {
-                console.log(response.data.data);
+                // console.log(response.data.data);
                 commit('setBrands', response.data.data)
                 
             })
@@ -61,7 +61,7 @@ const actions = {
     getTandemsList({commit}) {
         axios.get('/api/getTandemsList')
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 commit('getTandemsList', response.data);
             })
             .catch((error) => {
@@ -81,8 +81,8 @@ const actions = {
             about: databrand.about
 
         }
-            console.log(credentials);
-            console.log(databrand.logo);
+            // console.log(credentials);
+            // console.log(databrand.logo);
             return new Promise((resolve, reject) => {
                 axios.post('/api/addbrands', credentials)
 
@@ -106,7 +106,7 @@ const actions = {
                 data: { id: id}
             })
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     commit('deleteBrand', id);
                     resolve(response);
                 })

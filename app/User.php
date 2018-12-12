@@ -84,10 +84,6 @@ class User extends Authenticatable
         return $this->hasMany('App\Conversation', 'created_by');
     }
 
-    public function client_jos() {
-        return $this->hasMany('App\JobOrder', 'client_id');
-    }
-
     public function created_jos() {
         return $this->hasMany('App\JobOrder', 'created_by');
     }
@@ -102,6 +98,30 @@ class User extends Authenticatable
 
     public function proofed_acmas() {
         return $this->hasMany('App\JoWeb', 'acma_proofed_by');
+    }
+
+    public function boards() {
+        return $this->hasMany('App\Board', 'created_by');
+    }
+
+    public function sprints() {
+        return $this->hasMany('App\Sprint', 'created_by');
+    }
+
+    public function cards() {
+        return $this->hasMany('App\Card', 'created_by');
+    }
+
+    public function tasks() {
+        return $this->hasMany('App\Task', 'created_by');
+    }
+
+    public function task_assigned_by() {
+        return $this->hasMany('App\Task', 'assigned_by');
+    }
+
+    public function task_assigned_to() {
+        return $this->hasMany('App\Task', 'assigned_to');
     }
 
     public function getPictureAttribute($pic) {

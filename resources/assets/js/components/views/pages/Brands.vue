@@ -97,38 +97,18 @@
                 <div class="mybox-head">
                     <h6><strong>ACTIVE JOB ORDERS</strong></h6>
                 </div>
-                <div class="mybox-body white-bg">
+                <div class="mybox-body white-bg" v-if="jos">
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="jo-list">
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'mfi-revision'}}">
+                                <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
+                                    <router-link v-if="jo.type == 1" :to="{name: 'viewjocreative', params: {jo_id: jo.id}}">
                                         <span class="fa fa-file-o"></span>
-                                        [090718] MFI Revision
+                                        {{ jo.name }}
                                     </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'furnitalia-revision'}}">
+                                    <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
                                         <span class="fa fa-file-o"></span>
-                                        [102518] Furnitalia Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'fil-revision'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Fil Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'mowel-revision'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Mowel Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'policious-revisio'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Policious Revision
+                                        {{ jo.name }}
                                     </router-link>
                                 </li>
                             </ul>
@@ -220,7 +200,8 @@ export default {
 
     computed: {
          ...mapGetters({
-                brands: 'brandsList'
+                brands: 'brandsList',
+                jos: 'getJOs'
             }),
 
         redirectJO() {
@@ -243,8 +224,12 @@ export default {
         let data = this.data;
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         this.$store.dispatch('getTandemsList');
-
-            }, 
+        const ndata = {
+            search: '',
+            sort: 'created_at.desc'
+        }
+        this.$store.dispatch('getJobOrders', ndata);
+    }, 
 
     methods: {
          getsData() {

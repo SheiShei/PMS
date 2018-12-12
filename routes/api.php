@@ -42,4 +42,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');
 
+
+    //Job Order
+    Route::get('/onLoad', 'AdminController@onLoad');
+    Route::get('/getJobOrders', 'AdminController@getJobOrders');
+    Route::post('/newJobOrderCreative', 'AdminController@createJOCreative');
+    Route::post('/newJobOrderWeb', 'AdminController@createJOWeb');
+    // Route::post('/updateJobOrderCreative', 'AdminController@updateJOCreative');
+    // Route::post('/updateJobOrderWeb', 'AdminController@updateJOWeb');
+    Route::post('/getJoDetails', 'AdminController@getJoDetails');
+    Route::post('/finishJOC', 'AdminController@finishJOC');
+    Route::post('/finishJOW', 'AdminController@finishJOW');
+    Route::delete('/deletejo', 'AdminController@deletejo');
+
 });
