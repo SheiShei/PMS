@@ -5,6 +5,7 @@ import Vue from "vue";
 /* import all vue libraries */
 import VueRouter from "vue-router";
 import Vuex from "vuex";
+import VueMoment from "vue-moment";
 import Toaster from 'v-toaster'
     // toaster css
     import 'v-toaster/dist/v-toaster.css'
@@ -18,8 +19,7 @@ import {initialize} from './helpers/general';
 
 import MainApp from './components/MainApp.vue'
 
-// Vue.prototype.moment = moment
-Vue.use(require('vue-moment'));
+Vue.use(VueMoment);
 Vue.use(VueRouter);
 Vue.use(Vuex);
 

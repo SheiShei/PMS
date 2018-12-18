@@ -65,7 +65,7 @@ const mutations = {
 const actions = {
     
     setBrands({commit}, databrands) {
-        console.log(databrands.data)
+        // console.log(databrands.data)
         axios.post(databrands.url, {
             filterposition: databrands.data.filter.position,
             filtercategory: databrands.data.filter.category,
@@ -74,7 +74,7 @@ const actions = {
         })
         
             .then((response) => {
-                console.log(response.data.data);
+                // console.log(response.data.data);
                 commit('setBrands', response.data.data)
                 
             })
@@ -86,7 +86,6 @@ const actions = {
             axios.post('/api/getOnebrand', {
                 id: id
             })
-            
                 .then((response) => {
                     // console.log(response);
                     commit('getOnebrand', response.data)
@@ -95,45 +94,44 @@ const actions = {
                 .catch((error) => {
                    // console.log(error);
                     alert('Something went wrong, try reloading the page');
+                    reject(error);
                 });
         })
     },
 
     getTandemsList({commit}) {
-    return new Promise ((resolve, reject) => {
-        axios.get('/api/getTandemsList')
-            .then((response) => {
-                // console.log(response);
-                commit('getTandemsList', response.data);
-                resolve(response.data)
-            })
-            .catch((error) => {
-              // console.log(error);
-                
-            });
+        return new Promise ((resolve, reject) => {
+            axios.get('/api/getTandemsList')
+                .then((response) => {
+                    // console.log(response);
+                    commit('getTandemsList', response.data);
+                    resolve(response.data)
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                });
         })
     },
 
     addBrand({commit}, databrand) {
-      
-            const config = { headers : {'Content-Type': 'multipart/form-data'} }
+        const config = { headers : {'Content-Type': 'multipart/form-data'} }
+        return new Promise((resolve, reject) => {
+            axios.post('/api/addbrands', databrand, config)
 
-            return new Promise((resolve, reject) => {
-                axios.post('/api/addbrands', databrand, config)
+                .then((response) => {
+                    // console.log(response);
+                    commit('addBrand', response.data[0]);
+                    resolve(response);
+                })
 
-                    .then((response) => {
-                        console.log(response);
-                        commit('addBrand', response.data[0]);
-                        resolve(response);
-                    })
-
-                    .catch((error) => {
-                        if(error.response.status == 422){
-                            console.log(error.response.data);
-                            reject(error.response.databrand.errors);
-                        }
-                    })
-            });
+                .catch((error) => {
+                    if(error.response.status == 422){
+                        console.log(error.response.data);
+                        reject(error.response.databrand.errors);
+                    }
+                })
+        });
     },
     deleteBrand({commit}, id) {
         return new Promise((resolve, reject) => {
@@ -185,7 +183,7 @@ const actions = {
                 })
                 .catch ((error) => {
                     console.log(error);
-                    
+                    reject(error);
                 })
         })
     },
@@ -199,29 +197,29 @@ const actions = {
                     commit('deleteBrandJo', id);
                     resolve(response);
                 })
+                .catch (error => {
+                    console.log(error);
+                    reject(error);
+                })
         })
     },
-    
+
     UpdateBrand({commit}, databrand) {
-             
         const config = { headers : {'Content-Type': 'multipart/form-data'} }
-
-            return new Promise((resolve, reject) => {
-                axios.post('/api/UpdateBrand', databrand, config)
-
-                    .then((response) => {
-                        console.log(response);
-                        commit('UpdateBrand', response.data[0]);
-                        resolve(response);
-                    })
-
-                    .catch((error) => {
-                        //if(error.response.status == 422){
-                           // console.log(error.response.data);
-                            reject(error);
-                        }
-                    )
-            });
+        return new Promise((resolve, reject) => {
+            axios.post('/api/UpdateBrand', databrand, config)
+                .then((response) => {
+                    // console.log(response);
+                    commit('UpdateBrand', response.data[0]);
+                    resolve(response);
+                })
+                .catch((error) => {
+                    //if(error.response.status == 422){
+                        console.log(error);
+                        reject(error);
+                    }
+                )
+        });
     },
 };
 

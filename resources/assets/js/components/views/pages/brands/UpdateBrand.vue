@@ -127,62 +127,54 @@ export default {
                 this.brand.logo = brandData.logo;
                 this.brand.about = brandData.about;
                 $(this.$el).find('select[name=brandowner]').val(this.brand.tandem_id);
-               $(this.$el).find('.selectpicker').selectpicker('refresh');
-               console.log(this.brand.logo);
-                            })
+                $(this.$el).find('.selectpicker').selectpicker('refresh');
+                // console.log(this.brand.logo);
+            })
         
-        // console.log(this.data.id);
-        
-
-        },
+        // console.log(this.data.id);   
+    },
 
     computed: {
          ...mapGetters({
-            tandemList: 'getTandemsList',
-            brandProfile: 'getOnebrand'
-             })
-            
-            },
+                tandemList: 'getTandemsList',
+                brandProfile: 'getOnebrand'
+            })  
+    },
 
-
-
-   methods: {
-
-    UpdateBrand() {
-        let form = new FormData;
-        form.append('id', this.brand.id);
-        if(this.haslogo==true)
-        {
-            form.append('logo', this.brand.logo[0]);
-        }
-        else{
-            form.append('logo', this.brand.logo);
+    methods: {
+        UpdateBrand() {
+            let form = new FormData;
+            form.append('id', this.brand.id);
+            if(this.haslogo==true)
+            {
+                form.append('logo', this.brand.logo[0]);
             }
-         form.append('name', this.brand.name);
-         form.append('telephone', this.brand.telephone);
-         form.append('contact_person', this.brand.contact_person);
-         form.append('mobile', this.brand.mobile);
-         form.append('tandem_id', this.brand.tandem_id);
-         form.append('about', this.brand.about);
-        // console.log(form.append();
-
-        this.$store.dispatch('UpdateBrand', form)
-        .then((response) => {
-                    this.$router.replace({ name: 'brands'});
-                    this.$toaster.success('Brand updated succesfully!.')
+            else{
+                form.append('logo', this.brand.logo);
                 }
-        )
+            form.append('name', this.brand.name);
+            form.append('telephone', this.brand.telephone);
+            form.append('contact_person', this.brand.contact_person);
+            form.append('mobile', this.brand.mobile);
+            form.append('tandem_id', this.brand.tandem_id);
+            form.append('about', this.brand.about);
+            // console.log(form.append();
+
+            this.$store.dispatch('UpdateBrand', form)
+                .then(() => {
+                        this.$router.replace({ name: 'brands'});
+                        this.$toaster.success('Brand updated succesfully!.')
+                })
                 .catch((error) => {
-                 console.log(error)
-                 //   this.errors = error;
+                    console.log(error)
+                    //   this.errors = error;
                 })
         },
-    onLogoChanged (event) {
-            this.brand.logo = event.target.files
-            console.log(this.brand.logo);
-            this.haslogo=true;
-            
-    }
-     },
+        onLogoChanged (event) {
+                this.brand.logo = event.target.files
+                // console.log(this.brand.logo);
+                this.haslogo=true;
+        }
+    },
 }
 </script>

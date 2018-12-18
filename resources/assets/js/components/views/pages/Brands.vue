@@ -65,7 +65,7 @@
                                 <tr v-for="brand in brands" :key="brand.id">
                                     <td>{{ brand.id  }}</td>
                                     <td>{{ brand.name }}</td>
-                                    <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
+                                    <td>{{  brand.created_at }}</td>
                                     <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
                                     <td>9</td>
                                     <td class="td-actions">
@@ -253,10 +253,10 @@ export default {
 
         deleteBrand(id) {
             this.$store.dispatch('deleteBrand', id)
-                .then((response) => {
+                .then(() => {
                     this.$toaster.warning('Brand deleted succesfully, see Archive List to restore!!.')
                 })
-                .catch((error) => {
+                .catch(() => {
                     alert('Something went wrong, try reloading the page');
                 })
         },
@@ -267,10 +267,10 @@ export default {
         },
         restoreBrand(id) {
             this.$store.dispatch('restoreBrand', id)
-                .then((response) => {
+                .then(() => {
                     this.$toaster.success('Brand restored succesfully!.')
                 })
-                .catch((error) => {
+                .catch(() => {
                     alert('Something went wrong, try reloading the page');
                 })
         }

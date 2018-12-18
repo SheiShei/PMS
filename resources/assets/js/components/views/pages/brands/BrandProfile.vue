@@ -9,24 +9,15 @@
                
                 <div class="mybox-body white-white-bg">
                     <div class="br-prof text-center">
-                            <p  class="info-name">{{brandProfile.name}}</p>
-
+                        <p  class="info-name">{{brandProfile.name}}</p>
                         <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="'./images/logo/'+brandProfile.logo">
-                       
                     </div>
                     <hr />
-                    
-                    
-
                     <p class="other-info"><span class="">Brand Owner: </span>{{brandProfile.tandem.name}}</p>
                     <p class="other-info"><span>Client: </span>{{brandProfile.contact_person}}</p>
                     <p class="other-info"><span>Telephone: </span>{{brandProfile.telephone}}</p>
                     <p class="other-info"><span>Mobile: </span>{{brandProfile.mobile}}</p>
-                    <p class="other-info"><span>Description: </span>
-                     {{brandProfile.about}}                    </p>
-                   
-                    
-
+                    <p class="other-info"><span>Description: </span>{{brandProfile.about}}</p>
                 </div>
                 <div class="mybox-footer text-center">
                     <button class="btn btn-info btn-sm full-btn"><span class="fa fa-book"></span> View Workbook</button>
@@ -141,7 +132,7 @@ export default {
         // this.data.id = this.$route.params.brandId;
         let data = this.data;
         this.$store.dispatch('getOnebrand',this.id)
-            .then (response => {
+            .then (() => {
                 this.getBrandJOs()
             }) 
     },
@@ -180,7 +171,7 @@ export default {
         deleteJO(id) {
             let _this = this;
             this.$store.dispatch('deleteBrandJo', id)
-                .then ((response) => {
+                .then (() => {
                     _this.$toaster.warning('JO Deleted!.')
                 })
         },
