@@ -7,22 +7,23 @@
         <div class="col-md-3">
             <div class="mybox">
                
-                <div v-for="brandProf in brandProfile" :key="brandProf.id" class="mybox-body white-white-bg">
+                <div class="mybox-body white-white-bg">
                     <div class="br-prof text-center">
-                            <p  class="info-name">{{brandProf.name}}</p>
-                        <img src="/images/mfilogo.png" style="height: 60px; margin-bottom: 5px;" alt="">
+                            <p  class="info-name">{{brandProfile.name}}</p>
+
+                        <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="'./images/logo/'+brandProfile.logo">
                        
                     </div>
                     <hr />
                     
                     
 
-                    <p class="other-info"><span class="">Brand Owner: </span>{{brandProf.tandem.name}}</p>
-                    <p class="other-info"><span>Client: </span>{{brandProf.contact_person}}</p>
-                    <p class="other-info"><span>Telephone: </span>{{brandProf.telephone}}</p>
-                    <p class="other-info"><span>Mobile: </span>{{brandProf.mobile}}</p>
+                    <p class="other-info"><span class="">Brand Owner: </span>{{brandProfile.tandem.name}}</p>
+                    <p class="other-info"><span>Client: </span>{{brandProfile.contact_person}}</p>
+                    <p class="other-info"><span>Telephone: </span>{{brandProfile.telephone}}</p>
+                    <p class="other-info"><span>Mobile: </span>{{brandProfile.mobile}}</p>
                     <p class="other-info"><span>Description: </span>
-                     {{brandProf.about}}                    </p>
+                     {{brandProfile.about}}                    </p>
                    
                     
 
@@ -239,32 +240,38 @@
 import {mapGetters} from 'vuex';
 
 export default {
+   
     updated () {
         // $(this.$refs.select).selectpicker('refresh')
         // let sel  = this.$refs.select;
         // console.log(this.$refs);
         console.log('updated');
-    
+       console.log(this.brandProfile.tandem.name);
     },
     data () {
             return {
-            data: {
+           
                 id: this.$route.params.brandId,
-                filter: '',
-                search: '',
-                notArchive: ''
-                }
-            }
+                
+                    }
         },
     created() {
-           // this.data.id = this.$route.params.brandId;
-            let data = this.data;
-            this.$store.dispatch('setBrands', {url : '/api/getbrands', data}); 
-
+            this.$store.dispatch('getOnebrand',this.id)
+             .then((response) => {
+                   
+                }
+        )
+                .catch((error) => {
+                 console.log(error)
+                // reject(error)
+                 //   this.errors = error;
+                })
         },
+
+        
     computed: {
          ...mapGetters({
-                brandProfile: 'brandsList'
+                brandProfile: 'getOnebrand'
             }),
     },
 

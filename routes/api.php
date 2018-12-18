@@ -36,10 +36,14 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getbrands', 'BrandsController@getBrands'); 
     Route::post('/addbrands', 'BrandsController@addBrands');
     Route::delete('/deletebrands', 'BrandsController@deleteBrands');
-    Route::post('/restorebrands', 'BrandsController@restoreBrands');
+    Route::post('/restorebrands', 'BrandsController@restoreBrands'); 
     Route::get('/getTandemsList', 'BrandsController@getTandemsList');
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');
+    Route::post('/getOnebrand', 'BrandsController@getOnebrand'); 
+    Route::post('/UpdateBrand', 'BrandsController@updateBrand');
+ //   Route::post('/testFileUpload', 'BrandsController@testFileUpload');
+
 
 });
