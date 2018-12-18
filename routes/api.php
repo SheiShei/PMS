@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::delete('/deletebrands', 'BrandsController@deleteBrands');
     Route::post('/restorebrands', 'BrandsController@restoreBrands'); 
     Route::get('/getTandemsList', 'BrandsController@getTandemsList');
+    Route::post('/getBrandJos', 'BrandsController@getBrandJos');
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');
@@ -45,5 +46,25 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/UpdateBrand', 'BrandsController@updateBrand');
  //   Route::post('/testFileUpload', 'BrandsController@testFileUpload');
 
+
+
+    //Job Order
+    Route::get('/onLoad', 'AdminController@onLoad');
+    Route::get('/getJobOrders', 'AdminController@getJobOrders');
+    Route::post('/newJobOrderCreative', 'AdminController@createJOCreative');
+    Route::post('/newJobOrderWeb', 'AdminController@createJOWeb');
+    // Route::post('/updateJobOrderCreative', 'AdminController@updateJOCreative');
+    // Route::post('/updateJobOrderWeb', 'AdminController@updateJOWeb');
+    Route::post('/getJoDetails', 'AdminController@getJoDetails');
+    Route::post('/finishJOC', 'AdminController@finishJOC');
+    Route::post('/finishJOW', 'AdminController@finishJOW');
+    Route::delete('/deletejo', 'AdminController@deletejo');
+
+
+    //Boards
+    Route::post('/newBoard', 'BoardController@newBoard');
+    Route::post('/newCard', 'BoardController@newCard');
+    Route::post('/newSprint', 'BoardController@newSprint');
+    Route::delete('/deleteBoard', 'AdminController@deleteBoard');
 
 });

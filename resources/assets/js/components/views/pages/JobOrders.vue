@@ -1,5 +1,5 @@
 <template>
-    <section class="main-main-container" style="">
+    <section class="main-main-container" style="" v-if="jos && cUser">
         <div class="title-head">
             <h2><span class="fa fa-copy"></span> Job Orders <small>List</small></h2>
         </div>
@@ -13,15 +13,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <span>Sort by:</span>
-                                <select class="my-input" name="" id="">
-                                    <option value="">Date (Descending)</option>
-                                    <option value="">Date (Ascending)</option>
-                                    <option value="">Name (Ascending)</option>
-                                    <option value="">Name (Descending)</option>
+                                <select @change="searched" v-model="sort" class="my-input">
+                                    <option value="created_at.desc">Date (Descending)</option>
+                                    <option value="created_at.asc">Date (Ascending)</option>
+                                    <option value="name.asc">Name (Ascending)</option>
+                                    <option value="name.desc">Name (Descending)</option>
                                 </select>
                             </div>
                             <div class="col-md-6 text-right">
-                                <input type="search" class="my-input" placeholder="Search...">
+                                <input v-model="search" @input="searched" type="search" class="my-input" placeholder="Search...">
                                 <span class="fa fa-search"></span>
                             </div>
                         </div>
@@ -30,137 +30,36 @@
                         <table class="table table-bordered table-brands">
                             <thead>
                                 <tr>
-                                    <th class="text-center">ID</th>
+                                    <!-- <th class="text-center">ID</th> -->
                                     <th class="">Date Created</th>
                                     <th>Title</th>
                                     <th>Team</th>
+                                    <th>Brand</th>
                                     <th>Status</th>
                                     <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody style="height: 10vh; overflow:auto">
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td>May 5, 2018</td>
-                                    <td>MFI Revisions - Apply Mock-ups</td>
-                                    <td>Web</td>
-                                    <td><span class="label label-warning">In Progress</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
+                                <tr v-for="jo in jos" :key="jo.id">
+                                    <!-- <td class="text-center">{{ jo.id }}</td> -->
+                                    <td>{{ jo.created_at }}</td>
+                                    <td>{{ jo.name }}</td>
+                                    <td v-if="jo.type == 1">Creatives</td>
+                                    <td v-if="jo.type == 2">Web</td>
+                                    <td>{{ jo.brand.name }}</td>
+                                    <td>
+                                        <span v-if="jo.status == 1" class="label label-warning">Active</span>
+                                        <span v-if="jo.status == 2" class="label label-success">Completed</span>
+                                        <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">2</td>
-                                    <td>April 10, 2017</td>
-                                    <td>Potato Corner - Improve Fries Shots</td>
-                                    <td>Creatives</td>
-                                    <td><span class="label label-info">New</span></td>
                                     <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
+                                        <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                                        <!-- <button @click="update(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">3</td>
-                                    <td>December 5, 2017</td>
-                                    <td>Potato Corner - Color Scheme</td>
-                                    <td>Creatives</td>
-                                    <td><span class="label label-default">Blocked</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">4</td>
-                                    <td>June 25, 2018</td>
-                                    <td>Fil-Global Revisions - Change Banner</td>
-                                    <td>Web</td>
-                                    <td><span class="label label-success">Done</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">5</td>
-                                    <td>May 5, 2018</td>
-                                    <td>MFI Revisions - Apply Mock-ups</td>
-                                    <td>Web</td>
-                                    <td><span class="label label-warning">In Progress</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">6</td>
-                                    <td>April 10, 2017</td>
-                                    <td>Potato Corner - Improve Fries Shots</td>
-                                    <td>Creatives</td>
-                                    <td><span class="label label-info">New</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">7</td>
-                                    <td>June 25, 2018</td>
-                                    <td>Furnitalia Revisions - Change Banner</td>
-                                    <td>Web</td>
-                                    <td><span class="label label-success">Done</span></td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                        </button> -->
+                                        <button v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
                                     </td>
@@ -185,25 +84,10 @@
                             <p class="note">Select a JO type to create a new Job Order form.</p>
                             <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Web JO</router-link>
                             <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
-                            <!-- <div class="form-group">
-                                <select class="selectpicker" ref="shei" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                    <option disabled="">-- JO Form Type --</option>
-                                    <option value="web">JO (Web)</option>
-                                    <option value="creatives">JO (Creatives)</option>
-                                </select>
-                            </div> -->
                         </div>
                                     
                     </div> 
                 </div>
-                <!-- <div class="mybox-footer">
-                    <div class="row text-center">
-                        <div class="col-md-12">
-                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Web JO</router-link>
-                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
-                        </div>
-                    </div>
-                </div> -->
             </div>
         </div>
     </section>
@@ -228,13 +112,61 @@
 </style>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
-    updated () {
-        // $(this.$refs.select).selectpicker('refresh')
-        // let sel  = this.$refs.select;
-        // console.log(this.$refs);
-        console.log('updated');
-	}
+    data() {
+        return {
+            search: '',
+            sort: 'created_at.desc'
+        }
+    },
+    computed: {
+        ...mapGetters({
+                jos: 'getJOs',
+                cUser: 'currentUser'
+            }),
+    },
+    created() {
+        const data = {
+            search: '',
+            sort: 'created_at.desc'
+        }
+        this.$store.dispatch('getJobOrders', data);
+    },
+
+    methods: {
+        view(id, type) {
+            if(type == 1) {
+                this.$router.push({name: 'viewjocreative', params: {jo_id: id}});
+            }
+            else{
+                this.$router.push({name: 'viewjoweb', params: {jo_id: id}});
+            }
+        },
+
+        // update(id, type) {
+        //     if(type == 1) {
+        //         this.$router.push({name: 'updatecrea', params: {jo_id: id}});
+        //     }
+        //     else{
+        //         this.$router.push({name: 'updateweb', params: {jo_id: id}});
+        //     }
+        // },
+
+        deleteJO(id) {
+            let _this = this;
+            this.$store.dispatch('deleteJO', id)
+                .then ((response) => {
+                    _this.$toaster.warning('JO Deleted!.')
+                })
+        },
+
+        searched: _.debounce(function (e) {
+            this.$store.dispatch('getJobOrders', {search: this.search, sort: this.sort});
+            // console.log('shei');
+            
+        }, 500),
+    }
 }
 </script>
 

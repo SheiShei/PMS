@@ -96,74 +96,60 @@ import {mapGetters} from 'vuex';
 
 export default {
 
-   data(){
+   data() {
        return {
-        tandems: [],
-           brand:{
-               name: '',
-               contact_person: '',
-               telephone: '',
-               mobile: '',
-               tandem_id: '',
-               logo: '',
-               about: ''             
-           },
-          
-       
+            tandems: [],
+            brand:{
+                name: '',
+                contact_person: '',
+                telephone: '',
+                mobile: '',
+                tandem_id: '',
+                logo: '',
+                about: ''             
+            },
        }
-
    },
     created() {
        this.$store.dispatch('getTandemsList')
-            // .then((response) => {
-            //     const brandData = response;
-            //     this.tandems= brandData;
-            //     console.log(this.tandems);
-            //                 })
     },
      computed: {
          ...mapGetters({
-            tandemList: 'getTandemsList'
-             })
-            
-            },
+                tandemList: 'getTandemsList'
+            })
+        },
    
+    methods: {
+        addNewBrand() {
+            // console.log('asdasd');
+            let form = new FormData;
+            form.append('logo', this.brand.logo[0]);
+            form.append('name', this.brand.name);
+            form.append('telephone', this.brand.telephone);
+            form.append('contact_person', this.brand.contact_person);
+            form.append('mobile', this.brand.mobile);
+            form.append('tandem_id', this.brand.tandem_id);
+            form.append('about', this.brand.about);
 
-methods: {
-    addNewBrand() {
-           console.log('asdasd');
-        let form = new FormData;
-         form.append('logo', this.brand.logo[0]);
-         form.append('name', this.brand.name);
-         form.append('telephone', this.brand.telephone);
-         form.append('contact_person', this.brand.contact_person);
-         form.append('mobile', this.brand.mobile);
-         form.append('tandem_id', this.brand.tandem_id);
-         form.append('about', this.brand.about);
+            this.$store.dispatch('addBrand', form)
+            .then(() => {
+                        this.brand.name='';
+                        this.brand.contact_person='';
+                        this.brand.telephone='';
+                        this.brand.mobile='';
+                        this.brand.tandem_id='';
+                        this.brand.about='';
+                        this.brand.logo='';
+                        this.$router.replace({ name: 'brands'});
+                        this.$toaster.success('Brand added succesfully!')
 
-        this.$store.dispatch('addBrand', form)
-        .then((response) => {
-                    this.brand.name='';
-                    this.brand.contact_person='';
-                    this.brand.telephone='';
-                    this.brand.mobile='';
-                    this.brand.tandem_id='';
-                    this.brand.about='';
-                    this.brand.logo='';
-                    this.$router.replace({ name: 'brands'});
-                    this.$toaster.success('Brand added succesfully!')
-
-                });
+                    });
         },
 
-    onLogoChanged (event) {
+        onLogoChanged (event) {
             this.brand.logo = event.target.files
-            console.log(this.brand.logo);
-            
+            // console.log(this.brand.logo);
+        }
     }
 }
-}
 </script>
-<style scoped>
-
-</style>

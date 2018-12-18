@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BrandsTableSeeder::class);
         $this->call(StickyNotesTableSeeder::class);
         $this->call(ConversationsTableSeeder::class);
+        $this->call(BoardsTableSeeder::class);
     }
 }

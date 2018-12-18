@@ -15,6 +15,8 @@ import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
+import UpdateWebJO from './components/views/pages/joborders/UpdateJobOrderWeb.vue';
+import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderCreative.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -117,16 +119,16 @@ export const routes = [
                 },
             },
             {
-                path: 'jo/:id',
-                name: 'jo',
+                path: 'jo/web/:jo_id',
+                name: 'viewjoweb',
                 component: ViewJobOrder,
                 meta: {
                     requiresAuth: true
                 },
             },
             {
-                path: 'jo-creatives/',
-                name: 'jo-creatives',
+                path: 'jo/creative/:jo_id',
+                name: 'viewjocreative',
                 component: ViewJoCrea,
                 meta: {
                     requiresAuth: true
@@ -141,14 +143,6 @@ export const routes = [
                 },
             },
             {
-                path: 'brand-profile',
-                name: 'brand_profile',
-                component: BrandProfile,
-                meta: {
-                    requiresAuth: true
-                },
-            },
-            {
                 path: 'messages/:convo_id',
                 name: 'messages',
                 component: Messages,
@@ -156,6 +150,22 @@ export const routes = [
                     requiresAuth: true
                 },
             },
+            // {
+            //     path: 'update/web/:jo_id',
+            //     name: 'updateweb',
+            //     component: UpdateWebJO,
+            //     meta: {
+            //         requiresAuth: true
+            //     },
+            // },
+            // {
+            //     path: 'update/creative/:jo_id',
+            //     name: 'updatecrea',
+            //     component: UpdateCreativeJO,
+            //     meta: {
+            //         requiresAuth: true
+            //     },
+            // }
         ]
     },
     {
