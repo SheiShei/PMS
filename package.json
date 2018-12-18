@@ -24,6 +24,7 @@
         "@tinymce/tinymce-vue": "^1.0.8",
         "font-awesome-sass": "^4.7.0",
         "laravel-echo": "^1.4.0",
+        "moment": "^2.23.0",
         "pusher-js": "^4.3.1",
         "v-toaster": "^1.0.3",
         "vee-validate": "^2.1.3",

@@ -1,16 +1,19 @@
 const state = {
     brands: [],
-    tandems: []
+    tandems: [],
+    Onebrand: ''
 };
 
 const getters = {
     brandsList: state => {
-        return state.brands;
-       
+        return state.brands; 
     },
 
     getTandemsList: state => {
         return state.tandems;
+    },
+    getOnebrand: state => {
+        return state.Onebrand;
     }
     
 };
@@ -31,7 +34,16 @@ const mutations = {
 
     getTandemsList (state, data) {
         state.tandems = data;
-    } 
+    },
+
+    getOnebrand (state, data) {
+        state.Onebrand = data;
+    },
+    UpdateBrand (state, brand) {
+        var index = _.findIndex(state.brands, {id: brand.id});
+        state.brands[index] = brand;
+        
+    },
 };
 
 const actions = {
@@ -42,9 +54,7 @@ const actions = {
             filterposition: databrands.data.filter.position,
             filtercategory: databrands.data.filter.category,
             search: databrands.data.search,
-            notArchive: databrands.data.notArchive,
-            id: databrands.data.id
-            
+            notArchive: databrands.data.notArchive
         })
         
             .then((response) => {
@@ -58,43 +68,56 @@ const actions = {
             });
     },
 
+    getOnebrand({commit}, id) {
+        //console.log(id)
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/getOnebrand', {
+                id: id
+            })
+            
+                .then((response) => {
+                    // console.log(response);
+                    commit('getOnebrand', response.data)
+                    resolve(response.data)
+                })
+                .catch((error) => {
+                   // console.log(error);
+                    alert('Something went wrong, try reloading the page');
+                });
+        })
+    },
+
     getTandemsList({commit}) {
+    return new Promise ((resolve, reject) => {
         axios.get('/api/getTandemsList')
             .then((response) => {
-                console.log(response);
+                //console.log(response.data);
                 commit('getTandemsList', response.data);
+                resolve(response.data)
             })
             .catch((error) => {
-                console.log(error);
+              // console.log(error);
                 
-            })
+            });
+        })
     },
 
     addBrand({commit}, databrand) {
-        let credentials = {
-            name: databrand.name,
-            contact_person: databrand.contact_person,
-            telephone: databrand.telephone,
-            mobile: databrand.mobile,
-            tandem_id: databrand.tandem_id,
-            logo: databrand.logo,
-            about: databrand.about
+      
+            const config = { headers : {'Content-Type': 'multipart/form-data'} }
 
-        }
-            console.log(credentials);
-            console.log(databrand.logo);
             return new Promise((resolve, reject) => {
-                axios.post('/api/addbrands', credentials)
+                axios.post('/api/addbrands', databrand, config)
 
                     .then((response) => {
-                        //console.log(response);
+                        console.log(response);
                         commit('addBrand', response.data[0]);
                         resolve(response);
                     })
 
                     .catch((error) => {
                         if(error.response.status == 422){
-                            //console.log(error.response.data);
+                            console.log(error.response.data);
                             reject(error.response.databrand.errors);
                         }
                     })
@@ -133,12 +156,34 @@ const actions = {
 
                 .catch((error) => {
                     if(error.response.status == 422){
-                        console.log(error);
+                        //console.log(error);
                         reject(error);
                     }
                 })
         });
-    }
+    },
+
+    UpdateBrand({commit}, databrand) {
+             
+        const config = { headers : {'Content-Type': 'multipart/form-data'} }
+
+            return new Promise((resolve, reject) => {
+                axios.post('/api/UpdateBrand', databrand, config)
+
+                    .then((response) => {
+                        console.log(response);
+                        commit('UpdateBrand', response.data[0]);
+                        resolve(response);
+                    })
+
+                    .catch((error) => {
+                        //if(error.response.status == 422){
+                           // console.log(error.response.data);
+                            reject(error);
+                        }
+                    )
+            });
+    },
 };
 
 export default {

@@ -18,8 +18,9 @@ import {initialize} from './helpers/general';
 
 import MainApp from './components/MainApp.vue'
 import VeeValidate from 'vee-validate';
+import moment from 'moment'
 
-
+Vue.prototype.moment = moment
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VeeValidate);
