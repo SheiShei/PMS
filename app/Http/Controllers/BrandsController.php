@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
 use App\Tandem;
+use App\JobOrder;
 use Hash;
 use File;
 
@@ -90,6 +91,17 @@ class BrandsController extends Controller
         return $tandems;
     }
 
+    public function getBrandJos(Request $request) {
+        $sort_key = explode(".",$request->sort)[0];
+        $sort_type = explode(".",$request->sort)[1];
+        $query = JobOrder::where('brand_id', $request->id)->with('brand:id,name')->orderBy($sort_key, $sort_type);
 
+        if($request->search) {
+            $query->where('name', 'like', $request->search.'%');
+        }
+
+        $jo = $query->get();
+        return $jo;
+    }
 
 }

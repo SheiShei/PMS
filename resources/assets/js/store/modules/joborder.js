@@ -140,9 +140,9 @@ const actions = {
                 data: { id: id}
             })
                 .then((response) => {
-                    // console.log(response);
-                    commit('deletejo', id);
-                    resolve(response);
+                    console.log(response);
+                    // commit('deletejo', id);
+                    // resolve(response);
                 })
 
                 .catch((error) => {

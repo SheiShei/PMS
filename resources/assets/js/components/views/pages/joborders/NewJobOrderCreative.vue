@@ -47,9 +47,6 @@
                                     <select name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                         <option value="">---</option>
                                         <option value="">Board 1</option>
-                                        <option value="">Board 1</option>
-                                        <option value="">Board 1</option>
-                                        <option value="">Board 1</option>
                                     </select>
                                 </div>
                             </div>

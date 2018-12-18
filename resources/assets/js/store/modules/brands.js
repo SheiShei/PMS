@@ -1,6 +1,7 @@
 const state = {
     brands: [],
-    tandems: []
+    tandems: [],
+    brandJOs: []
 };
 
 const getters = {
@@ -11,6 +12,10 @@ const getters = {
 
     getTandemsList: state => {
         return state.tandems;
+    },
+
+    getBrandJOs: state => {
+        return state.brandJOs;
     }
     
 };
@@ -31,31 +36,42 @@ const mutations = {
 
     getTandemsList (state, data) {
         state.tandems = data;
-    } 
+    },
+
+    setBrandJOs (state, data) {
+        state.brandJOs = data;
+    },
+
+    deleteBrandJo (state, id) {
+        var index = _.findIndex(state.brandJOs, {id: id});
+        state.brandJOs.splice(index, 1);
+    }
 };
 
 const actions = {
     
     setBrands({commit}, databrands) {
         // console.log(databrands.data)
-        axios.post(databrands.url, {
-            filterposition: databrands.data.filter.position,
-            filtercategory: databrands.data.filter.category,
-            search: databrands.data.search,
-            notArchive: databrands.data.notArchive,
-            id: databrands.data.id
-            
-        })
-        
-            .then((response) => {
-                // console.log(response.data.data);
-                commit('setBrands', response.data.data)
+        return new Promise ((resolve, reject) => {
+            axios.post(databrands.url, {
+                filterposition: databrands.data.filter.position,
+                filtercategory: databrands.data.filter.category,
+                search: databrands.data.search,
+                notArchive: databrands.data.notArchive,
+                id: databrands.data.id
                 
             })
-            .catch((error) => {
-                //console.log(error);
-                alert('Something went wrong, try reloading the page');
-            });
+            
+                .then((response) => {
+                    // console.log(response.data.data);
+                    commit('setBrands', response.data.data)
+                    resolve(response);
+                })
+                .catch((error) => {
+                    //console.log(error);
+                    alert('Something went wrong, try reloading the page');
+                });
+        })
     },
 
     getTandemsList({commit}) {
@@ -138,6 +154,33 @@ const actions = {
                     }
                 })
         });
+    },
+
+    brandJos({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/getBrandJos', data)
+                .then ((response) => {
+                    // console.log(response);
+                    commit('setBrandJOs', response.data)
+                    resolve(response.data)
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    
+                })
+        })
+    },
+
+    deleteBrandJo({commit}, id) {
+        return new Promise ((resolve, reject) => {
+            axios.delete('/api/deletejo', {
+                data: { id: id}
+            })
+                .then (response => {
+                    commit('deleteBrandJo', id);
+                    resolve(response);
+                })
+        })
     }
 };
 

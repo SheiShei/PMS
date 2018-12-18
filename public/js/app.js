@@ -65124,136 +65124,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    updated: function updated() {
-        // $(this.$refs.select).selectpicker('refresh')
-        // let sel  = this.$refs.select;
-        // console.log(this.$refs);
-        // console.log('updated');
-
-    },
     data: function data() {
         return {
             data: {
@@ -65261,18 +65135,59 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 filter: '',
                 search: '',
                 notArchive: ''
-            }
+            },
+            josearch: '',
+            jofilter: 'created_at.desc',
+            brandJOs: null
         };
     },
     created: function created() {
+        var _this2 = this;
+
         // this.data.id = this.$route.params.brandId;
         var data = this.data;
-        this.$store.dispatch('setBrands', { url: '/api/getbrands', data: data });
+        this.$store.dispatch('setBrands', { url: '/api/getbrands', data: data }).then(function (response) {
+            _this2.getBrandJOs();
+        });
     },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        brandProfile: 'brandsList'
-    }))
+        brandProfile: 'brandsList',
+        cUser: 'currentUser'
+    })),
+    methods: {
+        getBrandJOs: function getBrandJOs() {
+            var _this3 = this;
+
+            var data = {
+                id: this.$route.params.brandId,
+                search: this.josearch,
+                sort: this.jofilter
+            };
+            this.$store.dispatch('brandJos', data).then(function (response) {
+                _this3.brandJOs = response;
+            });
+        },
+
+
+        searched: _.debounce(function (e) {
+            this.getBrandJOs();
+        }, 500),
+
+        view: function view(id, type) {
+            if (type == 1) {
+                this.$router.push({ name: 'viewjocreative', params: { jo_id: id } });
+            } else {
+                this.$router.push({ name: 'viewjoweb', params: { jo_id: id } });
+            }
+        },
+        deleteJO: function deleteJO(id) {
+            var _this = this;
+            this.$store.dispatch('deleteBrandJo', id).then(function (response) {
+                _this.$toaster.warning('JO Deleted!.');
+            });
+        }
+    }
 
 });
 
@@ -65332,11 +65247,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("p", { staticClass: "other-info" }, [
                   _c("span", [_vm._v("Description: ")]),
-                  _vm._v(
-                    "\n                     " +
-                      _vm._s(brandProf.about) +
-                      "                    "
-                  )
+                  _vm._v(_vm._s(brandProf.about))
                 ])
               ]
             )
@@ -65348,7 +65259,227 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _vm._m(2)
+    _vm.brandJOs
+      ? _c("div", { staticClass: "col-md-9" }, [
+          _c("div", { staticClass: "mybox" }, [
+            _vm._m(2),
+            _vm._v(" "),
+            _c("div", { staticClass: "mybox-body white-white-bg" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("span", [_vm._v("Sort by:")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.jofilter,
+                          expression: "jofilter"
+                        }
+                      ],
+                      staticClass: "my-input",
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.jofilter = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          _vm.getBrandJOs
+                        ]
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "created_at.desc" } }, [
+                        _vm._v("Date (Descending)")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "created_at.asc" } }, [
+                        _vm._v("Date (Ascending)")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "name.asc" } }, [
+                        _vm._v("Name (Ascending)")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "name.desc" } }, [
+                        _vm._v("Name (Descending)")
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6 text-right" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.josearch,
+                        expression: "josearch"
+                      }
+                    ],
+                    staticClass: "my-input",
+                    attrs: { type: "search", placeholder: "Search..." },
+                    domProps: { value: _vm.josearch },
+                    on: {
+                      input: [
+                        function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.josearch = $event.target.value
+                        },
+                        _vm.searched
+                      ]
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "fa fa-search" })
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "table-responsive",
+                  staticStyle: {
+                    "margin-top": "10px",
+                    "max-height": "30vh",
+                    overflow: "auto"
+                  }
+                },
+                [
+                  _c(
+                    "table",
+                    { staticClass: "table table-bordered table-brands" },
+                    [
+                      _vm._m(4),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        { staticStyle: { height: "10vh", overflow: "auto" } },
+                        _vm._l(_vm.brandJOs, function(jo) {
+                          return _c("tr", { key: jo.id }, [
+                            _c("td", [_vm._v(_vm._s(jo.created_at))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(jo.name))]),
+                            _vm._v(" "),
+                            jo.type == 1
+                              ? _c("td", [_vm._v("Creatives")])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            jo.type == 2 ? _c("td", [_vm._v("Web")]) : _vm._e(),
+                            _vm._v(" "),
+                            _c("td", [
+                              jo.status == 1
+                                ? _c(
+                                    "span",
+                                    { staticClass: "label label-warning" },
+                                    [_vm._v("Active")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              jo.status == 2
+                                ? _c(
+                                    "span",
+                                    { staticClass: "label label-success" },
+                                    [_vm._v("Completed")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              jo.status == 3
+                                ? _c(
+                                    "span",
+                                    { staticClass: "label label-danger" },
+                                    [_vm._v("Blocked")]
+                                  )
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _vm.cUser
+                              ? _c(
+                                  "td",
+                                  { staticClass: "td-actions text-right" },
+                                  [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass:
+                                          "btn btn-info btn-simple btn-xs",
+                                        attrs: {
+                                          type: "button",
+                                          rel: "tooltip",
+                                          "data-original-title": "",
+                                          title: "Open"
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.view(jo.id, jo.type)
+                                          }
+                                        }
+                                      },
+                                      [_c("i", { staticClass: "fa fa-eye" })]
+                                    ),
+                                    _vm._v(" "),
+                                    jo.created_by == _vm.cUser.id
+                                      ? _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-danger btn-simple btn-xs",
+                                            attrs: {
+                                              type: "button",
+                                              rel: "tooltip",
+                                              "data-original-title": "",
+                                              title: "Archive"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.deleteJO(jo.id)
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "fa fa-trash-o"
+                                            })
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ]
+                                )
+                              : _vm._e()
+                          ])
+                        })
+                      )
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _vm._m(5)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "mybox-footer" })
+          ])
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -65379,533 +65510,39 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-9" }, [
-      _c("div", { staticClass: "mybox" }, [
-        _c("div", { staticClass: "mybox-head" }, [
-          _c("h6", [_c("strong", [_vm._v("OVERVIEW")])])
-        ]),
+    return _c("div", { staticClass: "mybox-head" }, [
+      _c("h6", [_c("strong", [_vm._v("OVERVIEW")])])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h6", [_c("strong", [_vm._v("JOB ORDERS")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", {}, [_vm._v("Date Created")]),
         _vm._v(" "),
-        _c("div", { staticClass: "mybox-body white-white-bg" }, [
-          _c("h6", [_c("strong", [_vm._v("JOB ORDERS")])]),
-          _vm._v(" "),
-          _c("form", { attrs: { action: "" } }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-6" }, [
-                _c("span", [_vm._v("Sort by:")]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  { staticClass: "my-input", attrs: { name: "", id: "" } },
-                  [
-                    _c("option", { attrs: { value: "" } }, [
-                      _vm._v("Date (Descending)")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "" } }, [
-                      _vm._v("Date (Ascending)")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "" } }, [
-                      _vm._v("Name (Ascending)")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "" } }, [
-                      _vm._v("Name (Descending)")
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 text-right" }, [
-                _c("input", {
-                  staticClass: "my-input",
-                  attrs: { type: "search", placeholder: "Search..." }
-                }),
-                _vm._v(" "),
-                _c("span", { staticClass: "fa fa-search" })
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "table-responsive",
-              staticStyle: {
-                "margin-top": "10px",
-                "max-height": "30vh",
-                overflow: "auto"
-              }
-            },
-            [
-              _c(
-                "table",
-                { staticClass: "table table-bordered table-brands" },
-                [
-                  _c("thead", [
-                    _c("tr", [
-                      _c("th", { staticClass: "text-center" }, [_vm._v("ID")]),
-                      _vm._v(" "),
-                      _c("th", {}, [_vm._v("Date Created")]),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Title")]),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Team")]),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Status")]),
-                      _vm._v(" "),
-                      _c("th", { staticClass: "text-right" }, [
-                        _vm._v("Actions")
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "tbody",
-                    { staticStyle: { height: "10vh", overflow: "auto" } },
-                    [
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("1")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("May 5, 2018")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("MFI Revisions - Apply Mock-ups")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Web")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-warning" }, [
-                            _vm._v("In Progress")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("2")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("April 10, 2017")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v("Potato Corner - Improve Fries Shots")
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Creatives")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-info" }, [
-                            _vm._v("New")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("3")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("December 5, 2017")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Potato Corner - Color Scheme")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Creatives")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-default" }, [
-                            _vm._v("Blocked")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("4")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("June 25, 2018")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v("Fil-Global Revisions - Change Banner")
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Web")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-success" }, [
-                            _vm._v("Done")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("5")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("May 5, 2018")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("MFI Revisions - Apply Mock-ups")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Web")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-warning" }, [
-                            _vm._v("In Progress")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("6")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("April 10, 2017")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v("Potato Corner - Improve Fries Shots")
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Creatives")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-info" }, [
-                            _vm._v("New")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", { staticClass: "text-center" }, [_vm._v("7")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("June 25, 2018")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v("Furnitalia Revisions - Change Banner")
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Web")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", { staticClass: "label label-success" }, [
-                            _vm._v("Done")
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "td-actions text-right" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Open"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-eye" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Edit"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-edit" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-simple btn-xs",
-                              attrs: {
-                                type: "button",
-                                rel: "tooltip",
-                                "data-original-title": "",
-                                title: "Archive"
-                              }
-                            },
-                            [_c("i", { staticClass: "fa fa-trash-o" })]
-                          )
-                        ])
-                      ])
-                    ]
-                  )
-                ]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h6", [_c("strong", [_vm._v("HISTORY of ACTIVITIES")])])
-        ]),
+        _c("th", [_vm._v("Title")]),
         _vm._v(" "),
-        _c("div", { staticClass: "mybox-footer" })
+        _c("th", [_vm._v("Team")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Actions")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h6", [_c("strong", [_vm._v("HISTORY of ACTIVITIES")])])
   }
 ]
 render._withStripped = true
@@ -82226,7 +81863,8 @@ var actions = {
 "use strict";
 var state = {
     brands: [],
-    tandems: []
+    tandems: [],
+    brandJOs: []
 };
 
 var getters = {
@@ -82236,6 +81874,10 @@ var getters = {
 
     getTandemsList: function getTandemsList(state) {
         return state.tandems;
+    },
+
+    getBrandJOs: function getBrandJOs(state) {
+        return state.brandJOs;
     }
 
 };
@@ -82253,6 +81895,13 @@ var mutations = {
     },
     getTandemsList: function getTandemsList(state, data) {
         state.tandems = data;
+    },
+    setBrandJOs: function setBrandJOs(state, data) {
+        state.brandJOs = data;
+    },
+    deleteBrandJo: function deleteBrandJo(state, id) {
+        var index = _.findIndex(state.brandJOs, { id: id });
+        state.brandJOs.splice(index, 1);
     }
 };
 
@@ -82261,19 +81910,22 @@ var actions = {
         var commit = _ref.commit;
 
         // console.log(databrands.data)
-        axios.post(databrands.url, {
-            filterposition: databrands.data.filter.position,
-            filtercategory: databrands.data.filter.category,
-            search: databrands.data.search,
-            notArchive: databrands.data.notArchive,
-            id: databrands.data.id
+        return new Promise(function (resolve, reject) {
+            axios.post(databrands.url, {
+                filterposition: databrands.data.filter.position,
+                filtercategory: databrands.data.filter.category,
+                search: databrands.data.search,
+                notArchive: databrands.data.notArchive,
+                id: databrands.data.id
 
-        }).then(function (response) {
-            // console.log(response.data.data);
-            commit('setBrands', response.data.data);
-        }).catch(function (error) {
-            //console.log(error);
-            alert('Something went wrong, try reloading the page');
+            }).then(function (response) {
+                // console.log(response.data.data);
+                commit('setBrands', response.data.data);
+                resolve(response);
+            }).catch(function (error) {
+                //console.log(error);
+                alert('Something went wrong, try reloading the page');
+            });
         });
     },
     getTandemsList: function getTandemsList(_ref2) {
@@ -82345,6 +81997,31 @@ var actions = {
                     console.log(error);
                     reject(error);
                 }
+            });
+        });
+    },
+    brandJos: function brandJos(_ref6, data) {
+        var commit = _ref6.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/getBrandJos', data).then(function (response) {
+                // console.log(response);
+                commit('setBrandJOs', response.data);
+                resolve(response.data);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        });
+    },
+    deleteBrandJo: function deleteBrandJo(_ref7, id) {
+        var commit = _ref7.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.delete('/api/deletejo', {
+                data: { id: id }
+            }).then(function (response) {
+                commit('deleteBrandJo', id);
+                resolve(response);
             });
         });
     }
@@ -82540,9 +82217,9 @@ var actions = {
             axios.delete('/api/deletejo', {
                 data: { id: id }
             }).then(function (response) {
-                // console.log(response);
-                commit('deletejo', id);
-                resolve(response);
+                console.log(response);
+                // commit('deletejo', id);
+                // resolve(response);
             }).catch(function (error) {
                 console.log(error);
             });
