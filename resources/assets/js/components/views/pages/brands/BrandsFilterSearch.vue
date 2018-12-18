@@ -6,6 +6,7 @@
                             <div class="col-md-6">
                                 <span>Sort by:</span>
                                 <select v-model="data.filter" @change="getsData()" class="my-input" name="" id="">
+                                    <!-- <option disabled="" value="" selected="">--Select--</option> -->
                                     <option v-bind:value="{position: 'asc', category:'name'}">Name (A - Z)</option>
                                     <option v-bind:value="{position: 'desc', category:'name'}">Name (Z - A)</option>
                                     <option v-if="data.notArchive" v-bind:value="{position: 'asc', category:'created_at'}">Date (Ascending)</option>
@@ -25,7 +26,7 @@
                             <thead>
                                 <th>ID</th>
                                 <th>Brand Name</th>
-                                <th>Deadline</th>
+                                <th>Date Added</th>
                                 <th>Total JO</th>
                                 <th>Actions</th>
                             </thead>

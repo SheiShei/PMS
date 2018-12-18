@@ -18,7 +18,8 @@ import {initialize} from './helpers/general';
 
 import MainApp from './components/MainApp.vue'
 
-
+// Vue.prototype.moment = moment
+Vue.use(require('vue-moment'));
 Vue.use(VueRouter);
 Vue.use(Vuex);
 

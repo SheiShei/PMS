@@ -63,16 +63,17 @@
                 </div>
                 <brands-filter-search :data="data">
                                 <tr v-for="brand in brands" :key="brand.id">
-                                    <td>{{brand.id}}</td>
-                                    <td>{{brand.name}}</td>
-                                    <td>November 9, 2018</td>
+                                    <td>{{ brand.id  }}</td>
+                                    <td>{{ brand.name }}</td>
+                                    <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
+                                    <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
                                     <td>9</td>
                                     <td class="td-actions">
-                                        <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id }}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id},props:{brandinfos: brandinfos}}" type="button" @click="getData(brand)" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i></router-link>
-                                        <button v-if="data.notArchive" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                                        <router-link v-if="data.notArchive" :to="{name: 'update_brand', params: {brand_Id: brand.id }}" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
-                                        </button>
+                                        </router-link>
                                         <button v-if="data.notArchive" type="button" rel="tooltip"  @click="deleteBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
@@ -195,12 +196,17 @@
 import {mapGetters} from 'vuex';
 import BrandsFilterSearch from "./brands/BrandsFilterSearch.vue";
 import AddBrand from "./brands/AddBrand.vue";
+import UpdateBrand from "./brands/UpdateBrand.vue";
+import BrandProfile from "./brands/BrandProfile.vue";
 
 
 export default {
     components:{
         BrandsFilterSearch: BrandsFilterSearch,
-        AddBrand: AddBrand
+        AddBrand: AddBrand,
+        UpdateBrand: UpdateBrand,
+        BrandProfile: BrandProfile
+        
     },
 
     data() {
@@ -210,9 +216,10 @@ export default {
             data: {
                 filter: {position: 'asc', category:'name'},
                 search: '',
-                notArchive: true,
-                id:''
+                notArchive: true
+                
             },
+            brandinfos: {}
            // errors: [],
             
         }
@@ -251,6 +258,11 @@ export default {
              
             let data = this.data
             this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+
+        },
+         getData(branddata) {
+             this.brandinfos=branddata;
+            
 
         },
 
