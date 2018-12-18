@@ -7,17 +7,26 @@
         <div class="col-md-3">
             <div class="mybox">
                
-                <div v-for="brandProf in brandProfile" :key="brandProf.id" class="mybox-body white-white-bg">
+                <div class="mybox-body white-white-bg">
                     <div class="br-prof text-center">
-                        <p  class="info-name">{{brandProf.name}}</p>
-                        <img src="/images/mfilogo.png" style="height: 60px; margin-bottom: 5px;" alt="">
+                            <p  class="info-name">{{brandProfile.name}}</p>
+
+                        <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="'./images/logo/'+brandProfile.logo">
+                       
                     </div>
                     <hr />
-                    <p class="other-info"><span class="">Brand Owner: </span>{{brandProf.tandem.name}}</p>
-                    <p class="other-info"><span>Client: </span>{{brandProf.contact_person}}</p>
-                    <p class="other-info"><span>Telephone: </span>{{brandProf.telephone}}</p>
-                    <p class="other-info"><span>Mobile: </span>{{brandProf.mobile}}</p>
-                    <p class="other-info"><span>Description: </span>{{brandProf.about}}</p>
+                    
+                    
+
+                    <p class="other-info"><span class="">Brand Owner: </span>{{brandProfile.tandem.name}}</p>
+                    <p class="other-info"><span>Client: </span>{{brandProfile.contact_person}}</p>
+                    <p class="other-info"><span>Telephone: </span>{{brandProfile.telephone}}</p>
+                    <p class="other-info"><span>Mobile: </span>{{brandProfile.mobile}}</p>
+                    <p class="other-info"><span>Description: </span>
+                     {{brandProfile.about}}                    </p>
+                   
+                    
+
                 </div>
                 <div class="mybox-footer text-center">
                     <button class="btn btn-info btn-sm full-btn"><span class="fa fa-book"></span> View Workbook</button>
@@ -122,12 +131,7 @@ import {mapGetters} from 'vuex';
 export default {
     data () {
         return {
-            data: {
-                id: this.$route.params.brandId,
-                filter: '',
-                search: '',
-                notArchive: ''
-            },
+            id: this.$route.params.brandId,
             josearch: '',
             jofilter: 'created_at.desc',
             brandJOs: null
@@ -136,14 +140,14 @@ export default {
     created() {
         // this.data.id = this.$route.params.brandId;
         let data = this.data;
-        this.$store.dispatch('setBrands', {url : '/api/getbrands', data})
+        this.$store.dispatch('getOnebrand',this.id)
             .then (response => {
                 this.getBrandJOs()
             }) 
     },
     computed: {
         ...mapGetters({
-                brandProfile: 'brandsList',
+                brandProfile: 'getOnebrand',
                 cUser: 'currentUser'
             }),
     },
