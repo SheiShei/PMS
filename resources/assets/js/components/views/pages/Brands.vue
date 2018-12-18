@@ -63,9 +63,10 @@
                 </div>
                 <brands-filter-search :data="data">
                                 <tr v-for="brand in brands" :key="brand.id">
-                                    <td>{{brand.id}}</td>
-                                    <td>{{brand.name}}</td>
-                                    <td>{{moment(brand.created_at).format("MMM D, YYYY")}}</td>
+                                    <td>{{ brand.id  }}</td>
+                                    <td>{{ brand.name }}</td>
+                                    <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
+                                    <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
                                     <td>9</td>
                                     <td class="td-actions">
                                         <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id},props:{brandinfos: brandinfos}}" type="button" @click="getData(brand)" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
