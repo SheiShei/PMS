@@ -67125,48 +67125,50 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "col-md-3" }, [
       _c("div", { staticClass: "mybox" }, [
-        _c("div", { staticClass: "mybox-body white-white-bg" }, [
-          _c("div", { staticClass: "br-prof text-center" }, [
-            _c("p", { staticClass: "info-name" }, [
-              _vm._v(_vm._s(_vm.brandProfile.name))
-            ]),
-            _vm._v(" "),
-            _c("img", {
-              staticStyle: { height: "60px", "margin-bottom": "5px" },
-              attrs: {
-                alt: _vm.brandProfile.name + " logo",
-                src: "./images/logo/" + _vm.brandProfile.logo
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("p", { staticClass: "other-info" }, [
-            _c("span", {}, [_vm._v("Brand Owner: ")]),
-            _vm._v(_vm._s(_vm.brandProfile.tandem.name))
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "other-info" }, [
-            _c("span", [_vm._v("Client: ")]),
-            _vm._v(_vm._s(_vm.brandProfile.contact_person))
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "other-info" }, [
-            _c("span", [_vm._v("Telephone: ")]),
-            _vm._v(_vm._s(_vm.brandProfile.telephone))
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "other-info" }, [
-            _c("span", [_vm._v("Mobile: ")]),
-            _vm._v(_vm._s(_vm.brandProfile.mobile))
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "other-info" }, [
-            _c("span", [_vm._v("Description: ")]),
-            _vm._v(_vm._s(_vm.brandProfile.about))
-          ])
-        ]),
+        _vm.brandProfile
+          ? _c("div", { staticClass: "mybox-body white-white-bg" }, [
+              _c("div", { staticClass: "br-prof text-center" }, [
+                _c("p", { staticClass: "info-name" }, [
+                  _vm._v(_vm._s(_vm.brandProfile.name))
+                ]),
+                _vm._v(" "),
+                _c("img", {
+                  staticStyle: { height: "60px", "margin-bottom": "5px" },
+                  attrs: {
+                    alt: _vm.brandProfile.name + " logo",
+                    src: "./images/logo/" + _vm.brandProfile.logo
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", {}, [_vm._v("Brand Owner: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.tandem.name))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", [_vm._v("Client: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.contact_person))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", [_vm._v("Telephone: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.telephone))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", [_vm._v("Mobile: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.mobile))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", [_vm._v("Description: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.about))
+              ])
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _vm._m(1)
       ])
@@ -67519,7 +67521,11 @@ var render = function() {
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(brand.name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(brand.created_at))]),
+                _c("td", [
+                  _vm._v(
+                    _vm._s(_vm._f("moment")(brand.created_at, "MMM D, YYYY"))
+                  )
+                ]),
                 _vm._v(" "),
                 _c("td", [_vm._v("9")]),
                 _vm._v(" "),

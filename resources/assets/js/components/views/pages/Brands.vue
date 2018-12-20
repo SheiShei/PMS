@@ -65,7 +65,7 @@
                                 <tr v-for="brand in brands" :key="brand.id">
                                     <td>{{ brand.id  }}</td>
                                     <td>{{ brand.name }}</td>
-                                    <td>{{  brand.created_at }}</td>
+                                    <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
                                     <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
                                     <td>9</td>
                                     <td class="td-actions">
