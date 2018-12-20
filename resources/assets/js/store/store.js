@@ -3,6 +3,7 @@ import { setAuthorization } from "../helpers/general";
 import users from "./modules/users";
 import brands from "./modules/brands";
 import messages from "./modules/messages";
+import joborder from "./modules/joborder";
 
 const user = __initializeUser();
 export default {
@@ -67,6 +68,7 @@ export default {
     modules: {
         users,
         brands,
-        messages
+        messages,
+        joborder
     }
 }

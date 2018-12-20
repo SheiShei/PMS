@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
 use App\Tandem;
+use App\JobOrder;
 use Hash;
 use File;
 
@@ -28,10 +29,6 @@ class BrandsController extends Controller
             $query->where('name', 'like', $request->search . '%');
         }
 
-        if($request->id) {
-            $query= Brand::with('tandem:id,name')->where('id', $request->id);
-        }
-
         $brand = $query->paginate(10);
         return $brand;
 
@@ -46,28 +43,23 @@ class BrandsController extends Controller
            'tandem_id' => 'required',
            //'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
-
         ]);
+
         
-        $fileName = null;
-        if (request()->hasFile($request->logo)) {
-           $file = request()->file($request->logo);
-           $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
-           $file->move('./images/', $fileName);    
-           }
+        $input = $request->all();
+    
+        if($file = $request->file('logo')){
+            $name = time() . $file->getClientOriginalName();
+            $file->move('./images/logo', $name);
+            $input['logo'] = $name;
+        }
+        if(!$request->hasFile('logo')){
+            $input['logo'] = 'logooo2.png';
+        }
 
-        $brand = Brand::create([
-            'name' => $request->name,
-            'contact_person' => $request->contact_person,
-            'telephone' => $request->telephone,
-            'mobile' => $request->mobile,
-            'tandem_id' => $request->tandem_id,
-            'logo' => $fileName,
-            'about' => $request->about
-           
-        ]);
+        $brand = Brand::create($input);
 
-     return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
 
     }
 
@@ -86,10 +78,59 @@ class BrandsController extends Controller
 
     public function getTandemsList() {
         $tandems = Tandem::all();
-
         return $tandems;
     }
 
+    public function getBrandJos(Request $request) {
+        $sort_key = explode(".",$request->sort)[0];
+        $sort_type = explode(".",$request->sort)[1];
+        $query = JobOrder::where('brand_id', $request->id)->with('brand:id,name')->orderBy($sort_key, $sort_type);
 
+        if($request->search) {
+            $query->where('name', 'like', $request->search.'%');
+        }
+
+        $jo = $query->get();
+        return $jo;
+    }
+    
+    public function getOnebrand(Request $request) {
+        $query= Brand::with('tandem:id,name')->where('id', $request->id);
+       // $brand = Brand::with('tandem:id,name')->where('id', $request->id);
+        $brand = $query->first();
+        return $brand;
+
+    }
+
+    public function updateBrand(Request $request) {
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'contact_person' => 'required|string|max:255',
+        //     'telephone' => 'required|string|max:15',
+        //     'mobile' => 'required',
+        //     'tandem_id' => 'required',
+        // ]);
+        
+        //$brand = Brand::findOrFail($request->file('id'));
+        $brand = Brand::findOrFail($request->id);
+        $input = $request->all();
+       
+        if($file = $request->file('logo')){
+            $name = time() . $file->getClientOriginalName();
+            $file->move('./images/logo', $name);
+            $input['logo'] = $name;
+        }
+        
+
+       // dd($request);
+        $brand->update($input);
+
+        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+    }
+
+    public function testFileUpload(Request $request) {
+        dd($request);
+        return $request;
+    }
 
 }

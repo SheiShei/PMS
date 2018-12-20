@@ -20,7 +20,7 @@ export default {
 
     updated () {
         $(this.$el).find('.selectpicker').selectpicker('refresh');
-	}
+    },
 }
 </script>
 

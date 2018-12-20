@@ -8,14 +8,20 @@ import Brands from './components/views/pages/Brands.vue';
 import JobOrders from './components/views/pages/JobOrders.vue';
 import StickyNotes from './components/views/pages/StickyNotes.vue';
 import AddBrand from './components/views/pages/brands/AddBrand.vue';
+import UpdateBrand from './components/views/pages/brands/UpdateBrand.vue';
 import BrandProfile from './components/views/pages/brands/BrandProfile.vue';
 import ViewJobOrder from './components/views/pages/joborders/ViewJobOrder.vue';
 import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
+<<<<<<< HEAD
 import Boards from './components/views/pages/boards/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
+=======
+import UpdateWebJO from './components/views/pages/joborders/UpdateJobOrderWeb.vue';
+import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderCreative.vue';
+>>>>>>> master
 /* end of import vue components */
 
 export const routes = [
@@ -61,9 +67,18 @@ export const routes = [
                 },
             },
             {
-                path: 'brands/profile/:brandId',
+                path: 'brand-profile-:brandId',
                 name: 'brand_profile',
                 component: BrandProfile,
+                props: true,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'brands/update/:brand_Id',
+                name: 'update_brand',
+                component: UpdateBrand,
                 meta: {
                     requiresAuth: true
                 },
@@ -109,16 +124,16 @@ export const routes = [
                 },
             },
             {
-                path: 'jo/:id',
-                name: 'jo',
+                path: 'jo/web/:jo_id',
+                name: 'viewjoweb',
                 component: ViewJobOrder,
                 meta: {
                     requiresAuth: true
                 },
             },
             {
-                path: 'jo-creatives/',
-                name: 'jo-creatives',
+                path: 'jo/creative/:jo_id',
+                name: 'viewjocreative',
                 component: ViewJoCrea,
                 meta: {
                     requiresAuth: true
@@ -128,14 +143,6 @@ export const routes = [
                 path: 'clients/add',
                 name: 'new_client',
                 component: Dashboard,
-                meta: {
-                    requiresAuth: true
-                },
-            },
-            {
-                path: 'brand-profile',
-                name: 'brand_profile',
-                component: BrandProfile,
                 meta: {
                     requiresAuth: true
                 },
@@ -164,6 +171,22 @@ export const routes = [
                     requiresAuth: true
                 },
             }
+            // {
+            //     path: 'update/web/:jo_id',
+            //     name: 'updateweb',
+            //     component: UpdateWebJO,
+            //     meta: {
+            //         requiresAuth: true
+            //     },
+            // },
+            // {
+            //     path: 'update/creative/:jo_id',
+            //     name: 'updatecrea',
+            //     component: UpdateCreativeJO,
+            //     meta: {
+            //         requiresAuth: true
+            //     },
+            // }
         ]
     },
     {

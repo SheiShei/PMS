@@ -15,7 +15,7 @@
                             &nbsp;&nbsp;&nbsp;
                                 <span class="pull-right">
                                     <small>
-                                        <select v-model="brand.status" class="my-input">
+                                        <select name="main_status" v-model="brand.status" class="my-input">
                                             <option value="1">Active</option>
                                             <option value="2">Completed</option>
                                             <option value="3">Blocked</option>
@@ -27,31 +27,19 @@
                     </div>
                 </div>
                 <div class="jo-body">
-                <form @submit.prevent="newWebJO">
+                <form @submit.prevent="updateWebJO">
                     <!--BRAND CLIENT ACMA -->
                     <div class="row form-row">
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="jo_name">Name </label>
-                            <input required v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
+                            <input v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="brand">Brand:</label>
                             <div class="btn-group bootstrap-select">
-                                <select required v-model="brand.brand_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                <select name="brand_id" v-model="brand.brand_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                         <option value="">---</option>
                                         <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label for="brand">Board:</label>
-                            <div class="btn-group bootstrap-select">
-                                <select name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                    <option value="">---</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
                                 </select>
                             </div>
                         </div>
@@ -90,12 +78,12 @@
                             <div class="form-group">
                                 <label for=""><span class="fa fa-calendar-o text-success"></span> Date In
                                     <small><i> (dd-mm-yyyy)</i></small></label>
-                                <input required v-model="brand.date_in" class="form-control" type="date" />
+                                <input v-model="brand.date_in" class="form-control" type="date" />
                             </div>
                             <div class="form-group">
                                 <label for=""><span class="fa fa-calendar-o text-danger"></span> Date Due
                                     <small><i> (dd-mm-yyyy)</i></small></label>
-                                <input required v-model="brand.date_due" class="form-control" type="date" />
+                                <input v-model="brand.date_due" class="form-control" type="date" />
                             </div>
                         </div>
                         <!--./end of TIME IN and DUE -->
@@ -169,13 +157,13 @@
                                 <label for="rqst_type">TECH:</label>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.tech" value="1" name="tech"><span class="check"></span>
+                                        <input type="radio" v-model="details.tech" value="1" name="optionsCheckboxes"><span class="check"></span>
                                         Request for Domain Purchase
                                     </label>
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.tech" value="2" name="tech"><span class="check"></span>
+                                        <input type="radio" v-model="details.tech" value="2" name="optionsCheckboxes"><span class="check"></span>
                                         With Previous Domain
                                     </label>
                                 </div>
@@ -184,13 +172,13 @@
                                 <label for="rqst_type">Domain Transfer:</label>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.domain_transfer" value="1" name="transfer"><span class="check"></span>
+                                        <input type="radio" v-model="details.domain_transfer" value="1" name="domain_transfer"><span class="check"></span>
                                         Domain Unlocked
                                     </label>
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.domain_transfer" value="2" name="transfer"><span class="check"></span>
+                                        <input type="radio" v-model="details.domain_transfer" value="2" name="domain_transfer"><span class="check"></span>
                                         Auth/EPP Code Provided
                                     </label>
                                 </div>
@@ -199,13 +187,13 @@
                                 <label for="rqst_type">Domain Renewal:</label>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.domain_renewal" value="1" name="renewal"><span class="check"></span>
+                                        <input type="radio" v-model="details.domain_renewal" value="1" name="domain_renewal"><span class="check"></span>
                                         Domain for Renewal
                                     </label>
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" v-model="details.domain_renewal" value="2" name="renewal"><span class="check"></span>
+                                        <input type="radio" v-model="details.domain_renewal" value="2" name="domain_renewal"><span class="check"></span>
                                         Change Domain
                                     </label>
                                 </div>
@@ -283,30 +271,35 @@
                         <div class="col-md-10">
                     
                             <div class="row" id="addtaskdiv">
-                                <div class="col-md-12">
-                                    <div class="card taskcard" v-for="(task, index) in tasks" :key="index">
-                                        <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
-                                        <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{index+1}}</h5>
+                            <div class="col-md-12">
+                                <div class="card taskcard" v-for="(task, index) in tasks" :key="task.id">
+                                    <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
+                                    <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{index+1}}</h5>
+                                    <!-- <div class="card-body"> -->
                                         <div class="form-row">
                                             <div class="col-md-7">
-                                                <label for="">Name </label>
-                                                <input v-model="task.name" type="text" class="form-control">
                                                 <label for="">Decription </label>
-                                                <textarea type="text" v-model="task.desc" class="btn-block" placeholder="" ></textarea>
+                                                <textarea type="text" v-model="task.name" class="btn-block" placeholder="" ></textarea>
+                                                <!-- <label for="">Attach File: </label>
+                                                <input class="btn-block" type="file" name="" id="" multiple> -->
+                                                    <!-- <input type="text" v-model="task.about" class="form-control" placeholder="About"> -->
+                                                <!-- </div> -->
                                             </div>
                                             <div class="col-md-5">
                                                 <label for=""><span class="fa fa-user-o"></span> Assign to </label>
-                                                <select class="btn-block" >
+                                                <select class="btn-block">
                                                     <option value="">Shooky</option>
                                                     <option value="">Chimmy</option>
                                                     <option value="">RJ</option>
                                                 </select>
                                                 <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
-                                                <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
+                                                <input class="btn-block" type="file" multiple>
                                             </div>
                                         </div>
-                                    </div>
+                                        
+                                    <!-- </div> -->
                                 </div>
+                            </div>
                             </div>
 
                         </div>
@@ -358,7 +351,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="!web.email">
                                     <!-- <div class="checkbox mr-10">
                                         <label>
                                             <input type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -366,28 +359,41 @@
                                         </label>
                                     </div> -->
                                     <label for="rqst_type">Proofed by (Web Team):</label>
-                                    <div class="checkbox mr-10">
+                                    <div class="checkbox mr-10" >
                                         <label>
-                                            <input type="checkbox" name="optionsCheckboxes"><span class="check"></span>
+                                            <input v-model="proofed.check" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
                                             Check this to confirm proofing.
                                         </label>
-                                        <p class="note">Please enter email and password for verification.</p>
-                                        <input class="form-control my-input mb-5" type="email" placeholder="Email...">
-                                        <input class="form-control my-input" type="password" placeholder="Password...">
-
+                                        <div v-if="proofed.check">
+                                            <p v-if="webProofedError" style="color: red">Unauthorize</p>
+                                            <p class="note">Please enter email and password for verification.</p>
+                                            <input v-model="proofed.email" class="form-control my-input mb-5" type="email" placeholder="Email...">
+                                            <input v-model="proofed.password" class="form-control my-input" type="password" placeholder="Password...">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="!acma.email">
                                     <label for="">Changes Approved by: (ACMA+BO)</label>
-                                    <div class="checkbox mr-10">
+                                    <div class="checkbox mr-10" >
                                         <label>
-                                            <input type="checkbox" name="optionsCheckboxes"><span class="check"></span>
+                                            <input v-model="approved.check" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
                                             Check this to approve changes.
                                         </label>
                                     </div>
-                                    <p class="note">Please enter email and password for verification.</p>
-                                        <input class="form-control my-input mb-5" type="email" placeholder="Email...">
-                                        <input class="form-control my-input" type="password" placeholder="Password...">
+                                    <div v-if="approved.check">
+                                        <p v-if="acmaAprovedError" style="color: red">Unauthorize</p>
+                                        <p class="note">Please enter email and password for verification.</p>
+                                        <input v-model="approved.email" class="form-control my-input mb-5" type="email" placeholder="Email...">
+                                        <input v-model="approved.password" class="form-control my-input" type="password" placeholder="Password...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4" v-if="web.email">
+                                    <p><span class="txt-bold">Proofed by :</span> {{ web.email }}</p>
+                                    <p><span class="txt-bold">Date Proofed :</span> {{ web.date }}</p>
+                                </div>
+                                <div class="col-md-4" v-if="acma.email">
+                                    <p><span class="txt-bold">Approved by :</span> {{ acma.email }}</p>
+                                    <p><span class="txt-bold">Date Approved :</span> {{ acma.date }}</p>
                                 </div>
                     </div>
 
@@ -411,42 +417,6 @@
         <div class="col-md-1">
 
         </div>
-
-        <div class="modal fade" id="SuccesNewJoWeb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-small ">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
-                    </div>
-                    <div class="modal-body text-center">
-                        <h5>Go to JO List? </h5>
-                    </div>
-                    <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                        <button @click="success()" type="button" class="btn btn-success btn-simple">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="ErrorNewJoWeb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-small ">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                         <h3>Error!!</h3>
-                    </div>
-                    <div class="modal-body text-center">
-                        <h5>Network Error</h5>
-                    </div>
-                    <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                        <button @click="this.$router.push({name: 'all_jo_list'})" type="button" class="btn btn-success btn-simple">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 </template>
 
@@ -455,9 +425,10 @@ import {mapGetters} from 'vuex';
 export default {
     data(){
         return{
-            tasks: [
-                {name: '',desc: '',files: []}
-            ],
+            tasks: [{
+                name: '',
+                about: ''
+            }],
             brand: {
                 name: '',
                 brand_id: '',
@@ -468,26 +439,43 @@ export default {
             details: {
                 target_list: [],
                 request_type: [],
-                tech: null,
-                domain_transfer: null,
-                domain_renewal: null,
+                tech: '',
+                domain_transfer: '',
+                domain_renewal: '',
                 action_points: '',
                 old_cpanel_uname: '',
                 new_cpanel_uname: '',
                 old_cpanel_password: '',
                 new_cpanel_password: '',
-                date_commerced: null,
-                date_ended: null
+                date_commerced: '',
+                date_ended: ''
             },
-            attachments: []
+            proofed: {
+                check: false,
+                email: '',
+                password: ''
+            },
+            approved: {
+                check: false,
+                email: '',
+                password: ''
+            },
+            webProofedError: false,
+            acmaAprovedError: false,
+            web: {
+                email: '',
+                date: ''
+            },
+            acma: {
+                email: '',
+                date: ''
+            }
         }
     },
     created() {
         this.$store.dispatch('onCreate');
         console.log(this.brands);
-    },
-    mounted() {
-        // $('#ErrorNewJoWeb').modal('show');
+        this.getJoDetails();
     },
     computed: {
         ...mapGetters({
@@ -498,9 +486,8 @@ export default {
         addNewTask(){
             this.tasks.push({
                 name: '',
-                desc: '',
-                files: []
-            });
+                about: ''
+            })
             this.scrollToEnd()
         },
         deleteTaskForm(index){
@@ -512,40 +499,64 @@ export default {
             taskdiv.scrollTop = taskdiv.scrollHeight
 
         },
-
-        newWebJO() {
-            let form = new FormData;
-            form.append('brand', JSON.stringify(this.brand));
-            form.append('details', JSON.stringify(this.details));
-            form.append('tasks', JSON.stringify(this.tasks));
-            for(let i=0; i<this.attachments.length;i++){
-                form.append('files[]',this.attachments[i]);
-            }
-            this.$store.dispatch('newJOW', form)
+        updateWebJO() {
+            this.$store.dispatch('updateJOW', {brand: this.brand, details: this.details, id: this.$route.params.jo_id, proofed: this.proofed, approved: this.approved})
                 .then ((response) => {
-                    $('#SuccesNewJoWeb').modal('show');
-                })    
+                    this.acmaAprovedError = false;
+                    this.webProofedError = false;
+                    alert('updated');
+                })
+                .catch ((error) => {
+                    if(error == 'web') {
+                        this.webProofedError = true;
+                        this.acmaAprovedError = false;
+                    }
+                    else {
+                        this.acmaAprovedError = true;
+                        this.webProofedError = false;
+                    }
+                })
         },
+        getJoDetails() {
+            this.$store.dispatch('getJoDetails', this.$route.params.jo_id)
+                .then ((response) => {
+                    console.log(response);
+                    this.brand.name = response.name;
+                    this.brand.brand_id = response.brand_id;
+                    this.brand.status = response.status;
+                    this.brand.date_in = response.date_in;
+                    this.brand.date_due = response.date_due;
+                    $(this.$el).find('select[name=main_status]').val(response.status);
+                    $(this.$el).find('.selectpicker').selectpicker('refresh');
+                    $(this.$el).find('select[name=brand_id]').val(response.brand_id+'');
+                    $(this.$el).find('.selectpicker').selectpicker('refresh');
 
-        success() {
-            $('#SuccesNewJoWeb').modal('hide');
-            this.$router.push({name: 'all_jo_list'})
-        },
+                    let target_list = [], request_type = [];
+                    target_list = response.joweb.target_list.split('.');
+                    request_type = response.joweb.request_type.split('.');
+                    
+                    this.details.target_list = target_list;
+                    this.details.request_type = request_type;
+                    this.details.tech = response.joweb.tech;
+                    this.details.domain_transfer = response.joweb.domain_transfer;
+                    this.details.domain_renewal = response.joweb.domain_renewal;
+                    this.details.action_points = response.joweb.action_points;
+                    this.details.old_cpanel_uname = response.joweb.old_cpanel_uname;
+                    this.details.new_cpanel_uname = response.joweb.new_cpanel_uname;
+                    this.details.old_cpanel_password = response.joweb.old_cpanel_password;
+                    this.details.new_cpanel_password = response.joweb.new_cpanel_password;
+                    this.details.date_ended = response.joweb.date_ended;
+                    this.details.date_commerced = response.joweb.date_commerced;
 
-        onFileChange(e, index) {
-            this.tasks[index].files = [];
-            this.attachments = [];
-            let selectedFiles=e.target.files;
-            if(!selectedFiles.length){
-                return false;
-            }
-            for(let i=0;i<selectedFiles.length;i++){
-                let file = {filename: selectedFiles[i].name, type: selectedFiles[i].type}
-                this.tasks[index].files.push(file);
-                this.attachments.push(selectedFiles[i]);
-            }
-            // document.getElementById('taskFiles').value=[];
-            // console.log(this.tasks[index].files);
+                    if(response.joweb.acma_proofed_at && response.joweb.acma_proofed_by) {
+                        this.acma.email = response.joweb.acma_signed_by.email
+                        this.acma.date = response.joweb.acma_proofed_at
+                    }
+                    if(response.joweb.web_proofed_at && response.joweb.web_proofed_by) {
+                        this.web.email = response.joweb.web_signed_by.email
+                        this.web.date = response.joweb.web_proofed_at
+                    }
+                })
         }
     }
 }

@@ -11,7 +11,7 @@
                         <h6><strong>USERS LIST</strong>&nbsp;<span><small>| <a @click.prevent="archiveList" href="">Archive</a></small></span></h6>
                     </div>  
                 </div>
-                <users-table :data="data">
+                <users-table :data="data" v-if="users">
                     <tr v-for="user in users" :key="user.id">
                         <td class="text-center">{{ user.id }}</td>
                         <td>{{ user.name }}</td>
@@ -130,6 +130,10 @@ export default {
         }
     },  
 
+    created() {
+        let data = this.data;
+        this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
+    },
 
     computed: {
         ...mapGetters({

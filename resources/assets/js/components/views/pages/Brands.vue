@@ -63,16 +63,17 @@
                 </div>
                 <brands-filter-search :data="data">
                                 <tr v-for="brand in brands" :key="brand.id">
-                                    <td>{{brand.id}}</td>
-                                    <td>{{brand.name}}</td>
-                                    <td>November 9, 2018</td>
+                                    <td>{{ brand.id  }}</td>
+                                    <td>{{ brand.name }}</td>
+                                    <td>{{  brand.created_at }}</td>
+                                    <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
                                     <td>9</td>
                                     <td class="td-actions">
-                                        <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id }}" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
+                                        <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id},props:{brandinfos: brandinfos}}" type="button" @click="getData(brand)" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                             <i class="fa fa-eye"></i></router-link>
-                                        <button v-if="data.notArchive" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                                        <router-link v-if="data.notArchive" :to="{name: 'update_brand', params: {brand_Id: brand.id }}" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                             <i class="fa fa-edit"></i>
-                                        </button>
+                                        </router-link>
                                         <button v-if="data.notArchive" type="button" rel="tooltip"  @click="deleteBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
@@ -97,38 +98,18 @@
                 <div class="mybox-head">
                     <h6><strong>ACTIVE JOB ORDERS</strong></h6>
                 </div>
-                <div class="mybox-body white-bg">
+                <div class="mybox-body white-bg" v-if="jos">
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="jo-list">
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'mfi-revision'}}">
+                                <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
+                                    <router-link v-if="jo.type == 1" :to="{name: 'viewjocreative', params: {jo_id: jo.id}}">
                                         <span class="fa fa-file-o"></span>
-                                        [090718] MFI Revision
+                                        {{ jo.name }}
                                     </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'furnitalia-revision'}}">
+                                    <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
                                         <span class="fa fa-file-o"></span>
-                                        [102518] Furnitalia Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'fil-revision'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Fil Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'mowel-revision'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Mowel Revision
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <router-link :to="{name: 'jo', params: {id: 'policious-revisio'}}">
-                                        <span class="fa fa-file-o"></span>
-                                        [031318] Policious Revision
+                                        {{ jo.name }}
                                     </router-link>
                                 </li>
                             </ul>
@@ -195,12 +176,17 @@
 import {mapGetters} from 'vuex';
 import BrandsFilterSearch from "./brands/BrandsFilterSearch.vue";
 import AddBrand from "./brands/AddBrand.vue";
+import UpdateBrand from "./brands/UpdateBrand.vue";
+import BrandProfile from "./brands/BrandProfile.vue";
 
 
 export default {
     components:{
         BrandsFilterSearch: BrandsFilterSearch,
-        AddBrand: AddBrand
+        AddBrand: AddBrand,
+        UpdateBrand: UpdateBrand,
+        BrandProfile: BrandProfile
+        
     },
 
     data() {
@@ -210,9 +196,10 @@ export default {
             data: {
                 filter: {position: 'asc', category:'name'},
                 search: '',
-                notArchive: true,
-                id:''
+                notArchive: true
+                
             },
+            brandinfos: {}
            // errors: [],
             
         }
@@ -220,7 +207,8 @@ export default {
 
     computed: {
          ...mapGetters({
-                brands: 'brandsList'
+                brands: 'brandsList',
+                jos: 'getJOs'
             }),
 
         redirectJO() {
@@ -243,8 +231,12 @@ export default {
         let data = this.data;
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         this.$store.dispatch('getTandemsList');
-
-            }, 
+        const ndata = {
+            search: '',
+            sort: 'created_at.desc'
+        }
+        this.$store.dispatch('getJobOrders', ndata);
+    }, 
 
     methods: {
          getsData() {
@@ -253,13 +245,18 @@ export default {
             this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
 
         },
+         getData(branddata) {
+             this.brandinfos=branddata;
+            
+
+        },
 
         deleteBrand(id) {
             this.$store.dispatch('deleteBrand', id)
-                .then((response) => {
+                .then(() => {
                     this.$toaster.warning('Brand deleted succesfully, see Archive List to restore!!.')
                 })
-                .catch((error) => {
+                .catch(() => {
                     alert('Something went wrong, try reloading the page');
                 })
         },
@@ -270,10 +267,10 @@ export default {
         },
         restoreBrand(id) {
             this.$store.dispatch('restoreBrand', id)
-                .then((response) => {
+                .then(() => {
                     this.$toaster.success('Brand restored succesfully!.')
                 })
-                .catch((error) => {
+                .catch(() => {
                     alert('Something went wrong, try reloading the page');
                 })
         }
