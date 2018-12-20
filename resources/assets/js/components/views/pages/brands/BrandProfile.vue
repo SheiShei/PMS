@@ -7,7 +7,7 @@
         <div class="col-md-3">
             <div class="mybox">
                
-                <div class="mybox-body white-white-bg">
+                <div class="mybox-body white-white-bg" v-if="brandProfile">
                     <div class="br-prof text-center">
                         <p  class="info-name">{{brandProfile.name}}</p>
                         <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="'./images/logo/'+brandProfile.logo">
