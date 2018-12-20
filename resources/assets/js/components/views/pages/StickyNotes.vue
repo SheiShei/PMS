@@ -1,11 +1,12 @@
 <template>
     
-    <section class="main-main-container" style="">
-        <button class="btn btn-success btn-sm" type="button" @click="newNote">+ ADD</button>
+    <section class="main-main-container" style="background-color: rgb(49, 133, 156)">
+        <button class="btn btn-success btn-sm addnotebtn" type="button" @click="newNote">+ ADD</button>
         <ul>
             <draggable v-model="notes" :options="options" @change="update" :element="'li'">
-                <!-- <transition-group name="slide"> -->
-                    <li v-for="(note, index) in notes" :key="index">
+                <!-- <transition-group name="list" tag="li"> -->
+                    <!-- <transition name="fade" tag="li" v-for="(note, index) in notes" :key="index"> -->
+                    <li v-for="(note,index) in notes" :key="index">
                         <a href="" @click.prevent>
                             <i @click="deleteNote(note.id)" class="pull-right">&times;</i>
                             <input @input="editNote(note)" v-model="note.title" type="text" placeholder="Title">
@@ -20,21 +21,24 @@
 </template>
 
 <style scoped>
+    .addnotebtn{
+        position: sticky;
+        margin: 10px;
+        top: 10px;
+        left: 10px;
+        z-index: 100;
+    }
     /* animation */
-    .slide-enter-active, .slide-leave-active {
-        transition: transform 1s ease-out, opacity 1s ease-out;
+    .list-item{
+        display: inline-block;
+        margin-right: 10px;
     }
-
-    .slide-enter-active {
-        transition-delay: .5s;
+    .list-enter-active, .list-leave-active{
+        transition: all 1s;
     }
-    .slide-leave-active {
-        transition-delay: .5s;
-    }
-
-    .slide-enter, .slide-leave-to {
-        transform: scale(0);
+    .list-enter, .list-leave-to{
         opacity: 0;
+        transform: translateY(30px);
     }
     /* end of animation */
     i:hover{
@@ -53,7 +57,7 @@
     }
     ul{
         overflow:hidden;
-        padding:3em;
+        padding: 0.75em 3em;
     }
     ul li a{
         overflow:hidden;    
@@ -67,6 +71,7 @@
         -moz-box-shadow:5px 5px 7px rgba(33,33,33,1);
         -webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);
         box-shadow: 5px 5px 7px rgba(33,33,33,.7);
+        transition: .15s linear;
         -moz-transition:-moz-transform .15s linear;
         -o-transition:-o-transform .15s linear;
         -webkit-transition:-webkit-transform .15s linear;
@@ -88,10 +93,6 @@
         outline: none;
         border: none;
     }
-    /* ul li p{
-        font-family:"Reenie Beanie",arial,sans-serif;
-        font-size:180%;
-    } */
     ul li textarea{
         font-family:"Reenie Beanie",arial,sans-serif;
         font-size:180%;
@@ -99,38 +100,11 @@
         outline: none;
         border: none;
     }
-    ul li a{
-        /* -webkit-transform: rotate(-6deg);
-        -o-transform: rotate(-6deg);
-        -moz-transform:rotate(-6deg); */
-    }
-    /* ul li:nth-child(even) a{
-        -o-transform:rotate(4deg);
-        -webkit-transform:rotate(4deg);
-        -moz-transform:rotate(4deg);
-        position:relative;
-        top:5px;
-        background:#cfc;
-    } */
-    /* ul li:nth-child(3n) a{
-        -o-transform:rotate(-3deg);
-        -webkit-transform:rotate(-3deg);
-        -moz-transform:rotate(-3deg);
-        position:relative;
-        top:-5px;
-        background:#ccf;
-    } */
-    /* ul li:nth-child(5n) a{
-        -o-transform:rotate(5deg);
-        -webkit-transform:rotate(5deg);
-        -moz-transform:rotate(5deg);
-        position:relative;
-        top:-10px;
-    } */
     ul li a:hover{
         box-shadow:10px 10px 7px rgba(0,0,0,.7);
         -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);
         -webkit-box-shadow: 10px 10px 7px rgba(0,0,0,.7);
+        transform: scale(1.25);
         -webkit-transform: scale(1.25);
         -moz-transform: scale(1.25);
         -o-transform: scale(1.25);
@@ -238,7 +212,7 @@ export default {
             axios.delete('/api/deletenote', {data: {id:id}})
                 .then((response) => {
                     let index = _.findIndex(this.notes, {id: id});
-                    this.notes.splice(index, 1);
+                    this.notes.splice(index, 1); 
                     this.update();
                     this.$toaster.warning('deleted!');
                 })
