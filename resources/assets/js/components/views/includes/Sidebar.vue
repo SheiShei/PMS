@@ -18,8 +18,14 @@
                     </router-link>
                 </li>
 
-                <li data-toggle="collapse" data-target="#boardsList" class="collapsed">
-                    <a><i class="fa fa-trello fa-lg"></i> Boards <span class="arrow"></span></a>
+                <!-- <li data-toggle="collapse" data-target="#boardsList" class="collapsed"> -->
+                    <!-- <a><i class="fa fa-trello fa-lg"></i> Boards <span class="arrow"></span></a> -->
+                <!-- </li> -->
+
+                <li class="">
+                    <router-link :to="{ name: 'boards' }">
+                        <i class="fa fa-trello fa-lg"></i> Boards
+                    </router-link>
                 </li>
                 
                 <ul class="sub-menu collapse" id="boardsList">
@@ -33,7 +39,11 @@
                         </li>
                     </ul> -->
                     <li data-toggle="collapse" data-target="#" class="collapsed">My Board</li>
-                    <li data-toggle="collapse" data-target="#" class="collapsed">Creatives Team</li>
+                    <li data-toggle="collapse" data-target="#" class="collapsed">
+                        <router-link :to="{ name: 'kanboard' }">
+                            <i class="fa fa-circle-o fa-lg"></i> Creatives Board
+                        </router-link>
+                    </li>
                 </ul> 
 
                 <li data-toggle="collapse" data-target="#brandsList" class="collapsed">

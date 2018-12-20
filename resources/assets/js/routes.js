@@ -14,6 +14,8 @@ import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
+import Boards from './components/views/pages/boards/Boards.vue';
+import BoardKanban from './components/views/pages/boards/Kanban.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -146,6 +148,22 @@ export const routes = [
                     requiresAuth: true
                 },
             },
+            {
+                path: 'boards',
+                name: 'boards',
+                component: Boards,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'boards/kanban',
+                name: 'kanboard',
+                component: BoardKanban,
+                meta: {
+                    requiresAuth: true
+                },
+            }
         ]
     },
     {

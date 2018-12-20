@@ -11403,6 +11403,43 @@ button.close {
   clip: auto;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  -webkit-transition: opacity .3s ease-out, -webkit-transform .3s ease-out;
+  transition: opacity .3s ease-out, -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out, opacity .3s ease-out;
+  transition: transform .3s ease-out, opacity .3s ease-out, -webkit-transform .3s ease-out;
+}
+
+.slide-enter,
+.slide-leave-to {
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
 div.bootstrap-select > .btn.btn-info.btn-simple {
   border: 1px solid #00bcd4;
 }
@@ -11438,16 +11475,19 @@ div.bootstrap-select > .btn.btn-info.btn-simple {
 }
 
 .my-input {
-  height: 28px;
-  padding: 3px 7px;
-  border: 1px solid #5fa6db;
-  color: black;
+  padding: 7px 8px;
+  border: 1px solid #cacaca;
+  color: #333333;
   border-radius: 3px;
+}
+
+.my-inp-blk {
+  width: 100%;
 }
 
 .my-input:focus,
 .my-text-area:focus {
-  background-color: #f8fcff;
+  background-color: #fafafa;
   -webkit-transition: background-color 0.5s;
   transition: background-color 0.5s;
 }
@@ -12180,7 +12220,6 @@ hr {
   justify-items: self-start;
   /* background-color: rgb(231, 231, 231); */
   -webkit-box-shadow-top: 0 6px 10px 0 rgba(0, 0, 0, 0.14);
-  box-shadow-top: 0 6px 10px 0 rgba(0, 0, 0, 0.14);
 }
 
 /* display: block; */
@@ -12402,6 +12441,63 @@ hr {
 .txt-bold {
   font-weight: bold !important;
   font-size: 12px;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: auto;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  background-size: cover;
+}
+
+.btn-close {
+  padding: 3px 5px;
+  font-size: 11px;
+  margin: 0;
+  border-radius: 2px;
+}
+
+.btn-close:hover {
+  color: #eb2a2a;
+}
+
+.board-body {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding-bottom: 20px;
+}
+
+.board-header {
+  width: 100%;
+  color: white;
+}
+
+.board-header .board-name {
+  display: inline-block;
+}
+
+.board-header .board-name h4 {
+  margin: 10px 0;
+}
+
+.board-header .board-info {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.board-header .board-info p {
+  font-size: 12px;
+}
+
+.board-wrapper {
+  padding: 0 20px;
 }
 
 .table > thead > tr > th,
