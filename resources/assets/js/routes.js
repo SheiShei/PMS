@@ -15,13 +15,10 @@ import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
-<<<<<<< HEAD
 import Boards from './components/views/pages/boards/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
-=======
 import UpdateWebJO from './components/views/pages/joborders/UpdateJobOrderWeb.vue';
 import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderCreative.vue';
->>>>>>> master
 /* end of import vue components */
 
 export const routes = [
