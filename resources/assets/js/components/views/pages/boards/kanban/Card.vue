@@ -20,9 +20,9 @@
             </div>
         </div>
         <div class="list-body">
-            <draggable :options="{animation:200, group:'status'}" :element="'div'" @add="onAdd($event, false)">
+            <draggable :move="checkMove" :options="{animation:200, group:'status'}" :element="'div'" @add="onAdd($event, false)">
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
-                <div class="t-card" @mouseout="openTaskOpt=false">
+                <div class="t-card" @mouseout="openTaskOpt=false" @drag="checkMove">
                     <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
                         <div class="if-fr-jo">
                             <span class="text-success">Task #1</span> MFI Revisionsjkddfsdfd
@@ -98,6 +98,19 @@ export default {
             revert(){
                 this.showEditList = !this.showEditList;
             },
+
+            checkMove(event) {
+                // console.log(event);
+                var elmnt = document.querySelector('#testTaskDiv');
+                let pos = event.pageX - $('#testTaskDiv').offset().left
+                // console.log(`mouse position: ${pos}`);
+                if(pos>1000) {
+                    elmnt.scrollBy(10, 0);
+                }
+                if(pos<200) {
+                    elmnt.scrollBy(-10, 0);
+                }
+            }
         }
 }
 </script>
