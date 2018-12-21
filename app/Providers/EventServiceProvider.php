@@ -16,6 +16,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\AddMemberEvent' => [
             'App\Listeners\AddMemberEventListener',
         ],
+        'App\Events\AddConversationEvent' => [
+            'App\Listeners\AddConversationEventListener',
+        ],
+        'App\Events\DirectMessageEvent' => [
+            'App\Listeners\DirectMessageEventListener',
+        ],
     ];
 
     /**

@@ -15,7 +15,7 @@ class CreateJoCreativesTable extends Migration
     {
         Schema::create('jo_creatives', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('jo_id')->index();
+            $table->char('jo_id', 36)->index();
             $table->string('media')->nullable();
             $table->string('ad_type')->nullable();
             $table->string('file_type')->nullable();
@@ -24,7 +24,7 @@ class CreateJoCreativesTable extends Migration
             $table->tinyInteger('status')->nullable();
             $table->text('revisions')->nullable();
             $table->dateTime('completed_at')->nullable();
-            $table->unsignedInteger('signed_by')->index()->nullable();
+            $table->char('signed_by', 36)->index()->nullable();
             $table->timestamps();
 
             $table->foreign('signed_by')->references('id')->on('users')->onDelete('cascade');

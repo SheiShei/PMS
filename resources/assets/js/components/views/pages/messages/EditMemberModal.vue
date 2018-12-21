@@ -11,47 +11,26 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <form action="">
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <input type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
-                                    </div>
+                                    </div> -->
                                     <div class="choose-mem" style="max-height: 200px; overflow:auto">
-                                        <div class="checkbox">
+                                        <div class="checkbox" v-for="member in convoMembers" :key="member.id">
                                             <label>
-                                                <input type="checkbox" name="optionsCheckboxes">
+                                                <input type="checkbox" name="optionsCheckboxes" v-model="checkedRemoveMember" :value="member.id">
                                                 <span class="check"></span>
-                                                Bryxx
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" name="optionsCheckboxes">
-                                                <span class="check"></span>
-                                                Yanna
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" name="optionsCheckboxes">
-                                                <span class="check"></span>
-                                                Yce
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" name="optionsCheckboxes">
-                                                <span class="check"></span>
-                                                Kent
+                                                {{ member.name }}
                                             </label>
                                         </div>
                                     </div>
 
                                      <div class="row">
                                         <div class="col-md-6">
-                                            <button type="button" class="btn btn-sm btn-danger btn-block btn-simple">Remove</button>
+                                            <button @click="removeMembers()" type="button" class="btn btn-sm btn-danger btn-block btn-simple">Remove</button>
                                         </div>
-                                        <div class="col-md-6">
+                                        <!-- <div class="col-md-6">
                                             <button type="button" class="btn btn-sm btn-success btn-block btn-simple">Set Admin</button>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                 </form>       
@@ -66,3 +45,31 @@
         </div>
     </div>
 </template>
+<script>
+import {mapGetters} from 'vuex';
+export default {
+    data() {
+        return {
+            checkedRemoveMember: [],
+        }
+    },
+    computed: {
+        ...mapGetters({
+                convoMembers: 'getConvoUsers',
+            }),
+    },
+    methods: {
+        removeMembers() {
+            let data = {
+                slug: this.$route.params.convo_id,
+                ids: this.checkedRemoveMember
+            };
+            this.$store.dispatch('removeMember', data)
+                .then ((response) => {
+                    this.checkedRemoveMember = [];
+                    $('#membersEditModal').modal('hide');
+                })
+        },
+    }
+}
+</script>

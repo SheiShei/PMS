@@ -14,11 +14,12 @@ class CreateConversationsTable extends Migration
     public function up()
     {
         Schema::create('conversations', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->tinyInteger('type');
-            $table->unsignedInteger('created_by');
+            $table->char('created_by', 36);
             $table->timestamps();
         });
     }

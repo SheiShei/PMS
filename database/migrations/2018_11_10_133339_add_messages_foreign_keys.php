@@ -14,9 +14,6 @@ class AddMessagesForeignKeys extends Migration
     public function up()
     {
         Schema::table('messages', function (Blueprint $table) {
-            $table->index('conversation_id');
-            $table->index('sender_id');
-
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
         });

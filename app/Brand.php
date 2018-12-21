@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Brand extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Uuids;
+
+    public $incrementing = false;
     
     protected $fillable = ['name', 'contact_person', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
 

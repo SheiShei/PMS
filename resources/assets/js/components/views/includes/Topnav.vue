@@ -20,7 +20,7 @@
                     <li class="dropdown">
                         <a href="#pablo" class="profile-photo dropdown-toggle" data-toggle="dropdown">
                             <div class="profile-photo-small">
-                                <img src="/images/pp.jpg" alt="profile-picture" class="img-circle img-responsive">
+                                <img :src="cUser.picture" alt="profile-picture" class="img-circle img-responsive">
                             </div>
                         <div class="ripple-container"></div>
                         </a>
@@ -42,6 +42,7 @@
     </nav>
 </template>
 <script>
+import {mapGetters} from 'vuex';
 export default {
     methods: {
         logout() {
@@ -50,6 +51,12 @@ export default {
                     this.$router.push('/login');
                 })
         }
+    },
+
+    computed: {
+        ...mapGetters({
+                cUser: 'currentUser'
+            }),
     }
 }
 </script>

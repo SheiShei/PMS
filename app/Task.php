@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use Uuids;
+    
+    public $incrementing = false;
+    
     protected $fillable = ['card_id', 'jo_id', 'name', 'description', 'created_by', 'assigned_to', 'assigned_by'];
 
     public function joborder() {

@@ -8,6 +8,7 @@ use App\Brand;
 use App\JobOrder;
 use App\Board;
 use App\Task;
+use App\JoCreative;
 use Hash;
 use Carbon\Carbon;
 
@@ -114,7 +115,7 @@ class AdminController extends Controller
                     'name' => $task['name'],
                     'description' => $task['desc'],
                     'created_by' => auth()->user()->id,
-                    'assigned_to' => 1,
+                    'assigned_to' => auth()->user()->id,
                     'assigned_by' => auth()->user()->id
                 ]);
                 
@@ -203,7 +204,7 @@ class AdminController extends Controller
                     'name' => $task['name'],
                     'description' => $task['desc'],
                     'created_by' => auth()->user()->id,
-                    'assigned_to' => 1,
+                    'assigned_to' => auth()->user()->id,
                     'assigned_by' => auth()->user()->id
                 ]);
                 

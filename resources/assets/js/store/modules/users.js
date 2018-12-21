@@ -33,11 +33,7 @@ const actions = {
     setUsers({commit}, data) {
         // console.log(data);
         return new Promise((resolve, reject) => {
-            axios.post(data.url, {
-                filter: data.data.filter,
-                search: data.data.search,
-                notArchive: data.data.notArchive
-            })
+            axios.post('/api/shittycaptivateusers', data)
                 .then((response) => {
                     // console.log(response.data);
                     commit('setUsers', response.data.data)

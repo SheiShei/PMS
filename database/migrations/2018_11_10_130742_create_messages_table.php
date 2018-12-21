@@ -14,13 +14,18 @@ class CreateMessagesTable extends Migration
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->text('text')->nullable();
-            $table->string('file')->nullable();
+            $table->string('original_filename')->nullable();
+            $table->string('new_filename')->nullable();
+            $table->string('extension')->nullable();
             $table->dateTime('seen')->nullable();
             $table->dateTime('read')->nullable();
-            $table->unsignedInteger('conversation_id');
-            $table->unsignedInteger('sender_id');
+            $table->char('conversation_id', 36)->index()->nullable();
+            $table->char('sender_id', 36)->index();
+            $table->char('receiver_id', 36)->index()->nullable();
+            $table->tinyInteger('action')->default('1');
             $table->timestamps();
         });
     }

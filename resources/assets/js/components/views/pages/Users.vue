@@ -132,7 +132,7 @@ export default {
 
     created() {
         let data = this.data;
-        this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
+        this.$store.dispatch('setUsers', data);
     },
 
     computed: {
@@ -241,7 +241,7 @@ export default {
         archiveList() {
             this.data.notArchive = !this.data.notArchive;
             let data = this.data;
-            this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
+            this.$store.dispatch('setUsers', data);
         },
 
         restoreUser(id) {

@@ -11,7 +11,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //get current user logged in
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        // return auth()->user()->role()->first();
+        return response()->json(['user' => auth()->user(), 'role' => auth()->user()->role()->first()]);
     });
 
     //obviously for logout function
@@ -39,14 +40,22 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/restorebrands', 'BrandsController@restoreBrands'); 
     Route::get('/getTandemsList', 'BrandsController@getTandemsList');
     Route::post('/getBrandJos', 'BrandsController@getBrandJos');
+    Route::post('/getOnebrand', 'BrandsController@getOnebrand'); 
+    Route::post('/UpdateBrand', 'BrandsController@updateBrand');
+
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
     Route::post('/getConvoList', 'DataController@getConvoList');
-    Route::post('/getOnebrand', 'BrandsController@getOnebrand'); 
-    Route::post('/UpdateBrand', 'BrandsController@updateBrand');
- //   Route::post('/testFileUpload', 'BrandsController@testFileUpload');
-
-
+    Route::get('/getConvoMessages', 'DataController@getConvoMessages');
+    Route::get('/getMessages', 'DataController@getMessages');
+    Route::post('/newMessage', 'DataController@newMessage');
+    Route::patch('/updateRead', 'DataController@updateRead');
+    Route::post('/sendFiles', 'DataController@sendFiles');
+    Route::post('/getConvoUsers', 'DataController@getConvoUsers');
+    Route::post('/getNotMembers', 'DataController@getNotMembers');
+    Route::post('/addConvoMember', 'DataController@addConvoMember');
+    Route::post('/verifyConvoUsers', 'DataController@verifyConvoUsers');
+    Route::delete('/removeMember', 'DataController@removeConvoMember');
 
     //Job Order
     Route::get('/onLoad', 'AdminController@onLoad');
@@ -59,7 +68,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
     Route::delete('/deletejo', 'AdminController@deletejo');
-
 
     //Boards
     Route::post('/newBoard', 'BoardController@newBoard');

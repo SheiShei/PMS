@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Board;
 use App\Sprint;
 use App\Card;
+use App\User;
 
 class BoardsTableSeeder extends Seeder
 {
@@ -14,64 +15,42 @@ class BoardsTableSeeder extends Seeder
      */
     public function run()
     {
-        Board::create([
+        $user = User::all()->pluck('id');
+        $board = Board::create([
             'name' => 'Test Creative Board',
             'type' => '1',
-            'created_by' => 1
+            'created_by' => $user[0]
         ]);
 
         Board::create([
             'name' => 'Test Web Board',
             'type' => '2',
-            'created_by' => 1
+            'created_by' => $user[0]
         ]);
 
-        Sprint::create([
+        $sprint = Sprint::create([
             'name' => 'Test Web version 1',
-            'board_id' => 2,
-            'created_by' => 1
+            'board_id' => $board->id,
+            'created_by' => $user[0]
         ]);
 
         Sprint::create([
             'name' => 'Test Web version 2',
-            'board_id' => 2,
-            'created_by' => 1
+            'board_id' => $board->id,
+            'created_by' => $user[0]
         ]);
 
         Card::create([
             'name' => 'New',
-            'board_id' => 1,
-            'created_by' => 1
+            'board_id' => $board->id,
+            'created_by' => $user[0]
         ]);
 
         Card::create([
             'name' => 'Completed',
-            'board_id' => 1,
-            'created_by' => 1
+            'board_id' => $board->id,
+            'created_by' => $user[0]
         ]);
 
-        Card::create([
-            'name' => 'New',
-            'sprint_id' => 1,
-            'created_by' => 1
-        ]);
-
-        Card::create([
-            'name' => 'Completed',
-            'sprint_id' => 1,
-            'created_by' => 1
-        ]);
-
-        Card::create([
-            'name' => 'New',
-            'sprint_id' => 2,
-            'created_by' => 1
-        ]);
-
-        Card::create([
-            'name' => 'Completed',
-            'sprint_id' => 2,
-            'created_by' => 1
-        ]);
     }
 }

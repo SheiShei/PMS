@@ -10,7 +10,9 @@ use Cviebrock\EloquentSluggable\Sluggable;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes, HasApiTokens, Sluggable;
+    use Notifiable, SoftDeletes, HasApiTokens, Sluggable, Uuids;
+
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'brand_id', 'department_id'
+        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture'
     ];
 
     /**
@@ -36,6 +38,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
     
     /**
      * Return the sluggable configuration array for this model.
@@ -122,6 +125,18 @@ class User extends Authenticatable
 
     public function task_assigned_to() {
         return $this->hasMany('App\Task', 'assigned_to');
+    }
+    
+    public function conversations() {
+        return $this->belongsToMany('App\Conversation')->withPivot('added_by')->withTimestamps();
+    }
+
+    public function sender(){
+        return $this->hasMany('App\Message', 'sender_id');
+    }
+
+    public function receiver(){
+        return $this->hasMany('App\Message', 'receiver_id');
     }
 
     public function getPictureAttribute($pic) {
