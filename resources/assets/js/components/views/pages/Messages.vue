@@ -1,5 +1,5 @@
 <template>
-        <section class="main-main-container" id="message-component">
+        <section class="main-main-container" id="message-component" v-if="currentUser">
             <div class="title-head">
                 <h2><span class="fa fa-commenting-o"></span> Messages <small></small></h2>
             </div>
@@ -40,7 +40,7 @@
                                             </form>
                                         </div>
 
-                                        <a ref="you_convo" @click.prevent  href="" class="cont-name">
+                                        <router-link ref="you_convo" :to="{ name: 'convo-view', params: {convo_id: currentUser.slug} }" href="" class="cont-name">
                                             <div class="media">
 		        					            <a @click.prevent class="pull-left" href="">
 		        						            <div class="avatar">
@@ -49,12 +49,12 @@
 		        					            </a>
 		        					            <div class="media-body">
 		        						            <h4 class="media-head">You <small class=""><span class="label label-success unread-label">2</span></small></h4>
-		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
+		        						            <!-- <p class="prev-msg"> Don't forget, You're Aweso...</p> -->
                                                 </div>
 		        					        </div>
-                                        </a>
+                                        </router-link>
 
-                                        <a ref="dm_convo1" @click.prevent v-for="user in users" :key="user.id" v-if="currentUser.id != user.id"  href="" class="cont-name">
+                                        <router-link ref="dm_convo1"  v-for="user in users" :key="user.id" v-if="currentUser.id != user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"  href="" class="cont-name">
                                             <div class="media">
 		        					            <a @click.prevent class="pull-left" href="">
 		        						            <div class="avatar">
@@ -66,7 +66,7 @@
 		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
                                                 </div>
 		        					        </div>
-                                        </a>
+                                        </router-link>
 
 	                    	        </div>
 
@@ -82,13 +82,15 @@
                                             </form>
                                         </div>
 
-                                        <a @click.prevent v-for="convo in conversations" :key="convo.id" href="" class="cont-name">
-                                            <div class="media">
-		        					            <div class="media-body thread-head">
-		        						            <h4 class="media-head">#{{ convo.name }}<small></small></h4>
-		        					            </div>
-		        					        </div>
-                                        </a>
+                                        <!-- <div > -->
+                                            <router-link v-for="convo in conversations" :key="convo.id" :to="{ name: 'convo-view', params: {convo_id: convo.id} }" href="" class="cont-name">
+                                                <div class="media">
+                                                    <div class="media-body thread-head">
+                                                        <h4 class="media-head">{{ convo.name }}<small></small></h4>
+                                                    </div>
+                                                </div>
+                                            </router-link >
+                                        <!-- </div> -->
 
                                         <div class="cont-footer">
                                             <button @click="showThreadForm = !showThreadForm" class="btn btn-xs btn-block btn-info">
@@ -99,7 +101,7 @@
 	                    	    </div>
                             </div>
 	                    </div>
-                        <message-conversation></message-conversation>
+                        <router-view></router-view>
 
                     </div>
                        
@@ -109,13 +111,14 @@
             <div class="col-md-3">
                 <transition name="slide">
                     <div class="mybox" v-show="showThreadForm">
+                        <form @submit.prevent="addConvo" >
                         <div class="mybox-head">
                             <h6><strong>NEW GROUP CHAT</strong></h6>
                         </div>
                         <div class="mybox-body white-white-bg">
                             <div class="form-group is-empty">
                                 <label class="control-label">Group Name</label> 
-                                <input v-model="credentials.name" type="text" class="form-control"> 
+                                <input v-model="credentials.name" type="text" class="form-control" required> 
                                 <span class="material-input"></span>
                                 <span class="material-input"></span>
                             </div>
@@ -136,7 +139,7 @@
                                     <input v-model="data.search" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
                                 </div>
                                 <div class="choose-mem" style="max-height: 130px; overflow:auto">
-                                    <div class="checkbox" v-for="user in users" :key="user.id" >
+                                    <div class="checkbox" v-for="user in users" :key="user.id"  >
                                         <label>
                                             <input type="checkbox" v-model="credentials.checkedNames" :value="user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id">
                                             <span class="check"></span>
@@ -150,10 +153,11 @@
                             <div class="row form-group text-center">
                                 <div class="col-md-12">
                                     <button @click="showThreadForm = !showThreadForm" class="btn btn-info btn-simple btn-sm" type="button" value="submit">Close</button>
-                                    <button class="btn btn-info btn-sm" type="button" value="">OK!</button>
+                                    <button class="btn btn-info btn-sm" type="submit" value="">OK!</button>
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </transition>
             </div>
@@ -187,9 +191,14 @@ export default {
     },
     created() {
         this.getConversationsList();
+        this.getUsersData();
+
     },
     mounted () {
-        this.getUsersData();
+        this.listenEcho();
+    },
+    destroyed() {
+        this.$store.commit('messageDestroy');
     },
     computed: {
         ...mapGetters({
@@ -198,6 +207,13 @@ export default {
                 conversations: 'conversationsList'
             }),
             checkedUser() {
+                let cuser = this.currentUser;
+                let _this = this;
+                this.users.forEach(function(user,index){ 
+                    if(user.id == cuser.id) {
+                        _this.users.splice(index,1);
+                    } 
+                }) 
                 return this.users.map(
                     user => user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id
                 );
@@ -245,6 +261,33 @@ export default {
         setFocus() {
             // this.$refs.dm_convo.$el.focus();
 
+        },
+
+        addConvo() {
+            let newId = this.credentials.checkedNames.map(
+                    val => val.split('_')[1]
+                );
+            let data = {
+                name: this.credentials.name,
+                ids: newId
+            }
+            this.$store.dispatch('addConvo', data);
+            // this.credentials.checkedNames = [];
+            this.credentials.name = '';
+        },
+
+        listenEcho() {
+            var _this = this
+            Echo.private('addconvo')
+                .listen('AddConversationEvent', (e) => {
+                    let found = e.newConversation.users.find(function(element) {
+                        return element.slug == _this.currentUser.slug
+                    });
+                    if(found) {
+                        // console.log(e);
+                        this.$store.commit('addConvo', e.newConversation.newConvo);
+                    }
+                })
         },
 
         search: _.debounce(function (e) {

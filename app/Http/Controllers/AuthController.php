@@ -35,10 +35,14 @@ class AuthController extends Controller
                 ],
             ]);
 
-            $loggedUser['id'] = json_decode((string) $userResponse->getBody(), true)['id'];
-            $loggedUser['name'] = json_decode((string) $userResponse->getBody(), true)['name'];
-            $loggedUser['email'] = json_decode((string) $userResponse->getBody(), true)['email'];
-            $loggedUser['picture'] = json_decode((string) $userResponse->getBody(), true)['picture'];
+            // return json_decode((string) $userResponse->getBody(), true)['user']['id'];
+
+            $loggedUser['id'] = json_decode((string) $userResponse->getBody(), true)['user']['id'];
+            $loggedUser['name'] = json_decode((string) $userResponse->getBody(), true)['user']['name'];
+            $loggedUser['email'] = json_decode((string) $userResponse->getBody(), true)['user']['email'];
+            $loggedUser['picture'] = json_decode((string) $userResponse->getBody(), true)['user']['picture'];
+            $loggedUser['slug'] = json_decode((string) $userResponse->getBody(), true)['user']['slug'];
+            $loggedUser['role'] = json_decode((string) $userResponse->getBody(), true)['role'];
 
             return response()->json(['access_token' => $accessToken, 'user' => $loggedUser],200);
             

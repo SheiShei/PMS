@@ -10,9 +10,38 @@
                 </div>
                 <div class="modal-footer text-center">
                     <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success btn-simple">Yes</button>
+                    <button @click="leaveConvo()" type="button" class="btn btn-success btn-simple">Yes</button>
                 </div>
             </div>
         </div>
     </div>
 </template>
+<script>
+import {mapGetters} from 'vuex';
+export default {
+    data () {
+        return {
+            checkedLeaveMember: []
+        }
+    },
+    computed: {
+        ...mapGetters({
+                currentUser: 'currentUser',
+            }),
+    },
+    methods: {
+        leaveConvo() {
+            this.checkedLeaveMember.push(this.currentUser.id);
+            let data = {
+                slug: this.$route.params.convo_id,
+                ids: this.checkedLeaveMember
+            };
+            this.$store.dispatch('removeMember', data);
+            this.$store.commit('leaveConvo', this.$route.params.convo_id);
+            // this.$router.push({name: 'messages'});
+            $('#confirmLeaveModal').modal('hide');
+
+        },
+    }
+}
+</script>

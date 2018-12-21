@@ -1,3 +1,6 @@
+import Echo from 'laravel-echo'
+window.Pusher = require('pusher-js');
+
 export function initialize(store, router) {
     router.beforeEach((to, from, next) => {
         if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -49,6 +52,28 @@ export function setAuthorization(token) {
     // console.log(token);
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     axios.defaults.headers.common["Accept"] = 'application/json';
+
+    let bearerToken = JSON.parse(localStorage.getItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f'));
+    if(bearerToken) {
+        bearerToken = bearerToken.token;
+    }
+    else {
+        bearerToken = 'Sheira The Great';
+    }
+
+    window.Echo = new Echo({
+        // authEndpoint: '/broadcast',
+        broadcaster: 'pusher',
+        key: process.env.MIX_PUSHER_APP_KEY,
+        cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+        encrypted: false,
+        auth: {
+            headers: {
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + bearerToken
+            },
+        },
+    });
 }
 
 export function __initializeUser() {

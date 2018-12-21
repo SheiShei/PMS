@@ -13,7 +13,8 @@ class BrandsTableSeeder extends Seeder
      */
     public function run()
     {
-        Brand::create([
+        $user = User::all()->pluck('id');
+        $brand = Brand::create([
             'name'=>'Luljetta',
             'contact_person'=>'MJ',
             'about'=>'Spa',
@@ -23,8 +24,8 @@ class BrandsTableSeeder extends Seeder
             'tandem_id'=>1
         ]);
 
-        User::find(5)->update([
-            'brand_id'=>1
+        User::find($user[4])->update([
+            'brand_id'=>$brand->id
         ]);
     }
 }

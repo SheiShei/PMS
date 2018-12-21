@@ -34,6 +34,12 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
+            return;
+        }
+        // if ($exception instanceof RuntimeException && $exception->getCode() == 0) {
+        //     return;
+        // }
         parent::report($exception);
     }
 

@@ -10,21 +10,23 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class AddMemberEvent
+class DirectMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newMember;
-    public $added_by;
-
+    public $message;
+    public $conversation;
+    public $receiver;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        
+    public function __construct($message, $receiver, $conversation)
+    {   
+        $this->message = $message;
+        $this->receiver = $receiver;
+        $this->conversation = $conversation;
     }
 
     /**
@@ -34,6 +36,9 @@ class AddMemberEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        if($this->conversation){
+            return new PrivateChannel('message.'.$this->conversation->id);
+        }
+        return new PrivateChannel('message.'.$this->receiver->slug);
     }
 }
