@@ -235,7 +235,7 @@
             <button class="btn btn-warning btn-sm" @click="openTaskView = !openTaskView"> View Task</button>
             <button class="btn btn-danger btn-sm" @click="openGallery = !openGallery"> Open Gallery</button>
             
-            <div class="board-body">
+            <div id="testTaskDiv" class="board-body">
                 <list-card v-for="(listDiv , index) in listDivs" :key="index" :listDiv="listDiv"></list-card>
             </div>
         </div>
@@ -292,15 +292,7 @@ export default {
         methods: {
             onAdd(event, status) {
                 console.log('add');
-
                 let id = event.item.getAttribute('data-id');
-                // axios.patch('/demos/tasks/' + id, {
-                //     status: status
-                // }).then((response) => {
-                //     console.log(response.data);
-                // }).catch((error) => {
-                //     console.log(error);
-                // })
             },
             addListDiv(){
                 this.listDivs.push({
@@ -319,24 +311,6 @@ export default {
             },
             update() {
                 console.log('update');
-
-                // this.tasksNotCompletedNew.map((task, index) => {
-                //     task.order = index + 1;
-                // });
-
-                // this.tasksCompletedNew.map((task, index) => {
-                //     task.order = index + 1;
-                // });
-
-                // let tasks = this.tasksNotCompletedNew.concat(this.tasksCompletedNew);
-
-                // axios.put('/demos/tasks/updateAll', {
-                //     tasks: tasks
-                // }).then((response) => {
-                //     console.log(response.data);
-                // }).catch((error) => {
-                //     console.log(error);
-                // })
             },
             nextSlide(){
                 // currentSlide + 1
@@ -359,6 +333,18 @@ export default {
                 let data = new FormData();
                 if(files.length > 0) {
                     console.log(files);
+                }
+            },
+
+            mousePos(event) {
+                var elmnt = document.querySelector('#testTaskDiv');
+                let pos = event.pageX - $('#testTaskDiv').offset().left
+                // console.log(`mouse position: ${pos}`);
+                if(pos>1000) {
+                    elmnt.scrollBy(10, 0);
+                }
+                if(pos<200) {
+                    elmnt.scrollBy(-10, 0);
                 }
             }
 

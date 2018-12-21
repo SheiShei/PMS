@@ -20219,8 +20219,8 @@ window.Pusher = __webpack_require__(45);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
     broadcaster: 'pusher',
-    key: "",
-    cluster: "mt1",
+    key: "22c7b2a3c635de52dc73",
+    cluster: "ap1",
     encrypted: true
 });
 
@@ -82730,15 +82730,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         onAdd: function onAdd(event, status) {
             console.log('add');
-
             var id = event.item.getAttribute('data-id');
-            // axios.patch('/demos/tasks/' + id, {
-            //     status: status
-            // }).then((response) => {
-            //     console.log(response.data);
-            // }).catch((error) => {
-            //     console.log(error);
-            // })
         },
         addListDiv: function addListDiv() {
             this.listDivs.push({
@@ -82757,24 +82749,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         update: function update() {
             console.log('update');
-
-            // this.tasksNotCompletedNew.map((task, index) => {
-            //     task.order = index + 1;
-            // });
-
-            // this.tasksCompletedNew.map((task, index) => {
-            //     task.order = index + 1;
-            // });
-
-            // let tasks = this.tasksNotCompletedNew.concat(this.tasksCompletedNew);
-
-            // axios.put('/demos/tasks/updateAll', {
-            //     tasks: tasks
-            // }).then((response) => {
-            //     console.log(response.data);
-            // }).catch((error) => {
-            //     console.log(error);
-            // })
         },
         nextSlide: function nextSlide() {
             // currentSlide + 1
@@ -82796,6 +82770,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var data = new FormData();
             if (files.length > 0) {
                 console.log(files);
+            }
+        },
+        mousePos: function mousePos(event) {
+            var elmnt = document.querySelector('#testTaskDiv');
+            var pos = event.pageX - $('#testTaskDiv').offset().left;
+            // console.log(`mouse position: ${pos}`);
+            if (pos > 1000) {
+                elmnt.scrollBy(10, 0);
+            }
+            if (pos < 200) {
+                elmnt.scrollBy(-10, 0);
             }
         }
     }
@@ -83000,6 +82985,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         revert: function revert() {
             this.showEditList = !this.showEditList;
+        },
+        checkMove: function checkMove(event) {
+            // console.log(event);
+            var elmnt = document.querySelector('#testTaskDiv');
+            var pos = event.pageX - $('#testTaskDiv').offset().left;
+            // console.log(`mouse position: ${pos}`);
+            if (pos > 1000) {
+                elmnt.scrollBy(10, 0);
+            }
+            if (pos < 200) {
+                elmnt.scrollBy(-10, 0);
+            }
         }
     }
 });
@@ -83065,6 +83062,7 @@ var render = function() {
           "draggable",
           {
             attrs: {
+              move: _vm.checkMove,
               options: { animation: 200, group: "status" },
               element: "div"
             },
@@ -83091,7 +83089,8 @@ var render = function() {
                 on: {
                   mouseout: function($event) {
                     _vm.openTaskOpt = false
-                  }
+                  },
+                  drag: _vm.checkMove
                 }
               },
               [
@@ -84026,7 +84025,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "board-body" },
+            { staticClass: "board-body", attrs: { id: "testTaskDiv" } },
             _vm._l(_vm.listDivs, function(listDiv, index) {
               return _c("list-card", {
                 key: index,
