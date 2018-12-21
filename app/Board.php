@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
 {
+    use Uuids;
+    
+    public $incrementing = false;
+    
     protected $fillable = ['name', 'type', 'created_by'];
 
     public function created_by() {

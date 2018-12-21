@@ -53285,21 +53285,8 @@ var routes = [{
         component: __WEBPACK_IMPORTED_MODULE_15__components_views_pages_Messages_vue___default.a,
         meta: {
             requiresAuth: true
-        }
-    }, {
-        path: 'boards',
-        name: 'boards',
-        component: __WEBPACK_IMPORTED_MODULE_16__components_views_pages_boards_Boards_vue___default.a,
-        meta: {
-            requiresAuth: true
-        }
-    }, {
-        path: 'boards/kanban',
-        name: 'kanboard',
-        component: __WEBPACK_IMPORTED_MODULE_17__components_views_pages_boards_Kanban_vue___default.a,
-        meta: {
-            requiresAuth: true
         },
+
         children: [{
             path: '',
             name: 'messages',
@@ -53329,6 +53316,20 @@ var routes = [{
             }
 
         }]
+    }, {
+        path: 'boards',
+        name: 'boards',
+        component: __WEBPACK_IMPORTED_MODULE_16__components_views_pages_boards_Boards_vue___default.a,
+        meta: {
+            requiresAuth: true
+        }
+    }, {
+        path: 'boards/kanban',
+        name: 'kanboard',
+        component: __WEBPACK_IMPORTED_MODULE_17__components_views_pages_boards_Kanban_vue___default.a,
+        meta: {
+            requiresAuth: true
+        }
         // {
         //     path: 'update/web/:jo_id',
         //     name: 'updateweb',
@@ -54609,21 +54610,10 @@ var render = function() {
             "li",
             {},
             [
-              _c(
-                "router-link",
-                {
-                  attrs: {
-                    to: {
-                      name: "messages",
-                      params: { convo_id: "test-message" }
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fa fa-commenting-o fa-lg" }),
-                  _vm._v(" Messages\n                ")
-                ]
-              )
+              _c("router-link", { attrs: { to: { name: "messages" } } }, [
+                _c("i", { staticClass: "fa fa-commenting-o fa-lg" }),
+                _vm._v(" Messages\n                ")
+              ])
             ],
             1
           ),
@@ -55064,7 +55054,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     created: function created() {
         var data = this.data;
-        this.$store.dispatch('setUsers', { url: '/api/shittycaptivateusers', data: data });
+        this.$store.dispatch('setUsers', data);
     },
 
 
@@ -55162,7 +55152,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         archiveList: function archiveList() {
             this.data.notArchive = !this.data.notArchive;
             var data = this.data;
-            this.$store.dispatch('setUsers', { url: '/api/shittycaptivateusers', data: data });
+            this.$store.dispatch('setUsers', data);
         },
         restoreUser: function restoreUser(id) {
             var _this4 = this;
@@ -70078,7 +70068,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var _this2 = this;
 
             var data = this.data;
-            this.$store.dispatch('setUsers', { url: '/api/shittycaptivateusers', data: data }).then(function (response) {
+            this.$store.dispatch('setUsers', data).then(function (response) {
                 _this2.checkBox();
             });
         },
@@ -90460,11 +90450,7 @@ var actions = {
 
         // console.log(data);
         return new Promise(function (resolve, reject) {
-            axios.post(data.url, {
-                filter: data.data.filter,
-                search: data.data.search,
-                notArchive: data.data.notArchive
-            }).then(function (response) {
+            axios.post('/api/shittycaptivateusers', data).then(function (response) {
                 // console.log(response.data);
                 commit('setUsers', response.data.data);
                 resolve(response);

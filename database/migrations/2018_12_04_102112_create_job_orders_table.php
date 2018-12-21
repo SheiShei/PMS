@@ -14,13 +14,14 @@ class CreateJobOrdersTable extends Migration
     public function up()
     {
         Schema::create('job_orders', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->string('name');
-            $table->unsignedInteger('brand_id')->index();
+            $table->char('brand_id', 36)->index();
             $table->date('date_in');
             $table->date('date_due');
             $table->tinyInteger('status')->default('1');
-            $table->unsignedInteger('created_by')->index();
+            $table->char('created_by', 36)->index();
             $table->tinyInteger('type');
             $table->softDeletes();
             $table->timestamps();

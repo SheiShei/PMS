@@ -14,14 +14,15 @@ class CreateTasksTable extends Migration
     public function up()
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->unsignedInteger('card_id')->index();
-            $table->unsignedInteger('jo_id')->index()->nullable();
+            $table->char('jo_id', 36)->index()->nullable();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->unsignedInteger('created_by')->index();
-            $table->unsignedInteger('assigned_to')->index();
-            $table->unsignedInteger('assigned_by')->index();
+            $table->char('created_by', 36)->index();
+            $table->char('assigned_to', 36)->index();
+            $table->char('assigned_by', 36)->index();
             $table->timestamps();
 
             $table->foreign('jo_id')->references('id')->on('job_orders')->onDelete('cascade');

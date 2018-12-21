@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sprint extends Model
 {
+    use Uuids;
+
+    public $incrementing = false;
+    
     protected $fillable = ['name', 'created_by', 'board_id'];
 
     public function created_by() {

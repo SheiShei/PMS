@@ -64,7 +64,7 @@
                 </li>
 
                 <li class="">
-                    <router-link :to="{ name: 'messages', params: {convo_id: 'test-message'} }">
+                    <router-link :to="{ name: 'messages'}">
                         <i class="fa fa-commenting-o fa-lg"></i> Messages
                     </router-link>
                 </li>

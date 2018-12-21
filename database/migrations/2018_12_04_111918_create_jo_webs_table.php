@@ -15,7 +15,7 @@ class CreateJoWebsTable extends Migration
     {
         Schema::create('jo_webs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('jo_id')->index();
+            $table->char('jo_id', 36)->index();
             $table->string('request_type')->nullable();
             $table->tinyInteger('tech')->nullable();
             $table->tinyInteger('domain_transfer')->nullable();
@@ -29,9 +29,9 @@ class CreateJoWebsTable extends Migration
             $table->text('action_points')->nullable();
             $table->string('target_list')->nullable();
             $table->datetime('web_proofed_at')->nullable();
-            $table->unsignedInteger('web_proofed_by')->index()->nullable();
+            $table->char('web_proofed_by', 36)->index()->nullable();
             $table->datetime('acma_proofed_at')->nullable();
-            $table->unsignedInteger('acma_proofed_by')->index()->nullable();
+            $table->char('acma_proofed_by', 36)->index()->nullable();
             $table->timestamps();
 
             $table->foreign('web_proofed_by')->references('id')->on('users')->onDelete('cascade');

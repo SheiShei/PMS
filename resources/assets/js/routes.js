@@ -153,22 +153,7 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
-            },
-            {
-                path: 'boards',
-                name: 'boards',
-                component: Boards,
-                meta: {
-                    requiresAuth: true
-                },
-            },
-            {
-                path: 'boards/kanban',
-                name: 'kanboard',
-                component: BoardKanban,
-                meta: {
-                    requiresAuth: true
-                },
+                
                 children: [
                     {
                         path: '',
@@ -204,6 +189,22 @@ export const routes = [
 
                     }
                 ]
+            },
+            {
+                path: 'boards',
+                name: 'boards',
+                component: Boards,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'boards/kanban',
+                name: 'kanboard',
+                component: BoardKanban,
+                meta: {
+                    requiresAuth: true
+                },
             }
             // {
             //     path: 'update/web/:jo_id',

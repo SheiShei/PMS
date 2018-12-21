@@ -15,10 +15,10 @@ class CreateCardsTable extends Migration
     {
         Schema::create('cards', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('board_id')->index()->nullable();
-            $table->unsignedInteger('sprint_id')->index()->nullable();
+            $table->char('board_id', 36)->index()->nullable();
+            $table->char('sprint_id', 36)->index()->nullable();
             $table->string('name');
-            $table->unsignedInteger('created_by')->index();
+            $table->char('created_by', 36)->index();
             $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

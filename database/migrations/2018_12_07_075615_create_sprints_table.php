@@ -14,10 +14,11 @@ class CreateSprintsTable extends Migration
     public function up()
     {
         Schema::create('sprints', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('board_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->char('board_id', 36)->index();
             $table->string('name');
-            $table->unsignedInteger('created_by')->index();
+            $table->char('created_by', 36)->index();
             $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

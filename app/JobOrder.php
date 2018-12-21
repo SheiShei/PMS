@@ -8,7 +8,9 @@ use Carbon\Carbon;
 
 class JobOrder extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Uuids;
+    
+    public $incrementing = false;
 
     protected $fillable = ['name', 'brand_id', 'client_id', 'tandem_id', 'date_in', 'date_due', 'status', 'created_by', 'type'];
 

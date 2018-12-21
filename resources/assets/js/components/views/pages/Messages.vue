@@ -222,7 +222,7 @@ export default {
     methods: {
         getUsersData() {
             let data = this.data
-            this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data})
+            this.$store.dispatch('setUsers', data)
                 .then((response) => {
                     this.checkBox();
                 })
