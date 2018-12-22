@@ -15,13 +15,13 @@ import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
-import Boards from './components/views/pages/boards/Boards.vue';
+import Boards from './components/views/pages/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
-import UpdateWebJO from './components/views/pages/joborders/UpdateJobOrderWeb.vue';
-import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderCreative.vue';
 import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
-import Axios from 'axios';
+import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
+import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
+import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -205,6 +205,32 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                children: [
+                    {
+                        path: 'addtask',
+                        name: 'kanboard_addtask',
+                        component: KanbanAddTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'kanboard_viewtask',
+                        component: KanbanViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'kanboard_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
             }
             // {
             //     path: 'update/web/:jo_id',

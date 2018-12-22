@@ -10,25 +10,29 @@ use Illuminate\Http\Request;
 class BoardController extends Controller
 {
     public function newBoard(Request $request) {
-        $board = auth()->user()->boards()->create([
-            'name' => $request->name,
-            'type' => $request->type
-        ]);
-
-        if($board->type == 1) {
-            $board->cards->create([
-                'name' => 'New',
-                'created_by' => auth()->user()->id
+        // return $request;
+        if($request->share == null) {
+            $board = auth()->user()->boards()->create([
+                'name' => $request->name,
+                'privacy' => 1,
+                'type' => $request->type,
             ]);
-        } 
-        else{
-            $sprint = $board->sprints->create([
+        }
+        else {
+            $board = auth()->user()->boards()->create([
+                'name' => $request->name,
+                'privacy' => 2,
+                'type' => $request->type,
+            ]);
+
+            $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id]);
+        }
+
+        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+
+        if($board->type == 2) {
+            $sprint = $board->sprints()->create([
                 'name' => 'Sprint 1',
-                'created_by' => auth()->user()->id
-            ]);
-
-            $sprint->cards->create([
-                'name' => 'New',
                 'created_by' => auth()->user()->id
             ]);
         }   
@@ -80,5 +84,15 @@ class BoardController extends Controller
         $board->update([
             'name' => $request->name
         ]);
+    }
+
+    public function getUserBoards(Request $request) {
+        $query = Board::with(['posts' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+
+        $boards = $query->get();
+
+        return $boards;
     }
 }

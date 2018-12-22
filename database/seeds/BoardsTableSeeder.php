@@ -19,12 +19,14 @@ class BoardsTableSeeder extends Seeder
         $board = Board::create([
             'name' => 'Test Creative Board',
             'type' => '1',
+            'privacy' => '2',
             'created_by' => $user[0]
         ]);
 
         Board::create([
             'name' => 'Test Web Board',
             'type' => '2',
+            'privacy' => '1',
             'created_by' => $user[0]
         ]);
 

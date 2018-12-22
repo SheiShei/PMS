@@ -139,6 +139,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Message', 'receiver_id');
     }
 
+    public function userBoards() {
+        return $this->belongsToMany('App\Board')->withPivot('added_by')->withTimestamps();
+    }
+
     public function getPictureAttribute($pic) {
         return '/images/'.$pic;
     }

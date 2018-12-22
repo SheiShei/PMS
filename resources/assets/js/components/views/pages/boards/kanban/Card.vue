@@ -7,7 +7,7 @@
             <div class="editListBtn pull-right">
                 <small>21213 pts</small>
                 <button class="" @click="revert"><span class="fa fa-edit"></span></button>
-                <button class="" @click="openTaskView=!openTaskView"><span class="fa fa-trash-o"></span></button>
+                <button class=""><span class="fa fa-trash-o"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
@@ -89,6 +89,10 @@ export default {
             openTaskOpt: false,
             openTaskView: false,
         }
+    },
+    mounted() {
+        let taskdiv = document.querySelector("#testTaskDiv");
+        taskdiv.scrollLeft = taskdiv.scrollWidth;
     },
     methods: {
             delListDiv(index){

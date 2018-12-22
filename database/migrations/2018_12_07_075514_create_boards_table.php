@@ -18,6 +18,7 @@ class CreateBoardsTable extends Migration
             $table->primary('id');
             $table->string('name');
             $table->tinyInteger('type');
+            $table->tinyInteger('privacy');
             $table->char('created_by', 36)->index();
             $table->timestamps();
 
