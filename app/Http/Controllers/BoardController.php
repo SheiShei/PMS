@@ -87,12 +87,67 @@ class BoardController extends Controller
     }
 
     public function getUserBoards(Request $request) {
-        $query = Board::with(['posts' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }]);
+        $query = Board::whereHas('boardUsers', function($query) {
+            $query->where('user_id', auth()->user()->id);
+        });
+
+        if($request->type) {
+            $query->where('type', $request->type);
+        }
+
+        if($request->privacy) {
+            $query->where('privacy', $request->privacy);
+        }
 
         $boards = $query->get();
 
         return $boards;
+    }
+
+    public function createList(Request $request) {
+        $list = Card::create([
+            'name' => 'Task List',
+            'board_id' => $request->board_id,
+            'created_by' => auth()->user()->id,
+            'order' => $request->order,
+        ]);
+
+        return $list;
+    }
+
+    public function updateList(Request $request) {
+        $list = Card::findOrFail($request->id);
+        $list->update([
+            'name' => $request->name
+        ]);
+
+        return $list;
+    }
+    
+    public function getBoardLists(Request $request) {
+        $lists = Card::where('board_id', $request->id)->orderBy('order' , 'asc')->get();
+
+        return $lists;
+    }
+
+    public function deleteList(Request $request) {
+        $list = Card::findOrFail($request->id);
+        $list->delete();
+        return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
+    }
+
+    public function updateListOrder(Request $request) {
+        $lists = Board::find($request->board_id)->cards()->get();
+
+        foreach ($lists as $key => $list) {
+            $id = $list->id;
+            foreach ($request->lists as $updateList) {
+                if($updateList['id'] == $id) {
+                    $list->update(['order' => $updateList['order']]);
+                }
+            }
+        }
+
+        return response()->json('Updated Successfully.', 200);
     }
 }

@@ -54,9 +54,9 @@
                                     <div class="ataskment">
                                         <div class="media">
                                             <div class="media-left media-top">
-                                                <a class="ataskment-thumb" href="" @click.prevent="openGallery = !openGallery" target="_blank" 
+                                                <router-link :to="{ name: 'kanboard_gallery', params: {task_id: '123asd'} }" class="ataskment-thumb" @click.prevent="openGallery = !openGallery"  
                                                 style="background-image: url('/storage/messages/94e2a4c0-05b3-11e9-8794-e95d86c7b042.jpg')">
-                                                </a>
+                                                </router-link>
                                             </div>
                                             <div class="media-body">
                                                 <p><b>80989-9898zcas-89sad-414ae8803.jpg</b></p>
@@ -67,9 +67,9 @@
                                     <div class="ataskment">
                                         <div class="media">
                                             <div class="media-left media-top">
-                                                <a class="ataskment-thumb" href="" @click.prevent="openGallery = !openGallery" target="_blank" 
+                                                <router-link :to="{ name: 'kanboard_gallery', params: {task_id: '123asd'} }" class="ataskment-thumb" @click.prevent="openGallery = !openGallery"  
                                                 style="background-image: url('/images/nightsky3.jpg')">
-                                                </a>
+                                                </router-link>
                                             </div>
                                             <div class="media-body">
                                                 <p><b>Midinight Sky (1).jpg</b></p>
@@ -159,6 +159,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group is-empty comment-input-wrap">
+                                        <input ref="files" v-show="false" @change="onFileChange" type="file" id="inputFile3" multiple class="form-control">
                                         <button @click="chooseFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                                             <i class="fa fa-paperclip"></i>
                                         </button>

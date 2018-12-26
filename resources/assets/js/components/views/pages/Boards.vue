@@ -3,38 +3,29 @@
         <div class="col-md-1"></div> 
         <div class="first-column col-md-6">
             <h3 class=""><span class="fa fa-trello"></span> Boards</h3>
-            <select name="" id="" class="my-input">
+            <select @change="getUserBoards" v-model="boarddata.type" class="my-input">
                 <option value="" selected>All Boards</option> 
                 <option value="1">Kanban</option>
                 <option value="2">Scrum</option> 
             </select>
             &nbsp;&nbsp;&nbsp;
-            <select name="" id="" class="my-input">
+            <select @change="getUserBoards" v-model="boarddata.privacy" class="my-input">
                 <option value="">Team & Personal</option> 
                 <option value="1">Personal</option> 
                 <option value="2">Team</option> 
             </select>
-            <p class="pull-right">Found: 1 board</p>
+            <p class="pull-right">Found: {{ userBoards.length }} board</p>
             <hr />
             <div class="boardlist" style="max-height: 70vh; overflow-y:auto">
-                <a href="/boards/kanban" class="boarddiv">
-                    <div class="boardname">Board 1</div>
+                <router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" href="/boards/kanban" class="boarddiv" v-for="board in userBoards" :key="board.id">
+                    <div class="boardname">{{ board.name }}</div>
                     <div class="boardoptions">
                         <p><span class="">
                             <a class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
-                            <a class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
+                            <a @click="deleteBoard(board.id)" class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
                         </span></p>
                     </div>
-                </a>
-                <a href="" class="boarddiv">
-                    <div class="boardname">Board 1 <span class="fa fa-lock"></span></div>
-                    <div class="boardoptions">
-                        <p><span class="">
-                            <a class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
-                            <a class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
-                        </span></p>
-                    </div>
-                </a>               
+                </router-link>             
             </div>
         </div>
         <div class="col-md-4 profilesec">
@@ -79,7 +70,7 @@
                         </p>
                         <div v-show="board.share">
                             <div class="form-group">
-                                <input v-model="data.search" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
+                                <input v-model="userdata.search" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
                             </div>
                             <div class="choose-mem" style="max-height: 130px; overflow:auto">
                                 <div class="checkbox" v-for="user in users" :key="user.id"  >
@@ -121,22 +112,29 @@ export default {
                 ids: [],
                 checkedNames: []
             },
-            data: {
+            userdata: {
                 filter: '',
                 search: '',
                 notArchive: true
+            },
+            boarddata: {
+                type: '',
+                privacy: '',
+                id: this.$store.state.loggedUser.id
             }
         }
     },
 
     created() {
         this.getUsersData();
+        this.getUserBoards();
     },
 
     computed: {
         ...mapGetters({
                 users: 'usersList',
-                currentUser: 'currentUser'
+                currentUser: 'currentUser',
+                userBoards: 'userBoards'
             }),
             checkedUser() {
                 let cuser = this.currentUser;
@@ -154,11 +152,15 @@ export default {
 
     methods: {
         getUsersData() {
-            let data = this.data;
+            let data = this.userdata;
             this.$store.dispatch('setUsers', data)
                 .then((response) => {
                     this.checkBox();
                 })
+        },
+
+        getUserBoards() {
+            this.$store.dispatch('getUserBoards', this.boarddata)
         },
 
         checkBox() {
@@ -198,7 +200,7 @@ export default {
             this.board.name = '';
             this.board.share = '';
             this.board.checkedNames = [];
-            this.data.search = '';
+            this.userdata.search = '';
         },
 
         createBoard() {
@@ -207,6 +209,10 @@ export default {
                 );
             this.board.ids = newId;
             this.$store.dispatch('createBoard', this.board);
+        },
+
+        deleteBoard(id) {
+            this.$store.dispatch('deleteBoard', id)
         }
     }
 }

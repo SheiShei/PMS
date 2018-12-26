@@ -199,7 +199,7 @@ export const routes = [
                 },
             },
             {
-                path: 'boards/kanban',
+                path: 'boards/kanban/:board_id',
                 name: 'kanboard',
                 component: BoardKanban,
                 meta: {

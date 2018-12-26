@@ -45,13 +45,15 @@ class BoardsTableSeeder extends Seeder
         Card::create([
             'name' => 'New',
             'board_id' => $board->id,
-            'created_by' => $user[0]
+            'created_by' => $user[0],
+            'order' => 1
         ]);
 
         Card::create([
             'name' => 'Completed',
             'board_id' => $board->id,
-            'created_by' => $user[0]
+            'created_by' => $user[0],
+            'order' => 2
         ]);
 
     }

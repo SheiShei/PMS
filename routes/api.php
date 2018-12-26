@@ -62,8 +62,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/getJobOrders', 'AdminController@getJobOrders');
     Route::post('/newJobOrderCreative', 'AdminController@createJOCreative');
     Route::post('/newJobOrderWeb', 'AdminController@createJOWeb');
-    // Route::post('/updateJobOrderCreative', 'AdminController@updateJOCreative');
-    // Route::post('/updateJobOrderWeb', 'AdminController@updateJOWeb');
     Route::post('/getJoDetails', 'AdminController@getJoDetails');
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
@@ -74,5 +72,11 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/newCard', 'BoardController@newCard');
     Route::post('/newSprint', 'BoardController@newSprint');
     Route::delete('/deleteBoard', 'AdminController@deleteBoard');
+    Route::post('/getUserBoards', 'BoardController@getUserBoards');
+    Route::post('/createList', 'BoardController@createList');
+    Route::post('/getBoardLists', 'BoardController@getBoardLists');
+    Route::patch('/updateList', 'BoardController@updateList');
+    Route::delete('/deleteList', 'BoardController@deleteList');
+    Route::patch('/updateListOrder', 'BoardController@updateListOrder');
 
 });

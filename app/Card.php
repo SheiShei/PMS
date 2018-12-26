@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    protected $fillable = ['name', 'board_id', 'sprint_id', 'created_by'];
+    protected $fillable = ['name', 'board_id', 'order', 'sprint_id', 'created_by'];
 
     public function board() {
         return $this->belongsTo('App\Board');

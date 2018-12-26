@@ -10,7 +10,7 @@ class Task extends Model
     
     public $incrementing = false;
     
-    protected $fillable = ['card_id', 'jo_id', 'name', 'description', 'created_by', 'assigned_to', 'assigned_by'];
+    protected $fillable = ['card_id', 'jo_id', 'order', 'name', 'description', 'created_by', 'assigned_to', 'assigned_by'];
 
     public function joborder() {
         return $this->belongsTo('App\JobOrder', 'jo_id');

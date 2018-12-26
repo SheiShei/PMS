@@ -4,7 +4,7 @@
             <img src="/images/logooo2.png" width="130px"/>
         </div>
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
-        <div class="menu-list">
+        <div class="menu-list"  v-if="cUser">
             <ul id="menu-content" class="menu-content collapse out">
                 <li class="">
                     <router-link :to="{ name: 'dashboard' }">
