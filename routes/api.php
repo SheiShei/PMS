@@ -78,5 +78,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::patch('/updateList', 'BoardController@updateList');
     Route::delete('/deleteList', 'BoardController@deleteList');
     Route::patch('/updateListOrder', 'BoardController@updateListOrder');
+    Route::post('/getBoardMembers', 'BoardController@getBoardMembers');
+    Route::post('/addTask', 'BoardController@addTask');
+    Route::post('/getTaskData', 'BoardController@getTaskData');
+    Route::patch('/updateTask', 'BoardController@updateTask');
+    Route::post('/addAttachment', 'BoardController@addAttachment');
+    Route::patch('/taskPhoto', 'BoardController@taskPhoto');
+    Route::delete('/deleteTask', 'BoardController@deleteTask');
 
 });

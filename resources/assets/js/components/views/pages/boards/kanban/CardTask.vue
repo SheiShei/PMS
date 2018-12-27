@@ -1,9 +1,9 @@
 <template>
     <!-- simple card -->
-    <div class="t-card" @mouseout="openTaskOpt=false" @drag="checkMove" v-if="!task.image">
+    <div class="t-card" @mouseout="openTaskOpt=false" @drag="checkMove" v-if="!task.task_cover">
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
-                <span class="text-success">Task #{{ i }}</span> {{ task.jo_name }}
+                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">jo name here</span>
             </div>
             <div class="t-name">
                 <b>{{ task.name }}</b>
@@ -11,13 +11,19 @@
         </div>
         <transition name="fade">
             <div class="t-options" v-show="openTaskOpt" style="" @mouseover="openTaskOpt = true" @mouseout="openTaskOpt = false">
+                <div class="assign-members">
+                    <div class="task-member">
+                        <img class="task-member-avatar" height="30" width="30" :src="task.assigned_to.picture" :title="task.assigned_to.name">
+                    </div>
+                </div>
                 <div class="t-points">
-                    <p>0 pts</p>
+                    <p>{{ task.points }} pts</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: 'asdasd123'} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
+                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <button @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                   
                 </div>
             </div>
         </transition>
@@ -27,24 +33,29 @@
     <div class="t-card" @mouseout="openTaskOpt=false" v-else>
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
-                <span class="text-success">Task #{{ i }}</span> {{ task.jo_name }}
+                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">jo name here</span>
             </div>
             <div class="t-name">
                 <b>{{ task.name }}</b>
             </div>
             <div class="t-desc">
-                <img :src="'/images/' + task.image" width="100%" alt="">
+                <img :src="'/storage/task/'+task.task_cover" width="100%" alt="">
             </div>
         </div>
         <transition name="fade">
             <div class="t-options" v-show="openTaskOpt" style="" @mouseover="openTaskOpt = true" @mouseout="openTaskOpt = false">
+                <div class="assign-members">
+                    <div class="task-member">
+                        <img class="task-member-avatar" height="30" width="30" :src="task.assigned_to.picture" :title="task.assigned_to.name">
+                    </div>
+                </div>
                 <div class="t-points">
-                    <p>10 pts</p>
+                    <p>{{ task.points }} pts</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: 'asdasd123'} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
+                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <button @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
                 </div>
             </div>
         </transition>
@@ -71,6 +82,12 @@ export default {
             if(pos<200) {
                 elmnt.scrollBy(-10, 0);
             }
+        },
+        deleteTask(id) {
+            this.$store.dispatch('deleteTask', {id:id})
+                .then(() => {
+                    this.$toaster.warning('Task deleted succesfully!.')
+                })
         }
     }
 }
@@ -157,5 +174,39 @@ export default {
             text-align: right;
         }
     }
+
+    .assign-members .task-member {
+        height: 28px;
+        width: 28px;
+        float: right;
+        margin: 0 0 10px 10px;
+    }
+
+    .task-member {
+        cursor: pointer;
+        display: block;
+        height: 32px;
+        margin: 0 4px 4px 0;
+        overflow: visible;
+        position: relative;
+        width: 32px;
+        text-decoration: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        z-index: 0;
+    }
+    .assign-members .task-member .task-member-avatar {
+        height: 28px;
+        width: 28px;
+    }
+    .task-member-avatar {
+        height: 32px;
+        width: 32px;
+        border-radius: 25em;
+    }
+
+
     //end of individual card
 </style>

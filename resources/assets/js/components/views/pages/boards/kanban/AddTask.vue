@@ -1,6 +1,7 @@
 <template>
     <transition name="fade">            
         <div class="overlay">
+            <form action="" @submit.prevent="addTask">
             <div class="newTaskForm" style="">
                 <div class="row">
                     <div class="col-md-6">
@@ -16,7 +17,7 @@
                         <label for="">Task Name: </label>
                     </div>
                     <div class="col-md-9">
-                        <input type="text" class=" my-input my-inp-blk">
+                        <input v-model="taskData.name" required type="text" class=" my-input my-inp-blk">
                     </div>
                 </div>
                 <br />
@@ -25,7 +26,7 @@
                         <label for="">Desc: </label>
                     </div>
                     <div class="col-md-9">
-                        <textarea class="my-text-area my-inp-blk" rows="4"></textarea>
+                        <textarea v-model="taskData.desc" class="my-text-area my-inp-blk" rows="4"></textarea>
                     </div>
                 </div>
                 <br />
@@ -34,39 +35,95 @@
                         <label for="">Attach File/s: </label>
                     </div>
                     <div class="col-md-9">
-                        <input type="file" class="my-input my-inp-blk" multiple>
+                        <input @change="attachFiles" type="file" class="my-input my-inp-blk" multiple>
                     </div>
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-5" v-if="boardMembers">
                         <label for="">Assign To: </label>
-                        <select class="my-input my-inp-blk" >
+                        <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
-                            <option value="">RJ</option>
-                            <option value="">Shooky</option>
-                            <option value="">Tata</option>
+                            <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label for="">Points: </label>
-                        <input type="number" class="my-input my-inp-blk" value="0" min="0">
+                        <input v-model="taskData.points" type="number" class="my-input my-inp-blk" min="0" max="9">
                     </div>
                     <div class="col-md-4">
                         <label for="">Due: </label>
-                        <input type="date" class="my-input my-inp-blk">
+                        <input v-model="taskData.due" type="date" class="my-input my-inp-blk">
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-md-6">
-                        <button class="btn btn-danger btn-block">Cancel</button>
+                        <router-link :to="{ name: 'kanboard'}" class="btn btn-danger btn-block">Cancel</router-link>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-success btn-block">Add to Board</button>
+                        <button type="submit" class="btn btn-success btn-block">Add to Board</button>
                     </div>
                 </div>
             </div>
+            </form>
         </div>
     </transition>
 </template>
+<script>
+import {mapGetters} from 'vuex';
+export default {
+    data() {
+        return {
+            attachments: [],
+            taskData: {
+                name: '',
+                desc: '',
+                points: 1,
+                due: '',
+                assign_to: ''
+            }
+        }
+    },
+    computed: {
+        ...mapGetters({
+                boardMembers: 'boardMembers',
+            }),
+    },
+    methods: {
+        attachFiles(e) {
+            let selectedFiles=e.target.files;
+            if(!selectedFiles.length){
+                return false;
+            }
+            for(let i=0;i<selectedFiles.length;i++){
+                this.attachments.push(selectedFiles[i]);
+            }
+        },
+
+        addTask() {
+            let task = new FormData;
+            for(let i=0; i<this.attachments.length;i++){
+                task.append('files[]',this.attachments[i]);
+            }
+
+            task.append('name',this.taskData.name);
+            task.append('due',this.taskData.due);
+            task.append('points',this.taskData.points);
+            task.append('assign_to',this.taskData.assign_to);
+            task.append('desc',this.taskData.desc);
+            task.append('list_id',this.$route.params.list_id);
+
+            this.$store.dispatch('addTask', task)
+                .then(() => {
+                    this.$toaster.warning('Task Added succesfully!.')
+                    this.$router.push({name: 'kanboard'});
+                    // let listDiv = document.querySelector('.list-body');
+                    // listDiv.scrollTo(0, listDiv.scrollHeight);
+                })
+        },
+
+        
+    }
+}
+</script>

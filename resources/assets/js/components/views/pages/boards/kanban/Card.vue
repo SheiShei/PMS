@@ -1,5 +1,5 @@
 <template>
-    <div class="list-div" id="task-list-component" @drag="checkListMove">
+    <div class="list-div" @drag="checkListMove">
         <div style="cursor: move;" class="list-head">
             <div class="list-title" title="Tasks List">
                 <b>{{ list.name }}</b>
@@ -22,14 +22,14 @@
             </form>
         </div>
         <div class="list-body">
-            <draggable :options="{animation:200, group:'tasks'}" :element="'div'">
+                            
+
+            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="upd">
+                <card-task v-for="(task, index) in list.tasks" :key="index" :li="li" :list_id="list.id" :task="task" :i="index"></card-task>
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
-
-                <card-task v-for="(task, index) in tasks" :key="index" :task="task" :i="index"></card-task>
-
             </draggable>
         </div>
-        <router-link :to="{ name: 'kanboard_addtask'}" @click.prevent class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add task</span></router-link>
+        <router-link :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add task</span></router-link>
     </div>
 </template>
 
@@ -40,9 +40,9 @@ import {mapGetters} from 'vuex';
 export default {
     components: {
         draggable,
-        cardTask : CardTask
+        cardTask : CardTask,
     },
-    props: ['list'],
+    props: ['list', 'li'],
     data() {
         return {
             showEditList: false,
@@ -50,10 +50,6 @@ export default {
             openTaskForm: false,
             openTaskOpt: false,
             openTaskView: false,
-            tasks: [
-                {name: 'Encode the directors data dat data dtatd atd a', jo_name: 'MFI Revisionsjkddfsdfd', image: null},
-                {name: 'Encode the directors data dat data dtatd atd a', jo_name: 'MFI Revisionsjkddfsdfd', image: 'nightsky3.jpg'}
-            ]
         }
     },
     mounted() {
@@ -97,8 +93,13 @@ export default {
                 .then(() => {
                     this.$toaster.warning('List deleted succesfully!.')
                 })
+        },
+        upd() {
+            // console.log(this.list.tasks);
+            
         }
     }
+
 }
 </script>
 

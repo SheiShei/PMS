@@ -1,6 +1,8 @@
+import Vue from 'vue'
 const state = {
     boards: [],
-    boardLists: []
+    boardLists: [],
+    boardMembers: []
 };
 
 const getters = {
@@ -9,6 +11,9 @@ const getters = {
     },
     boardLists: state => {
         return state.boardLists
+    },
+    boardMembers: state => {
+        return state.boardMembers
     }
 };
 
@@ -44,7 +49,31 @@ const mutations = {
             list.order = index + 1;
         });
         state.boardLists = data
+    },
+
+    setBoardMembers(state, data) {
+        state.boardMembers = data;
+    },
+
+    addListTask(state, data) {
+        var index = _.findIndex(state.boardLists, {id: Number(data.card_id)});
+        state.boardLists[index].tasks.unshift(data);
+    },
+
+    updateTask(state, data) {
+        var listIndex = _.findIndex(state.boardLists, {id: Number(data.card_id)});
+        var taskIndex = _.findIndex(state.boardLists[listIndex].tasks, {id: data.id});
+        // state.boardLists[listIndex].tasks[taskIndex] = data; ---> NOT REACTIVE
+        //Vue.set(target, key, value)
+        Vue.set(state.boardLists[listIndex].tasks, taskIndex, data); // ---> REACTIVE
+    },
+
+    deleteTask(state, data) {
+        var listIndex = _.findIndex(state.boardLists, {id: Number(data.card_id)});
+        var taskIndex = _.findIndex(state.boardLists[listIndex].tasks, {id: data.id});
+        state.boardLists[listIndex].tasks.splice(taskIndex, 1);
     }
+
 };
 
 const actions = {
@@ -139,6 +168,77 @@ const actions = {
             .catch(error => {
                 console.error(error);
             })
+    },
+
+    getBoardMembers({commit}, id) {
+        axios.post('/api/getBoardMembers', {board_id: id})
+            .then((response) => {
+                // console.log(response);
+                commit('setBoardMembers', response.data)
+            })
+            .catch((error) => {
+                console.error(error);
+                
+            })
+    },
+
+    addTask({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/addTask', data) 
+                .then((response) => {
+                    // console.log(response);
+                    commit('addListTask', response.data);
+                    resolve();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    reject();
+                })
+        })
+    },
+
+    updateTask({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.patch('/api/updateTask', data)
+                .then(response => {
+                    // console.log(response);
+                    commit('updateTask', response.data);
+                    resolve(response.data)
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
+    
+    addAttachment({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/addAttachment', data)
+                .then(response => {
+                    // console.log(response);
+                    resolve(response.data)
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
+
+    deleteTask({commit}, id) {
+        return new Promise ((resolve, reject) => {
+            axios.delete('/api/deleteTask', {data: id})
+                .then(response => {
+                    // console.log(response);
+                    commit('deleteTask', response.data)
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
     }
 }
 

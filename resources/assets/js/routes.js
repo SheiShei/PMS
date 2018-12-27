@@ -207,7 +207,7 @@ export const routes = [
                 },
                 children: [
                     {
-                        path: 'addtask',
+                        path: 'addtask/:list_id',
                         name: 'kanboard_addtask',
                         component: KanbanAddTask,
                         meta: {
@@ -232,22 +232,6 @@ export const routes = [
                     },
                 ]
             }
-            // {
-            //     path: 'update/web/:jo_id',
-            //     name: 'updateweb',
-            //     component: UpdateWebJO,
-            //     meta: {
-            //         requiresAuth: true
-            //     },
-            // },
-            // {
-            //     path: 'update/creative/:jo_id',
-            //     name: 'updatecrea',
-            //     component: UpdateCreativeJO,
-            //     meta: {
-            //         requiresAuth: true
-            //     },
-            // }
         ]
     },
     {

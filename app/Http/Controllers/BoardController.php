@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Board;
 use App\Sprint;
 use App\Card;
+use App\Task;
 
 use Illuminate\Http\Request;
 
@@ -125,7 +126,7 @@ class BoardController extends Controller
     }
     
     public function getBoardLists(Request $request) {
-        $lists = Card::where('board_id', $request->id)->orderBy('order' , 'asc')->get();
+        $lists = Card::where('board_id', $request->id)->with('tasks.assigned_to')->orderBy('order' , 'asc')->get();
 
         return $lists;
     }
@@ -149,5 +150,111 @@ class BoardController extends Controller
         }
 
         return response()->json('Updated Successfully.', 200);
+    }
+    
+    public function getBoardMembers(Request $request) {
+        $board = Board::find($request->board_id);
+        return $board->boardUsers()->get();
+    }
+
+    public function addTask(Request $request) {
+        // dd($request);
+        $task = Task::create([
+            'card_id' => $request->list_id,
+            'name' => $request->name,
+            'description' => $request->desc,
+            'created_by' => auth()->user()->id,
+            'assigned_to' => $request->assign_to,
+            'assigned_by' => auth()->user()->id,
+            'order' => 1,
+            'points' => $request->points,
+            'due' => $request->due,
+        ]);
+        if ($files = $request->file('files')) {
+            foreach ($files as $key => $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $newName = time() . $originalName;
+                $file->move('storage/task/', $newName);
+                $task->files()->create([
+                    'original_filename' => $originalName,
+                    'new_filename' => $newName,
+                    'extension' => $extension
+                ]);                
+            }
+        }
+
+        return Task::with('assigned_to')->where('id', $task->id)->first();
+    }
+
+    public function getTaskData(Request $request) {
+        $task = Task::with('assigned_to', 'files')->where('id', $request->id)->first();
+        return $task;
+    }
+
+    public function updateTask(Request $request) {
+        $task = Task::find($request->id);
+        $ta = [
+            'points' => $request->points,
+            'name' => $request->name,
+            'description' => $request->desc
+        ];
+
+        if($request->assign_to != $task->assigned_to) {
+            $ta['assigned_to'] = $request->assign_to;
+            $ta['assigned_by'] = auth()->user()->id;
+        }
+
+        $task->update($ta);
+
+        return Task::with('assigned_to')->where('id', $request->id)->first();
+    }
+
+    public function addAttachment(Request $request) {
+        // dd($request);
+        $task = Task::find($request->task_id);
+        $attachments = [];
+        if($files = $request->file('files')) {
+            foreach ($files as $key => $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $newName = time() . $originalName;
+                $file->move('storage/task/', $newName);
+                $attach = $task->files()->create([
+                    'original_filename' => $originalName,
+                    'new_filename' => $newName,
+                    'extension' => $extension
+                ]); 
+                
+                array_push($attachments, $attach);               
+            }
+        }
+
+        // dd($attachments);
+        return response()->json($attachments);
+    }
+
+    public function taskPhoto(Request $request) {
+        // return $request->filename;
+        $task = Task::find($request->id);
+        if($task->task_cover == $request->filename) {
+            $task->update([
+                'task_cover' => null
+            ]);
+        }
+        else {
+            $task->update([
+                'task_cover' => $request->filename
+            ]);
+        }
+
+        return $task->load('assigned_to'); 
+    }
+
+    public function deleteTask(Request $request) {
+        $task = Task::find($request->id);
+        $task->delete();
+
+        return $task;
     }
 }

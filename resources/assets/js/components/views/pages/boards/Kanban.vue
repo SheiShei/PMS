@@ -46,7 +46,8 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch('getBoardLists', this.$route.params.board_id)
+        this.$store.dispatch('getBoardLists', this.$route.params.board_id);
+        this.getBoardMembers();
     },
     computed: {
         // ...mapGetters({
@@ -74,6 +75,10 @@ export default {
 
         updateListOrder() {
             this.$store.dispatch('updateListOrder', {board_id: this.$route.params.board_id, lists: this.boardLists})
+        },
+
+        getBoardMembers() {
+            this.$store.dispatch('getBoardMembers', this.$route.params.board_id)
         }
     }
 }
