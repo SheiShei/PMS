@@ -24,7 +24,7 @@
             
             <div id="testTaskDiv" class="board-body">
                 <draggable v-model="boardLists" :options="{animation:200, group:'status'}" @change="updateListOrder" :element="'div'">
-                    <list-card v-for="(list , index) in boardLists" :key="index" :list="list"></list-card>
+                    <list-card v-for="(list , index) in boardLists" :key="index" :li="index" :list="list"></list-card>
                 </draggable>
             </div>
         </div>

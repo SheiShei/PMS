@@ -24,7 +24,7 @@
         <div class="list-body">
                             
 
-            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, list.id)">
+            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, li, list.id)">
                 <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index"></card-task>
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
@@ -42,7 +42,7 @@ export default {
         draggable,
         cardTask : CardTask,
     },
-    props: ['list'],
+    props: ['list', 'li'],
     data() {
         return {
             showEditList: false,
@@ -94,9 +94,13 @@ export default {
                     this.$toaster.warning('List deleted succesfully!.')
                 })
         },
-        taskListUpdate(e, list_id) {
-            console.log({event: e, list_id: list_id});
-            
+        taskListUpdate(e, list_index, list_id) {
+            // console.log({event: e, list_id: list_id});
+            // console.log(this.list)
+            this.$store.commit('mapListUpdateOrder', {event: e, list_index: list_index, list_id: list_id})
+            // console.log(this.list);
+            this.$store.dispatch('updateTaskOrder', this.list)
+
         }
     }
 

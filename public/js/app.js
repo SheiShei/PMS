@@ -74189,7 +74189,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         draggable: __WEBPACK_IMPORTED_MODULE_0_vuedraggable___default.a,
         cardTask: __WEBPACK_IMPORTED_MODULE_1__CardTask_vue___default.a
     },
-    props: ['list'],
+    props: ['list', 'li'],
     data: function data() {
         return {
             showEditList: false,
@@ -74241,8 +74241,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 _this2.$toaster.warning('List deleted succesfully!.');
             });
         },
-        taskListUpdate: function taskListUpdate(e, list_id) {
-            console.log({ event: e, list_id: list_id });
+        taskListUpdate: function taskListUpdate(e, list_index, list_id) {
+            // console.log({event: e, list_id: list_id});
+            // console.log(this.list)
+            this.$store.commit('mapListUpdateOrder', { event: e, list_index: list_index, list_id: list_id });
+            // console.log(this.list);
+            this.$store.dispatch('updateTaskOrder', this.list);
         }
     }
 
@@ -74817,7 +74821,7 @@ var render = function() {
               },
               on: {
                 change: function($event) {
-                  _vm.taskListUpdate($event, _vm.list.id)
+                  _vm.taskListUpdate($event, _vm.li, _vm.list.id)
                 }
               },
               model: {
@@ -74938,7 +74942,10 @@ var render = function() {
                   }
                 },
                 _vm._l(_vm.boardLists, function(list, index) {
-                  return _c("list-card", { key: index, attrs: { list: list } })
+                  return _c("list-card", {
+                    key: index,
+                    attrs: { li: index, list: list }
+                  })
                 })
               )
             ],
@@ -87416,6 +87423,12 @@ var mutations = {
         var listIndex = _.findIndex(state.boardLists, { id: Number(data.card_id) });
         var taskIndex = _.findIndex(state.boardLists[listIndex].tasks, { id: data.id });
         state.boardLists[listIndex].tasks.splice(taskIndex, 1);
+    },
+    mapListUpdateOrder: function mapListUpdateOrder(state, data) {
+        state.boardLists[data.list_index].tasks.map(function (task, ind) {
+            task.order = ind + 1;
+            task.card_id = data.list_id;
+        });
     }
 };
 
@@ -87564,6 +87577,16 @@ var actions = {
                 console.error(error);
                 reject();
             });
+        });
+    },
+    updateTaskOrder: function updateTaskOrder(_ref14, data) {
+        var commit = _ref14.commit;
+
+        axios.patch('/api/updateTaskOrder', data).then(function () {
+            // console.log(response);
+
+        }).catch(function (error) {
+            console.error(error);
         });
     }
 };

@@ -85,5 +85,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/addAttachment', 'BoardController@addAttachment');
     Route::patch('/taskPhoto', 'BoardController@taskPhoto');
     Route::delete('/deleteTask', 'BoardController@deleteTask');
+    Route::patch('/updateTaskOrder', 'BoardController@updateTaskOrder');
 
 });

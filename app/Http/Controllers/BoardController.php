@@ -113,7 +113,7 @@ class BoardController extends Controller
             'order' => $request->order,
         ]);
 
-        return $list;
+        return $list->load('tasks.assigned_to');
     }
 
     public function updateList(Request $request) {
@@ -126,7 +126,7 @@ class BoardController extends Controller
     }
     
     public function getBoardLists(Request $request) {
-        $lists = Card::where('board_id', $request->id)->with('tasks.assigned_to')->orderBy('order' , 'asc')->get();
+        $lists = Card::where('board_id', $request->id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
 
         return $lists;
     }
@@ -158,7 +158,7 @@ class BoardController extends Controller
     }
 
     public function addTask(Request $request) {
-        // dd($request);
+        $order = count(Card::find($request->list_id)->tasks()->get());
         $task = Task::create([
             'card_id' => $request->list_id,
             'name' => $request->name,
@@ -166,7 +166,7 @@ class BoardController extends Controller
             'created_by' => auth()->user()->id,
             'assigned_to' => $request->assign_to,
             'assigned_by' => auth()->user()->id,
-            'order' => 1,
+            'order' => $order+1,
             'points' => $request->points,
             'due' => $request->due,
         ]);
@@ -256,5 +256,15 @@ class BoardController extends Controller
         $task->delete();
 
         return $task;
+    }
+
+    public function updateTaskOrder(Request $request) {
+        foreach ($request->tasks as $key => $task) {
+            $toUp = Task::find($task['id']);
+            $toUp->update([
+                'order' => $task['order'],
+                'card_id' => $task['card_id']
+            ]);
+        }
     }
 }

@@ -72,6 +72,13 @@ const mutations = {
         var listIndex = _.findIndex(state.boardLists, {id: Number(data.card_id)});
         var taskIndex = _.findIndex(state.boardLists[listIndex].tasks, {id: data.id});
         state.boardLists[listIndex].tasks.splice(taskIndex, 1);
+    },
+
+    mapListUpdateOrder(state, data) {
+        state.boardLists[data.list_index].tasks.map((task, ind) => {
+            task.order = ind+1;
+            task.card_id = data.list_id
+        })
     }
 
 };
@@ -239,6 +246,18 @@ const actions = {
                     reject()
                 })
         })
+    },
+
+    updateTaskOrder({commit}, data) {
+        axios.patch('/api/updateTaskOrder', data)
+            .then(() => {
+                // console.log(response);
+                
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
     }
 }
 
