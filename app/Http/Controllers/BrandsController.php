@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
 use App\Tandem;
 use App\JobOrder;
+use App\User;
 use Hash;
 use File;
 
@@ -38,19 +39,18 @@ class BrandsController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
-           'telephone' => 'required|string|max:15',
-           'mobile' => 'required',
            'tandem_id' => 'required',
-           //'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
         ]);
 
-        
         $input = $request->all();
+        $name = null;
     
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('./images/logo', $name);
+            $file->move('images/logo/', $name);
+            // $file->copy('/images/logo/'.$name, '/images');
+            copy('images/logo/'.$name, 'images/'.$name);
             $input['logo'] = $name;
         }
         if(!$request->hasFile('logo')){
@@ -58,6 +58,15 @@ class BrandsController extends Controller
         }
 
         $brand = Brand::create($input);
+
+        User::create([
+            'brand_id' => $brand->id,
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>bcrypt($request->password),
+            'role_id'=>4,
+            'picture'=>$name
+        ]);
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
 

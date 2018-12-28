@@ -56166,7 +56166,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
 
 
 
@@ -56188,7 +56187,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             jo: '',
             disabled: true,
             data: {
-                filter: { position: 'asc', category: 'name' },
+                filter: { position: 'desc', category: 'created_at' },
                 search: '',
                 notArchive: true
 
@@ -56220,7 +56219,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     created: function created() {
         var data = this.data;
         this.$store.dispatch('setBrands', { url: '/api/getbrands', data: data });
-        this.$store.dispatch('getTandemsList');
         var ndata = {
             search: '',
             sort: 'created_at.desc'
@@ -56320,7 +56318,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-//
 //
 //
 //
@@ -56551,8 +56548,6 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [
-      _c("th", [_vm._v("ID")]),
-      _vm._v(" "),
       _c("th", [_vm._v("Brand Name")]),
       _vm._v(" "),
       _c("th", [_vm._v("Date Added")]),
@@ -56674,13 +56669,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            tandems: [],
             brand: {
                 name: '',
                 contact_person: '',
@@ -56688,12 +56696,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 mobile: '',
                 tandem_id: '',
                 logo: '',
-                about: ''
-            }
+                about: '',
+                email: '',
+                password: ''
+            },
+            pwdType: 'password'
         };
     },
     created: function created() {
-        this.$store.dispatch('getTandemsList');
+        var _this = this;
+
+        this.$store.dispatch('getTandemsList').then(function () {
+            console.log(_this.tandemList);
+            $(_this.$el).find('.selectpicker').selectpicker('refresh');
+        });
     },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -56702,7 +56718,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     methods: {
         addNewBrand: function addNewBrand() {
-            var _this = this;
+            var _this2 = this;
 
             // console.log('asdasd');
             var form = new FormData();
@@ -56713,22 +56729,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
             form.append('about', this.brand.about);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
 
             this.$store.dispatch('addBrand', form).then(function () {
-                _this.brand.name = '';
-                _this.brand.contact_person = '';
-                _this.brand.telephone = '';
-                _this.brand.mobile = '';
-                _this.brand.tandem_id = '';
-                _this.brand.about = '';
-                _this.brand.logo = '';
-                _this.$router.replace({ name: 'brands' });
-                _this.$toaster.success('Brand added succesfully!');
+                _this2.brand.name = '';
+                _this2.brand.contact_person = '';
+                _this2.brand.telephone = '';
+                _this2.brand.mobile = '';
+                _this2.brand.tandem_id = '';
+                _this2.brand.about = '';
+                _this2.brand.logo = '';
+                _this2.brand.email = '';
+                _this2.brand.password = '';
+                _this2.$router.replace({ name: 'brands' });
+                _this2.$toaster.success('Brand added succesfully!');
             });
         },
         onLogoChanged: function onLogoChanged(event) {
             this.brand.logo = event.target.files;
             // console.log(this.brand.logo);
+        },
+        passwordType: function passwordType() {
+            this.pwdType = this.pwdType === 'password' ? 'text' : 'password';
         }
     }
 });
@@ -56850,7 +56873,6 @@ var render = function() {
                       ],
                       staticClass: "col-md-6 col-sm-6 my-input",
                       attrs: {
-                        required: "",
                         pattern: "[0-9]{3}[ -][0-9]{4}",
                         type: "tel",
                         title: "eg. 456-5645",
@@ -56884,7 +56906,6 @@ var render = function() {
                       ],
                       staticClass: "col-md-6 col-sm-6 my-input",
                       attrs: {
-                        required: "",
                         pattern: "09[0-9]{9}",
                         type: "tel",
                         placeholder: "09XXXXXXXXX",
@@ -56900,6 +56921,156 @@ var render = function() {
                         }
                       }
                     })
+                  ]),
+                  _vm._v(" "),
+                  _c("hr", { staticClass: "divider" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [_vm._v("Email :")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.brand.email,
+                          expression: "brand.email"
+                        }
+                      ],
+                      staticClass: "col-md-6 col-sm-6 my-input",
+                      attrs: { required: "", type: "email", placeholder: "" },
+                      domProps: { value: _vm.brand.email },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.brand, "email", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [_vm._v("Password: ")]
+                    ),
+                    _vm._v(" "),
+                    _vm.pwdType === "checkbox"
+                      ? _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.brand.password,
+                              expression: "brand.password"
+                            }
+                          ],
+                          staticClass: "col-md-6 col-sm-6 my-input",
+                          attrs: {
+                            required: "",
+                            minlength: "6",
+                            placeholder: "",
+                            type: "checkbox"
+                          },
+                          domProps: {
+                            checked: Array.isArray(_vm.brand.password)
+                              ? _vm._i(_vm.brand.password, null) > -1
+                              : _vm.brand.password
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$a = _vm.brand.password,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = null,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 &&
+                                    _vm.$set(
+                                      _vm.brand,
+                                      "password",
+                                      $$a.concat([$$v])
+                                    )
+                                } else {
+                                  $$i > -1 &&
+                                    _vm.$set(
+                                      _vm.brand,
+                                      "password",
+                                      $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1))
+                                    )
+                                }
+                              } else {
+                                _vm.$set(_vm.brand, "password", $$c)
+                              }
+                            }
+                          }
+                        })
+                      : _vm.pwdType === "radio"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.password,
+                                expression: "brand.password"
+                              }
+                            ],
+                            staticClass: "col-md-6 col-sm-6 my-input",
+                            attrs: {
+                              required: "",
+                              minlength: "6",
+                              placeholder: "",
+                              type: "radio"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.brand.password, null)
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.brand, "password", null)
+                              }
+                            }
+                          })
+                        : _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.password,
+                                expression: "brand.password"
+                              }
+                            ],
+                            staticClass: "col-md-6 col-sm-6 my-input",
+                            attrs: {
+                              required: "",
+                              minlength: "6",
+                              placeholder: "",
+                              type: _vm.pwdType
+                            },
+                            domProps: { value: _vm.brand.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.brand,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
                   ]),
                   _vm._v(" "),
                   _c("hr", { staticClass: "divider" }),
@@ -58369,8 +58540,6 @@ var render = function() {
             { attrs: { data: _vm.data } },
             _vm._l(_vm.brands, function(brand) {
               return _c("tr", { key: brand.id }, [
-                _c("td", [_vm._v(_vm._s(brand.id))]),
-                _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(brand.name))]),
                 _vm._v(" "),
                 _c("td", [
