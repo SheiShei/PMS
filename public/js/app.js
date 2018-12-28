@@ -19466,8 +19466,8 @@ function setAuthorization(token) {
     window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
         // authEndpoint: '/broadcast',
         broadcaster: 'pusher',
-        key: "22c7b2a3c635de52dc73",
-        cluster: "ap1",
+        key: Object({"NODE_ENV":"development"}).MIX_PUSHER_APP_KEY,
+        cluster: Object({"NODE_ENV":"development"}).MIX_PUSHER_APP_CLUSTER,
         encrypted: false,
         auth: {
             headers: {
@@ -56674,6 +56674,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -56684,12 +56692,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             brand: {
                 name: '',
                 contact_person: '',
+                email: '',
+                password: '',
                 telephone: '',
                 mobile: '',
                 tandem_id: '',
                 logo: '',
                 about: ''
-            }
+            },
+            pwdType: 'password'
         };
     },
     created: function created() {
@@ -56709,6 +56720,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             form.append('logo', this.brand.logo[0]);
             form.append('name', this.brand.name);
             form.append('telephone', this.brand.telephone);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
@@ -56718,6 +56731,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 _this.brand.name = '';
                 _this.brand.contact_person = '';
                 _this.brand.telephone = '';
+                _this.brand.email = '';
+                _this.brand.password = '';
                 _this.brand.mobile = '';
                 _this.brand.tandem_id = '';
                 _this.brand.about = '';
@@ -56729,6 +56744,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         onLogoChanged: function onLogoChanged(event) {
             this.brand.logo = event.target.files;
             // console.log(this.brand.logo);
+        },
+        passwordType: function passwordType() {
+            this.pwdType = this.pwdType === 'password' ? 'text' : 'password';
         }
     }
 });
@@ -56832,6 +56850,160 @@ var render = function() {
                         }
                       }
                     })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [_vm._v("Email :")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.brand.email,
+                          expression: "brand.email"
+                        }
+                      ],
+                      staticClass: "col-md-6 col-sm-6 my-input",
+                      attrs: { required: "", type: "email", placeholder: "" },
+                      domProps: { value: _vm.brand.email },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.brand, "email", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [
+                        _vm._v("Password: "),
+                        _c("i", {
+                          staticClass: "fa fa-eye",
+                          on: { click: _vm.passwordType }
+                        })
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.pwdType === "checkbox"
+                      ? _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.brand.password,
+                              expression: "brand.password"
+                            }
+                          ],
+                          staticClass: "col-md-6 col-sm-6 my-input",
+                          attrs: {
+                            required: "",
+                            minlength: "6",
+                            placeholder: "",
+                            type: "checkbox"
+                          },
+                          domProps: {
+                            checked: Array.isArray(_vm.brand.password)
+                              ? _vm._i(_vm.brand.password, null) > -1
+                              : _vm.brand.password
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$a = _vm.brand.password,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = null,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 &&
+                                    _vm.$set(
+                                      _vm.brand,
+                                      "password",
+                                      $$a.concat([$$v])
+                                    )
+                                } else {
+                                  $$i > -1 &&
+                                    _vm.$set(
+                                      _vm.brand,
+                                      "password",
+                                      $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1))
+                                    )
+                                }
+                              } else {
+                                _vm.$set(_vm.brand, "password", $$c)
+                              }
+                            }
+                          }
+                        })
+                      : _vm.pwdType === "radio"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.password,
+                                expression: "brand.password"
+                              }
+                            ],
+                            staticClass: "col-md-6 col-sm-6 my-input",
+                            attrs: {
+                              required: "",
+                              minlength: "6",
+                              placeholder: "",
+                              type: "radio"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.brand.password, null)
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.brand, "password", null)
+                              }
+                            }
+                          })
+                        : _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.password,
+                                expression: "brand.password"
+                              }
+                            ],
+                            staticClass: "col-md-6 col-sm-6 my-input",
+                            attrs: {
+                              required: "",
+                              minlength: "6",
+                              placeholder: "",
+                              type: _vm.pwdType
+                            },
+                            domProps: { value: _vm.brand.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.brand,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group row" }, [
@@ -57251,6 +57423,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -57261,6 +57441,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 id: this.$route.params.brand_Id,
                 name: '',
                 contact_person: '',
+                email: '',
+                password: '',
                 telephone: '',
                 mobile: '',
                 tandem_id: '',
@@ -57280,6 +57462,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             _this.brand.name = brandData.name;
             _this.brand.contact_person = brandData.contact_person;
             _this.brand.telephone = brandData.telephone;
+            _this.brand.email = brandData.email;
             _this.brand.mobile = brandData.mobile;
             _this.brand.tandem_id = brandData.tandem_id;
             _this.brand.logo = brandData.logo;
@@ -57310,6 +57493,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 form.append('logo', this.brand.logo);
             }
             form.append('name', this.brand.name);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('telephone', this.brand.telephone);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
@@ -57429,6 +57614,71 @@ var render = function() {
                             "contact_person",
                             $event.target.value
                           )
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [_vm._v("Email :")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.brand.email,
+                          expression: "brand.email"
+                        }
+                      ],
+                      staticClass: "col-md-6 col-sm-6 my-input",
+                      attrs: { required: "", type: "email", placeholder: "" },
+                      domProps: { value: _vm.brand.email },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.brand, "email", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      { staticClass: "col-md-6 col-sm-6", attrs: { for: "" } },
+                      [_vm._v("Password:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.brand.password,
+                          expression: "brand.password"
+                        }
+                      ],
+                      staticClass: "col-md-6 col-sm-6 my-input",
+                      attrs: {
+                        required: "",
+                        minlength: "6",
+                        type: "password",
+                        placeholder: ""
+                      },
+                      domProps: { value: _vm.brand.password },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.brand, "password", $event.target.value)
                         }
                       }
                     })
@@ -57902,6 +58152,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -58003,6 +58254,11 @@ var render = function() {
               _c("p", { staticClass: "other-info" }, [
                 _c("span", [_vm._v("Client: ")]),
                 _vm._v(_vm._s(_vm.brandProfile.contact_person))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "other-info" }, [
+                _c("span", [_vm._v("Email: ")]),
+                _vm._v(_vm._s(_vm.brandProfile.email))
               ]),
               _vm._v(" "),
               _c("p", { staticClass: "other-info" }, [

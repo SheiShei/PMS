@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
 use App\Tandem;
 use App\JobOrder;
+use App\User;
 use Hash;
 use File;
 
@@ -41,6 +42,8 @@ class BrandsController extends Controller
            'telephone' => 'required|string|max:15',
            'mobile' => 'required',
            'tandem_id' => 'required',
+           'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
            //'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
         ]);
@@ -57,7 +60,26 @@ class BrandsController extends Controller
             $input['logo'] = 'logooo2.png';
         }
 
-        $brand = Brand::create($input);
+        $brand = Brand::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'telephone' => $request->telephone,
+            'mobile' => $request->mobile,
+            'tandem_id' => $request->tandem_id,
+            'about' => $request->about,
+            'logo' => $input['logo'],
+            'contact_person' => $request->contact_person
+        ]);
+
+        $user = User::create([
+            'name' => $brand->name,
+            'email' => $brand->email,
+            'password' => Hash::make($brand->password),
+            'role_id' => 4,
+            'brand_id' => $brand->id,
+            'picture' => $brand->logo
+        ]);
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
 
@@ -67,12 +89,17 @@ class BrandsController extends Controller
        
         $brand = Brand::findOrFail($request->id);
         $brand->delete();
+
+        $user = User::where('brand_id', $request->id)->first();
+        $user->delete();
+
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
     public function restoreBrands(Request $request) {
         
         $brand= Brand::onlyTrashed()->where('id' , $request->data['id'])->restore();
+        $user= User::onlyTrashed()->where('brand_id' , $request->data['id'])->restore();
         return response()->json(['status' => 'success', 'message' => 'restores succesfully'], 200);
     }
 
@@ -109,10 +136,13 @@ class BrandsController extends Controller
         //     'telephone' => 'required|string|max:15',
         //     'mobile' => 'required',
         //     'tandem_id' => 'required',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'password' => 'required|string|min:6',
         // ]);
         
         //$brand = Brand::findOrFail($request->file('id'));
         $brand = Brand::findOrFail($request->id);
+        $user = User::where('brand_id', $request->id)->first();        
         $input = $request->all();
        
         if($file = $request->file('logo')){
@@ -122,8 +152,28 @@ class BrandsController extends Controller
         }
         
 
-       // dd($request);
-        $brand->update($input);
+        $brand->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'telephone' => $request->telephone,
+            'mobile' => $request->mobile,
+            'tandem_id' => $request->tandem_id,
+            'about' => $request->about,
+            'logo' => $input['logo'],
+            'contact_person' => $request->contact_person
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+           // 'role_id' => 4,
+           // 'brand_id' => $request->id,
+            'picture' => $input['logo']
+        ]);
+
+
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
     }

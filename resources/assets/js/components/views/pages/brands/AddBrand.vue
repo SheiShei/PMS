@@ -27,6 +27,14 @@
                                         <input v-model="brand.contact_person" required type="text" class="col-md-6 col-sm-6 my-input" placeholder="">
                                     </div>
                                     <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Email :</label>
+                                        <input v-model="brand.email" required type="email" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Password: <i @click="passwordType" class="fa fa-eye"></i> </label> 
+                                        <input v-model="brand.password" required minlength="6" :type="pwdType" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                    </div>
+                                    <div class="form-group row">
                                         <label class="col-md-6">Telephone:</label>
                                         <input v-model="brand.telephone" required pattern="[0-9]{3}[ -][0-9]{4}" type="tel" class="col-md-6 col-sm-6 my-input" title="eg. 456-5645" placeholder="XXX-XXXX">
                                     </div>
@@ -102,12 +110,15 @@ export default {
             brand:{
                 name: '',
                 contact_person: '',
+                email:'',
+                password: '',
                 telephone: '',
                 mobile: '',
                 tandem_id: '',
                 logo: '',
                 about: ''             
             },
+            pwdType: 'password'
        }
    },
     created() {
@@ -126,6 +137,8 @@ export default {
             form.append('logo', this.brand.logo[0]);
             form.append('name', this.brand.name);
             form.append('telephone', this.brand.telephone);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
@@ -136,6 +149,8 @@ export default {
                         this.brand.name='';
                         this.brand.contact_person='';
                         this.brand.telephone='';
+                        this.brand.email='';
+                        this.brand.password='';
                         this.brand.mobile='';
                         this.brand.tandem_id='';
                         this.brand.about='';
@@ -149,6 +164,10 @@ export default {
         onLogoChanged (event) {
             this.brand.logo = event.target.files
             // console.log(this.brand.logo);
+        },
+
+        passwordType(){
+            this.pwdType = this.pwdType=== 'password' ? 'text' : 'password'
         }
     }
 }

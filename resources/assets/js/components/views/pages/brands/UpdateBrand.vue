@@ -27,6 +27,14 @@
                                         <input v-model="brand.contact_person" required type="text" class="col-md-6 col-sm-6 my-input" placeholder="">
                                     </div>
                                     <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Email :</label>
+                                        <input v-model="brand.email" required type="email" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Password:</label>
+                                        <input v-model="brand.password" required minlength="6" type="password" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                    </div>
+                                    <div class="form-group row">
                                         <label class="col-md-6">Telephone:</label>
                                         <input v-model="brand.telephone" required pattern="[0-9]{3}[ -][0-9]{4}" type="tel" class="col-md-6 col-sm-6 my-input" placeholder="">
                                     </div>
@@ -102,6 +110,8 @@ export default {
                id: this.$route.params.brand_Id,
                name: '',
                contact_person: '',
+               email: '',
+               password: '',
                telephone: '',
                mobile: '',
                tandem_id: '',
@@ -122,6 +132,7 @@ export default {
                 this.brand.name = brandData.name;
                 this.brand.contact_person = brandData.contact_person;
                 this.brand.telephone = brandData.telephone;
+                this.brand.email = brandData.email;
                 this.brand.mobile = brandData.mobile;
                 this.brand.tandem_id = brandData.tandem_id;
                 this.brand.logo = brandData.logo;
@@ -153,6 +164,8 @@ export default {
                 form.append('logo', this.brand.logo);
                 }
             form.append('name', this.brand.name);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('telephone', this.brand.telephone);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);

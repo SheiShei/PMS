@@ -15,6 +15,7 @@
                     <hr />
                     <p class="other-info"><span class="">Brand Owner: </span>{{brandProfile.tandem.name}}</p>
                     <p class="other-info"><span>Client: </span>{{brandProfile.contact_person}}</p>
+                    <p class="other-info"><span>Email: </span>{{brandProfile.email}}</p>
                     <p class="other-info"><span>Telephone: </span>{{brandProfile.telephone}}</p>
                     <p class="other-info"><span>Mobile: </span>{{brandProfile.mobile}}</p>
                     <p class="other-info"><span>Description: </span>{{brandProfile.about}}</p>
