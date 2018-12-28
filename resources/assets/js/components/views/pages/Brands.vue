@@ -63,7 +63,6 @@
                 </div>
                 <brands-filter-search :data="data">
                                 <tr v-for="brand in brands" :key="brand.id">
-                                    <td>{{ brand.id  }}</td>
                                     <td>{{ brand.name }}</td>
                                     <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
                                     <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
@@ -194,7 +193,7 @@ export default {
             jo: '',
             disabled: true,
             data: {
-                filter: {position: 'asc', category:'name'},
+                filter: {position: 'desc', category:'created_at'},
                 search: '',
                 notArchive: true
                 
@@ -230,7 +229,6 @@ export default {
     created() {
         let data = this.data;
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
-        this.$store.dispatch('getTandemsList');
         const ndata = {
             search: '',
             sort: 'created_at.desc'
