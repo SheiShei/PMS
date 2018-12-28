@@ -74189,7 +74189,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         draggable: __WEBPACK_IMPORTED_MODULE_0_vuedraggable___default.a,
         cardTask: __WEBPACK_IMPORTED_MODULE_1__CardTask_vue___default.a
     },
-    props: ['list', 'li'],
+    props: ['list'],
     data: function data() {
         return {
             showEditList: false,
@@ -74241,9 +74241,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 _this2.$toaster.warning('List deleted succesfully!.');
             });
         },
-        upd: function upd() {
-            // console.log(this.list.tasks);
-
+        taskListUpdate: function taskListUpdate(e, list_id) {
+            console.log({ event: e, list_id: list_id });
         }
     }
 
@@ -74816,7 +74815,11 @@ var render = function() {
                 options: { animation: 200, group: "tasks" },
                 element: "div"
               },
-              on: { change: _vm.upd },
+              on: {
+                change: function($event) {
+                  _vm.taskListUpdate($event, _vm.list.id)
+                }
+              },
               model: {
                 value: _vm.list.tasks,
                 callback: function($$v) {
@@ -74829,12 +74832,7 @@ var render = function() {
               _vm._l(_vm.list.tasks, function(task, index) {
                 return _c("card-task", {
                   key: index,
-                  attrs: {
-                    li: _vm.li,
-                    list_id: _vm.list.id,
-                    task: task,
-                    i: index
-                  }
+                  attrs: { list_id: _vm.list.id, task: task, i: index }
                 })
               }),
               _vm._v(" "),

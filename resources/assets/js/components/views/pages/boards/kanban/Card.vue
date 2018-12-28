@@ -24,8 +24,8 @@
         <div class="list-body">
                             
 
-            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="upd">
-                <card-task v-for="(task, index) in list.tasks" :key="index" :li="li" :list_id="list.id" :task="task" :i="index"></card-task>
+            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, list.id)">
+                <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index"></card-task>
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
         </div>
@@ -42,7 +42,7 @@ export default {
         draggable,
         cardTask : CardTask,
     },
-    props: ['list', 'li'],
+    props: ['list'],
     data() {
         return {
             showEditList: false,
@@ -94,8 +94,8 @@ export default {
                     this.$toaster.warning('List deleted succesfully!.')
                 })
         },
-        upd() {
-            // console.log(this.list.tasks);
+        taskListUpdate(e, list_id) {
+            console.log({event: e, list_id: list_id});
             
         }
     }
