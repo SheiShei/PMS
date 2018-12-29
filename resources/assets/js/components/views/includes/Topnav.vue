@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-info sm-hidden" id="nav-admin">
+    <nav class="navbar navbar-info sm-hidden" id="nav-admin" v-if="cUser">
         <div class="container-fluid">
             <div class="navbar-header">
             </div>

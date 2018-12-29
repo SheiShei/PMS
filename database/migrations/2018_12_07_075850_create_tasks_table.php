@@ -23,6 +23,10 @@ class CreateTasksTable extends Migration
             $table->char('created_by', 36)->index();
             $table->char('assigned_to', 36)->index();
             $table->char('assigned_by', 36)->index();
+            $table->tinyInteger('order');
+            $table->tinyInteger('points');
+            $table->date('due');
+            $table->string('task_cover')->nullable();
             $table->timestamps();
 
             $table->foreign('jo_id')->references('id')->on('job_orders')->onDelete('cascade');
