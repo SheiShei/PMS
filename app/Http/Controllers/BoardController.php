@@ -6,6 +6,16 @@ use App\Sprint;
 use App\Card;
 use App\Task;
 
+use App\Events\AddListEvent;
+use App\Events\DeleteListEvent;
+use App\Events\UpdateListEvent;
+use App\Events\UpdateListOrderEvent;
+use App\Events\AddListTaskEvent;
+use App\Events\UpdateListTaskEvent;
+use App\Events\DeleteListTaskEvent;
+use App\Events\AddTaskAttachmentEvent;
+use App\Events\SendTaskCommentEvent;
+
 use Illuminate\Http\Request;
 
 class BoardController extends Controller
@@ -112,6 +122,7 @@ class BoardController extends Controller
             'created_by' => auth()->user()->id,
             'order' => $request->order,
         ]);
+        event(new AddListEvent($list->load('tasks.assigned_to')));
 
         return $list->load('tasks.assigned_to');
     }
@@ -121,6 +132,7 @@ class BoardController extends Controller
         $list->update([
             'name' => $request->name
         ]);
+        event(new UpdateListEvent($list) );
 
         return $list;
     }
@@ -133,6 +145,7 @@ class BoardController extends Controller
 
     public function deleteList(Request $request) {
         $list = Card::findOrFail($request->id);
+        event(new DeleteListEvent($request->id, $list->board_id));
         $list->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
@@ -148,6 +161,9 @@ class BoardController extends Controller
                 }
             }
         }
+        $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        // print_r($nlists);
+        event(new UpdateListOrderEvent($nlists->toJson(), $request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -184,7 +200,8 @@ class BoardController extends Controller
             }
         }
 
-        return Task::with('assigned_to')->where('id', $task->id)->first();
+        event(new AddListTaskEvent($task->load('assigned_to'), $request->board_id));
+        return $task->load('assigned_to');
     }
 
     public function getTaskData(Request $request) {
@@ -207,7 +224,9 @@ class BoardController extends Controller
 
         $task->update($ta);
 
-        return Task::with('assigned_to')->where('id', $request->id)->first();
+        event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+
+        return $task->load('assigned_to');
     }
 
     public function addAttachment(Request $request) {
@@ -231,6 +250,7 @@ class BoardController extends Controller
         }
 
         // dd($attachments);
+        event(new AddTaskAttachmentEvent($attachments, $request->task_id));
         return response()->json($attachments);
     }
 
@@ -248,11 +268,14 @@ class BoardController extends Controller
             ]);
         }
 
+        event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+
         return $task->load('assigned_to'); 
     }
 
     public function deleteTask(Request $request) {
         $task = Task::find($request->id);
+        event(new DeleteListTaskEvent($task, $request->board_id));
         $task->delete();
 
         return $task;
@@ -266,6 +289,10 @@ class BoardController extends Controller
                 'card_id' => $task['card_id']
             ]);
         }
+
+        $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        // print_r($nlists);
+        event(new UpdateListOrderEvent($nlists->toJson(), $request->board_id));
     }
 
     public function sendComment(Request $request) {
@@ -298,6 +325,8 @@ class BoardController extends Controller
 
             array_push($comment, $newC->load('user'));
         }
+
+        event(new SendTaskCommentEvent($comment, $request->task_id));
 
         return $comment;
     }

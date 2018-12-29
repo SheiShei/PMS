@@ -192,13 +192,21 @@ const actions = {
     },
 
     deleteList({commit}, id) {
-        axios.delete('/api/deleteList', {data: {
-            id: id
-        }} )
-            .then(() => {
-                // console.log(response);
-                commit('deleteList', id)
-            })
+        return new Promise ((resolve, reject) => {
+            axios.delete('/api/deleteList', {data: {
+                id: id
+            }} )
+                .then(() => {
+                    // console.log(response);
+                    commit('deleteList', id)
+                    resolve()
+                })
+                .catch(error => {
+                    // console.error(error);
+                    reject()
+                    alert('No Internet')
+                })
+        })
     },
 
     updateListOrder({commit}, data) {
@@ -232,8 +240,9 @@ const actions = {
                     resolve();
                 })
                 .catch((error) => {
-                    console.error(error);
+                    // console.error(error);
                     reject();
+                    alert('No Internet')
                 })
         })
     },

@@ -74052,6 +74052,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.getCuBoard();
         this.getBoardMembers();
     },
+    mounted: function mounted() {
+        this.listenList();
+    },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapGetters */])({
         boardLists: 'boardLists',
@@ -74096,6 +74099,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         getCuBoard: function getCuBoard() {
             this.$store.dispatch('getCBoard', this.$route.params.board_id);
+        },
+        listenList: function listenList() {
+            var _this = this;
+
+            Echo.private('list.' + this.$route.params.board_id).listen('AddListEvent', function (e) {
+                // console.log(e.newList);
+                _this.$store.commit('createList', e.newList);
+            }).listen('DeleteListEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('deleteList', e.list_id);
+            }).listen('UpdateListEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('updateList', e.list);
+            }).listen('UpdateListOrderEvent', function (e) {
+                // console.log(JSON.parse(e.lists));
+                _this.$store.commit('setBoardLists', JSON.parse(e.lists));
+            }).listen('AddListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('addListTask', e.task);
+            }).listen('UpdateListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('updateTask', e.task);
+            }).listen('DeleteListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('deleteTask', e.task_id);
+            });
         }
     }
 });
@@ -74497,7 +74526,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         deleteTask: function deleteTask(id) {
             var _this = this;
 
-            this.$store.dispatch('deleteTask', { id: id }).then(function () {
+            this.$store.dispatch('deleteTask', { id: id, board_id: this.$route.params.board_id }).then(function () {
                 _this.$toaster.warning('Task deleted succesfully!.');
             });
         }
@@ -75298,6 +75327,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             task.append('assign_to', this.taskData.assign_to);
             task.append('desc', this.taskData.desc);
             task.append('list_id', this.$route.params.list_id);
+            task.append('board_id', this.$route.params.board_id);
 
             this.$store.dispatch('addTask', task).then(function () {
                 _this.$toaster.warning('Task Added succesfully!.');
@@ -75809,6 +75839,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.getTaskData();
         this.getComments();
     },
+    mounted: function mounted() {
+        this.listenTask();
+    },
 
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -75845,14 +75878,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         checkNumberRange: function checkNumberRange(event) {
 
             var contenteditable = document.querySelector('#points_' + this.data.id).textContent;
-            // console.log(contenteditable);
-            if (!(contenteditable <= 9 && contenteditable >= 0)) {
+            // console.log(Number(contenteditable));
+            // if(!(contenteditable <= 9 && contenteditable >= 0) && contenteditable == '') {
+            if (Number(contenteditable) > 9 || Number(contenteditable) < 0) {
                 document.querySelector('#points_' + this.data.id).innerText = this.pointsEditable;
                 this.isError = true;
                 // event.preventDefault()
-                // alert('shei')
+            } else {
+                this.debounceWait();
             }
-            this.debounceWait();
         },
 
 
@@ -75861,23 +75895,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, 500),
 
         updateTask: function updateTask() {
-            var contenteditablePoints = document.querySelector('#points_' + this.data.id).textContent;
-            var contenteditableName = document.querySelector('#name_' + this.data.id).textContent;
-            var contenteditableDesc = document.querySelector('#desc_' + this.data.id).textContent;
-            this.updateData.name = contenteditableName;
-            this.updateData.points = contenteditablePoints;
-            this.updateData.desc = contenteditableDesc;
-            this.updateData.id = this.$route.params.task_id;
-            this.updateData.list_id = this.$route.params.list_id;
-            // console.log(this.updateData);
-            this.$store.dispatch('updateTask', this.updateData);
+            var _this2 = this;
+
+            var contenteditable = document.querySelector('#points_' + this.data.id).textContent;
+            if (contenteditable) {
+                var contenteditablePoints = document.querySelector('#points_' + this.data.id).textContent;
+                var contenteditableName = document.querySelector('#name_' + this.data.id).textContent;
+                var contenteditableDesc = document.querySelector('#desc_' + this.data.id).textContent;
+                this.updateData.name = contenteditableName;
+                this.updateData.points = contenteditablePoints;
+                this.updateData.desc = contenteditableDesc;
+                this.updateData.id = this.$route.params.task_id;
+                this.updateData.board_id = this.$route.params.board_id;
+                // console.log(this.updateData);
+                this.$store.dispatch('updateTask', this.updateData).then(function (response) {
+                    // console.log(response);
+                    _this2.data.assigned_to.name = response.assigned_to.name;
+                });
+            }
         }
     }, _defineProperty(_methods, 'chooseFile', function chooseFile() {
         $("#addAttachmentInput").click();
     }), _defineProperty(_methods, 'openCFile', function openCFile() {
         $("#cFile").click();
     }), _defineProperty(_methods, 'onFileChange', function onFileChange(e) {
-        var _this2 = this;
+        var _this3 = this;
 
         this.attachments = [];
         var selectedFiles = e.target.files;
@@ -75899,16 +75941,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.$store.dispatch('addAttachment', form).then(function (response) {
             response.forEach(function (attachment) {
                 // console.log(attachment);
-                _this2.data.files.push(attachment);
+                _this3.data.files.push(attachment);
             });
         });
     }), _defineProperty(_methods, 'setRemoveTaskPhoto', function setRemoveTaskPhoto(filename) {
-        var _this3 = this;
+        var _this4 = this;
 
-        axios.patch('/api/taskPhoto', { filename: filename, id: this.$route.params.task_id }).then(function (response) {
+        axios.patch('/api/taskPhoto', { filename: filename, id: this.$route.params.task_id, board_id: this.$route.params.board_id }).then(function (response) {
             // console.log(response);
-            _this3.data.task_cover = response.data.task_cover;
-            _this3.$store.commit('updateTask', response.data);
+            _this4.data.task_cover = response.data.task_cover;
+            _this4.$store.commit('updateTask', response.data);
         }).catch(function (error) {
             console.log(error);
         });
@@ -75924,7 +75966,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.$store.commit('setGImg', gimg);
         this.$router.push({ name: 'kanboard_gallery', params: { task_id: this.data.id } });
     }), _defineProperty(_methods, 'cFile', function cFile(e) {
-        var _this4 = this;
+        var _this5 = this;
 
         this.comFiles = [];
         var selectedFiles = e.target.files;
@@ -75945,17 +75987,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // form.append('text', '');
 
         this.$store.dispatch('sendComment', form).then(function () {
-            _this4.comFiles = [];
+            _this5.comFiles = [];
             document.getElementById('cFile').value = [];
         });
     }), _defineProperty(_methods, 'cTxtSend', function cTxtSend() {
-        var _this5 = this;
+        var _this6 = this;
 
         var form = new FormData();
         form.append('task_id', this.$route.params.task_id);
         form.append('text', this.cTxt);
         this.$store.dispatch('sendComment', form).then(function () {
-            _this5.cTxt = '';
+            _this6.cTxt = '';
         });
     }), _defineProperty(_methods, 'getComments', function getComments() {
         this.$store.dispatch('getComments', this.$route.params.task_id);
@@ -75966,11 +76008,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         this.$router.push({ name: 'kanboard_gallery', params: { task_id: this.data.id } });
     }), _defineProperty(_methods, 'dT', function dT() {
-        var _this6 = this;
+        var _this7 = this;
 
-        this.$store.dispatch('deleteTask', { id: this.data.id }).then(function () {
-            _this6.$router.push({ name: 'kanboard' });
-            _this6.$toaster.warning('Task deleted succesfully!.');
+        this.$store.dispatch('deleteTask', { id: this.data.id, board_id: this.$route.params.board_id }).then(function () {
+            _this7.$router.push({ name: 'kanboard' });
+            _this7.$toaster.warning('Task deleted succesfully!.');
+        });
+    }), _defineProperty(_methods, 'listenTask', function listenTask() {
+        var _this8 = this;
+
+        Echo.private('list.' + this.$route.params.board_id).listen('UpdateListTaskEvent', function (e) {
+            _this8.data.task_cover = e.task.task_cover;
+            _this8.data.points = e.task.points;
+            _this8.data.description = e.task.description;
+            _this8.data.name = e.task.name;
+            _this8.data.assigned_to.name = e.task.assigned_to.name;
+            _this8.updateData.assign_to = e.task.assigned_to.id;
+            // console.log(e);
+            // this.$store.commit('updateTask', e.task);
+        });
+        Echo.private('task.' + this.$route.params.task_id).listen('AddTaskAttachmentEvent', function (e) {
+            // console.log(e);
+            e.attachments.forEach(function (attachment) {
+                // console.log(attachment);
+                _this8.data.files.push(attachment);
+            });
+        }).listen('SendTaskCommentEvent', function (e) {
+            // console.log(e);
+            _this8.$store.commit('sendComment', e.comments);
         });
     }), _methods)
 });
@@ -87647,11 +87712,18 @@ var actions = {
     deleteList: function deleteList(_ref7, id) {
         var commit = _ref7.commit;
 
-        axios.delete('/api/deleteList', { data: {
-                id: id
-            } }).then(function () {
-            // console.log(response);
-            commit('deleteList', id);
+        return new Promise(function (resolve, reject) {
+            axios.delete('/api/deleteList', { data: {
+                    id: id
+                } }).then(function () {
+                // console.log(response);
+                commit('deleteList', id);
+                resolve();
+            }).catch(function (error) {
+                // console.error(error);
+                reject();
+                alert('No Internet');
+            });
         });
     },
     updateListOrder: function updateListOrder(_ref8, data) {
@@ -87682,8 +87754,9 @@ var actions = {
                 commit('addListTask', response.data);
                 resolve();
             }).catch(function (error) {
-                console.error(error);
+                // console.error(error);
                 reject();
+                alert('No Internet');
             });
         });
     },

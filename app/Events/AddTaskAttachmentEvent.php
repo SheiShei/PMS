@@ -11,19 +11,21 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class AddListEvent implements ShouldBroadcastNow
+class AddTaskAttachmentEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newList;
+    public $attachments;
+    public $task_id;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newList)
+    public function __construct($attachments, $task_id)
     {
-        $this->newList = $newList;
+        $this->attachments = $attachments;
+        $this->task_id = $task_id;
         $this->dontBroadcastToCurrentUser();
     }
 
@@ -34,6 +36,6 @@ class AddListEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('list.'.$this->newList->board_id);
+        return new PrivateChannel('task.'.$this->task_id);
     }
 }

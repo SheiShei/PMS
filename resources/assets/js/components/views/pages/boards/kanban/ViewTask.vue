@@ -153,6 +153,10 @@ export default {
         this.getComments();
     },
 
+    mounted() {
+        this.listenTask();
+    },
+
     computed: {
         ...mapGetters({
                 boardMembers: 'boardMembers',
@@ -192,14 +196,16 @@ export default {
         checkNumberRange(event) {
 
             var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            // console.log(contenteditable);
-            if(!(contenteditable <= 9 && contenteditable >= 0)) {
+            // console.log(Number(contenteditable));
+            // if(!(contenteditable <= 9 && contenteditable >= 0) && contenteditable == '') {
+            if(Number(contenteditable) > 9 || Number(contenteditable) < 0) {
                 document.querySelector('#points_'+this.data.id).innerText = this.pointsEditable;
                 this.isError = true;
                 // event.preventDefault()
-                // alert('shei')
             }
-            this.debounceWait();
+            else {
+                this.debounceWait();
+            }
             
         },
 
@@ -208,16 +214,23 @@ export default {
         }, 500),
 
         updateTask() {
-            let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
-            let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
-            let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
-            this.updateData.name = contenteditableName;
-            this.updateData.points = contenteditablePoints;
-            this.updateData.desc = contenteditableDesc;
-            this.updateData.id = this.$route.params.task_id;
-            this.updateData.list_id = this.$route.params.list_id;
-            // console.log(this.updateData);
-            this.$store.dispatch('updateTask', this.updateData);
+            var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
+            if(contenteditable) {
+                let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
+                let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
+                let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
+                this.updateData.name = contenteditableName;
+                this.updateData.points = contenteditablePoints;
+                this.updateData.desc = contenteditableDesc;
+                this.updateData.id = this.$route.params.task_id;
+                this.updateData.board_id = this.$route.params.board_id;
+                // console.log(this.updateData);
+                this.$store.dispatch('updateTask', this.updateData)
+                    .then(response => {
+                        // console.log(response);
+                        this.data.assigned_to.name = response.assigned_to.name
+                    })
+            }
         },
 
         chooseFile() {
@@ -256,7 +269,7 @@ export default {
         },
 
         setRemoveTaskPhoto(filename) {
-            axios.patch('/api/taskPhoto', {filename: filename, id: this.$route.params.task_id})
+            axios.patch('/api/taskPhoto', {filename: filename, id: this.$route.params.task_id, board_id: this.$route.params.board_id})
                 .then(response => {
                     // console.log(response);
                     this.data.task_cover = response.data.task_cover
@@ -332,10 +345,36 @@ export default {
         },
 
         dT() {
-            this.$store.dispatch('deleteTask', {id:this.data.id})
+            this.$store.dispatch('deleteTask', {id:this.data.id, board_id: this.$route.params.board_id})
                 .then(() => {
                     this.$router.push({ name: 'kanboard'})
                     this.$toaster.warning('Task deleted succesfully!.')
+                })
+        },
+
+        listenTask() {
+            Echo.private('list.'+this.$route.params.board_id)
+                .listen('UpdateListTaskEvent', (e) => {
+                    this.data.task_cover = e.task.task_cover
+                    this.data.points = e.task.points
+                    this.data.description = e.task.description
+                    this.data.name = e.task.name
+                    this.data.assigned_to.name = e.task.assigned_to.name
+                    this.updateData.assign_to = e.task.assigned_to.id
+                    // console.log(e);
+                    // this.$store.commit('updateTask', e.task);
+                })
+            Echo.private('task.'+this.$route.params.task_id)
+                .listen('AddTaskAttachmentEvent', (e) => {
+                    // console.log(e);
+                    e.attachments.forEach(attachment => {
+                        // console.log(attachment);
+                        this.data.files.push(attachment)
+                    });
+                })
+                .listen('SendTaskCommentEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('sendComment', e.comments)
                 })
         }
     }

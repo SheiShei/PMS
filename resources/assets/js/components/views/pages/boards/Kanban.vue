@@ -50,6 +50,9 @@ export default {
         this.getCuBoard();
         this.getBoardMembers();
     },
+    mounted() {
+        this.listenList();
+    },
     computed: {
         ...mapGetters({
                 boardLists: 'boardLists',
@@ -96,6 +99,38 @@ export default {
 
         getCuBoard() {
             this.$store.dispatch('getCBoard', this.$route.params.board_id)
+        },
+
+        listenList() {
+            Echo.private('list.'+this.$route.params.board_id)
+                .listen('AddListEvent', (e) => {
+                    // console.log(e.newList);
+                    this.$store.commit('createList', e.newList)
+                })
+                .listen('DeleteListEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteList', e.list_id)
+                })
+                .listen('UpdateListEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('updateList', e.list)
+                })
+                .listen('UpdateListOrderEvent', (e) => {
+                    // console.log(JSON.parse(e.lists));
+                    this.$store.commit('setBoardLists', JSON.parse(e.lists))
+                })
+                .listen('AddListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('addListTask', e.task);
+                })
+                .listen('UpdateListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('updateTask', e.task);
+                })
+                .listen('DeleteListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteTask', e.task_id)
+                })
         }
     }
 }

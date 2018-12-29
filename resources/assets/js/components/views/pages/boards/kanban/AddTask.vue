@@ -113,6 +113,7 @@ export default {
             task.append('assign_to',this.taskData.assign_to);
             task.append('desc',this.taskData.desc);
             task.append('list_id',this.$route.params.list_id);
+            task.append('board_id',this.$route.params.board_id);
 
             this.$store.dispatch('addTask', task)
                 .then(() => {

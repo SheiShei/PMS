@@ -11,19 +11,22 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class AddListEvent implements ShouldBroadcastNow
+class DeleteListEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newList;
+    public $list_id;
+    public $board_id;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newList)
+    public function __construct($list_id, $board_id)
     {
-        $this->newList = $newList;
+        $this->list_id = $list_id;
+        $this->board_id = $board_id;
         $this->dontBroadcastToCurrentUser();
     }
 
@@ -34,6 +37,6 @@ class AddListEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('list.'.$this->newList->board_id);
+        return new PrivateChannel('list.'.$this->board_id);
     }
 }

@@ -84,7 +84,7 @@ export default {
             }
         },
         deleteTask(id) {
-            this.$store.dispatch('deleteTask', {id:id})
+            this.$store.dispatch('deleteTask', {id:id, board_id: this.$route.params.board_id})
                 .then(() => {
                     this.$toaster.warning('Task deleted succesfully!.')
                 })
