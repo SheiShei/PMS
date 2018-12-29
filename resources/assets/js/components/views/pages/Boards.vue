@@ -17,15 +17,16 @@
             <p class="pull-right">Found: {{ userBoards.length }} board</p>
             <hr />
             <div class="boardlist" style="max-height: 70vh; overflow-y:auto">
-                <router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" href="/boards/kanban" class="boarddiv" v-for="board in userBoards" :key="board.id">
-                    <div class="boardname">{{ board.name }}</div>
+                <div href="/boards/kanban" class="boarddiv" v-for="board in userBoards" :key="board.id">
+                    <div class="boardname"><router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" style="color: gray;">{{ board.name }}</router-link></div>
                     <div class="boardoptions">
                         <p><span class="">
-                            <a class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
-                            <a @click="deleteBoard(board.id)" class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
+                            <router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <a href="" @click.prevent class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
+                            <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
                         </span></p>
                     </div>
-                </router-link>             
+                </div>             
             </div>
         </div>
         <div class="col-md-4 profilesec">
@@ -212,7 +213,9 @@ export default {
         },
 
         deleteBoard(id) {
-            this.$store.dispatch('deleteBoard', id)
+            // this.$store.dispatch('deleteBoard', id)
+            console.log('delete');
+            
         }
     }
 }

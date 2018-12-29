@@ -23,4 +23,8 @@ class Card extends Model
     public function tasks() {
         return $this->hasMany('App\Task');
     }
+
+    public function getTasksAttribute($tasks) {
+        
+    }
 }

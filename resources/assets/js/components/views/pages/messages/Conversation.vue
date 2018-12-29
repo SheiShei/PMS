@@ -28,7 +28,7 @@
                         <div class="ripple-container"></div>
                     </button>
 	                <ul id="membersDrop" class="dropdown-menu dropdown-menu-left">
-	                    <router-link style="color:white" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
+	                    <router-link style="color:gray" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
 	                </ul>
                 </div>
             </div>

@@ -11,7 +11,7 @@
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
                             <span class="pull-right"><router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
-                            <span class="pull-right"><a class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                            <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
                 </div>
@@ -53,12 +53,12 @@
                                         <div class="ataskment" v-if="attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif'">
                                             <div class="media">
                                                 <div class="media-left media-top">
-                                                    <router-link :to="{ name: 'kanboard_gallery', params: {task_id: data.id} }" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
-                                                    </router-link>
+                                                    <a href="" @click="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
+                                                    </a>
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>Added 4 minutes ago</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -71,7 +71,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p><span>Added 20 minutes ago</span></p>
+                                                    <p><span>{{ attachment.created_at | moment('calendar') }}</span></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -91,67 +91,30 @@
                             <div class="col-md-12">
                                 <h6 class="txt-bold">COMMENTS</h6>
                                 <hr />
-                                <div class="comments">
-                                    <div class="comment-box" style="">
-                                        <div class="comment-msg">
+                                <div class="comments" v-if="comments">
+                                    <div class="comment-box" style="" v-chat-scroll>
+                                        <!-- simple -->
+                                        <div class="comment-msg" v-for="comment in comments" :key="comment.id">
                                             <div class="comment-sender">
                                                 <h6 class="txt-bold">
-                                                    <span><img src="/images/sample.jpg" class="comment-icon"></span>
-                                                    Sam <small>3:18am 12-01-2018</small>
+                                                    <span><img :src="comment.user.picture" class="comment-icon"></span>
+                                                    {{ comment.user.name }} <small>{{ comment.created_at | moment('calendar') }}</small>
                                                 </h6>
                                             </div>
                                             <div class="comment-comment">
-                                                <p>This is my fckn comment</p>
-                                            </div>
-                                        </div>
-                                        <div class="comment-msg">
-                                            <div class="comment-sender">
-                                                <h6 class="txt-bold">
-                                                    <span><img src="/images/sample.jpg" class="comment-icon"></span>
-                                                    Sam <small>3:18am 12-01-2018</small>
-                                                </h6>
-                                            </div>
-                                            <div class="comment-comment">
-                                                <p>This is my fckn comment with a file
-                                                    with fckn Lorem ipsum dolor sit amet consectetur adipisicing elit. A hic, laboriosam laudantium modi neque eveniet tempore exercitationem ratione assumenda cupiditate voluptatibus odio rem iste qui? Quos dolore dolorum sint deleniti.
-                                                </p>
-                                                <p><a class="btn btn-default btn-simple btn-xs" href="/images/sample.docx" download><span class="fa fa-file-o"></span> withfcknfile.txt</a></p>
-                                            </div>
-                                        </div>
-                                        <div class="comment-msg">
-                                            <div class="comment-sender">
-                                                <h6 class="txt-bold">
-                                                    <span>
-                                                        <img src="/images/sample.jpg" class="comment-icon">
-                                                    </span>
-                                                    Yow <small>3:18am 12-01-2018</small>
-                                                </h6>
-                                            </div>
-                                            <div class="comment-comment">
-                                                <p>This is my fckn comment with an image</p>
-                                                <img src="/images/sample.jpg" style="max-height: 100px; max-width: 100%;">
-                                            </div>
-                                        </div>
-                                        <div class="comment-msg">
-                                            <div class="comment-sender">
-                                                <h6 class="txt-bold">
-                                                    <span><img src="/images/sample.jpg" class="comment-icon"></span>
-                                                    Yow <small>3:18am 12-01-2018</small>
-                                                </h6>
-                                            </div>
-                                            <div class="comment-comment">
-                                                <p>This is my fckn comment with multiple images</p>
-                                                <p style="cursor:pointer"><a class="btn btn-default btn-simple btn-xs"><span class="fa fa-photo"></span> View 2 photos</a></p>
+                                                <p v-if="comment.text">{{ comment.text }}</p>
+                                                <p v-if="comment.extension && !(comment.extension == 'jpg' || comment.extension == 'jpeg' || comment.extension == 'png' || comment.extension == 'gif')"><a class="btn btn-default btn-simple btn-xs" :href="'/storage/task/comment/'+comment.new_filename" download><span class="fa fa-file-o"></span> {{ comment.original_filename }}</a></p>
+                                                <img @click="openComG(comment.new_filename, comment.original_filename)" v-if="comment.extension && (comment.extension == 'jpg' || comment.extension == 'jpeg' || comment.extension == 'png' || comment.extension == 'gif')" :src="'/storage/task/comment/'+comment.new_filename" :title="comment.original_filename" style="max-height: 100px; max-width: 100%; cursor: pointer">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group is-empty comment-input-wrap">
-                                        <input ref="files" v-show="false" @change="onFileChange" type="file" id="inputFile3" multiple class="form-control">
-                                        <button @click="chooseFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
+                                        <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
+                                        <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                                             <i class="fa fa-paperclip"></i>
                                         </button>
-                                        <textarea class="form-control" placeholder="Write some nice stuff or go home..." rows="2"></textarea><span class="material-input"></span>
-                                        <button  class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center"><i class="fa fa-send"></i></button>
+                                        <textarea @keyup.ctrl.enter="cTxtSend" v-model="cTxt" class="form-control" placeholder="Write some nice stuff or go home..." rows="2"></textarea><span class="material-input"></span>
+                                        <button @click="cTxtSend" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center"><i class="fa fa-send"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -179,32 +142,27 @@ export default {
                 assign_to: ''
             },
             clickAssigned: false,
-            attachments: []
+            attachments: [],
+            comFiles: [],
+            cTxt: ''
         }
     },
 
     created() {
         this.getTaskData();
-        
+        this.getComments();
     },
 
     computed: {
         ...mapGetters({
                 boardMembers: 'boardMembers',
+                comments: 'getTCom',
             }),
     },
 
     methods: {
         chooseFile() {
             $("#inputFile3").click();
-        },
-
-        onFileChange(file) {
-            let files = file.target.files || file.dataTransfer.files;
-            let data = new FormData();
-            if(files.length > 0) {
-                console.log(files);
-            }
         },
 
         getTaskData() {
@@ -266,6 +224,10 @@ export default {
             $("#addAttachmentInput").click();
         },
 
+        openCFile() {
+            $("#cFile").click();
+        },
+
         onFileChange(e) {
             this.attachments = [];
             let selectedFiles=e.target.files;
@@ -302,6 +264,78 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
+                })
+        },
+
+        openGallery(ff, name) {
+            let gimg = [];
+            gimg.push({name: name, src: '/storage/task/'+ff});
+            this.data.files.forEach(attachment => {
+                if(attachment.new_filename !== ff && (attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif')) {
+                    // gimg.push(attachment.new_filename)
+                    gimg.push({name: attachment.original_filename, src: '/storage/task/'+attachment.new_filename})
+                }
+            });
+            this.$store.commit('setGImg', gimg);
+            this.$router.push({ name: 'kanboard_gallery', params: {task_id: this.data.id} })
+        },
+
+        cFile(e) {
+            this.comFiles = [];
+            let selectedFiles=e.target.files;
+            let form = new FormData;
+            if(!selectedFiles.length){
+                return false;
+            }
+            for(let i=0;i<selectedFiles.length;i++){
+                this.comFiles.push(selectedFiles[i]);
+            }
+
+            // console.log(this.comFiles);
+            for(let i=0; i<this.comFiles.length;i++){
+                form.append('files[]',this.comFiles[i]);
+            }
+
+            form.append('task_id', this.$route.params.task_id);
+            // form.append('text', '');
+
+            this.$store.dispatch('sendComment', form)
+                .then(() => {
+                    this.comFiles = [];
+                    document.getElementById('cFile').value=[];
+                    
+                })
+        },
+
+        cTxtSend() {
+            let form = new FormData;
+            form.append('task_id', this.$route.params.task_id);
+            form.append('text', this.cTxt);
+            this.$store.dispatch('sendComment', form)
+                .then(() => {
+                    this.cTxt = ''
+                })
+        },
+
+        getComments() {
+            this.$store.dispatch('getComments', this.$route.params.task_id)
+                
+        },
+
+        openComG(ff, name) {
+            let gimg = [];
+            gimg.push({name: name, src: '/storage/task/comment/'+ff});
+            this.$store.commit('setGImg', gimg);
+
+            this.$router.push({ name: 'kanboard_gallery', params: {task_id: this.data.id} })
+
+        },
+
+        dT() {
+            this.$store.dispatch('deleteTask', {id:this.data.id})
+                .then(() => {
+                    this.$router.push({ name: 'kanboard'})
+                    this.$toaster.warning('Task deleted succesfully!.')
                 })
         }
     }

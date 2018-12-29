@@ -86,5 +86,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::patch('/taskPhoto', 'BoardController@taskPhoto');
     Route::delete('/deleteTask', 'BoardController@deleteTask');
     Route::patch('/updateTaskOrder', 'BoardController@updateTaskOrder');
+    Route::post('/sendComment', 'BoardController@sendComment');
+    Route::post('/getComments', 'BoardController@getComments');
+    Route::post('/getCBoard', 'BoardController@getCBoard');
 
 });

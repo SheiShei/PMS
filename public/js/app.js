@@ -71570,7 +71570,7 @@ var render = function() {
                       "router-link",
                       {
                         key: user.id,
-                        staticStyle: { color: "white" },
+                        staticStyle: { color: "gray" },
                         attrs: {
                           to: {
                             name: "convo-view",
@@ -73261,6 +73261,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -73368,7 +73369,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             this.$store.dispatch('createBoard', this.board);
         },
         deleteBoard: function deleteBoard(id) {
-            this.$store.dispatch('deleteBoard', id);
+            // this.$store.dispatch('deleteBoard', id)
+            console.log('delete');
         }
     }
 });
@@ -73493,46 +73495,85 @@ var render = function() {
           },
           _vm._l(_vm.userBoards, function(board) {
             return _c(
-              "router-link",
+              "div",
               {
                 key: board.id,
                 staticClass: "boarddiv",
-                attrs: {
-                  to: { name: "kanboard", params: { board_id: board.id } },
-                  href: "/boards/kanban"
-                }
+                attrs: { href: "/boards/kanban" }
               },
               [
-                _c("div", { staticClass: "boardname" }, [
-                  _vm._v(_vm._s(board.name))
-                ]),
+                _c(
+                  "div",
+                  { staticClass: "boardname" },
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticStyle: { color: "gray" },
+                        attrs: {
+                          to: {
+                            name: "kanboard",
+                            params: { board_id: board.id }
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(board.name))]
+                    )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("div", { staticClass: "boardoptions" }, [
                   _c("p", [
-                    _c("span", {}, [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "text-success",
-                          attrs: { title: "Delete Board" }
-                        },
-                        [_c("i", { staticClass: "fa fa-edit" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "text-danger",
-                          attrs: { title: "Close" },
-                          on: {
-                            click: function($event) {
-                              _vm.deleteBoard(board.id)
+                    _c(
+                      "span",
+                      {},
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "text-primary",
+                            attrs: {
+                              to: {
+                                name: "kanboard",
+                                params: { board_id: board.id }
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "fa fa-trash-o" })]
-                      )
-                    ])
+                          },
+                          [_c("i", { staticClass: "fa fa-eye" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "text-success",
+                            attrs: { href: "", title: "Delete Board" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-edit" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "text-danger",
+                            attrs: { href: "", title: "Close" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.deleteBoard(board.id)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-trash-o" })]
+                        )
+                      ],
+                      1
+                    )
                   ])
                 ])
               ]
@@ -73959,6 +74000,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__kanban_Card_vue__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__kanban_Card_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__kanban_Card_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -74006,13 +74049,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     created: function created() {
         this.$store.dispatch('getBoardLists', this.$route.params.board_id);
+        this.getCuBoard();
         this.getBoardMembers();
     },
 
-    computed: {
-        // ...mapGetters({
-        //         boardLists: 'boardLists',
-        //     }),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapGetters */])({
+        boardLists: 'boardLists',
+        boardMembers: 'boardMembers',
+        board: 'getCBoard'
+    }), {
         boardLists: {
             get: function get() {
                 return this.$store.getters.boardLists;
@@ -74021,8 +74066,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return this.$store.commit('updateOrder', newValue);
                 // return this.$store.dispatch('updateListOrder', {board_id: this.$route.params.board_id, lists: this.boardLists})
             }
+        },
+        computeTaskLength: function computeTaskLength() {
+            var totalTask = 0;
+            this.boardLists.forEach(function (list) {
+                totalTask += list.tasks.length;
+            });
+            return totalTask;
         }
+    }),
+    destroyed: function destroyed() {
+        this.$store.commit('boardDestroyed');
     },
+
     methods: {
         addNewList: function addNewList() {
             var listLength = this.boardLists.length + 1;
@@ -74037,6 +74093,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         getBoardMembers: function getBoardMembers() {
             this.$store.dispatch('getBoardMembers', this.$route.params.board_id);
+        },
+        getCuBoard: function getCuBoard() {
+            this.$store.dispatch('getCBoard', this.$route.params.board_id);
         }
     }
 });
@@ -74904,56 +74963,78 @@ var render = function() {
       attrs: { id: "kanban-component" }
     },
     [
-      _c(
-        "div",
-        { staticClass: "board-wrapper" },
-        [
-          _c("router-view"),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-success btn-sm",
-              on: { click: _vm.addNewList }
-            },
-            [_vm._v(" + Add New List")]
-          ),
-          _vm._v(" "),
-          _c(
+      _vm.board
+        ? _c(
             "div",
-            { staticClass: "board-body", attrs: { id: "testTaskDiv" } },
+            { staticClass: "board-wrapper" },
             [
+              _c("router-view"),
+              _vm._v(" "),
+              _c("div", { staticClass: "board-header" }, [
+                _c("div", { staticClass: "board-name" }, [
+                  _c("h4", {}, [_vm._v(_vm._s(_vm.board.name))])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "board-info" }, [
+                  _c("p", { attrs: { title: "Total Tasks" } }, [
+                    _c("span", { staticClass: "fa fa-tasks" }),
+                    _vm._v(" " + _vm._s(_vm.computeTaskLength))
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "board-info" }, [
+                  _c("p", { attrs: { title: "Members" } }, [
+                    _c("span", { staticClass: "fa fa-user-o" }),
+                    _vm._v(" " + _vm._s(_vm.boardMembers.length))
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(0)
+              ]),
+              _vm._v(" "),
               _c(
-                "draggable",
+                "button",
                 {
-                  attrs: {
-                    options: { animation: 200, group: "status" },
-                    element: "div"
-                  },
-                  on: { change: _vm.updateListOrder },
-                  model: {
-                    value: _vm.boardLists,
-                    callback: function($$v) {
-                      _vm.boardLists = $$v
-                    },
-                    expression: "boardLists"
-                  }
+                  staticClass: "btn btn-success btn-sm",
+                  on: { click: _vm.addNewList }
                 },
-                _vm._l(_vm.boardLists, function(list, index) {
-                  return _c("list-card", {
-                    key: index,
-                    attrs: { li: index, list: list }
-                  })
-                })
+                [_vm._v(" + Add New List")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "board-body", attrs: { id: "testTaskDiv" } },
+                [
+                  _c(
+                    "draggable",
+                    {
+                      attrs: {
+                        options: { animation: 200, group: "status" },
+                        element: "div"
+                      },
+                      on: { change: _vm.updateListOrder },
+                      model: {
+                        value: _vm.boardLists,
+                        callback: function($$v) {
+                          _vm.boardLists = $$v
+                        },
+                        expression: "boardLists"
+                      }
+                    },
+                    _vm._l(_vm.boardLists, function(list, index) {
+                      return _c("list-card", {
+                        key: index,
+                        attrs: { li: index, list: list }
+                      })
+                    })
+                  )
+                ],
+                1
               )
             ],
             1
           )
-        ],
-        1
-      )
+        : _vm._e()
     ]
   )
 }
@@ -74962,30 +75043,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "board-header" }, [
-      _c("div", { staticClass: "board-name" }, [
-        _c("h4", {}, [_vm._v("Web Boards")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "board-info" }, [
-        _c("p", { attrs: { title: "Total Tasks" } }, [
-          _c("span", { staticClass: "fa fa-tasks" }),
-          _vm._v(" 12")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "board-info" }, [
-        _c("p", { attrs: { title: "Members" } }, [
-          _c("span", { staticClass: "fa fa-user-o" }),
-          _vm._v(" 7")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "board-info" }, [
-        _c("a", { staticClass: "btn btn-white btn-simple btn-xs" }, [
-          _c("span", { staticClass: "fa fa-bar-chart" }),
-          _vm._v(" View Stats")
-        ])
+    return _c("div", { staticClass: "board-info" }, [
+      _c("a", { staticClass: "btn btn-white btn-simple btn-xs" }, [
+        _c("span", { staticClass: "fa fa-bar-chart" }),
+        _vm._v(" View Stats")
       ])
     ])
   }
@@ -75723,43 +75784,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -75776,28 +75800,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 assign_to: ''
             },
             clickAssigned: false,
-            attachments: []
+            attachments: [],
+            comFiles: [],
+            cTxt: ''
         };
     },
     created: function created() {
         this.getTaskData();
+        this.getComments();
     },
 
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        boardMembers: 'boardMembers'
+        boardMembers: 'boardMembers',
+        comments: 'getTCom'
     })),
 
     methods: (_methods = {
         chooseFile: function chooseFile() {
             $("#inputFile3").click();
-        },
-        onFileChange: function onFileChange(file) {
-            var files = file.target.files || file.dataTransfer.files;
-            var data = new FormData();
-            if (files.length > 0) {
-                console.log(files);
-            }
         },
         getTaskData: function getTaskData() {
             var _this = this;
@@ -75853,6 +75874,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
     }, _defineProperty(_methods, 'chooseFile', function chooseFile() {
         $("#addAttachmentInput").click();
+    }), _defineProperty(_methods, 'openCFile', function openCFile() {
+        $("#cFile").click();
     }), _defineProperty(_methods, 'onFileChange', function onFileChange(e) {
         var _this2 = this;
 
@@ -75888,6 +75911,66 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             _this3.$store.commit('updateTask', response.data);
         }).catch(function (error) {
             console.log(error);
+        });
+    }), _defineProperty(_methods, 'openGallery', function openGallery(ff, name) {
+        var gimg = [];
+        gimg.push({ name: name, src: '/storage/task/' + ff });
+        this.data.files.forEach(function (attachment) {
+            if (attachment.new_filename !== ff && (attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif')) {
+                // gimg.push(attachment.new_filename)
+                gimg.push({ name: attachment.original_filename, src: '/storage/task/' + attachment.new_filename });
+            }
+        });
+        this.$store.commit('setGImg', gimg);
+        this.$router.push({ name: 'kanboard_gallery', params: { task_id: this.data.id } });
+    }), _defineProperty(_methods, 'cFile', function cFile(e) {
+        var _this4 = this;
+
+        this.comFiles = [];
+        var selectedFiles = e.target.files;
+        var form = new FormData();
+        if (!selectedFiles.length) {
+            return false;
+        }
+        for (var i = 0; i < selectedFiles.length; i++) {
+            this.comFiles.push(selectedFiles[i]);
+        }
+
+        // console.log(this.comFiles);
+        for (var _i2 = 0; _i2 < this.comFiles.length; _i2++) {
+            form.append('files[]', this.comFiles[_i2]);
+        }
+
+        form.append('task_id', this.$route.params.task_id);
+        // form.append('text', '');
+
+        this.$store.dispatch('sendComment', form).then(function () {
+            _this4.comFiles = [];
+            document.getElementById('cFile').value = [];
+        });
+    }), _defineProperty(_methods, 'cTxtSend', function cTxtSend() {
+        var _this5 = this;
+
+        var form = new FormData();
+        form.append('task_id', this.$route.params.task_id);
+        form.append('text', this.cTxt);
+        this.$store.dispatch('sendComment', form).then(function () {
+            _this5.cTxt = '';
+        });
+    }), _defineProperty(_methods, 'getComments', function getComments() {
+        this.$store.dispatch('getComments', this.$route.params.task_id);
+    }), _defineProperty(_methods, 'openComG', function openComG(ff, name) {
+        var gimg = [];
+        gimg.push({ name: name, src: '/storage/task/comment/' + ff });
+        this.$store.commit('setGImg', gimg);
+
+        this.$router.push({ name: 'kanboard_gallery', params: { task_id: this.data.id } });
+    }), _defineProperty(_methods, 'dT', function dT() {
+        var _this6 = this;
+
+        this.$store.dispatch('deleteTask', { id: this.data.id }).then(function () {
+            _this6.$router.push({ name: 'kanboard' });
+            _this6.$toaster.warning('Task deleted succesfully!.');
         });
     }), _methods)
 });
@@ -75946,7 +76029,8 @@ var render = function() {
                       "a",
                       {
                         staticClass: "btn btn-simple btn-close",
-                        attrs: { title: "Delete This Task" }
+                        attrs: { title: "Delete This Task" },
+                        on: { click: _vm.dT }
                       },
                       [_c("i", { staticClass: "fa fa-trash-o" })]
                     )
@@ -76127,27 +76211,29 @@ var render = function() {
                                         "div",
                                         { staticClass: "media-left media-top" },
                                         [
-                                          _c("router-link", {
+                                          _c("a", {
                                             staticClass: "ataskment-thumb",
                                             style:
                                               "background-image: url('/storage/task/" +
                                               attachment.new_filename +
                                               "')",
-                                            attrs: {
-                                              to: {
-                                                name: "kanboard_gallery",
-                                                params: { task_id: _vm.data.id }
-                                              }
-                                            },
+                                            attrs: { href: "" },
                                             on: {
-                                              click: function($event) {
-                                                $event.preventDefault()
-                                                _vm.openGallery = !_vm.openGallery
-                                              }
+                                              click: [
+                                                function($event) {
+                                                  _vm.openGallery(
+                                                    attachment.new_filename,
+                                                    attachment.original_filename
+                                                  )
+                                                },
+                                                function($event) {
+                                                  $event.preventDefault()
+                                                  _vm.openGallery = !_vm.openGallery
+                                                }
+                                              ]
                                             }
                                           })
-                                        ],
-                                        1
+                                        ]
                                       ),
                                       _vm._v(" "),
                                       _c("div", { staticClass: "media-body" }, [
@@ -76163,7 +76249,14 @@ var render = function() {
                                         _vm._v(" "),
                                         _c("p", [
                                           _c("span", [
-                                            _vm._v("Added 4 minutes ago")
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm._f("moment")(
+                                                  attachment.created_at,
+                                                  "calendar"
+                                                )
+                                              )
+                                            )
                                           ]),
                                           _vm._v(" - "),
                                           _c(
@@ -76233,7 +76326,14 @@ var render = function() {
                                         _vm._v(" "),
                                         _c("p", [
                                           _c("span", [
-                                            _vm._v("Added 20 minutes ago")
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm._f("moment")(
+                                                  attachment.created_at,
+                                                  "calendar"
+                                                )
+                                              )
+                                            )
                                           ])
                                         ])
                                       ])
@@ -76296,200 +76396,224 @@ var render = function() {
                     _vm._v(" "),
                     _c("hr"),
                     _vm._v(" "),
-                    _c("div", { staticClass: "comments" }, [
-                      _c("div", { staticClass: "comment-box" }, [
-                        _c("div", { staticClass: "comment-msg" }, [
-                          _c("div", { staticClass: "comment-sender" }, [
-                            _c("h6", { staticClass: "txt-bold" }, [
-                              _c("span", [
-                                _c("img", {
-                                  staticClass: "comment-icon",
-                                  attrs: { src: "/images/sample.jpg" }
-                                })
-                              ]),
-                              _vm._v(
-                                "\n                                                Sam "
-                              ),
-                              _c("small", [_vm._v("3:18am 12-01-2018")])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "comment-comment" }, [
-                            _c("p", [_vm._v("This is my fckn comment")])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "comment-msg" }, [
-                          _c("div", { staticClass: "comment-sender" }, [
-                            _c("h6", { staticClass: "txt-bold" }, [
-                              _c("span", [
-                                _c("img", {
-                                  staticClass: "comment-icon",
-                                  attrs: { src: "/images/sample.jpg" }
-                                })
-                              ]),
-                              _vm._v(
-                                "\n                                                Sam "
-                              ),
-                              _c("small", [_vm._v("3:18am 12-01-2018")])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "comment-comment" }, [
-                            _c("p", [
-                              _vm._v(
-                                "This is my fckn comment with a file\n                                                with fckn Lorem ipsum dolor sit amet consectetur adipisicing elit. A hic, laboriosam laudantium modi neque eveniet tempore exercitationem ratione assumenda cupiditate voluptatibus odio rem iste qui? Quos dolore dolorum sint deleniti.\n                                            "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("p", [
-                              _c(
-                                "a",
-                                {
-                                  staticClass:
-                                    "btn btn-default btn-simple btn-xs",
-                                  attrs: {
-                                    href: "/images/sample.docx",
-                                    download: ""
-                                  }
-                                },
-                                [
-                                  _c("span", { staticClass: "fa fa-file-o" }),
-                                  _vm._v(" withfcknfile.txt")
-                                ]
-                              )
-                            ])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "comment-msg" }, [
-                          _c("div", { staticClass: "comment-sender" }, [
-                            _c("h6", { staticClass: "txt-bold" }, [
-                              _c("span", [
-                                _c("img", {
-                                  staticClass: "comment-icon",
-                                  attrs: { src: "/images/sample.jpg" }
-                                })
-                              ]),
-                              _vm._v(
-                                "\n                                                Yow "
-                              ),
-                              _c("small", [_vm._v("3:18am 12-01-2018")])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "comment-comment" }, [
-                            _c("p", [
-                              _vm._v("This is my fckn comment with an image")
-                            ]),
-                            _vm._v(" "),
-                            _c("img", {
-                              staticStyle: {
-                                "max-height": "100px",
-                                "max-width": "100%"
-                              },
-                              attrs: { src: "/images/sample.jpg" }
-                            })
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "comment-msg" }, [
-                          _c("div", { staticClass: "comment-sender" }, [
-                            _c("h6", { staticClass: "txt-bold" }, [
-                              _c("span", [
-                                _c("img", {
-                                  staticClass: "comment-icon",
-                                  attrs: { src: "/images/sample.jpg" }
-                                })
-                              ]),
-                              _vm._v(
-                                "\n                                                Yow "
-                              ),
-                              _c("small", [_vm._v("3:18am 12-01-2018")])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "comment-comment" }, [
-                            _c("p", [
-                              _vm._v(
-                                "This is my fckn comment with multiple images"
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("p", { staticStyle: { cursor: "pointer" } }, [
-                              _c(
-                                "a",
-                                {
-                                  staticClass:
-                                    "btn btn-default btn-simple btn-xs"
-                                },
-                                [
-                                  _c("span", { staticClass: "fa fa-photo" }),
-                                  _vm._v(" View 2 photos")
-                                ]
-                              )
-                            ])
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "form-group is-empty comment-input-wrap"
-                        },
-                        [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: false,
-                                expression: "false"
-                              }
-                            ],
-                            ref: "files",
-                            staticClass: "form-control",
-                            attrs: {
-                              type: "file",
-                              id: "inputFile3",
-                              multiple: ""
-                            },
-                            on: { change: _vm.onFileChange }
-                          }),
-                          _vm._v(" "),
+                    _vm.comments
+                      ? _c("div", { staticClass: "comments" }, [
                           _c(
-                            "button",
+                            "div",
                             {
-                              staticClass:
-                                "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
-                              attrs: { type: "button" },
-                              on: { click: _vm.chooseFile }
+                              directives: [
+                                {
+                                  name: "chat-scroll",
+                                  rawName: "v-chat-scroll"
+                                }
+                              ],
+                              staticClass: "comment-box"
                             },
-                            [_c("i", { staticClass: "fa fa-paperclip" })]
+                            _vm._l(_vm.comments, function(comment) {
+                              return _c(
+                                "div",
+                                { key: comment.id, staticClass: "comment-msg" },
+                                [
+                                  _c("div", { staticClass: "comment-sender" }, [
+                                    _c("h6", { staticClass: "txt-bold" }, [
+                                      _c("span", [
+                                        _c("img", {
+                                          staticClass: "comment-icon",
+                                          attrs: { src: comment.user.picture }
+                                        })
+                                      ]),
+                                      _vm._v(
+                                        "\n                                                " +
+                                          _vm._s(comment.user.name) +
+                                          " "
+                                      ),
+                                      _c("small", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm._f("moment")(
+                                              comment.created_at,
+                                              "calendar"
+                                            )
+                                          )
+                                        )
+                                      ])
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "comment-comment" },
+                                    [
+                                      comment.text
+                                        ? _c("p", [
+                                            _vm._v(_vm._s(comment.text))
+                                          ])
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      comment.extension &&
+                                      !(
+                                        comment.extension == "jpg" ||
+                                        comment.extension == "jpeg" ||
+                                        comment.extension == "png" ||
+                                        comment.extension == "gif"
+                                      )
+                                        ? _c("p", [
+                                            _c(
+                                              "a",
+                                              {
+                                                staticClass:
+                                                  "btn btn-default btn-simple btn-xs",
+                                                attrs: {
+                                                  href:
+                                                    "/storage/task/comment/" +
+                                                    comment.new_filename,
+                                                  download: ""
+                                                }
+                                              },
+                                              [
+                                                _c("span", {
+                                                  staticClass: "fa fa-file-o"
+                                                }),
+                                                _vm._v(
+                                                  " " +
+                                                    _vm._s(
+                                                      comment.original_filename
+                                                    )
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      comment.extension &&
+                                      (comment.extension == "jpg" ||
+                                        comment.extension == "jpeg" ||
+                                        comment.extension == "png" ||
+                                        comment.extension == "gif")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              "max-height": "100px",
+                                              "max-width": "100%",
+                                              cursor: "pointer"
+                                            },
+                                            attrs: {
+                                              src:
+                                                "/storage/task/comment/" +
+                                                comment.new_filename,
+                                              title: comment.original_filename
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.openComG(
+                                                  comment.new_filename,
+                                                  comment.original_filename
+                                                )
+                                              }
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              )
+                            })
                           ),
                           _vm._v(" "),
-                          _c("textarea", {
-                            staticClass: "form-control",
-                            attrs: {
-                              placeholder:
-                                "Write some nice stuff or go home...",
-                              rows: "2"
-                            }
-                          }),
-                          _c("span", { staticClass: "material-input" }),
-                          _vm._v(" "),
                           _c(
-                            "button",
+                            "div",
                             {
                               staticClass:
-                                "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center"
+                                "form-group is-empty comment-input-wrap"
                             },
-                            [_c("i", { staticClass: "fa fa-send" })]
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: false,
+                                    expression: "false"
+                                  }
+                                ],
+                                ref: "files",
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "file",
+                                  id: "cFile",
+                                  multiple: ""
+                                },
+                                on: { change: _vm.cFile }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
+                                  attrs: { type: "button" },
+                                  on: { click: _vm.openCFile }
+                                },
+                                [_c("i", { staticClass: "fa fa-paperclip" })]
+                              ),
+                              _vm._v(" "),
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.cTxt,
+                                    expression: "cTxt"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  placeholder:
+                                    "Write some nice stuff or go home...",
+                                  rows: "2"
+                                },
+                                domProps: { value: _vm.cTxt },
+                                on: {
+                                  keyup: function($event) {
+                                    if (
+                                      !("button" in $event) &&
+                                      _vm._k(
+                                        $event.keyCode,
+                                        "enter",
+                                        13,
+                                        $event.key,
+                                        "Enter"
+                                      )
+                                    ) {
+                                      return null
+                                    }
+                                    if (!$event.ctrlKey) {
+                                      return null
+                                    }
+                                    return _vm.cTxtSend($event)
+                                  },
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.cTxt = $event.target.value
+                                  }
+                                }
+                              }),
+                              _c("span", { staticClass: "material-input" }),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
+                                  on: { click: _vm.cTxtSend }
+                                },
+                                [_c("i", { staticClass: "fa fa-send" })]
+                              )
+                            ]
                           )
-                        ]
-                      )
-                    ])
+                        ])
+                      : _vm._e()
                   ])
                 ])
               ])
@@ -76562,6 +76686,9 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -76582,29 +76709,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            currentSlide: 0,
-            images: [{
-                name: 'image1',
-                src: '/images/sample.jpg'
-            }, {
-                name: 'image2',
-                src: '/images/nightsky3.jpg'
-            }, {
-                name: 'image3',
-                src: '/images/mfilogo.png'
-            }]
+            currentSlide: 0
         };
     },
 
-    computed: {
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
+        images: 'getGImg'
+    }), {
         getCurrentImage: function getCurrentImage() {
             return this.images[this.currentSlide];
         }
-    },
+    }),
     methods: {
         nextSlide: function nextSlide() {
             var max = this.images.length - 1;
@@ -87363,7 +87483,10 @@ var actions = {
 var state = {
     boards: [],
     boardLists: [],
-    boardMembers: []
+    boardMembers: [],
+    gImg: null,
+    comments: [],
+    cBoard: null
 };
 
 var getters = {
@@ -87375,6 +87498,15 @@ var getters = {
     },
     boardMembers: function boardMembers(state) {
         return state.boardMembers;
+    },
+    getGImg: function getGImg(state) {
+        return state.gImg;
+    },
+    getTCom: function getTCom(state) {
+        return state.comments;
+    },
+    getCBoard: function getCBoard(state) {
+        return state.cBoard;
     }
 };
 
@@ -87429,6 +87561,23 @@ var mutations = {
             task.order = ind + 1;
             task.card_id = data.list_id;
         });
+    },
+    setGImg: function setGImg(state, data) {
+        state.gImg = data;
+    },
+    setTaskComments: function setTaskComments(state, data) {
+        state.comments = data;
+    },
+    sendComment: function sendComment(state, data) {
+        data.forEach(function (comment) {
+            state.comments.push(comment);
+        });
+    },
+    setCBoard: function setCBoard(state, data) {
+        state.cBoard = data;
+    },
+    boardDestroyed: function boardDestroyed(state, data) {
+        state.boardLists = [];
     }
 };
 
@@ -87585,6 +87734,39 @@ var actions = {
         axios.patch('/api/updateTaskOrder', data).then(function () {
             // console.log(response);
 
+        }).catch(function (error) {
+            console.error(error);
+        });
+    },
+    sendComment: function sendComment(_ref15, data) {
+        var commit = _ref15.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/sendComment', data).then(function (response) {
+                // console.log(response);
+                commit('sendComment', response.data);
+                resolve();
+            }).catch(function (error) {
+                console.error(error);
+            });
+        });
+    },
+    getComments: function getComments(_ref16, data) {
+        var commit = _ref16.commit;
+
+        axios.post('/api/getComments', { id: data }).then(function (response) {
+            // console.log(response);
+            commit('setTaskComments', response.data);
+        }).catch(function (error) {
+            console.error(error);
+        });
+    },
+    getCBoard: function getCBoard(_ref17, data) {
+        var commit = _ref17.commit;
+
+        axios.post('/api/getCBoard', { id: data }).then(function (response) {
+            // console.log(response);
+            commit('setCBoard', response.data);
         }).catch(function (error) {
             console.error(error);
         });

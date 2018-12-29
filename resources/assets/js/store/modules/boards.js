@@ -2,7 +2,10 @@ import Vue from 'vue'
 const state = {
     boards: [],
     boardLists: [],
-    boardMembers: []
+    boardMembers: [],
+    gImg: null,
+    comments: [],
+    cBoard: null
 };
 
 const getters = {
@@ -14,7 +17,16 @@ const getters = {
     },
     boardMembers: state => {
         return state.boardMembers
-    }
+    },
+    getGImg: state => {
+        return state.gImg;
+    },
+    getTCom: state => {
+        return state.comments;
+    },
+    getCBoard: state => {
+        return state.cBoard
+    },
 };
 
 const mutations = {
@@ -79,6 +91,28 @@ const mutations = {
             task.order = ind+1;
             task.card_id = data.list_id
         })
+    },
+
+    setGImg(state, data) {
+        state.gImg = data;
+    },
+
+    setTaskComments(state, data) {
+        state.comments = data;
+    },
+
+    sendComment(state, data) {
+        data.forEach(comment => {
+            state.comments.push(comment)
+        });
+    },
+
+    setCBoard(state, data) {
+        state.cBoard = data
+    },
+
+    boardDestroyed(state, data) {
+        state.boardLists = []
     }
 
 };
@@ -253,6 +287,45 @@ const actions = {
             .then(() => {
                 // console.log(response);
                 
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
+    },
+
+    sendComment({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/sendComment', data)
+                .then((response) => {
+                    // console.log(response);
+                    commit('sendComment', response.data)
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    
+                })
+        })
+    },
+
+    getComments({commit}, data) {
+        axios.post('/api/getComments', {id: data})
+            .then((response) => {
+                // console.log(response);
+                commit('setTaskComments', response.data)
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
+    },
+
+    getCBoard({commit}, data) {
+        axios.post('/api/getCBoard', {id: data})
+            .then((response) => {
+                // console.log(response);
+                commit('setCBoard', response.data)
             })
             .catch(error => {
                 console.error(error);

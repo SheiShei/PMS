@@ -1,17 +1,17 @@
 <template>
 
     <section class="main-main-container" id="kanban-component" style="background-color: rgb(67, 160, 185);">
-        <div class="board-wrapper">
+        <div class="board-wrapper" v-if="board">
             <router-view></router-view>
             <div class="board-header">
                 <div class="board-name">
-                    <h4 class="" style="">Web Boards</h4>
+                    <h4 class="" style="">{{ board.name }}</h4>
                 </div>
                 <div class="board-info">
-                    <p title="Total Tasks"><span class="fa fa-tasks"></span>&nbsp;12</p>
+                    <p title="Total Tasks"><span class="fa fa-tasks"></span>&nbsp;{{ computeTaskLength }}</p>
                 </div>
                 <div class="board-info">
-                    <p title="Members"><span class="fa fa-user-o"></span>&nbsp;7</p>
+                    <p title="Members"><span class="fa fa-user-o"></span>&nbsp;{{ boardMembers.length }}</p>
                 </div>
                 <div class="board-info">
                     <a class="btn btn-white btn-simple btn-xs"><span class="fa fa-bar-chart"></span> View Stats</a>
@@ -47,12 +47,15 @@ export default {
     },
     created() {
         this.$store.dispatch('getBoardLists', this.$route.params.board_id);
+        this.getCuBoard();
         this.getBoardMembers();
     },
     computed: {
-        // ...mapGetters({
-        //         boardLists: 'boardLists',
-        //     }),
+        ...mapGetters({
+                boardLists: 'boardLists',
+                boardMembers: 'boardMembers',
+                board: 'getCBoard',
+            }),
         boardLists: {
             get () {
                 return this.$store.getters.boardLists
@@ -61,7 +64,17 @@ export default {
                 return this.$store.commit('updateOrder', newValue)
                 // return this.$store.dispatch('updateListOrder', {board_id: this.$route.params.board_id, lists: this.boardLists})
             }
+        },
+        computeTaskLength() {
+            let totalTask = 0
+            this.boardLists.forEach(list => {
+                totalTask += list.tasks.length
+            });
+            return totalTask;
         }
+    },
+    destroyed() {
+        this.$store.commit('boardDestroyed')
     },
     methods: {
         addNewList(){
@@ -79,6 +92,10 @@ export default {
 
         getBoardMembers() {
             this.$store.dispatch('getBoardMembers', this.$route.params.board_id)
+        },
+
+        getCuBoard() {
+            this.$store.dispatch('getCBoard', this.$route.params.board_id)
         }
     }
 }

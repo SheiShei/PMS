@@ -19,27 +19,18 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
     data() {
         return {
             currentSlide: 0,
-            images: [
-                {
-                    name: 'image1',                        
-                    src:'/images/sample.jpg'
-                },
-                {
-                    name: 'image2',
-                    src:'/images/nightsky3.jpg'
-                },
-                {
-                    name: 'image3',
-                    src:'/images/mfilogo.png'
-                }
-            ],
         }
     },
     computed: {
+        ...mapGetters({
+                images: 'getGImg',
+            }),
+
         getCurrentImage(){
             return this.images[this.currentSlide]            
         }

@@ -267,4 +267,48 @@ class BoardController extends Controller
             ]);
         }
     }
+
+    public function sendComment(Request $request) {
+        $task = Task::find($request->task_id);
+
+        $comment = [];
+
+        if($files = $request->file('files')){
+            foreach ($files as $key => $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $newName = time() . $originalName;
+                $file->move('storage/task/comment/', $newName);
+                $newC = $task->comments()->create([
+                    'original_filename' => $originalName,
+                    'new_filename' => $newName,
+                    'extension' => $extension,
+                    'user_id' => auth()->user()->id
+                ]);
+
+                array_push($comment, $newC->load('user'));
+            }
+        }
+
+        if($text = $request->text) {
+            $newC = $task->comments()->create([
+                'text' => $text,
+                'user_id' => auth()->user()->id
+            ]);
+
+            array_push($comment, $newC->load('user'));
+        }
+
+        return $comment;
+    }
+
+    public function getComments(Request $request) {
+        $comments = Task::find($request->id)->comments()->with('user')->get();
+        return $comments;
+    }
+    
+    public function getCBoard(Request $request) {
+        $board = Board::find($request->id);
+        return $board;
+    }
 }
