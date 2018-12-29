@@ -24,8 +24,8 @@ class CreateTasksTable extends Migration
             $table->char('assigned_to', 36)->index();
             $table->char('assigned_by', 36)->index();
             $table->tinyInteger('order');
-            $table->tinyInteger('points');
-            $table->date('due');
+            $table->tinyInteger('points')->default('1');
+            $table->date('due')->nullable();
             $table->string('task_cover')->nullable();
             $table->timestamps();
 
