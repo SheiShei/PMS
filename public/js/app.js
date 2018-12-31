@@ -70351,6 +70351,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     // console.log(e);
                     _this4.$store.commit('addConvo', e.newConversation.newConvo);
                 }
+            }).listen('AddConvoMemberEvent', function (e) {
+                var found = e.newConversation.users.find(function (element) {
+                    return element.slug == _this.currentUser.slug;
+                });
+                if (found) {
+                    // console.log(e);
+                    _this4.$store.commit('addConvo', e.newConversation.newConvo);
+                }
             });
         },
 
@@ -70661,26 +70669,36 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             form: new FormData(),
             isTyping: false,
             last_page: 0,
-            prev: ''
+            prev: '',
+            isL: true
         };
     },
     created: function created() {
+        this.$store.commit('messageDestroy');
         this.getConvoUsers();
         this.getMessages();
     },
     mounted: function mounted() {
         this.listenMessages();
     },
+    destroyed: function destroyed() {
+        this.stopListening();
+        // this.$store.commit('messageDestroy');
+    },
 
     watch: {
         '$route': function $route(to, from) {
+            this.isL = true;
+            this.stopListening();
             this.getConvoUsers();
             this.getMessages();
+            this.listenMessages();
         },
         messageTxt: function messageTxt() {
-            Echo.private('message.' + this.$route.params.convo_id).whisper('typing', {
-                name: this.messageTxt
-            });
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .whisper('typing', {
+            //         name: this.messageTxt
+            //     });
         }
     },
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -70771,17 +70789,55 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var _this4 = this;
 
             var _this = this;
+            // console.log(this.$route.params.convo_id);
+
             // if(this.selectedConvo) {
-            Echo.private('message.' + this.$route.params.convo_id).listen('DirectMessageEvent', function (e) {
-                var index = _.findIndex(_this4.messages, { id: e.message.id });
-                if (index === -1) {
-                    console.log(e);
-                    _this4.$store.commit('newMessage', e.message);
-                }
-            }).listenForWhisper('typing', function (e) {
-                _this4.isTyping = Boolean(e.name);
-            });
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .listen('DirectMessageEvent', (e) => {
+            //         let index = _.findIndex(this.messages, {id: e.message.id});
+            //         if(index === -1) {
+            //             console.log(e);
+            //             this.$store.commit('newMessage', e.message);
+            //         }
+            //     })
+            //     .listenForWhisper('typing', (e) => {
+            //         this.isTyping = Boolean(e.name);
+            //     });
             // }
+
+            Echo.private('convo.' + this.$route.params.convo_id).listen('SendTextMessageEvent', function (e) {
+                var parseM = JSON.parse(e.newMessage);
+                if (parseM.conversation_id === _this4.$route.params.convo_id || parseM.sender.slug === _this4.$route.params.convo_id) {
+                    // console.log(parseM);
+                    _this4.$store.commit('newMessage', parseM);
+                }
+            }).listen('SendMessageArrayEvent', function (e) {
+                if (e.convo_id.conversation_id === _this4.$route.params.convo_id || e.convo_id === _this4.$route.params.convo_id) {
+                    // console.log(e);
+                    _this4.$store.commit('sendFiles', e.messages);
+                }
+            }).listen('RemoveConvoMemberEvent', function (e) {
+                if (e.convo_id.conversation_id === _this4.$route.params.convo_id || e.convo_id === _this4.$route.params.convo_id) {
+                    // console.log(e);
+                    _this4.$store.commit('sendFiles', e.messages);
+                    e.messages.forEach(function (message) {
+                        if (message.action == 4) {
+                            if (message.receiver_id == _this4.cUser.id) {
+                                _this4.leaveC();
+                            }
+                        }
+                    });
+                    var data = {
+                        slug: _this4.$route.params.convo_id,
+                        search: ''
+                    };
+                    _this4.$store.dispatch('getNotMembers', data);
+                    _this4.$store.dispatch('getConvoUsers', data.slug);
+                }
+            });
+        },
+        stopListening: function stopListening() {
+            Echo.leave('convo.' + this.$route.params.convo_id);
         },
         infiniteHandler: function infiniteHandler(event) {
             // this.last_page--;
@@ -70817,6 +70873,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     console.log(error);
                 });
             }
+        },
+        leaveC: function leaveC() {
+            this.isL = false;
         }
     }
 });
@@ -70957,9 +71016,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 slug: this.$route.params.convo_id,
                 ids: this.checkedNotMember
             };
+            $('#membersAddModal').modal('hide');
             this.$store.dispatch('addConvoMember', data).then(function (response) {
                 _this.checkedNotMember = [];
-                $('#membersAddModal').modal('hide');
+                var data = {
+                    slug: _this.$route.params.convo_id,
+                    search: ''
+                };
+                _this.$store.dispatch('getNotMembers', data);
+                _this.$store.dispatch('getConvoUsers', data.slug);
             });
         },
 
@@ -71301,9 +71366,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 slug: this.$route.params.convo_id,
                 ids: this.checkedRemoveMember
             };
+            $('#membersEditModal').modal('hide');
             this.$store.dispatch('removeMember', data).then(function (response) {
                 _this.checkedRemoveMember = [];
-                $('#membersEditModal').modal('hide');
+                var data = {
+                    slug: _this.$route.params.convo_id,
+                    search: ''
+                };
+                _this.$store.dispatch('getNotMembers', data);
+                _this.$store.dispatch('getConvoUsers', data.slug);
             });
         }
     }
@@ -71582,15 +71653,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     })),
     methods: {
         leaveConvo: function leaveConvo() {
+            var _this = this;
+
             this.checkedLeaveMember.push(this.currentUser.id);
             var data = {
                 slug: this.$route.params.convo_id,
                 ids: this.checkedLeaveMember
             };
-            this.$store.dispatch('removeMember', data);
-            this.$store.commit('leaveConvo', this.$route.params.convo_id);
-            // this.$router.push({name: 'messages'});
             $('#confirmLeaveModal').modal('hide');
+            this.$store.dispatch('removeMember', data).then(function () {
+                _this.$store.commit('leaveConvo', _this.$route.params.convo_id);
+                _this.$emit('leave');
+            });
+
+            // this.$router.push({name: 'messages'});
         }
     }
 });
@@ -71721,7 +71797,7 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _vm.selectedConvo
+        _vm.selectedConvo && _vm.isL
           ? _c("div", { staticClass: "msg-head-2" }, [
               _vm._m(0),
               _vm._v(" "),
@@ -71791,7 +71867,7 @@ var render = function() {
           : _vm._e(),
         _vm._v(" "),
         _vm._l(_vm.messages, function(message, index) {
-          return _c("div", { key: message.id }, [
+          return _c("div", { key: index }, [
             _vm.messages[index - 1]
               ? _c("div", [
                   _c("div", { staticClass: "msg-wrap" }, [
@@ -72237,72 +72313,74 @@ var render = function() {
           on: { change: _vm.onFileChange }
         }),
         _vm._v(" "),
-        _c("div", { staticClass: "form-group is-empty msg-input-wrap" }, [
-          _c(
-            "button",
-            {
-              staticClass:
-                "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
-              attrs: { type: "button" },
-              on: { click: _vm.chooseFile }
-            },
-            [_c("i", { staticClass: "fa fa-paperclip" })]
-          ),
-          _vm._v(" "),
-          _c("textarea", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.messageTxt,
-                expression: "messageTxt"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              placeholder: "Write some nice stuff or go home...",
-              rows: "2"
-            },
-            domProps: { value: _vm.messageTxt },
-            on: {
-              keyup: function($event) {
-                if (
-                  !("button" in $event) &&
-                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                ) {
-                  return null
+        _vm.isL
+          ? _c("div", { staticClass: "form-group is-empty msg-input-wrap" }, [
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
+                  attrs: { type: "button" },
+                  on: { click: _vm.chooseFile }
+                },
+                [_c("i", { staticClass: "fa fa-paperclip" })]
+              ),
+              _vm._v(" "),
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.messageTxt,
+                    expression: "messageTxt"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  placeholder: "Write some nice stuff or go home...",
+                  rows: "2"
+                },
+                domProps: { value: _vm.messageTxt },
+                on: {
+                  keyup: function($event) {
+                    if (
+                      !("button" in $event) &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    if (!$event.ctrlKey) {
+                      return null
+                    }
+                    _vm.messageSend()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.messageTxt = $event.target.value
+                  }
                 }
-                if (!$event.ctrlKey) {
-                  return null
-                }
-                _vm.messageSend()
-              },
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.messageTxt = $event.target.value
-              }
-            }
-          }),
-          _c("span", { staticClass: "material-input" }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass:
-                "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
-              on: {
-                click: function($event) {
-                  _vm.messageSend()
-                }
-              }
-            },
-            [_c("i", { staticClass: "fa fa-send" })]
-          )
-        ]),
+              }),
+              _c("span", { staticClass: "material-input" }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center",
+                  on: {
+                    click: function($event) {
+                      _vm.messageSend()
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fa fa-send" })]
+              )
+            ])
+          : _vm._e(),
         _vm._v(" "),
-        _c("convo-leave-confirmation-modal"),
+        _c("convo-leave-confirmation-modal", { on: { leave: _vm.leaveC } }),
         _vm._v(" "),
         _c("convo-edit-member-modal"),
         _vm._v(" "),
@@ -87366,6 +87444,11 @@ var mutations = {
     },
     insertLoadMessage: function insertLoadMessage(state, data) {
         state.messages.unshift(data);
+    },
+    sendFiles: function sendFiles(state, data) {
+        data.forEach(function (file) {
+            state.messages.push(file);
+        });
     }
 };
 
@@ -87431,6 +87514,7 @@ var actions = {
                 ids: data.ids
             }).then(function (response) {
                 // console.log(response);
+                commit('sendFiles', response.data);
                 resolve(response);
             }).catch(function (error) {
                 console.log(error);
@@ -87448,7 +87532,8 @@ var actions = {
                     ids: data.ids
                 }
             }).then(function (response) {
-                console.log(response);
+                // console.log(response);
+                commit('sendFiles', response.data);
                 resolve(response);
             }).catch(function (error) {
                 console.log(error);
@@ -87497,7 +87582,7 @@ var actions = {
         return new Promise(function (resolve, reject) {
             axios.post('/api/sendFiles', data, config).then(function (response) {
                 // console.log(response);
-                // commit('setConvoMessages', response.data);
+                commit('sendFiles', response.data);
                 resolve(response);
             }).catch(function (error) {
                 console.log(error);

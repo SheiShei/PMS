@@ -30,3 +30,7 @@ Broadcast::channel('list.{id}', function ($user, $lid) {
 Broadcast::channel('task.{id}', function ($user, $tid) {
     return true;
 });
+
+Broadcast::channel('convo.{id}', function ($user, $cid) {
+    return true;
+});
