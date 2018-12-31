@@ -10,23 +10,22 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcastNow
+class SendTextMessageEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newConversation;
+    public $newMessage;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newConversation)
+    public function __construct($newMessage)
     {
-        $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+        $this->newMessage = $newMessage;
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**
@@ -36,6 +35,11 @@ class AddConversationEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('addconvo');
+        // return new PrivateChannel('convo.'.json_decode($this->newMessage, true)['id']);
+
+        if(json_decode($this->newMessage, true)['conversation_id']){
+            return new PrivateChannel('convo.'.json_decode($this->newMessage, true)['conversation_id']);
+        }
+        return new PrivateChannel('convo.'.json_decode($this->newMessage, true)['sender']['slug']);
     }
 }

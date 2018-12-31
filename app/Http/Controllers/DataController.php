@@ -12,6 +12,11 @@ use App\Message;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Pagination\Paginator;
 
+use App\Events\SendTextMessageEvent;
+use App\Events\SendMessageArrayEvent;
+use App\Events\RemoveConvoMemberEvent;
+use App\Events\AddConvoMemberEvent;
+
 class DataController extends Controller
 {
     // notes
@@ -176,6 +181,8 @@ class DataController extends Controller
         // }
         // Message::insert($data);
 
+        $newM = [];
+
         foreach ($request->ids as $id) {
             $messages = $convo->messages()->create([
                 'sender_id' => auth()->user()->id,
@@ -183,17 +190,30 @@ class DataController extends Controller
                 'action' => 3,
             ]);
 
-            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->with('receiver:id,name,picture')->first();
-            event(new DirectMessageEvent($message, NULL, $convo));
+            $message = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
+            // event(new DirectMessageEvent($message, NULL, $convo));
+            array_push($newM, $message);
         }
 
         $convo->users()->attach($request->ids, ['added_by' => auth()->user()->id]);
 
-        // return $request;
+        event(new RemoveConvoMemberEvent($newM, $request->slug));
+
+        $users = $convo->users()->select('slug')->get();
+        $newConversation = [
+            'newConvo' => $convo,
+            'users' => $users
+        ];
+
+        event(new AddConvoMemberEvent($newConversation));
+
+        return $newM;
     }
 
     public function removeConvoMember(Request $request) {
         $convo = Conversation::where('id' , $request->slug)->first();
+
+        $newM = [];
 
         foreach ($request->ids as $id) {
             $messages = $convo->messages()->create([
@@ -202,14 +222,17 @@ class DataController extends Controller
                 'action' => 4,
             ]);
 
-            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->with('receiver:id,name,picture')->first();
-            event(new DirectMessageEvent($message, NULL, $convo));
+            $message = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
+            // event(new DirectMessageEvent($message, NULL, $convo));
+            array_push($newM, $message);
 
         }
 
         $convo->users()->detach($request->ids);
+
+        event(new RemoveConvoMemberEvent($newM, $request->slug));
         
-        // return $request;
+        return $newM;
     }
 
     public function verifyConvoUsers(Request $request) {
@@ -267,20 +290,24 @@ class DataController extends Controller
             'receiver_id' => $request->receiver
         ]);
 
-        if(!$convo) {
-            $receiverData = User::find($request->receiver);
-            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-            // event(new DirectMessageEvent($message, $receiverData, NULL));
-            broadcast(new DirectMessageEvent($message, $receiverData, NULL))->toOthers();
-        }
-        else {
-            $convoData = Conversation::find($request->convo);
-            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-            // event(new DirectMessageEvent($message, NULL, $convoData));
-            broadcast(new DirectMessageEvent($message, NULL, $convoData))->toOthers();
-        }
+        // if(!$convo) {
+        //     $receiverData = User::find($request->receiver);
+        //     $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+        //     // event(new DirectMessageEvent($message, $receiverData, NULL));
+        //     broadcast(new DirectMessageEvent($message, $receiverData, NULL))->toOthers();
+        // }
+        // else {
+        //     $convoData = Conversation::find($request->convo);
+        //     $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+        //     // event(new DirectMessageEvent($message, NULL, $convoData));
+        //     broadcast(new DirectMessageEvent($message, NULL, $convoData))->toOthers();
+        // }
 
-        return Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+        $newM = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
+
+        event(new SendTextMessageEvent($newM->toJson()));
+
+        return $newM;
     }
 
     public function updateRead(Request $request) {
@@ -308,27 +335,34 @@ class DataController extends Controller
 
             $data = array();
 
+            $mFiles = [];
+
             if(!$convo) {
                 foreach ($files as $key => $file) {
                     $originalName = $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
+                    $newName = time() . $originalName;
+                    $file->move('storage/messages/', $newName);
                     $messages = auth()->user()->sender()->create([
                         'original_filename' => $originalName,
-                        'new_filename' => Uuid::generate()->string . '.' . $extension,
+                        'new_filename' => $newName,
                         'extension' => $extension,
                         'receiver_id' => $request->receiver,
                     ]);
                     
-                    $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-                    $receiverData = User::find($request->receiver);
-                    event(new DirectMessageEvent($message, $receiverData, NULL));
+                    $message = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
+                    array_push($mFiles, $message);
+                    // $receiverData = User::find($request->receiver);
+                    // event(new DirectMessageEvent($message, $receiverData, NULL));
                 }
+
+                event(new SendMessageArrayEvent($mFiles, auth()->user()->slug));
             }
             else {
                 foreach ($files as $key => $file) {
                     $originalName = $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
-                    $newName = Uuid::generate()->string . '.' . $extension;
+                    $newName = time() . $originalName;
                     $file->move('storage/messages/', $newName);
                     $messages = auth()->user()->sender()->create([
                         'original_filename' => $originalName,
@@ -337,13 +371,16 @@ class DataController extends Controller
                         'conversation_id' => $request->convo
                     ]);
 
-                    $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-                    $convoData = Conversation::find($request->convo);
-                    event(new DirectMessageEvent($message, NULL, $convoData));
+                    $message = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
+                    array_push($mFiles, $message);
+                    // $convoData = Conversation::find($request->convo);
+                    // event(new DirectMessageEvent($message, NULL, $convoData));
                 }
+
+                event(new SendMessageArrayEvent($mFiles, $request->convo));
             }
 
-            return $messages;
+            return $mFiles;
             // return 'shei';
         }
     }
