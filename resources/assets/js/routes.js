@@ -19,6 +19,8 @@ import Boards from './components/views/pages/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
 import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
+import Axios from 'axios';
+import Workload from './components/views/pages/Workload.vue';
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
@@ -100,7 +102,7 @@ export const routes = [
                 },
             },
             {
-                path: 'stiky-notes',
+                path: 'sticky-notes',
                 name: 'sticky_notes',
                 component: StickyNotes,
                 meta: {
@@ -146,6 +148,14 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+            },
+            {
+                path: 'workload',
+                name: 'workload',
+                component: Workload,
+                meta: {
+                    requiresAuth: true
+                }
             },
             {
                 path: 'messages',
