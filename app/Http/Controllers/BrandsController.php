@@ -65,7 +65,7 @@ class BrandsController extends Controller
             'email'=>$request->email,
             'password'=>bcrypt($request->password),
             'role_id'=>4,
-            'picture'=>$name
+            'picture'=>$input['logo'] //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
         ]);
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
@@ -76,12 +76,15 @@ class BrandsController extends Controller
        
         $brand = Brand::findOrFail($request->id);
         $brand->delete();
+        $user = User::where('brand_id', $request->id)->first();
+        $user->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
     public function restoreBrands(Request $request) {
         
         $brand= Brand::onlyTrashed()->where('id' , $request->data['id'])->restore();
+        $user= User::onlyTrashed()->where('brand_id' , $request->data['id'])->restore();
         return response()->json(['status' => 'success', 'message' => 'restores succesfully'], 200);
     }
 
@@ -122,6 +125,7 @@ class BrandsController extends Controller
         
         //$brand = Brand::findOrFail($request->file('id'));
         $brand = Brand::findOrFail($request->id);
+        $user = User::where('brand_id', $request->id)->first();
         $input = $request->all();
        
         if($file = $request->file('logo')){
@@ -133,6 +137,11 @@ class BrandsController extends Controller
 
        // dd($request);
         $brand->update($input);
+        $user->update([
+            'name' => $request->name,
+            'picture' => $input['logo']
+        ]);
+
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
     }
