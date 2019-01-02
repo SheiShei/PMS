@@ -22,6 +22,7 @@ import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderC
 import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
 import Axios from 'axios';
+import Workload from './components/views/pages/Workload.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -100,7 +101,7 @@ export const routes = [
                 },
             },
             {
-                path: 'stiky-notes',
+                path: 'sticky-notes',
                 name: 'sticky_notes',
                 component: StickyNotes,
                 meta: {
@@ -202,6 +203,14 @@ export const routes = [
                 path: 'boards/kanban',
                 name: 'kanboard',
                 component: BoardKanban,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'workload',
+                name: 'workload',
+                component: Workload,
                 meta: {
                     requiresAuth: true
                 },
