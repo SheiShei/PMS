@@ -22,8 +22,8 @@
     },
     "dependencies": {
         "@tinymce/tinymce-vue": "^1.0.8",
-        "dayjs": "^1.7.8",
         "autosize": "^4.0.2",
+        "dayjs": "^1.7.8",
         "font-awesome-sass": "^4.7.0",
         "gantt-elastic": "^0.6.3",
         "laravel-echo": "^1.4.0",
