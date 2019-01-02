@@ -22,3 +22,15 @@ Broadcast::channel('message.{id}', function ($user, $mid) {
 Broadcast::channel('addconvo', function($user){
     return true;
 });
+
+Broadcast::channel('list.{id}', function ($user, $lid) {
+    return true;
+});
+
+Broadcast::channel('task.{id}', function ($user, $tid) {
+    return true;
+});
+
+Broadcast::channel('convo.{id}', function ($user, $cid) {
+    return true;
+});

@@ -9,24 +9,19 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcastNow
+class SetTaskCoverTaskEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $newConversation;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newConversation)
+    public function __construct()
     {
-        $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+        //
     }
 
     /**
@@ -36,6 +31,6 @@ class AddConversationEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('addconvo');
+        return new PrivateChannel('channel-name');
     }
 }

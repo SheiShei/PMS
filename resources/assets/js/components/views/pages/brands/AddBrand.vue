@@ -28,11 +28,25 @@
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-6">Telephone:</label>
-                                        <input v-model="brand.telephone" required pattern="[0-9]{3}[ -][0-9]{4}" type="tel" class="col-md-6 col-sm-6 my-input" title="eg. 456-5645" placeholder="XXX-XXXX">
+                                        <input v-model="brand.telephone" pattern="[0-9]{3}[ -][0-9]{4}" type="tel" class="col-md-6 col-sm-6 my-input" title="eg. 456-5645" placeholder="XXX-XXXX">
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-6">Mobile Phone:</label>
-                                        <input  v-model="brand.mobile" required pattern="09[0-9]{9}" type="tel" class="col-md-6 col-sm-6 my-input" placeholder="09XXXXXXXXX" title="09+9 digits">
+                                        <input  v-model="brand.mobile" pattern="09[0-9]{9}" type="tel" class="col-md-6 col-sm-6 my-input" placeholder="09XXXXXXXXX" title="09+9 digits">
+                                    </div>
+
+                                    <hr class="divider">
+
+                                    <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Email :</label>
+                                        <input v-model="brand.email" required type="email" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="" class="col-md-6 col-sm-6">Password: </label> 
+                                        <input v-model="brand.password" required minlength="6" :type="pwdType" class="col-md-6 col-sm-6 my-input" placeholder="">
+                                        <!-- <span class="password-eye" @click="passwordType">
+                                                <i class="fa fa-eye fa-sm"></i>
+                                            </span> -->
                                     </div>
 
                                     <hr class="divider">
@@ -98,7 +112,6 @@ export default {
 
    data() {
        return {
-            tandems: [],
             brand:{
                 name: '',
                 contact_person: '',
@@ -106,12 +119,19 @@ export default {
                 mobile: '',
                 tandem_id: '',
                 logo: '',
-                about: ''             
+                about: '',
+                email: '',
+                password: ''             
             },
+            pwdType: 'password'
        }
    },
     created() {
-       this.$store.dispatch('getTandemsList')
+        this.$store.dispatch('getTandemsList')
+            .then(() => {
+                console.log(this.tandemList)
+                $(this.$el).find('.selectpicker').selectpicker('refresh');
+            })
     },
      computed: {
          ...mapGetters({
@@ -130,6 +150,8 @@ export default {
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
             form.append('about', this.brand.about);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
 
             this.$store.dispatch('addBrand', form)
             .then(() => {
@@ -140,6 +162,8 @@ export default {
                         this.brand.tandem_id='';
                         this.brand.about='';
                         this.brand.logo='';
+                        this.brand.email='';
+                        this.brand.password='';
                         this.$router.replace({ name: 'brands'});
                         this.$toaster.success('Brand added succesfully!')
 
@@ -149,6 +173,10 @@ export default {
         onLogoChanged (event) {
             this.brand.logo = event.target.files
             // console.log(this.brand.logo);
+        },
+
+        passwordType(){
+            this.pwdType = this.pwdType=== 'password' ? 'text' : 'password'
         }
     }
 }

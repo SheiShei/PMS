@@ -22,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\DirectMessageEvent' => [
             'App\Listeners\DirectMessageEventListener',
         ],
+        'App\Events\AddListEvent' => [
+            'App\Listeners\AddListEventListener',
+        ],
+        'App\Events\DeleteListEvent' => [
+            'App\Listeners\DeleteListEventListener',
+        ],
     ];
 
     /**

@@ -77,10 +77,16 @@ export default {
                 slug: this.$route.params.convo_id,
                 ids: this.checkedNotMember
             };
+            $('#membersAddModal').modal('hide');
             this.$store.dispatch('addConvoMember', data)
                 .then ((response) => {
                     this.checkedNotMember = [];
-                    $('#membersAddModal').modal('hide');
+                    let data = {
+                        slug: this.$route.params.convo_id,
+                        search: ''
+                    };
+                    this.$store.dispatch('getNotMembers', data)
+                    this.$store.dispatch('getConvoUsers', data.slug);
                 })
         },
         search: _.debounce(function (e) {

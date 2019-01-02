@@ -10,9 +10,8 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcastNow
+class AddConvoMemberEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,7 +25,7 @@ class AddConversationEvent implements ShouldBroadcastNow
     public function __construct($newConversation)
     {
         $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**

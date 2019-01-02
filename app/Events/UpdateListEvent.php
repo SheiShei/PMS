@@ -10,23 +10,21 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcastNow
+class UpdateListEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newConversation;
-
+    public $list;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newConversation)
+    public function __construct($list)
     {
-        $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+        $this->list = $list;
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**
@@ -36,6 +34,6 @@ class AddConversationEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('addconvo');
+        return new PrivateChannel('list.'.$this->list->board_id);
     }
 }

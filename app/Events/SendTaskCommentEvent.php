@@ -10,23 +10,23 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use App\User;
 
-class AddConversationEvent implements ShouldBroadcastNow
+class SendTaskCommentEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $newConversation;
-
+    public $comments;
+    public $task_id;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($newConversation)
+    public function __construct($comments, $task_id)
     {
-        $this->newConversation = $newConversation;
-        // $this->dontBroadcastToCurrentUser();
+        $this->comments = $comments;
+        $this->task_id = $task_id;
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**
@@ -36,6 +36,6 @@ class AddConversationEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('addconvo');
+        return new PrivateChannel('task.'.$this->task_id);
     }
 }

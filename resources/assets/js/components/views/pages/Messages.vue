@@ -288,6 +288,15 @@ export default {
                         this.$store.commit('addConvo', e.newConversation.newConvo);
                     }
                 })
+                .listen('AddConvoMemberEvent', (e) => {
+                    let found = e.newConversation.users.find(function(element) {
+                        return element.slug == _this.currentUser.slug
+                    });
+                    if(found) {
+                        // console.log(e);
+                        this.$store.commit('addConvo', e.newConversation.newConvo);
+                    }
+                })
         },
 
         search: _.debounce(function (e) {

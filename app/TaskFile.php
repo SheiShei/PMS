@@ -11,8 +11,4 @@ class TaskFile extends Model
     public function task() {
         return $this->belongsTo('App\Task');
     }
-
-    public function getNewFilenameAttribute($file) {
-        return '/storage/task/' . $file;
-    }
 }

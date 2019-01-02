@@ -7,7 +7,7 @@
                 </div>
             </div>
 
-            <div class="msg-head-2" v-if="selectedConvo">
+            <div class="msg-head-2" v-if="selectedConvo && isL">
                 <div class="dropdown pull-right">
 	                <button href="#" class="dropdown-toggle btn btn-simple btn-info btn-white btn-xs" data-toggle="dropdown" aria-expanded="true">
                         <span class="fa fa-gears fa-xs"></span>
@@ -28,7 +28,7 @@
                         <div class="ripple-container"></div>
                     </button>
 	                <ul id="membersDrop" class="dropdown-menu dropdown-menu-left">
-	                    <router-link style="color:white" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
+	                    <router-link style="color:gray" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
 	                </ul>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-            <div v-for="(message, index) in messages" :key="message.id">
+            <div v-for="(message, index) in messages" :key="index">
                 
                 <!-- date -->
                 <div v-if="messages[index-1]">
@@ -240,7 +240,7 @@
                 </div>
             </div> -->
 
-            <div class="form-group is-empty msg-input-wrap">
+            <div v-if="isL" class="form-group is-empty msg-input-wrap">
                 <button @click="chooseFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                     <i class="fa fa-paperclip"></i>
                 </button>
@@ -249,7 +249,7 @@
             </div>
 
             <!--Leave Confirmation Modal -->
-            <convo-leave-confirmation-modal></convo-leave-confirmation-modal>
+            <convo-leave-confirmation-modal @leave="leaveC"></convo-leave-confirmation-modal>
             
             <!-- Edit Members Modal-->
             <convo-edit-member-modal></convo-edit-member-modal>
@@ -279,27 +279,36 @@ export default {
             form: new FormData,
             isTyping: false,
             last_page: 0,
-            prev: ''
+            prev: '',
+            isL: true
         }
     },
     created() {
+        this.$store.commit('messageDestroy');
         this.getConvoUsers();
         this.getMessages();
     },
     mounted () {
         this.listenMessages();
     },
+    destroyed () {
+        this.stopListening();
+        // this.$store.commit('messageDestroy');
+    },
     watch: {
         '$route' (to, from) {
+            this.isL = true;
+            this.stopListening();
             this.getConvoUsers();
             this.getMessages();
+            this.listenMessages();
         },
 
         messageTxt(){
-            Echo.private('message.'+this.$route.params.convo_id)
-                .whisper('typing', {
-                    name: this.messageTxt
-                });
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .whisper('typing', {
+            //         name: this.messageTxt
+            //     });
         }
     },
     computed: {
@@ -397,20 +406,62 @@ export default {
 
         listenMessages() {
             var _this = this
+            // console.log(this.$route.params.convo_id);
+            
             // if(this.selectedConvo) {
-            Echo.private('message.'+this.$route.params.convo_id)
-                .listen('DirectMessageEvent', (e) => {
-                    let index = _.findIndex(this.messages, {id: e.message.id});
-                    if(index === -1) {
-                        console.log(e);
-                        this.$store.commit('newMessage', e.message);
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .listen('DirectMessageEvent', (e) => {
+            //         let index = _.findIndex(this.messages, {id: e.message.id});
+            //         if(index === -1) {
+            //             console.log(e);
+            //             this.$store.commit('newMessage', e.message);
+            //         }
+            //     })
+            //     .listenForWhisper('typing', (e) => {
+            //         this.isTyping = Boolean(e.name);
+            //     });
+            // }
+
+            Echo.private('convo.'+this.$route.params.convo_id)
+                .listen('SendTextMessageEvent', (e) => {
+                    let parseM = JSON.parse(e.newMessage)
+                    if(parseM.conversation_id === this.$route.params.convo_id || parseM.sender.slug === this.$route.params.convo_id){
+                        // console.log(parseM);
+                        this.$store.commit('newMessage', parseM);
+                    }
+                    
+                })
+                .listen('SendMessageArrayEvent', (e) => {
+                    if(e.convo_id.conversation_id === this.$route.params.convo_id || e.convo_id === this.$route.params.convo_id){
+                        // console.log(e);
+                        this.$store.commit('sendFiles', e.messages);
                     }
                 })
-                .listenForWhisper('typing', (e) => {
-                    this.isTyping = Boolean(e.name);
-                });
-            // }
+                .listen('RemoveConvoMemberEvent', (e) => {
+                    if(e.convo_id.conversation_id === this.$route.params.convo_id || e.convo_id === this.$route.params.convo_id){
+                        // console.log(e);
+                        this.$store.commit('sendFiles', e.messages);
+                        e.messages.forEach(message => {
+                            if(message.action == 4) {
+                                if(message.receiver_id == this.cUser.id){
+                                    this.leaveC();
+                                }
+                            }
+                        });
+                        let data = {
+                            slug: this.$route.params.convo_id,
+                            search: ''
+                        };
+                        this.$store.dispatch('getNotMembers', data)
+                        this.$store.dispatch('getConvoUsers', data.slug);
+                    }
+                })
+
         }, 
+
+        stopListening() {
+            Echo.leave('convo.'+this.$route.params.convo_id);
+        },
 
         infiniteHandler(event) {
             // this.last_page--;
@@ -449,6 +500,10 @@ export default {
                     })
             }
             
+        },
+
+        leaveC() {
+            this.isL = false;
         }
     }
 }
