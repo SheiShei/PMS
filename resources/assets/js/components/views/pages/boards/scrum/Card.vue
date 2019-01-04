@@ -1,68 +1,80 @@
 <template>
-    <div class="list-div" @drag="checkListMove">
-        <div style="cursor: move;" class="list-head">
-            <div class="list-title" title="Tasks List">
-                <b>{{ list.name }}</b>
+    <div class="list-div">
+        <div class="list-head">
+            <div class="list-title" >
+                <b>
+                    <router-link title="Click to open sprint Backlog" v-if="sprint.type == 2" :to="{name: 'sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" style="color: #262626">{{ sprint.name }}</router-link>
+                    <span v-if="sprint.type == 1">{{ sprint.name }} </span><span v-if="sprint.finished_at">(closed)</span>
+                </b>
             </div>
             <div class="editListBtn pull-right">
-                <small>{{ listPoints }} pts</small>
-                <button class="" @click="revert"><span class="fa fa-edit"></span></button>
-                <button @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
+                <small>{{ sprintPoints }} pts</small>
+                <button v-if="sprint.type == 2" class="" @click="revert" title="Edit Sprint"><span class="fa fa-edit"></span></button>
+                <button @click="deleteSprint(sprint.id)" v-if="sprint.type == 2" class="" title="Delete Sprint"><span class="fa fa-trash-o"></span></button>
+                <button @click="showFinishSprintModal" v-if="sprint.type == 2 && sprint.finished_at == null" class="" title="Close Sprint?"><span class="fa fa-stop"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
-            <form @submit.prevent="updateList(list.id)">
-                <div class="list-edit-input">
-                    <input required type="text" class="btn-block" v-model="list.name">
-                </div>
-                <div class="list-edit-save">
-                    <button type="submit" class="btn-save">SAVE</button>
-                    <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
-                </div>
-            </form>
+            <div class="list-edit-input">
+                <input @keyup.enter="updateSprint(sprint.id)" type="text" v-model="sprint.name" class="btn-block">
+            </div>
+            <div class="list-edit-save">
+                <button @click="updateSprint(sprint.id)" class="btn-save">SAVE</button>
+                <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+            </div>
         </div>
         <div class="list-body">
-                            
-
-            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, li, list.id)">
-                <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index"></card-task>
+            <draggable v-model="sprint.tasks" :options="{animation:200, group:'status'}" :element="'div'" @change="sprintTaskUpdate($event, sprint.id)">
+                <card-task v-for="(task, index) in sprint.tasks" :key="task.id" :task="task" :i="index"></card-task>                
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
         </div>
-        <router-link :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add task</span></router-link>
+        <router-link :to="{name: 'scrumboard_addtask', params: {sprint_id: sprint.id}}" class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add task</span></router-link>
+        
+        <div class="modal fade" :id="'sprint-finish-'+sprint.id" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-small ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+                         <h3>Close Sprint?</h3>
+                    </div>
+                    <div class="modal-body" style="margin-top: 0px; padding-top: 0;">
+                        <h6 style="white-space: pre-wrap; overflow-wrap: break-word">All unfinished task will be move to backlog.</h6>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-simple" data-dismiss="modal">Go Back</button>
+                        <button @click="finishSprint(sprint.id)" type="button" class="btn btn-success btn-simple">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable';
-import CardTask from './CardTask.vue';
-import {mapGetters} from 'vuex';
+import Task from './CardTask.vue';
 export default {
     components: {
         draggable,
-        cardTask : CardTask,
+        cardTask : Task
     },
-    props: ['list', 'li'],
+    props: ['sprint'],
     data() {
         return {
             showEditList: false,
             noCard: true,
-            openTaskForm: false,
             openTaskOpt: false,
-            openTaskView: false,
         }
     },
     mounted() {
-        let taskdiv = document.querySelector("#testTaskDiv");
+        let taskdiv = document.querySelector("#scrumListDiv");
         taskdiv.scrollLeft = taskdiv.scrollWidth;
     },
     computed: {
-        ...mapGetters({
-                // boardLists: 'boardLists',
-            }),
-        listPoints() {
+        sprintPoints() {
             let points = 0;
-            this.list.tasks.forEach(task => {
+            this.sprint.tasks.forEach(task => {
                 points = points + task.points
             });
 
@@ -70,18 +82,14 @@ export default {
         }
     },
     methods: {
-        delListDiv(index){
-            console.log('deleted!');
-            this.listDivs.splice(index,1);
-        },
         revert(){
             this.showEditList = !this.showEditList;
         },
 
-        checkListMove(event) {
+        checkMove(event) {
             // console.log(event);
-            var elmnt = document.querySelector('#testTaskDiv');
-            let pos = event.pageX - $('#testTaskDiv').offset().left
+            var elmnt = document.querySelector('#scrumListDiv');
+            let pos = event.pageX - $('#scrumListDiv').offset().left
             // console.log(`mouse position: ${pos}`);
             if(pos>1000) {
                 elmnt.scrollBy(10, 0);
@@ -90,33 +98,42 @@ export default {
                 elmnt.scrollBy(-10, 0);
             }
         },
-        updateList(id){
-            this.$store.dispatch('updateList', {name: this.list.name, id: id})
-                .then(() => {
-                    this.showEditList = false
-                })
-        },
-        deleteList(id) {
-            this.$store.dispatch('deleteList', id)
-                .then(() => {
-                    this.$toaster.warning('List deleted succesfully!.')
-                })
-        },
-        taskListUpdate(e, list_index, list_id) {
-            // console.log({event: e, list_id: list_id});
-            // console.log(this.list)
-            this.$store.commit('mapListUpdateOrder', {event: e, list_index: list_index, list_id: list_id})
-            // console.log(this.list);
-            this.$store.dispatch('updateTaskOrder', this.list)
 
+        updateSprint(id) {
+            this.$store.dispatch('updateSprint', {id: id, name: this.sprint.name})
+                .then(() => {
+                    this.showEditList = false;
+                })
+        },
+
+        deleteSprint(id) {
+            this.$store.dispatch('deleteSprint', id)
+                .then(() => {
+                    this.$toaster.warning('Sprint deleted succesfully!.')
+                })
+        },
+
+        sprintTaskUpdate(e, id) {
+            this.$store.commit('mapSprintUpdateOrder', id);
+            this.$store.dispatch('updateSprintOrder', this.sprint)
+        },
+
+        showFinishSprintModal(id) {
+            $('#sprint-finish-'+this.sprint.id).modal('show');
+        },
+
+        finishSprint(id) {
+            $('#sprint-finish-'+this.sprint.id).modal('hide');
+            this.$store.dispatch('finishSprint', id)
+                .then(() => {
+                    
+                })
         }
     }
-
 }
 </script>
 
 <style lang="scss" scoped>
-
 
     .list-edit{
         padding: 5px 8px;

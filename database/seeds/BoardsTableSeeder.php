@@ -33,13 +33,15 @@ class BoardsTableSeeder extends Seeder
         $sprint = Sprint::create([
             'name' => 'Test Web version 1',
             'board_id' => $board->id,
-            'created_by' => $user[0]
+            'created_by' => $user[0],
+            'type' => 1
         ]);
 
         Sprint::create([
             'name' => 'Test Web version 2',
             'board_id' => $board->id,
-            'created_by' => $user[0]
+            'created_by' => $user[0],
+            'type' => 2
         ]);
 
         Card::create([

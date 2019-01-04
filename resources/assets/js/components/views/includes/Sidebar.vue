@@ -18,27 +18,11 @@
                     </router-link>
                 </li>
 
-                <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#boardsList" class="collapsed">
-                    <a><i class="fa fa-trello fa-lg"></i> Boards <span class="arrow"></span></a>
+                <li class="" v-if="cUser.role.id !== 4">
+                    <router-link :to="{ name: 'boards' }">
+                        <i class="fa fa-trello fa-lg"></i> Boards
+                    </router-link>
                 </li>
-                
-                <ul class="sub-menu collapse" id="boardsList">
-                    <li data-toggle="collapse" data-target="#activeProj" class="collapsed">Web Projects</li>
-                    <!-- <ul class="sub-menu collapse projList" id="activeProj">
-                        <li data-toggle="collapse" data-target="#service" class="collapsed pl-10">
-                            [K] Kanban Board1
-                        </li>
-                        <li data-toggle="collapse" data-target="#service" class="collapsed pl-10">
-                            [S] Scrum Board1
-                        </li>
-                    </ul> -->
-                    <li data-toggle="collapse" data-target="#" class="collapsed">My Board</li>
-                    <li data-toggle="collapse" data-target="#" class="collapsed">
-                        <router-link :to="{ name: 'kanboard' }">
-                            <i class="fa fa-circle-o fa-lg"></i> Creatives Board
-                        </router-link>
-                    </li>
-                </ul> 
 
                 <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#brandsList" class="collapsed">
                     <a><i class="fa fa-suitcase fa-lg"></i> Brands <span class="arrow"></span></a>

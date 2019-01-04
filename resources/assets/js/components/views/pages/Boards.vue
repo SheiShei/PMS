@@ -21,7 +21,8 @@
                     <div class="boardname"><router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" style="color: gray;">{{ board.name }}</router-link></div>
                     <div class="boardoptions">
                         <p><span class="">
-                            <router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <router-link v-if="board.type == 2" :to="{ name: 'scrumboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
                             <a href="" @click.prevent class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
                             <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
                         </span></p>

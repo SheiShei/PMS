@@ -10,7 +10,7 @@ class Sprint extends Model
 
     public $incrementing = false;
     
-    protected $fillable = ['name', 'created_by', 'board_id'];
+    protected $fillable = ['name', 'created_by', 'due_date', 'board_id', 'started_at', 'finished_at', 'type'];
 
     public function created_by() {
         return $this->belongsTo('App\User', 'created_by');
@@ -22,5 +22,9 @@ class Sprint extends Model
 
     public function cards() {
         return $this->hasMany('App\Card');
+    }
+
+    public function tasks() {
+        return $this->hasMany('App\Task');
     }
 }

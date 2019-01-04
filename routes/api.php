@@ -90,4 +90,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
 
+        //Scrum
+    Route::post('/getScrumLists', 'BoardController@getScrumLists');
+    Route::post('/addsprint', 'BoardController@addsprint');
+    Route::patch('/updateSprint', 'BoardController@updateSprint');
+    Route::delete('/deleteSprint', 'BoardController@deleteSprint');
+    Route::post('/addSprintTask', 'BoardController@addSprintTask');
+    Route::patch('/updateSprintOrder', 'BoardController@updateSprintOrder');
+    Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
+    Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
+    Route::patch('/finishSprint', 'BoardController@finishSprint');
+    
+
 });

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import scrum from "./boards/scrum";
 const state = {
     boards: [],
     boardLists: [],
@@ -111,8 +112,10 @@ const mutations = {
         state.cBoard = data
     },
 
-    boardDestroyed(state, data) {
-        state.boardLists = []
+    boardDestroyed(state) {
+        state.boardLists = [];
+        state.boardMembers = [];
+        state.comments = [];
     }
 
 };
@@ -343,9 +346,14 @@ const actions = {
     }
 }
 
+const modules = {
+    scrum
+}
+
 export default {
     state,
     getters,
     mutations,
-    actions 
+    actions,
+    modules 
 }

@@ -8,7 +8,7 @@
                         <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
                     </div>
                     <div class="col-md-6 text-right">
-                        <router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
+                        <router-link :to="{ name: 'scrumboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
                     </div>
                 </div>
                 <br />
@@ -59,7 +59,7 @@
                 <br/>
                 <div class="row">
                     <div class="col-md-6">
-                        <router-link :to="{ name: 'kanboard'}" class="btn btn-danger btn-block">Cancel</router-link>
+                        <router-link :to="{ name: 'scrumboard', params: {board_id: $route.params.board_id}}" class="btn btn-danger btn-block">Cancel</router-link>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-success btn-block">Add to Board</button>
@@ -112,13 +112,13 @@ export default {
             task.append('points',this.taskData.points);
             task.append('assign_to',this.taskData.assign_to);
             task.append('desc',this.taskData.desc);
-            task.append('list_id',this.$route.params.list_id);
+            task.append('sprint_id',this.$route.params.sprint_id);
             task.append('board_id',this.$route.params.board_id);
 
-            this.$store.dispatch('addTask', task)
+            this.$store.dispatch('addSprintTask', task)
                 .then(() => {
                     this.$toaster.warning('Task Added succesfully!.')
-                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}});
+                    this.$router.push({name: 'scrumboard', params: {board_id: this.$route.params.board_id}});
                     // let listDiv = document.querySelector('.list-body');
                     // listDiv.scrollTo(0, listDiv.scrollHeight);
                 })
