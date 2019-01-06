@@ -10,7 +10,7 @@ class Task extends Model
     
     public $incrementing = false;
     
-    protected $fillable = ['card_id', 'task_cover', 'jo_id', 'order', 'due', 'points', 'name', 'description', 'created_by', 'assigned_to', 'assigned_by'];
+    protected $fillable = ['card_id', 'sprint_id', 'status', 'status_order', 'task_cover', 'jo_id', 'order', 'due', 'points', 'name', 'description', 'created_by', 'assigned_to', 'assigned_by'];
 
     public function joborder() {
         return $this->belongsTo('App\JobOrder', 'jo_id');
@@ -18,6 +18,10 @@ class Task extends Model
 
     public function card() {
         return $this->belongsTo('App\Card');
+    }
+
+    public function sprint() {
+        return $this->belongsTo('App\Sprint');
     }
 
     public function created_by() {

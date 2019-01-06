@@ -1,6 +1,6 @@
 <template>
 
-    <section class="main-main-container" id="kanban-component" style="background-color: rgb(67, 160, 185);">
+    <section class="main-main-container kanban-component" style="background-color: rgb(67, 160, 185);">
         <div class="board-wrapper" v-if="board">
             <router-view></router-view>
             <div class="board-header">
@@ -53,6 +53,10 @@ export default {
     mounted() {
         this.listenList();
     },
+    destroyed() {
+        this.$store.commit('boardDestroyed');
+        this.stopListen();
+    },
     computed: {
         ...mapGetters({
                 boardLists: 'boardLists',
@@ -75,9 +79,6 @@ export default {
             });
             return totalTask;
         }
-    },
-    destroyed() {
-        this.$store.commit('boardDestroyed')
     },
     methods: {
         addNewList(){
@@ -131,6 +132,10 @@ export default {
                     // console.log(e);
                     this.$store.commit('deleteTask', e.task_id)
                 })
+        },
+
+        stopListen() {
+            Echo.leave('list.'+this.$route.params.board_id);
         }
     }
 }

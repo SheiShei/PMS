@@ -24,6 +24,12 @@ import Workload from './components/views/pages/Workload.vue';
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
+import BoardScrum from './components/views/pages/boards/Scrum.vue';
+import ScrumAddTask from './components/views/pages/boards/scrum/AddTask.vue';
+import ScrumViewTask from './components/views/pages/boards/scrum/ViewTask.vue';
+import ScrumNewSprint from './components/views/pages/boards/scrum/AddSprint.vue';
+import Sprint from './components/views/pages/boards/scrum/Sprint.vue';
+import SprintAddTask from './components/views/pages/boards/scrum/sprint/AddTask.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -236,6 +242,82 @@ export const routes = [
                         path: 'gallery/:task_id',
                         name: 'kanboard_gallery',
                         component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
+            },
+            {
+                path: 'boards/scrum/:board_id',
+                name: 'scrumboard',
+                component: BoardScrum,
+                meta: {
+                    requiresAuth: true
+                },
+                children: [
+                    {
+                        path: 'addtask/:sprint_id',
+                        name: 'scrumboard_addtask',
+                        component: ScrumAddTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'scrumboard_viewtask',
+                        component: ScrumViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'scrumboard_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'newsprint/',
+                        name: 'scrumboard_newsprint',
+                        component: ScrumNewSprint,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
+            },
+            {
+                path: 'boards/scrum/:board_id/:sprint_id',
+                name: 'sprint',
+                component: Sprint,
+                meta: {
+                    requiresAuth: true
+                },
+                children: [
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'sprint_viewtask',
+                        component: ScrumViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'sprint_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'addtask/:status_id',
+                        name: 'sprint_addtask',
+                        component: SprintAddTask,
                         meta: {
                             requiresAuth: true
                         },
