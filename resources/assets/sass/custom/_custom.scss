@@ -205,7 +205,7 @@ ul > li > span.page-of:hover{
   }
   .nav-side-menu .brand {
     background-color: #00161c;
-    line-height: 54px;
+    line-height: 50px;
     display: block;
     text-align: center;
     font-size: 14px;
@@ -246,7 +246,9 @@ ul > li > span.page-of:hover{
     // float: right;
   }
   .nav-side-menu ul .active,
-  .nav-side-menu li .active {
+  .nav-side-menu li .active,
+  .nav-side-menu li.router-link-active,
+  .nav-side-menu li.router-link-exact-active, {
     border-left: 3px solid #00bcd4;
     background-color: #4f5b69;
   }
@@ -283,7 +285,7 @@ ul > li > span.page-of:hover{
     vertical-align: middle;
   }
   .nav-side-menu li {
-    padding: 3px 5px;
+    padding: 3px 20px;
     // border-left: 3px solid #2e353d;
     // border-bottom: 1px solid #23282e;
   }
@@ -292,13 +294,13 @@ ul > li > span.page-of:hover{
     color: #ffffff;
     display: block;
   }
-  .nav-side-menu li a i {
-    padding-left: 10px;
-    width: 20px;
-    padding-right: 20px;
-  }
+  // .nav-side-menu li a i {
+  //   padding-left: 10px;
+  //   width: 20px;
+  //   padding-right: 20px;
+  // }
   .nav-side-menu li:hover {
-    border-left: 4px solid #e6fcff;
+    // border-left: 4px solid #e6fcff;
     background-color:  rgb(55, 155, 185) /* #5ebfff*/;
     -webkit-transition: all .5s ease;
     -moz-transition: all .5s ease;
@@ -986,22 +988,25 @@ padding-bottom: 20px;
 // display: flex;
 // position: relative;
 }
-.board-header{
-width: 100%;
-color: white;
-.board-name{
-display:inline-block;
-h4{
-  margin: 10px 0; 
-}
-}
-.board-info{
-display:inline-block;
-margin-left: 20px;
-p{
-  font-size: 12px;
-}
-}
+.board-header,
+.workload-header{
+  width: 100%;
+  color: white;
+  .board-name,
+  .workload-name{
+    display:inline-block;
+    h4{
+      margin: 10px 0; 
+    }
+  }
+  .board-info,
+  .workload-info{
+    display:inline-block;
+    margin-left: 20px;
+    p{
+      font-size: 12px;
+    }
+  }
 }
 .board-wrapper{
 padding: 0 20px;

@@ -72,6 +72,13 @@ class AdminController extends Controller
                 'role_id' => $request->role,
                 'department_id' => $request->team
             ]);
+            if($user->role_id==4)
+            {
+                $brand = Brand::where('id', $user->brand_id)->first();
+                $brand->update([
+                    'name' => $request->name,
+                ]);
+            }
         // }
 
         return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();
@@ -80,6 +87,11 @@ class AdminController extends Controller
     public function deleteUser(Request $request) {
         // return $request;
         $user = User::findOrFail($request->id);
+        if($user->role_id==4)
+        {
+            $brand = Brand::where('id', $user->brand_id)->first();
+            $brand->delete();
+        }
         $user->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
@@ -87,6 +99,11 @@ class AdminController extends Controller
     public function restoreUser(Request $request) {
         // return $request->data['id'];
         $user = User::onlyTrashed()->where('id' , $request->data['id'])->restore();
+        $client = User::findOrFail($request->data['id']);
+        if($client->role_id==4)
+        {
+            $brand= Brand::onlyTrashed()->where('id' , $client->brand_id)->restore();
+        }  
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
