@@ -44,7 +44,7 @@
                         <label for="">Assign To: </label>
                         <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
-                            <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
+                            <option v-for="(user) in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">

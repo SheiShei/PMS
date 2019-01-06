@@ -156,6 +156,10 @@ export default {
     mounted() {
         this.listenTask();
     },
+    
+    destroyed() {
+        this.stopEventListeners();
+    },
 
     computed: {
         ...mapGetters({
@@ -376,6 +380,10 @@ export default {
                     // console.log(e);
                     this.$store.commit('sendComment', e.comments)
                 })
+        },
+
+        stopEventListeners() {
+            Echo.leave();
         }
     }
 }

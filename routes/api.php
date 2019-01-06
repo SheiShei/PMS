@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/newBoard', 'BoardController@newBoard');
     Route::post('/newCard', 'BoardController@newCard');
     Route::post('/newSprint', 'BoardController@newSprint');
-    Route::delete('/deleteBoard', 'AdminController@deleteBoard');
+    Route::delete('/deleteBoard', 'BoardController@deleteBoard');
     Route::post('/getUserBoards', 'BoardController@getUserBoards');
     Route::post('/createList', 'BoardController@createList');
     Route::post('/getBoardLists', 'BoardController@getBoardLists');
@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/sendComment', 'BoardController@sendComment');
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
+    Route::patch('/uBoard', 'BoardController@updateBoard');
 
         //Scrum
     Route::post('/getScrumLists', 'BoardController@getScrumLists');

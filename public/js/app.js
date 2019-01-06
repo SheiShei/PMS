@@ -73518,6 +73518,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -73539,12 +73540,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 type: '',
                 privacy: '',
                 id: this.$store.state.loggedUser.id
-            }
+            },
+            add: true,
+            pB: null
         };
     },
     created: function created() {
         this.getUsersData();
         this.getUserBoards();
+    },
+    mounted: function mounted() {
+        this.stopBoardEvents();
+        this.listenBoardEvents();
+    },
+    destroyed: function destroyed() {
+        this.stopBoardEvents();
     },
 
 
@@ -73616,17 +73626,113 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             this.board.share = '';
             this.board.checkedNames = [];
             this.userdata.search = '';
+            this.add = true;
         },
         createBoard: function createBoard() {
+            var _this4 = this;
+
             var newId = this.board.checkedNames.map(function (val) {
                 return val.split('_')[1];
             });
             this.board.ids = newId;
-            this.$store.dispatch('createBoard', this.board);
+            this.$store.dispatch('createBoard', this.board).then(function () {
+                _this4.board.type = 1;
+                _this4.board.name = '';
+                _this4.board.share = '';
+                _this4.board.ids = [];
+                _this4.board.checkedNames = [];
+            });
         },
         deleteBoard: function deleteBoard(id) {
-            // this.$store.dispatch('deleteBoard', id)
-            console.log('delete');
+            var _this5 = this;
+
+            this.$store.dispatch('deleteBoard', id).then(function () {
+                _this5.$toaster.warning('Board deleted succesfully!.');
+            });
+        },
+        updateBoard: function updateBoard(board) {
+            var _this6 = this;
+
+            if (this.pB != board) {
+                this.board.checkedNames = [];
+                this.add = false;
+                this.board.type = board.type;
+                this.board.name = board.name;
+
+                if (board.privacy == 2) {
+                    this.board.share = 'custom';
+                    board.board_users.forEach(function (user) {
+                        _this6.board.checkedNames.push(user.department ? user.department.name + '_' + user.id : user.role.name + '_' + user.id);
+                    });
+                } else {
+                    this.board.share = '';
+                }
+
+                this.board.id = board.id;
+                this.pB = board;
+            } else {
+                this.board.type = '';
+                this.board.name = '';
+                this.board.share = '';
+                this.board.checkedNames = [];
+                this.pB = null;
+                this.add = true;
+            }
+        },
+        uBoard: function uBoard() {
+            var _this7 = this;
+
+            var newId = this.board.checkedNames.map(function (val) {
+                return val.split('_')[1];
+            });
+            this.board.newId = newId;
+            this.$store.dispatch('uBoard', this.board).then(function () {
+                _this7.$toaster.success('Board Updated Successfully');
+                _this7.board.type = '';
+                _this7.board.name = '';
+                _this7.board.share = '';
+                _this7.board.checkedNames = [];
+                _this7.pB = null;
+                _this7.add = true;
+            });
+        },
+        listenBoardEvents: function listenBoardEvents() {
+            var _this8 = this;
+
+            Echo.private('boards').listen('CreateBoardEvent', function (e) {
+                // console.log(e);
+                var _this = _this8;
+                var found = e.boards.board_users.find(function (element) {
+                    return element.id == _this.currentUser.id;
+                });
+                if (found) {
+                    // console.log(e);
+                    _this8.$store.commit('addBoard', e.boards);
+                }
+            }).listen('UpdateBoardEvent', function (e) {
+                // console.log(e);
+                var _this = _this8;
+                var found = e.boards.board_users.find(function (element) {
+                    return element.id == _this.currentUser.id;
+                });
+                if (found) {
+                    // console.log(e);
+                    _this8.$store.commit('uBoard', e.boards);
+                }
+            }).listen('DeleteBoardEvent', function (e) {
+                // console.log(e);
+                var _this = _this8;
+                var found = e.boards.board_users.find(function (element) {
+                    return element.id == _this.currentUser.id;
+                });
+                if (found) {
+                    // console.log(e);
+                    _this8.$store.commit('deleteBoard', e.boards.id);
+                }
+            });
+        },
+        stopBoardEvents: function stopBoardEvents() {
+            Echo.leave('boards');
         }
     }
 });
@@ -73821,10 +73927,11 @@ var render = function() {
                           "a",
                           {
                             staticClass: "text-success",
-                            attrs: { href: "", title: "Delete Board" },
+                            attrs: { href: "", title: "Edit Board" },
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
+                                _vm.updateBoard(board)
                               }
                             }
                           },
@@ -73835,7 +73942,7 @@ var render = function() {
                           "a",
                           {
                             staticClass: "text-danger",
-                            attrs: { href: "", title: "Close" },
+                            attrs: { href: "", title: "Delete Board" },
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
@@ -73887,6 +73994,7 @@ var render = function() {
                             value: "1",
                             type: "radio",
                             name: "optionsRadios",
+                            disabled: _vm.add ? false : true,
                             checked: "true"
                           },
                           domProps: { checked: _vm._q(_vm.board.type, "1") },
@@ -73919,6 +74027,7 @@ var render = function() {
                             value: "2",
                             type: "radio",
                             name: "optionsRadios",
+                            disabled: _vm.add ? false : true,
                             checked: "true"
                           },
                           domProps: { checked: _vm._q(_vm.board.type, "2") },
@@ -74174,15 +74283,25 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-md-6" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-success btn-sm btn-block",
-                        attrs: { type: "button", value: "" },
-                        on: { click: _vm.createBoard }
-                      },
-                      [_vm._v("CREATE")]
-                    )
+                    _vm.add
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success btn-sm btn-block",
+                            attrs: { type: "button", value: "" },
+                            on: { click: _vm.createBoard }
+                          },
+                          [_vm._v("CREATE")]
+                        )
+                      : _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success btn-sm btn-block",
+                            attrs: { type: "button", value: "" },
+                            on: { click: _vm.uBoard }
+                          },
+                          [_vm._v("UPDATE")]
+                        )
                   ])
                 ])
               ])
@@ -74575,7 +74694,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         listPoints: function listPoints() {
             var points = 0;
             this.list.tasks.forEach(function (task) {
-                points = points + task.points;
+                points = points + Number(task.points);
             });
 
             return points;
@@ -76127,6 +76246,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     mounted: function mounted() {
         this.listenTask();
     },
+    destroyed: function destroyed() {
+        this.stopEventListeners();
+    },
 
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -76322,6 +76444,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             // console.log(e);
             _this8.$store.commit('sendComment', e.comments);
         });
+    }), _defineProperty(_methods, 'stopEventListeners', function stopEventListeners() {
+        Echo.leave();
     }), _methods)
 });
 
@@ -77347,7 +77471,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.$store.dispatch('getBoardMembers', this.$route.params.board_id);
         this.$store.dispatch('getCBoard', this.$route.params.board_id);
     },
+    mounted: function mounted() {
+        this.stopEvents();
+        this.listenEvents();
+    },
     destroyed: function destroyed() {
+        this.stopEvents();
         this.$store.commit('boardDestroyed');
         this.$store.commit('scrumBoardDestroyed');
     },
@@ -77388,6 +77517,38 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var taskdiv = document.querySelector("#scrumListDiv");
             // var scrollWidth = tas?kdiv.scrollHeight + 200
             taskdiv.scrollLeft = taskdiv.scrollWidth + 300;
+        },
+        listenEvents: function listenEvents() {
+            var _this = this;
+
+            Echo.private('list.' + this.$route.params.board_id).listen('UpdateListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('updateSprintTask', e.task);
+            }).listen('AddSprintEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('addsprint', e.sprint);
+            }).listen('UpdateSprintEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('updateSprint', e.sprint);
+            }).listen('FinishSprintEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('setScrumLists', JSON.parse(e.sprints));
+            }).listen('DeleteSprintEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('deleteSprint', e.sprint);
+            }).listen('AddListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('addSprintTask', e.task);
+            }).listen('SprintTaskOrderEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('setScrumLists', JSON.parse(e.sprints));
+            }).listen('DeleteListTaskEvent', function (e) {
+                // console.log(e);
+                _this.$store.commit('deleteSprintTask', e.task_id);
+            });
+        },
+        stopEvents: function stopEvents() {
+            Echo.leave('list.' + this.$route.params.board_id);
         }
     }
 });
@@ -77571,7 +77732,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         sprintPoints: function sprintPoints() {
             var points = 0;
             this.sprint.tasks.forEach(function (task) {
-                points = points + task.points;
+                points = points + Number(task.points);
             });
 
             return points;
@@ -79084,7 +79245,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.getTaskData();
         this.getComments();
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        this.listenUpdates();
+    },
+    destroyed: function destroyed() {
+        this.stopEventListeners();
+    },
 
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -79265,6 +79431,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             }
             _this7.$toaster.warning('Task deleted succesfully!.');
         });
+    }), _defineProperty(_methods, 'listenUpdates', function listenUpdates() {
+        var _this8 = this;
+
+        Echo.private('list.' + this.$route.params.board_id).listen('UpdateListTaskEvent', function (e) {
+            _this8.data.task_cover = e.task.task_cover;
+            _this8.data.points = e.task.points;
+            _this8.data.description = e.task.description;
+            _this8.data.name = e.task.name;
+            _this8.data.assigned_to.name = e.task.assigned_to.name;
+            _this8.updateData.assign_to = e.task.assigned_to.id;
+            // console.log(e);
+            // this.$store.commit('updateTask', e.task);
+        });
+        Echo.private('task.' + this.$route.params.task_id).listen('AddTaskAttachmentEvent', function (e) {
+            // console.log(e);
+            e.attachments.forEach(function (attachment) {
+                // console.log(attachment);
+                _this8.data.files.push(attachment);
+            });
+        }).listen('SendTaskCommentEvent', function (e) {
+            // console.log(e);
+            _this8.$store.commit('sendComment', e.comments);
+        });
+    }), _defineProperty(_methods, 'stopEventListeners', function stopEventListeners() {
+        Echo.leave();
     }), _methods)
 });
 
@@ -80399,7 +80590,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     data: function data() {
         return {
-            status: [{ id: 1, name: 'To do' }, { id: 2, name: 'In progress' }, { id: 3, name: 'Ready for Test' }, { id: 4, name: 'Closed' }]
+            status: [{ id: 1, name: 'New' }, { id: 2, name: 'In progress' }, { id: 3, name: 'Ready for Test' }, { id: 4, name: 'Closed' }]
         };
     },
     created: function created() {
@@ -80414,7 +80605,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         // 
     },
+    mounted: function mounted() {
+        this.stopSprintEvents();
+        this.listenSprintEvents();
+    },
     destroyed: function destroyed() {
+        this.stopSprintEvents();
         this.$store.commit('scrumBoardDestroyed');
     },
 
@@ -80436,6 +80632,34 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var taskdiv = document.querySelector("#statusListDiv");
             // var scrollWidth = tas?kdiv.scrollHeight + 200
             taskdiv.scrollLeft = taskdiv.scrollWidth + 300;
+        },
+        listenSprintEvents: function listenSprintEvents() {
+            var _this2 = this;
+
+            Echo.private('list.' + this.$route.params.board_id).listen('UpdateListTaskEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('updateSprintTask', e.task);
+            }).listen('UpdateSprintEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('updateSprint', e.sprint);
+            }).listen('AddListTaskEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('addSprintTask', e.task);
+            }).listen('SprintTaskOrderEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('setScrumLists', JSON.parse(e.sprints));
+                _this2.$store.commit('getSprintTasks', _this2.$route.params.sprint_id);
+            }).listen('ISprintTaskOrderEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('setScrumLists', JSON.parse(e.sprints));
+                _this2.$store.commit('getSprintTasks', _this2.$route.params.sprint_id);
+            }).listen('DeleteListTaskEvent', function (e) {
+                // console.log(e);
+                _this2.$store.commit('deleteSprintTask', e.task_id);
+            });
+        },
+        stopSprintEvents: function stopSprintEvents() {
+            Echo.leave('list.' + this.$route.params.board_id);
         }
     }
 });
@@ -80576,27 +80800,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         draggable: __WEBPACK_IMPORTED_MODULE_0_vuedraggable___default.a,
         cardTask: __WEBPACK_IMPORTED_MODULE_1__CardTask_vue___default.a
     },
-    props: ['status'],
+    props: ['status', 'tasks'],
     data: function data() {
         return {
             noCard: true,
             openTaskOpt: false
         };
     },
-    mounted: function mounted() {
-        // let taskdiv = document.querySelector("#statusListDiv");
-        // taskdiv.scrollLeft = taskdiv.scrollWidth;
-    },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapGetters */])({
-        tasks: 'getSprintTasks',
-        cSprint: 'getSprint'
+        // tasks: 'getSprintTasks',
+        // cSprint: 'getSprint',
     }), {
 
         sTasks: {
             get: function get() {
                 var newTasks = [];
-                var tasks = this.$store.getters.getSprintTasks;
+                var tasks = this.tasks;
                 var _this = this;
                 // console.log(tasks);
 
@@ -80612,20 +80832,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 return newTasks;
             },
             set: function set(value) {
-                console.log(value);
+                // console.log(value);
                 return this.$store.commit('updateTaskStatusOrder', { data: value, status: this.status.id });
             }
         },
 
         statPoints: function statPoints() {
-            var tasks = this.$store.getters.getSprintTasks;
+            var tasks = this.tasks;
             var points = 0;
             var _this = this;
 
             if (tasks) {
                 tasks.forEach(function (task) {
                     if (task.status == _this.status.id) {
-                        points = points + task.points;
+                        points = points + Number(task.points);
                     }
                 });
             }
@@ -80647,7 +80867,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             }
         },
         test: function test(e) {
-            this.$store.dispatch('updateSprintTaskOrder', { sprint_id: this.$route.params.sprint_id, tasks: this.tasks });
+            this.$store.dispatch('updateSprintTaskOrder', { sprint_id: this.$route.params.sprint_id, board_id: this.$route.params.board_id, tasks: this.tasks });
         }
     }
 });
@@ -81087,9 +81307,26 @@ var render = function() {
               _c("router-view"),
               _vm._v(" "),
               _c("div", { staticClass: "board-header" }, [
-                _c("div", { staticClass: "board-name" }, [
-                  _c("h4", {}, [_vm._v(_vm._s(_vm.cSprint.name))])
-                ]),
+                _c(
+                  "div",
+                  { staticClass: "board-name" },
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticStyle: { color: "#ffff" },
+                        attrs: {
+                          to: {
+                            name: "scrumboard",
+                            params: { board_id: _vm.$route.params.board_id }
+                          }
+                        }
+                      },
+                      [_c("h4", {}, [_vm._v(_vm._s(_vm.cSprint.name))])]
+                    )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("div", { staticClass: "board-info" }, [
                   _c("p", { attrs: { title: "Total Tasks" } }, [
@@ -81114,7 +81351,7 @@ var render = function() {
                 _vm._l(_vm.status, function(stat) {
                   return _c("status-card", {
                     key: stat.id,
-                    attrs: { status: stat }
+                    attrs: { status: stat, tasks: _vm.tasks }
                   })
                 })
               )
@@ -92390,6 +92627,14 @@ var mutations = {
         state.boardLists = [];
         state.boardMembers = [];
         state.comments = [];
+    },
+    deleteBoard: function deleteBoard(state, data) {
+        var index = _.findIndex(state.boards, { id: data });
+        state.boards.splice(index, 1);
+    },
+    uBoard: function uBoard(state, data) {
+        var index = _.findIndex(state.boards, { id: data.id });
+        __WEBPACK_IMPORTED_MODULE_0_vue___default.a.set(state.boards, index, data);
     }
 };
 
@@ -92397,11 +92642,15 @@ var actions = {
     createBoard: function createBoard(_ref, data) {
         var commit = _ref.commit;
 
-        axios.post('/api/newBoard', data).then(function (response) {
-            // console.log(response);
-            commit('addBoard', response.data);
-        }).catch(function (error) {
-            console.log(error);
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/newBoard', data).then(function (response) {
+                // console.log(response);
+                commit('addBoard', response.data);
+                resolve();
+            }).catch(function (error) {
+                console.log(error);
+                reject();
+            });
         });
     },
     getUserBoards: function getUserBoards(_ref2, data) {
@@ -92417,10 +92666,16 @@ var actions = {
     deleteBoard: function deleteBoard(_ref3, id) {
         var commit = _ref3.commit;
 
-        axios.delete('/api/deleteBoard', { data: {
-                id: id
-            } }).then(function () {
-            alert('success');
+        return new Promise(function (resolve, reject) {
+            axios.delete('/api/deleteBoard', { data: {
+                    id: id
+                } }).then(function () {
+                commit('deleteBoard', id);
+                resolve();
+            }).catch(function (error) {
+                console.error(error);
+                reject();
+            });
         });
     },
     createList: function createList(_ref4, data) {
@@ -92590,6 +92845,20 @@ var actions = {
         }).catch(function (error) {
             console.error(error);
         });
+    },
+    uBoard: function uBoard(_ref18, data) {
+        var commit = _ref18.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.patch('/api/uBoard', data).then(function (response) {
+                // console.log(response);
+                commit('uBoard', response.data);
+                resolve();
+            }).catch(function (error) {
+                console.error(error);
+                reject();
+            });
+        });
     }
 };
 
@@ -92697,7 +92966,7 @@ var mutations = {
             __WEBPACK_IMPORTED_MODULE_0_vue___default.a.set(state.sprintTasks, i, list);
         });
 
-        console.log(state.sprintTasks);
+        // console.log(state.sprintTasks);
     },
     scrumBoardDestroyed: function scrumBoardDestroyed() {
         state.sprintTasks = null;
@@ -92711,7 +92980,7 @@ var actions = {
 
         return new Promise(function (resolve, reject) {
             axios.post('/api/getScrumLists', { id: data }).then(function (response) {
-                console.log(response);
+                // console.log(response);
                 commit('setScrumLists', response.data);
                 resolve();
             }).catch(function (error) {
@@ -92752,7 +93021,7 @@ var actions = {
 
         return new Promise(function (resolve, reject) {
             axios.delete('/api/deleteSprint', { data: { id: id } }).then(function (response) {
-                console.log(response);
+                // console.log(response);
                 commit('deleteSprint', response.data);
                 resolve();
             }).catch(function (error) {
@@ -92778,8 +93047,9 @@ var actions = {
     updateSprintOrder: function updateSprintOrder(_ref6, data) {
         var commit = _ref6.commit;
 
-        axios.patch('/api/updateSprintOrder', data).then(function (response) {
-            console.log(response);
+        axios.patch('/api/updateSprintOrder', data).then(function () {
+            // console.log(response);
+
         }).catch(function (error) {
             console.error(error);
         });

@@ -75,7 +75,7 @@ export default {
         sprintPoints() {
             let points = 0;
             this.sprint.tasks.forEach(task => {
-                points = points + task.points
+                points = points + Number(task.points)
             });
 
             return points;

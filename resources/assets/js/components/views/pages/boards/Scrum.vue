@@ -53,7 +53,12 @@ export default {
         this.$store.dispatch('getBoardMembers', this.$route.params.board_id);
         this.$store.dispatch('getCBoard', this.$route.params.board_id);
     },
+    mounted() {
+        this.stopEvents();
+        this.listenEvents();
+    },
     destroyed() {
+        this.stopEvents();
         this.$store.commit('boardDestroyed');
         this.$store.commit('scrumBoardDestroyed');
     },
@@ -97,6 +102,44 @@ export default {
             // var scrollWidth = tas?kdiv.scrollHeight + 200
             taskdiv.scrollLeft = taskdiv.scrollWidth + 300
         },
+        listenEvents() {
+            Echo.private('list.'+this.$route.params.board_id)
+                .listen('UpdateListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('updateSprintTask', e.task);
+                })
+                .listen('AddSprintEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('addsprint', e.sprint);
+                })
+                .listen('UpdateSprintEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('updateSprint', e.sprint);
+                })
+                .listen('FinishSprintEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('setScrumLists', JSON.parse(e.sprints));
+                })
+                .listen('DeleteSprintEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteSprint', e.sprint);
+                })
+                .listen('AddListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('addSprintTask', e.task);
+                })
+                .listen('SprintTaskOrderEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('setScrumLists', JSON.parse(e.sprints));
+                })
+                .listen('DeleteListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteSprintTask', e.task_id);
+                })
+        },
+        stopEvents() {
+            Echo.leave('list.'+this.$route.params.board_id)
+        }
     }
 }
 </script>

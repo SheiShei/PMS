@@ -94,7 +94,7 @@ const mutations = {
             Vue.set(state.sprintTasks, i, list);
         });
 
-        console.log(state.sprintTasks);
+        // console.log(state.sprintTasks);
         
     },
 
@@ -109,7 +109,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/getScrumLists', {id: data})
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     commit('setScrumLists', response.data)
                     resolve()
                 })
@@ -154,7 +154,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.delete('/api/deleteSprint', {data: {id: id}}) 
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     commit('deleteSprint', response.data);
                     resolve();
                 })
@@ -182,8 +182,8 @@ const actions = {
 
     updateSprintOrder({commit}, data) {
         axios.patch('/api/updateSprintOrder', data)
-            .then((response) => {
-                console.log(response);
+            .then(() => {
+                // console.log(response);
                 
             })
             .catch((error) => {

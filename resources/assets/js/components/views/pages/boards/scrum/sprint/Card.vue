@@ -30,27 +30,23 @@ export default {
         draggable,
         cardTask : Task
     },
-    props: ['status'],
+    props: ['status', 'tasks'],
     data() {
         return {
             noCard: true,
             openTaskOpt: false,
         }
     },
-    mounted() {
-        // let taskdiv = document.querySelector("#statusListDiv");
-        // taskdiv.scrollLeft = taskdiv.scrollWidth;
-    },
     computed: {
         ...mapGetters({
-                tasks: 'getSprintTasks',
-                cSprint: 'getSprint',
+                // tasks: 'getSprintTasks',
+                // cSprint: 'getSprint',
             }),
 
         sTasks: {
             get() {
                 let newTasks = [];
-                let tasks = this.$store.getters.getSprintTasks
+                let tasks = this.tasks
                 let _this = this;
                 // console.log(tasks);
                 
@@ -67,20 +63,20 @@ export default {
             },
 
             set(value) {
-                console.log(value);
+                // console.log(value);
                 return this.$store.commit('updateTaskStatusOrder', {data: value, status: this.status.id})
             }
         },
 
         statPoints() {
-            let tasks = this.$store.getters.getSprintTasks
+            let tasks = this.tasks
             let points = 0;
             let _this = this;
 
             if(tasks) {
                 tasks.forEach(task => {
                     if(task.status == _this.status.id) {
-                        points = points+task.points
+                        points = points + Number(task.points)
                     }
                 });
             }
@@ -103,9 +99,10 @@ export default {
         },
 
         test(e) {
-            this.$store.dispatch('updateSprintTaskOrder', {sprint_id: this.$route.params.sprint_id, tasks: this.tasks})
+            this.$store.dispatch('updateSprintTaskOrder', {sprint_id: this.$route.params.sprint_id, board_id: this.$route.params.board_id, tasks: this.tasks})
             
-        }
+        },
+        
     }
 }
 </script>

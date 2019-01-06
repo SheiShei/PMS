@@ -154,6 +154,11 @@ export default {
     },
 
     mounted() {
+        this.listenUpdates()
+    },
+
+    destroyed() {
+        this.stopEventListeners();
     },
 
     computed: {
@@ -360,6 +365,36 @@ export default {
                     this.$toaster.warning('Task deleted succesfully!.')
                 })
         },
+
+        listenUpdates() {
+            Echo.private('list.'+this.$route.params.board_id)
+                .listen('UpdateListTaskEvent', (e) => {
+                    this.data.task_cover = e.task.task_cover
+                    this.data.points = e.task.points
+                    this.data.description = e.task.description
+                    this.data.name = e.task.name
+                    this.data.assigned_to.name = e.task.assigned_to.name
+                    this.updateData.assign_to = e.task.assigned_to.id
+                    // console.log(e);
+                    // this.$store.commit('updateTask', e.task);
+                })
+            Echo.private('task.'+this.$route.params.task_id)
+                .listen('AddTaskAttachmentEvent', (e) => {
+                    // console.log(e);
+                    e.attachments.forEach(attachment => {
+                        // console.log(attachment);
+                        this.data.files.push(attachment)
+                    });
+                })
+                .listen('SendTaskCommentEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('sendComment', e.comments)
+                })
+        },
+
+        stopEventListeners() {
+            Echo.leave();
+        }
 
     }
 }
