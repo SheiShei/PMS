@@ -221,6 +221,22 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 1
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                },
                 children: [
                     {
                         path: 'addtask/:list_id',
@@ -254,6 +270,22 @@ export const routes = [
                 component: BoardScrum,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 2
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 },
                 children: [
                     {
@@ -296,6 +328,24 @@ export const routes = [
                 component: Sprint,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    let sprint_id = to.params.sprint_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 2,
+                        sprint_id: sprint_id
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 },
                 children: [
                     {

@@ -90,6 +90,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
     Route::patch('/uBoard', 'BoardController@updateBoard');
+    Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
+
 
         //Scrum
     Route::post('/getScrumLists', 'BoardController@getScrumLists');
@@ -101,6 +103,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
     Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
     Route::patch('/finishSprint', 'BoardController@finishSprint');
+
+
+    //testRoute
+    Route::post('/testFunc', 'BoardController@testFunc');
     
 
 });
