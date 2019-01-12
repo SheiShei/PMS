@@ -811,6 +811,7 @@ const GanttElastic = {
       for (let index = 0, len = this.state.tasks.length; index < len; index++) {
         let task = this.state.tasks[index];
         task.startDate = dayjs(task.start);
+        task.endDate = dayjs(task.end);
         task.startTime = task.startDate.valueOf();
         task.durationMs = task.duration * 1000;
         if (task.startTime < firstTaskTime) {

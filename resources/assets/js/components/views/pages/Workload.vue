@@ -15,15 +15,15 @@
       </div>
 
       <div class="workload-info">
-        <p title="Select Board">From Board:</p>
+        <p title="Select Board">Team:</p>
       </div>
 
       <div class="workload-info">
         <div class="btn-group bootstrap-select">
-          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
-            <option value="">All Boards</option>
-            <option value="">Board 1</option>
-            <option value="">Board 2</option>
+          <select v-model="team" @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option value="">All </option>
+            <option value="1">Web</option>
+            <option value="2">Creatives</option>
           </select>
         </div>
       </div>
@@ -40,9 +40,9 @@
 
 
   <div style="margin: 10px 20px; border: 1px solid lightgray">                
-  <gantt-elastic :tasks="tasks" :options="options">
+  <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
     <gantt-header slot="header"></gantt-header>
-    <gantt-footer slot="footer"></gantt-footer>
+    <!-- <gantt-footer slot="footer"></gantt-footer> -->
   </gantt-elastic>
    </div>
   </section>
@@ -50,137 +50,23 @@
 
 </template>
 <script>
+import {mapGetters} from 'vuex';
 import dayjs from "dayjs";
 import GanttElastic from './workload/GanttElastic.vue';
+import Header from './workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
-function getDate(hours) {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentDay = currentDate.getDate();
-      const timeStamp = new Date(`${currentYear}-${currentMonth}-${currentDay} 00:00:00`).getTime();
-      return new Date(timeStamp + hours * 60 * 60 * 1000);
-    };
 export default {
   components: {
-    'gantt-header': { template: `` },
+    'gantt-header': Header,
     'gantt-elastic': GanttElastic,
     'gantt-footer': { template: `` }
   },
   props: ['header', 'footer'],
   data() {
     return{
-    tasks: [
-      {
-        id: 1,
-        label: 'Task 1 (Simula pinakamaaga yung start)',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">User 1</a>',
-        start: getDate(-24 * 5),
-        duration: 5 * 24 * 60 * 60,
-        progress: 0,
-        type: 'task',
-        style: {
-          base: {
-            fill: "#fc5c65",
-            stroke: '#fff'
-          }
-        }
-      }, {
-        id: 2,
-        label: 'Task 2',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">User 1</a>',
-        parentId: 1,
-        // dependentOn: [1],
-        start: getDate(-24 * 4),
-        duration: 4 * 24 * 60 * 60,
-        progress: 100,
-        type: 'task',
-        // dependentOn: [1],
-        style: {
-          base: {
-            fill: "#fd9644",
-            stroke: '#fff'
-          }
-          /*'tree-row-bar': {
-            fill: '#1EBC61',
-            stroke: '#0EAC51'
-          },
-          'tree-row-bar-polygon': {
-            stroke: '#0EAC51'
-          }*/
-        }
-      }, {
-        id: 3,
-        label: 'Task 3',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">User 1</a>',
-        parentId: 1,
-        // dependentOn: [],
-        start: getDate(-24 * 3),
-        duration: 2 * 24 * 60 * 60,
-        progress: 100,
-        type: 'task',
-        dependentOn: [2],
-        style: {
-          base: {
-            fill: "#45aaf2",
-            stroke: '#fff'
-          }
-        }
-        },
-      
-       {
-        id: 4,
-        label: 'Task 1',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">User 2</a>',
-        start: getDate(-24 * 2),
-        duration: 2 * 24 * 60 * 60,
-        progress: 0,
-        type: 'task',
-        dependentOn: [],
-        style: {
-          base: {
-            fill: "#A3CB38",
-            stroke: '#fff'
-          }
-        }
-      },
-      {
-        id: 5,
-        label: 'One billion, gajillion, fafillion... shabadylu...mil...shabady......uh, Yen.',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="" target="_blank" style="color:#0077c0;">User 2</a>',
-        parentId: 4,
-        start: getDate(0),
-        duration: 2 * 24 * 60 * 60,
-        progress: 100,
-        parentId: 4,
-        dependentOn: [4],
-        type: 'task',
-        style: {
-          base: {
-            fill: '#fd79a8',
-            stroke: '#fff'
-          }
-        }
-      },
-      // }, 
-      {
-        id: 6,
-        label: 'Butch Mario and the Luigi Kid',
-        user: '<img src="images/default.png" class="workload-user-pic" />&nbsp;&nbsp;<a href="" target="_blank" style="color:#0077c0;">User 2</a>',
-        parentId: 4,
-        dependentOn:[5],
-        start: getDate(24),
-        duration: 1 * 24 * 60 * 60,
-        progress: 100,
-        type: 'task',
-        style: {
-          base: {
-            fill: '#D6A2E8',
-            stroke: '#fff'
-          }
-        }
-      }
-    ],
+      team: '',
+      show: false,
+    tasks: [],
     options: {
       title: {
         label: 'Workload Manager',
@@ -218,7 +104,7 @@ export default {
           {
             id: 4,
             label: 'Due',
-            value: (task) => task.startDate.format('YYYY-MM-DD'),
+            value: (task) => task.endDate.format('YYYY-MM-DD'),
             width: 78
           }, 
           // {
@@ -257,8 +143,55 @@ export default {
     }
     }
   },
+  created() {
+    this.initializeTask();
+  },
+  computed: {
+  },
   methods:{
-    
+    initializeTask() {
+      this.show = false;
+      axios.post('/api/testFunc', {team: this.team}) 
+      .then(response => {
+        
+        this.tasks = [];
+        this.show = false;
+        let colors = [
+            '#fc5c65',
+            '#fd9644',
+            '#45aaf2',
+            '#A3CB38',
+            '#ffc048',
+            '#D6A2E8',
+            '#fd79a8',
+        ];
+        let tasks = response.data;
+        let style = {
+          style : {
+            base: {
+              fill: '#D6A2E8',
+              stroke: '#fff'
+            }
+          }
+        }
+
+        tasks.forEach(task => {
+          task = Object.assign(task, {style : {
+            base: {
+              fill: colors[Math.floor(Math.random() * 7)],
+              stroke: '#fff'
+            }
+          }});
+          task.start = ''+task.start;
+          this.tasks.push(task)
+        });
+        this.show = true;
+        // console.log(this.tasks);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+    }
   }
 }
 </script>

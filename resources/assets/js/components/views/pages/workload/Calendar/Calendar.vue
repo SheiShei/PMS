@@ -26,14 +26,14 @@
       which="day"
       v-if="root.isInsideViewPort(day.x,day.width)"
     ></calendar-row>
-    <calendar-row
+    <!-- <calendar-row
       class="gantt-elastic__calendar-row--hour"
       v-for="hour in hours"
       :key="hour.key"
       :item="hour"
       which="hour"
       v-if="root.isInsideViewPort(hour.x,hour.width)"
-    ></calendar-row>
+    ></calendar-row> -->
   </g>
 </template>
 

@@ -6,7 +6,8 @@ const state = {
     boardMembers: [],
     gImg: null,
     comments: [],
-    cBoard: null
+    cBoard: null,
+    tasks: []
 };
 
 const getters = {
@@ -28,6 +29,9 @@ const getters = {
     getCBoard: state => {
         return state.cBoard
     },
+    getWorkload: state => {
+        return state.tasks
+    }
 };
 
 const mutations = {
@@ -127,7 +131,6 @@ const mutations = {
         let index = _.findIndex(state.boards, {id: data.id})
         Vue.set(state.boards, index, data);
     }
-
 };
 
 const actions = {
