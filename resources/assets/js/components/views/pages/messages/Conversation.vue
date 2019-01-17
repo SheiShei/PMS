@@ -1,6 +1,6 @@
 <template>
     <div class="main-msg-body">
-        <div class="msg-head" style="background-color:rgb(13, 181, 202)">
+        <div class="msg-head" style="background-color:#f4f4f4">
             <div class="msg-head-1">
                 <div class="dropdown">
                     <h4 v-if="selectedConvo || receiverData" class="media-head head-name">{{ selectedConvo ? selectedConvo.name : receiverData.name }}</h4>
@@ -9,7 +9,7 @@
 
             <div class="msg-head-2" v-if="selectedConvo && isL">
                 <div class="dropdown pull-right">
-	                <button href="#" class="dropdown-toggle btn btn-simple btn-info btn-white btn-xs" data-toggle="dropdown" aria-expanded="true">
+	                <button href="#" class="dropdown-toggle btn btn-simple btn-default btn-xs" data-toggle="dropdown" aria-expanded="true">
                         <span class="fa fa-gears fa-xs"></span>
                         <b class="caret"></b>
                         <div class="ripple-container"></div>
@@ -23,7 +23,7 @@
 			    </div>
 
                 <div class="dropdown pull-right"  >
-                    <button href="#pablo" class="dropdown-toggle btn btn-simple btn-info btn-white btn-xs" data-toggle="dropdown" aria-expanded="true">
+                    <button href="#pablo" class="dropdown-toggle btn btn-simple btn-default btn-xs" data-toggle="dropdown" aria-expanded="true">
                         <span class="fa fa-user-o fa-xs"></span>
                         <div class="ripple-container"></div>
                     </button>
@@ -109,7 +109,7 @@
                                     </div>
                                 </div>
                                 <div class="media-body my-msg">
-                                    <a :href="message.new_filename" class="text-gray filedisp" download>
+                                    <a :href="message.new_filename" class="filedisp" download>
                                         <span class="fa fa-file-text-o"></span>&nbsp;{{ message.original_filename }}
                                     </a>
                                 </div>
@@ -186,7 +186,7 @@
                 <!-- created conversation -->
                 <div v-else-if="message.action == 2">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto">
+                        <div class="group-created mr-auto ml-auto">
                             {{ message.sender.name }} created this group.
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                 <!-- Add member -->
                 <div v-else-if="message.action == 3">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto">
+                        <div class="group-created mr-auto ml-auto">
                             {{ message.sender.name }} added {{ message.receiver.name }}
                         </div>
                     </div>
@@ -204,11 +204,11 @@
                 <!-- leave or remove -->
                 <div v-else-if="message.action == 4">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto" v-if="message.sender_id == message.receiver_id">
-                            {{ message.sender.name }} leave the group.
+                        <div class="group-created mr-auto ml-auto" v-if="message.sender_id == message.receiver_id">
+                            {{ message.sender.name }} left the group.
                         </div>
-                        <div class="date-sent mr-auto ml-auto" v-else>
-                            {{ message.sender.name }} remove {{ message.receiver.name }}.
+                        <div class="group-created mr-auto ml-auto" v-else>
+                            {{ message.sender.name }} removed {{ message.receiver.name }}.
                         </div>
                     </div>
                 </div>

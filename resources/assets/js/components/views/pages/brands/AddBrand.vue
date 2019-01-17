@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-files-o"></span> Brands<small> Panel</small></h2>
+            <h2><span class="fa fa-files-o"></span> Brands</h2>
         </div>
 
         <div class="col-md-1"></div>

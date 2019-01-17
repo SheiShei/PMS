@@ -53,7 +53,7 @@
                                         <div class="ataskment" v-if="attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif'">
                                             <div class="media">
                                                 <div class="media-left media-top">
-                                                    <a href="" @click="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
+                                                    <a href="" @click.exact="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
                                                     </a>
                                                 </div>
                                                 <div class="media-body">

@@ -131,8 +131,8 @@ function getOptions (userOptions) {
       gap: 6,
       height: 0,
       hour: {
-        height: 20,
-        display: true,
+        height: 0,
+        display: false,
         widths: [],
         maxWidths: {},
         format: {

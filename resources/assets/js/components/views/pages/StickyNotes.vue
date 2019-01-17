@@ -1,6 +1,9 @@
 <template>
     
-    <section class="main-main-container" style="background-color: rgb(49, 133, 156)">
+    <section class="main-main-container" style="background-color: #43a0b9">
+        <div class="title-head">
+            <h2><span class="fa fa-sticky-note-o"></span> Sticky Notes</h2>
+        </div>
         <button class="btn btn-success btn-sm addnotebtn" type="button" @click="newNote">+ ADD</button>
         <ul>
             <draggable v-model="notes" :options="options" @change="update" :element="'li'">
@@ -23,8 +26,8 @@
 <style scoped>
     .addnotebtn{
         position: sticky;
-        margin: 10px;
-        top: 10px;
+        /* margin: 10px; */
+        top: 55px;
         left: 10px;
         z-index: 100;
     }

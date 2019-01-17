@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-user-o"></span> Employees <small>Manage Employees</small></h2>
+            <h2><span class="fa fa-user-o"></span> Employees</h2>
         </div>
 
         <div class="col-md-9">

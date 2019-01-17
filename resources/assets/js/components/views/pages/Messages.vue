@@ -4,21 +4,21 @@
                 <h2><span class="fa fa-commenting-o"></span> Messages <small></small></h2>
             </div>
             <div class="col-md-9">
-                <div class="mybox">
+                <div class="mybox" style="margin: 20px 10px">
                     <div class="mybox-body msg-main-body white-white-bg">
 
                         <div class="contacts-cont">
                             <div class="cont-head" style="background-color: rgba(200, 200, 200, 0.2);">
                                 <ul class="nav nav-pills nav-pills-primary">
-                                    <li class="active"><a href="#pill2" class="btn-block" data-toggle="tab">
-                                        <span class="fa fa-users"></span>
-                                        <span class="hidden-sm hidden-xs">Group</span></a>
-                                    </li>
-	                                <li>
+                                    <li class="active">
                                         <a href="#pill1" class="btn-block" data-toggle="tab">
-                                            <span class="fa fa-user-o"></span>
-                                            <span class="hidden-sm hidden-xs">People</span>
+                                            <span class="hidden-md hidden-lg fa fa-user-o"></span>
+                                            <span class="hidden-sm hidden-xs">Person</span>
                                         </a>
+                                    </li>
+                                    <li><a href="#pill2" class="btn-block" data-toggle="tab">
+                                        <span class="hidden-md hidden-lg fa fa-users"></span>
+                                        <span class="hidden-sm hidden-xs">Group</span></a>
                                     </li>
 	                            </ul>
                             </div>
@@ -26,7 +26,7 @@
                             <div class="cont-body">
                                 <div class="tab-content">
 
-	                    	        <div class="tab-pane" id="pill1">
+	                    	        <div class="tab-pane active" id="pill1">
 
                                         <div class="cont-search">
                                             <form action="">
@@ -70,7 +70,7 @@
 
 	                    	        </div>
 
-	                    	        <div class="tab-pane active" id="pill2">
+	                    	        <div class="tab-pane" id="pill2">
                                         <div class="cont-search">
                                             <form action="">
                                                 <div class="input-group">
@@ -109,8 +109,8 @@
             </div>
 
             <div class="col-md-3">
-                <transition name="slide">
-                    <div class="mybox" v-show="showThreadForm">
+                <transition name="fade">
+                    <div class="mybox" v-show="showThreadForm" style="margin-top: 20px">
                         <form @submit.prevent="addConvo" >
                         <div class="mybox-head">
                             <h6><strong>NEW GROUP CHAT</strong></h6>

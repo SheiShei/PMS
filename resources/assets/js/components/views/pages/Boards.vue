@@ -1,8 +1,14 @@
 <template>
-    <section class="main-main-container" style="background-color: whitesmoke;">
-        <div class="col-md-1"></div> 
+    <section class="main-main-container" style="background-color: ;">
+         <div class="title-head">
+            <h2><span class="fa fa-trello"></span> Boards</h2>
+        </div>
+        <!-- <br/> -->
+        <!-- <div class="col-md-1"></div>  -->
         <div class="first-column col-md-6">
-            <h3 class=""><span class="fa fa-trello"></span> Boards</h3>
+            <!-- <h4 class="">Board List</h4> -->
+            <p class="note" style="margin-top: 10px">Filter boards by type and access below.</p>
+            
             <select @change="getUserBoards" v-model="boarddata.type" class="my-input">
                 <option value="" selected>All Boards</option> 
                 <option value="1">Kanban</option>
@@ -29,6 +35,7 @@
                 </div>             
             </div>
         </div>
+        <div class="col-md-2"></div>
         <div class="col-md-4 profilesec">
             <br/>
             <transition name="slide">

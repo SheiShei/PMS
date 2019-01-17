@@ -11553,9 +11553,15 @@ ul > li > span.page-of:hover {
 /*PAGE HEADER*/
 
 .title-head {
-  padding: 8px 15px;
-  background-color: #eeeeee;
+  padding: 13px 15px !important;
   width: 100%;
+  line-height: 50px !important;
+  background-color: #43a0b9;
+  color: white;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .title-head > h2 {
@@ -11599,6 +11605,7 @@ ul > li > span.page-of:hover {
   float: left;
   position: relative;
   padding: 0;
+  background-color: whitesmoke;
 }
 
 .pl-10 {
@@ -11687,7 +11694,7 @@ ul > li > span.page-of:hover {
 
 .nav-side-menu ul .sub-menu li,
 .nav-side-menu li .sub-menu li {
-  background-color: #181c20;
+  background-color: #2e353d;
   padding: 5px 47px;
   border: none;
   line-height: 28px;
@@ -11697,7 +11704,7 @@ ul > li > span.page-of:hover {
 
 .nav-side-menu ul .sub-menu li:hover,
 .nav-side-menu li .sub-menu li:hover {
-  background-color: #020203;
+  background-color: #379bb9;
 }
 
 .nav-side-menu ul .sub-menu li:before,
@@ -11726,11 +11733,10 @@ ul > li > span.page-of:hover {
   transition: all .5 s ease;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .nav-side-menu {
     position: relative;
     width: 100%;
-    margin-bottom: 10px;
   }
 
   .nav-side-menu .toggle-btn {
@@ -11755,7 +11761,7 @@ ul > li > span.page-of:hover {
   }
 }
 
-@media (min-width: 767px) {
+@media (min-width: 768px) {
   .nav-side-menu .menu-list .menu-content {
     display: block;
   }
@@ -11987,10 +11993,19 @@ hr {
 #message-component .date-sent {
   padding: 3px auto;
   text-align: center;
+  text-transform: uppercase;
+  font-size: 11px;
   /* color:white; */
   color: #bfbfbf;
   /* background-color: rgba(255,255,255,0.2); */
   /* border-top: 1px dashed white; */
+}
+
+#message-component .group-created {
+  padding: 3px auto;
+  text-align: center;
+  font-size: 10px;
+  color: #bfbfbf;
 }
 
 #message-component .my-time-sent-div,
@@ -12074,6 +12089,10 @@ hr {
   margin: 0;
 }
 
+#message-component .my-msg > a {
+  color: white;
+}
+
 /* .msg-my-msg{
   background-color: #e4dcdc;
   border: 1px solid gray;
@@ -12116,6 +12135,7 @@ hr {
 #message-component .contacts-cont {
   width: 40%;
   position: relative;
+  border-right: 1px solid #d3d3d3;
 }
 
 #message-component .cont-head {
@@ -12153,7 +12173,6 @@ hr {
 
 #message-component .main-msg-body {
   width: 75%;
-  border-left: 1px solid #e4dcdc;
   /* padding: 2px; */
   position: relative;
 }
@@ -12186,7 +12205,7 @@ hr {
 #message-component .head-name {
   vertical-align: middle;
   /* margin: 14px 10px; */
-  color: white;
+  color: black;
 }
 
 #message-component .msg-display {
@@ -12296,6 +12315,11 @@ hr {
 
 #message-component .filedisp:hover {
   font-size: 15px;
+}
+
+.new-msg-dot {
+  font-size: 7px;
+  vertical-align: text-top;
 }
 
 .taskimgdiv {
@@ -12689,6 +12713,21 @@ hr {
   background: transparent;
   outline: none;
   border: none;
+}
+
+.blue-select {
+  border: 1px solid #43a0b9;
+  padding: 4px;
+  color: #43a0b9;
+  border-radius: 3px;
+}
+
+.blue-input {
+  padding: 5px;
+  line-height: normal;
+  border: 1px solid #43a0b9;
+  color: #43a0b9;
+  border-radius: 3px;
 }
 
 .table > thead > tr > th,
