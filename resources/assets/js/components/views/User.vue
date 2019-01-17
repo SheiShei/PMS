@@ -1,7 +1,7 @@
 <template>
     <div>
         <user-sidebar></user-sidebar>
-        <user-topnav></user-topnav>
+        <!-- <user-topnav></user-topnav> -->
         <div>
             <router-view></router-view>
         </div>
@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import Topnav from './includes/Topnav.vue';
+// import Topnav from './includes/Topnav.vue';
 import Sidebar from './includes/Sidebar.vue';
 
 export default {
     components: {
-        userTopnav : Topnav,
+        // userTopnav : Topnav,
         userSidebar : Sidebar
     },
 
