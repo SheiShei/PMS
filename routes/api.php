@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/newBoard', 'BoardController@newBoard');
     Route::post('/newCard', 'BoardController@newCard');
     Route::post('/newSprint', 'BoardController@newSprint');
-    Route::delete('/deleteBoard', 'AdminController@deleteBoard');
+    Route::delete('/deleteBoard', 'BoardController@deleteBoard');
     Route::post('/getUserBoards', 'BoardController@getUserBoards');
     Route::post('/createList', 'BoardController@createList');
     Route::post('/getBoardLists', 'BoardController@getBoardLists');
@@ -89,5 +89,24 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/sendComment', 'BoardController@sendComment');
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
+    Route::patch('/uBoard', 'BoardController@updateBoard');
+    Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
+
+
+        //Scrum
+    Route::post('/getScrumLists', 'BoardController@getScrumLists');
+    Route::post('/addsprint', 'BoardController@addsprint');
+    Route::patch('/updateSprint', 'BoardController@updateSprint');
+    Route::delete('/deleteSprint', 'BoardController@deleteSprint');
+    Route::post('/addSprintTask', 'BoardController@addSprintTask');
+    Route::patch('/updateSprintOrder', 'BoardController@updateSprintOrder');
+    Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
+    Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
+    Route::patch('/finishSprint', 'BoardController@finishSprint');
+
+
+    //testRoute
+    Route::post('/testFunc', 'BoardController@testFunc');
+    
 
 });

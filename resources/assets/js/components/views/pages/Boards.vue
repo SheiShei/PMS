@@ -27,9 +27,10 @@
                     <div class="boardname"><router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" style="color: gray;">{{ board.name }}</router-link></div>
                     <div class="boardoptions">
                         <p><span class="">
-                            <router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
-                            <a href="" @click.prevent class="text-success" title="Delete Board"><i class="fa fa-edit"></i></a>
-                            <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Close"><i class="fa fa-trash-o"></i></a>
+                            <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <router-link v-if="board.type == 2" :to="{ name: 'scrumboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <a href="" @click.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
+                            <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                         </span></p>
                     </div>
                 </div>             
@@ -48,13 +49,13 @@
                             <p for="">Type:
                                 <span>
                                     <label>
-									    <input v-model="board.type" value="1" type="radio" name="optionsRadios" checked="true"><span class="circle"></span><span class="check"></span>
+									    <input v-model="board.type" value="1" type="radio" name="optionsRadios" :disabled="add ? false : true" checked="true"><span class="circle"></span><span class="check"></span>
 									    Kanban
 								    </label>
                                 </span>
                                 <span>
                                     <label>
-									    <input v-model="board.type" value="2" type="radio" name="optionsRadios" checked="true"><span class="circle"></span><span class="check"></span>
+									    <input v-model="board.type" value="2" type="radio" name="optionsRadios" :disabled="add ? false : true" checked="true"><span class="circle"></span><span class="check"></span>
 									    Scrum
 								    </label>
                                 </span>
@@ -97,7 +98,8 @@
                                 <button @click="cancel" class="btn btn-danger btn-sm btn-block" type="button">CANCEL</button>
                             </div>
                             <div class="col-md-6">
-                                <button @click="createBoard" class="btn btn-success btn-sm btn-block" type="button" value="">CREATE</button>
+                                <button v-if="add" @click="createBoard" class="btn btn-success btn-sm btn-block" type="button" value="">CREATE</button>
+                                <button v-else @click="uBoard" class="btn btn-success btn-sm btn-block" type="button" value="">UPDATE</button>
                             </div>
                         </div>
                     </div>
@@ -129,13 +131,24 @@ export default {
                 type: '',
                 privacy: '',
                 id: this.$store.state.loggedUser.id
-            }
+            },
+            add: true,
+            pB: null
         }
     },
 
     created() {
         this.getUsersData();
         this.getUserBoards();
+    },
+
+    mounted() {
+        this.stopBoardEvents();
+        this.listenBoardEvents();
+    },
+
+    destroyed() {
+        this.stopBoardEvents();
     },
 
     computed: {
@@ -209,6 +222,7 @@ export default {
             this.board.share = '';
             this.board.checkedNames = [];
             this.userdata.search = '';
+            this.add = true
         },
 
         createBoard() {
@@ -216,13 +230,112 @@ export default {
                     val => val.split('_')[1]
                 );
             this.board.ids = newId;
-            this.$store.dispatch('createBoard', this.board);
+            this.$store.dispatch('createBoard', this.board)
+                .then(() => {
+                    this.board.type = 1;
+                    this.board.name = '';
+                    this.board.share = '';
+                    this.board.ids = [];
+                    this.board.checkedNames = [];
+                })
         },
 
         deleteBoard(id) {
-            // this.$store.dispatch('deleteBoard', id)
-            console.log('delete');
+            this.$store.dispatch('deleteBoard', id)
+                .then(() => {
+                    this.$toaster.warning('Board deleted succesfully!.')
+                })
             
+        },
+
+        updateBoard(board) {
+            if(this.pB != board) {
+                this.board.checkedNames = []
+                this.add = false;
+                this.board.type = board.type;
+                this.board.name = board.name;
+
+                if(board.privacy == 2) {
+                    this.board.share = 'custom'
+                    board.board_users.forEach(user => {
+                        this.board.checkedNames.push(user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id)
+                    });
+                }
+                else {
+                    this.board.share = ''
+                }
+                
+                this.board.id = board.id
+                this.pB = board;
+            }
+            else {
+                this.board.type = '';
+                this.board.name = '';
+                this.board.share = '';
+                this.board.checkedNames = []
+                this.pB = null;
+                this.add = true;
+            }
+
+            
+        },
+
+        uBoard() {
+            let newId = this.board.checkedNames.map(
+                val => val.split('_')[1]
+            );
+            this.board.newId = newId;
+            this.$store.dispatch('uBoard', this.board)
+                .then(() => {
+                    this.$toaster.success('Board Updated Successfully');
+                    this.board.type = '';
+                    this.board.name = '';
+                    this.board.share = '';
+                    this.board.checkedNames = []
+                    this.pB = null;
+                    this.add = true;
+                })
+        },
+
+        listenBoardEvents() {
+            Echo.private('boards')
+                .listen('CreateBoardEvent', (e) => {
+                    // console.log(e);
+                    var _this = this;
+                    let found = e.boards.board_users.find(function(element) {
+                        return element.id == _this.currentUser.id
+                    });
+                    if(found) {
+                        // console.log(e);
+                        this.$store.commit('addBoard', e.boards);
+                    }
+                })
+                .listen('UpdateBoardEvent', (e) => {
+                    // console.log(e);
+                    var _this = this;
+                    let found = e.boards.board_users.find(function(element) {
+                        return element.id == _this.currentUser.id
+                    });
+                    if(found) {
+                        // console.log(e);
+                        this.$store.commit('uBoard', e.boards);
+                    }
+                })
+                .listen('DeleteBoardEvent', (e) => {
+                    // console.log(e);
+                    var _this = this;
+                    let found = e.boards.board_users.find(function(element) {
+                        return element.id == _this.currentUser.id
+                    });
+                    if(found) {
+                        // console.log(e);
+                        this.$store.commit('deleteBoard', e.boards.id);
+                    }
+                })
+        },
+
+        stopBoardEvents() {
+            Echo.leave('boards')
         }
     }
 }

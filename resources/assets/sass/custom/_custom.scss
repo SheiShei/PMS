@@ -1036,12 +1036,12 @@ padding: 0 20px;
 /*lipat hehe */
 
     //Gallery style
-    #kanban-component .btn-eks{
+    .kanban-component .btn-eks{
       position: absolute;
       top: 2px;
       right: 0;
   }
-  #kanban-component .gallery{
+  .kanban-component .gallery{
       width: 100%;
       background-color: rgba(0,0,0,0.6);
       height: 100%;
@@ -1052,7 +1052,7 @@ padding: 0 20px;
   //end of Gallery style
 
   // TASK VIEW
-  #kanban-component .taskView{
+  .kanban-component .taskView{
       background-color: white;
       height: 80%; 
       overflow-y: auto;
@@ -1076,18 +1076,18 @@ padding: 0 20px;
   }
 
   //comment section
-  #kanban-component .comment-icon{
+  .kanban-component .comment-icon{
       height: 20px; 
       width: 20px; 
       border-radius: 50%;
   }
-  #kanban-component .comment-box{
+  .kanban-component .comment-box{
       background-color: #f9f9f9; 
       max-height: 300px; 
       overflow-y: auto; 
       border: 1px solid #e4e3e3;
   }
-  #kanban-component .comment-input-wrap{
+  .kanban-component .comment-input-wrap{
       display: inline-flex;
       width: 100%;
       vertical-align: middle;
@@ -1097,13 +1097,13 @@ padding: 0 20px;
       position: relative;
       min-height: 70px;
   }
-  #kanban-component .comment-input-wrap > textarea{
+  .kanban-component .comment-input-wrap > textarea{
       width:80%;
   }
-  #kanban-component .comment-input-wrap > button{
+  .kanban-component .comment-input-wrap > button{
       width: 10%;
   }
-  #kanban-component .comment-msg{
+  .kanban-component .comment-msg{
       padding: 3px 10px;
 
       h6{
@@ -1120,7 +1120,7 @@ padding: 0 20px;
   //end of Task View
 
   //ADD TASK style
-  #kanban-component .newTaskForm{
+  .kanban-component .newTaskForm{
       background-color: white;
       height: auto; 
       width: 500px; 
@@ -1143,33 +1143,33 @@ padding: 0 20px;
   //end of ADD TASK style
   
   //stay here
-  #kanban-component .btn-close{
+  .kanban-component .btn-close{
       padding: 3px 5px;
       font-size: 11px;
       margin: 0;
       border-radius: 2px;
   }
-  #kanban-component .btn-close:hover{
+  .kanban-component .btn-close:hover{
       color: rgb(235, 42, 42);
   }
 
   /* gawagawa */
-  #kanban-component #ataskment-wrapper{
+  .kanban-component #ataskment-wrapper{
       overflow-x:hidden;
   }
-  #kanban-component .ataskment{
+  .kanban-component .ataskment{
       margin-top: 8px;
   }
-  #kanban-component .media p{
+  .kanban-component .media p{
       font-size: 14px;
       margin: 0;
       color: unset;
   }
-  #kanban-component .media-left{
+  .kanban-component .media-left{
       padding: 0;
       padding-right: 10px;
   }
-  #kanban-component .ataskment-thumb{
+  .kanban-component .ataskment-thumb{
       background-color: rgba(9,45,66,.08);
       background-position: 50%;
       background-size: contain;
@@ -1179,7 +1179,7 @@ padding: 0 20px;
       width: 112px;
       display:block;
   }
-  #kanban-component .ataskment-thumb > span{
+  .kanban-component .ataskment-thumb > span{
       color: #6b808c;
       display: block;
       font-size: 18px;
@@ -1191,7 +1191,7 @@ padding: 0 20px;
       text-decoration: none;
       width: 100%;
   }
-  #kanban-component .taskInput{
+  .kanban-component .taskInput{
       background: transparent;
       outline: none;
       border: none;

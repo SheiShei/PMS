@@ -118,7 +118,7 @@ export default {
             this.$store.dispatch('addTask', task)
                 .then(() => {
                     this.$toaster.warning('Task Added succesfully!.')
-                    this.$router.push({name: 'kanboard'});
+                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}});
                     // let listDiv = document.querySelector('.list-body');
                     // listDiv.scrollTo(0, listDiv.scrollHeight);
                 })

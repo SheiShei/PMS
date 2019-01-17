@@ -10,7 +10,7 @@
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
-                            <span class="pull-right"><router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
+                            <span class="pull-right"><router-link :to="{ name: 'kanboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
                             <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
@@ -155,6 +155,10 @@ export default {
 
     mounted() {
         this.listenTask();
+    },
+    
+    destroyed() {
+        this.stopEventListeners();
     },
 
     computed: {
@@ -347,7 +351,7 @@ export default {
         dT() {
             this.$store.dispatch('deleteTask', {id:this.data.id, board_id: this.$route.params.board_id})
                 .then(() => {
-                    this.$router.push({ name: 'kanboard'})
+                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}})
                     this.$toaster.warning('Task deleted succesfully!.')
                 })
         },
@@ -376,6 +380,10 @@ export default {
                     // console.log(e);
                     this.$store.commit('sendComment', e.comments)
                 })
+        },
+
+        stopEventListeners() {
+            Echo.leave();
         }
     }
 }

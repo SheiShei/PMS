@@ -1,11 +1,13 @@
 import Vue from 'vue'
+import scrum from "./boards/scrum";
 const state = {
     boards: [],
     boardLists: [],
     boardMembers: [],
     gImg: null,
     comments: [],
-    cBoard: null
+    cBoard: null,
+    tasks: []
 };
 
 const getters = {
@@ -27,6 +29,9 @@ const getters = {
     getCBoard: state => {
         return state.cBoard
     },
+    getWorkload: state => {
+        return state.tasks
+    }
 };
 
 const mutations = {
@@ -111,24 +116,37 @@ const mutations = {
         state.cBoard = data
     },
 
-    boardDestroyed(state, data) {
-        state.boardLists = []
-    }
+    boardDestroyed(state) {
+        state.boardLists = [];
+        state.boardMembers = [];
+        state.comments = [];
+    },
 
+    deleteBoard(state, data) {
+        let index = _.findIndex(state.boards, {id: data})
+        state.boards.splice(index, 1);
+    },
+
+    uBoard(state, data) {
+        let index = _.findIndex(state.boards, {id: data.id})
+        Vue.set(state.boards, index, data);
+    }
 };
 
 const actions = {
     createBoard({commit}, data) {
-        axios.post('/api/newBoard', data) 
-            .then((response) => {
-                // console.log(response);
-                commit('addBoard', response.data)
-                
-            })
-            .catch((error) => {
-                console.log(error);
-                
-            })
+        return new Promise((resolve, reject) => {
+            axios.post('/api/newBoard', data) 
+                .then((response) => {
+                    // console.log(response);
+                    commit('addBoard', response.data)
+                    resolve()
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject()
+                })
+        })
     },
 
     getUserBoards({commit}, data) {
@@ -144,12 +162,19 @@ const actions = {
     },
 
     deleteBoard({commit}, id) {
-        axios.delete('/api/deleteBoard', {data: {
-            id:id
-        }})
-            .then(() => {
-                alert('success')
-            })
+        return new Promise((resolve, reject) => {
+            axios.delete('/api/deleteBoard', {data: {
+                id:id
+            }})
+                .then(() => {
+                    commit('deleteBoard', id)
+                    resolve()
+                })
+                .catch((error) => {
+                    console.error(error);
+                    reject()
+                })
+        })
     },
 
     createList({commit}, data) {
@@ -340,12 +365,32 @@ const actions = {
                 console.error(error);
                 
             })
+    },
+
+    uBoard({commit}, data) {
+        return new Promise((resolve, reject) => {
+            axios.patch('/api/uBoard', data)     
+                .then((response) => {
+                    // console.log(response);
+                    commit('uBoard', response.data);
+                    resolve();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    reject();
+                })
+        })
     }
+}
+
+const modules = {
+    scrum
 }
 
 export default {
     state,
     getters,
     mutations,
-    actions 
+    actions,
+    modules 
 }

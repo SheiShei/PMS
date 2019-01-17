@@ -5,7 +5,7 @@
                 <b>{{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
-                <small>21213 pts</small>
+                <small>{{ listPoints }} pts</small>
                 <button class="" @click="revert"><span class="fa fa-edit"></span></button>
                 <button @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
             </div>
@@ -60,6 +60,14 @@ export default {
         ...mapGetters({
                 // boardLists: 'boardLists',
             }),
+        listPoints() {
+            let points = 0;
+            this.list.tasks.forEach(task => {
+                points = points + Number(task.points)
+            });
+
+            return points;
+        }
     },
     methods: {
         delListDiv(index){

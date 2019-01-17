@@ -5,6 +5,9 @@ use App\Board;
 use App\Sprint;
 use App\Card;
 use App\Task;
+use App\User;
+
+use Carbon\Carbon;
 
 use App\Events\AddListEvent;
 use App\Events\DeleteListEvent;
@@ -16,7 +19,21 @@ use App\Events\DeleteListTaskEvent;
 use App\Events\AddTaskAttachmentEvent;
 use App\Events\SendTaskCommentEvent;
 
+use App\Events\AddSprintEvent;
+use App\Events\UpdateSprintEvent;
+use App\Events\FinishSprintEvent;
+use App\Events\DeleteSprintEvent;
+use App\Events\SprintTaskOrderEvent;
+use App\Events\ISprintTaskOrderEvent;
+
+use App\Events\CreateBoardEvent;
+use App\Events\UpdateBoardEvent;
+use App\Events\DeleteBoardEvent;
+
+use App\Notifications\BoardCreated;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class BoardController extends Controller
 {
@@ -43,12 +60,18 @@ class BoardController extends Controller
 
         if($board->type == 2) {
             $sprint = $board->sprints()->create([
-                'name' => 'Sprint 1',
-                'created_by' => auth()->user()->id
+                'name' => 'Backlog',
+                'created_by' => auth()->user()->id,
+                'type' => 1
             ]);
         }   
 
-        return $board;
+        // auth()->user()->notify(new BoardCreated());
+        Notification::send($board->boardUsers()->get(), new BoardCreated($board));
+        
+        event(new CreateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
+
+        return $board->load('boardUsers.department', 'boardUsers.role');
     }
 
     public function newSprint(Request $request) {
@@ -86,21 +109,40 @@ class BoardController extends Controller
 
     public function deleteBoard(Request $request) {
         $board = Board::findOrFail($request->id);
+        event(new DeleteBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
         $board->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
     public function updateBoard(Request $request) {
         $board = Board::findOrFail($request->id);
-        $board->update([
-            'name' => $request->name
-        ]);
+        $board->boardUsers()->sync([]);
+        if($request->share == null) {
+            $board->update([
+                'name' => $request->name,
+                'privacy' => 1,
+            ]);
+        }
+        else {
+            $board->update([
+                'name' => $request->name,
+                'privacy' => 2,
+            ]);
+
+            $board->boardUsers()->attach($request->newId, ['added_by' => auth()->user()->id]);
+        }
+
+        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+
+        event(new UpdateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
+
+        return $board->load('boardUsers.department', 'boardUsers.role');
     }
 
     public function getUserBoards(Request $request) {
-        $query = Board::whereHas('boardUsers', function($query) {
+        $query = Board::with('boardUsers.department', 'boardUsers.role')->whereHas('boardUsers', function($query) {
             $query->where('user_id', auth()->user()->id);
-        });
+        })->orderBy('created_at', 'desc');
 
         if($request->type) {
             $query->where('type', $request->type);
@@ -339,5 +381,280 @@ class BoardController extends Controller
     public function getCBoard(Request $request) {
         $board = Board::find($request->id);
         return $board;
+    }
+
+    public function getScrumLists(Request $request) {
+        $board = Board::find($request->id);
+
+        $sprints = $board->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        foreach ($sprints as $key => $sprint) {
+            if($sprint->due_date == Carbon::now()->toDateString()){
+                $sprint->update([
+                    'finished_at' => Carbon::now()->toDateString()
+                ]);
+            }
+        }
+
+        return $sprints;
+    }
+
+    public function addsprint(Request $request) {
+        $board = Board::find($request->id);
+        $sprint = $board->sprints()->create([
+            'name' => $request->name,
+            'started_at' => $request->start,
+            'due_date' => $request->end,
+            'created_by' => auth()->user()->id,
+            'type' => 2
+        ]);
+
+        event(new AddSprintEvent($sprint->load('tasks')));
+
+        return $sprint->load('tasks');
+    }
+
+    public function updateSprint(Request $request) {
+        $sprint = Sprint::find($request->id);
+        
+        $sprint->update([
+            'name' => $request->name
+        ]);
+
+        event(new UpdateSprintEvent($sprint->load('tasks')));
+
+        return $sprint->load('tasks');
+    }
+    
+    public function deleteSprint(Request $request) {
+        $sprint = Sprint::find($request->id);
+        event(new DeleteSprintEvent($sprint));
+        
+        $sprint->delete();
+
+        return $sprint;
+    }
+
+    public function addSprintTask(Request $request) {
+        // return $request;
+        $order = count(Sprint::find($request->sprint_id)->tasks()->get());
+        if($request->status) {
+            $task = Task::create([
+                'sprint_id' => $request->sprint_id,
+                'name' => $request->name,
+                'description' => $request->desc,
+                'created_by' => auth()->user()->id,
+                'assigned_to' => $request->assign_to,
+                'assigned_by' => auth()->user()->id,
+                'order' => $order+1,
+                'status_order' => $order+1,
+                'status' => $request->status,
+                'points' => $request->points,
+                'due' => $request->due,
+            ]);
+        }
+        else {
+            $task = Task::create([
+                'sprint_id' => $request->sprint_id,
+                'name' => $request->name,
+                'description' => $request->desc,
+                'created_by' => auth()->user()->id,
+                'assigned_to' => $request->assign_to,
+                'assigned_by' => auth()->user()->id,
+                'order' => $order+1,
+                'status_order' => $order+1,
+                'status' => 1,
+                'points' => $request->points,
+                'due' => $request->due,
+            ]);
+        }
+        
+        if ($files = $request->file('files')) {
+            foreach ($files as $key => $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $newName = time() . $originalName;
+                $file->move('storage/task/', $newName);
+                $task->files()->create([
+                    'original_filename' => $originalName,
+                    'new_filename' => $newName,
+                    'extension' => $extension
+                ]);                
+            }
+        }
+
+        event(new AddListTaskEvent($task->load('assigned_to'), Sprint::find($request->sprint_id)->board_id));
+
+        return $task->load('assigned_to');
+    }
+
+    public function updateSprintOrder(Request $request) {
+        foreach ($request->tasks as $key => $task) {
+            $toUp = Task::find($task['id']);
+            $toUp->update([
+                'order' => $task['order'],
+                'sprint_id' => $task['sprint_id']
+            ]);
+        }
+
+        $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
+        // print_r($nlists);
+        event(new SprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+
+        return response()->json('Updated Successfully.', 200);
+    }
+
+    public function getSprintTasks(Request $request) {
+        $board = Board::find($request->id);
+
+        return $board->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+    }
+
+    public function updateSprintTaskOrder(Request $request) {
+        $tasks = Sprint::find($request->sprint_id)->tasks()->get();
+
+        foreach ($tasks as $key => $task) {
+            $id = $task->id;
+            foreach ($request->tasks as $updateTask) {
+                if($updateTask['id'] == $id) {
+                    $task->update([
+                        'status_order' => $updateTask['status_order'],
+                        'status' => $updateTask['status']
+                    ]);
+                }
+            }
+        }
+        $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
+        // print_r($nlists);
+        event(new ISprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+
+        return response()->json('Updated Successfully.', 200);
+    }
+
+    public function finishSprint(Request $request) {
+        $sprint = Sprint::where('id', $request->id)->with('tasks')->first();
+        $sprint->update([
+            'finished_at' => Carbon::now()->toDateString()
+        ]);
+
+        $backlogid = Sprint::where('board_id', $sprint->board_id)->where('name', 'Backlog')->first()->id;
+
+        foreach ($sprint->tasks as $key => $task) {
+            if($task['status'] != 4) {
+                $task->update([
+                    'sprint_id' => $backlogid
+                ]);
+            }
+        }
+
+        $sprints = Board::find($sprint->board_id)->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        
+        event(new FinishSprintEvent($sprints->toJson(), $sprint->board_id));
+        
+        return $sprints;
+
+    }
+
+    public function verifyBoardUsers(Request $request) {
+        $board = Board::where('id',$request->id)->where('type',$request->type)->first();
+
+        if($board) {
+            $verify = $board->boardUsers()->whereIn('user_id', [auth()->user()->id]);
+            if($verify) {
+                if($request->sprint_id) {
+                    $sprint = $board->sprints()->where('id', $request->sprint_id)->first();
+                    if($sprint) {
+                        return response()->json(['status' => 'authenticated'], 200);
+                    }
+                    return response()->json(['status' => 'error'], 200);
+                }
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+        }
+        return response()->json(['status' => 'error'], 200);
+    }
+
+    public function testFunc(Request $request) {
+        // return $request;
+        // $date1 = new \DateTime(Carbon::now()->toDateString());
+        // $date2 = new \DateTime('2019-01-11');
+        // $days  = $date2->diff($date1)->format('%a');
+        // return $days+1;
+        $dateNow = Carbon::now()->toDateString();
+
+        $query = User::with(['task_assigned_to' => function($q) use ($dateNow) {
+            $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc');
+        }]);
+
+        if($request->team) {
+            $query->where('department_id', $request->team);
+        }
+
+        $users = $query->get();
+
+        $tasks = [];
+
+        foreach ($users as $key => $user) {
+            $dependentOn = null;
+            foreach ($user->task_assigned_to as $key => $task) {
+
+                $date1 = new \DateTime(Carbon::now()->toDateString());
+                $date2 = new \DateTime($task['created_at']->toDateString());
+                $progressDays  = $date1->diff($date2)->format('%a');
+
+                $start = new \DateTime($task['created_at']->toDateString());
+                $end = new \DateTime($task['due']);
+                $durationDays  = $end->diff($start)->format('%a');
+
+
+                
+                if($progressDays <= 0) {
+                    $progressDays = 0;
+                }
+                else {
+                    $progressDays ++;
+                }
+                $durationDays ++;
+
+                $pPer = ($progressDays/$durationDays) * 100;
+                
+                if($key == 0) {
+                    $parentId = $task['id'];
+                    $mT = array(
+                        'id' => $task['id'], 
+                        'label' => $task['name'],
+                        'user' => '<img src="'.$user['picture'].'" class="workload-user-pic" />&nbsp;&nbsp;<a target="_blank" style="color:#0077c0;">'.$user['name'].'</a>',
+                        'start' => $task['created_at']->toDateString(),
+                        'end' => $task['due'],
+                        'duration' => $durationDays * 24 * 60 * 60,
+                        'progress' => round($pPer, 0),
+                        'key' => $key,
+                        'type' => 'task',
+                    );
+                }
+                else {
+                    $mT = array(
+                        'id' => $task['id'], 
+                        'label' => $task['name'],
+                        'user' => '',
+                        'start' => $task['created_at']->toDateString(),
+                        'end' => $task['due'],
+                        'duration' => $durationDays * 24 * 60 * 60,
+                        'progress' => round($pPer, 0),
+                        'key' => $key,
+                        'parentId' => $parentId,
+                        'dependentOn' => $dependentOn,
+                        'type' => 'task',
+                    );
+                }
+
+                $dependentOn = [$task['id']];
+                
+                
+                array_push($tasks, $mT);
+            }
+        }
+
+        return response()->json($tasks);
     }
 }
