@@ -13,7 +13,7 @@
                 </div>
                 <users-table :data="data" v-if="users">
                     <tr v-for="user in users" :key="user.id">
-                        <td class="text-center">{{ user.id }}</td>
+                        <!-- <td class="text-center">{{ user.id }}</td> -->
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.role.name }}</td>
