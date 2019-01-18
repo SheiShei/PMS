@@ -30533,8 +30533,8 @@ function setAuthorization(token) {
     window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
         // authEndpoint: '/broadcast',
         broadcaster: 'pusher',
-        key: "",
-        cluster: "mt1",
+        key: "22c7b2a3c635de52dc73",
+        cluster: "ap1",
         encrypted: false,
         auth: {
             headers: {
@@ -57196,7 +57196,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         var _this = this;
 
         this.$store.dispatch('getTandemsList').then(function () {
-            console.log(_this.tandemList);
+            // console.log(this.tandemList)
             $(_this.$el).find('.selectpicker').selectpicker('refresh');
         });
     },
@@ -65740,8 +65740,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -65751,6 +65749,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             brand: {
                 name: '',
                 brand_id: '',
+                board_id: '',
                 status: 1,
                 date_in: '',
                 date_due: ''
@@ -65773,15 +65772,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         };
     },
     created: function created() {
-        this.$store.dispatch('onCreate');
-        console.log(this.brands);
+        var _this = this;
+
+        this.$store.dispatch('onCreate').then(function () {
+            $(_this.$el).find('.selectpicker').selectpicker('refresh');
+        });
+        this.$store.dispatch('getUserBoards', { type: 2 }).then(function () {
+            $(_this.$el).find('.selectpicker').selectpicker('refresh');
+        });
     },
     mounted: function mounted() {
         // $('#ErrorNewJoWeb').modal('show');
     },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        brands: 'getBrands'
+        brands: 'getBrands',
+        boards: 'userBoards'
     })),
     methods: {
         addNewTask: function addNewTask() {
@@ -66015,9 +66021,73 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(1),
+                _vm.boards
+                  ? _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("label", { attrs: { for: "brand" } }, [
+                        _vm._v("Board:")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "btn-group bootstrap-select" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.board_id,
+                                expression: "brand.board_id"
+                              }
+                            ],
+                            staticClass: "selectpicker",
+                            attrs: {
+                              name: "board_id",
+                              "data-style": "btn btn-sm btn-info btn-simple",
+                              type: "text"
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.brand,
+                                  "board_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("---")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.boards, function(board) {
+                              return _c(
+                                "option",
+                                {
+                                  key: board.id,
+                                  domProps: { value: board.id }
+                                },
+                                [_vm._v(_vm._s(board.name))]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(1)
               ]),
               _vm._v(" "),
               _c("hr"),
@@ -66025,7 +66095,7 @@ var render = function() {
               _c("div", { staticClass: "row form-row" }, [
                 _c("div", { staticClass: "col-md-3" }, [
                   _c("div", { staticClass: "form-group" }, [
-                    _vm._m(3),
+                    _vm._m(2),
                     _vm._v(" "),
                     _c("input", {
                       directives: [
@@ -66051,7 +66121,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group" }, [
-                    _vm._m(4),
+                    _vm._m(3),
                     _vm._v(" "),
                     _c("input", {
                       directives: [
@@ -66078,7 +66148,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-9" }, [
-                  _vm._m(5),
+                  _vm._m(4),
                   _vm._v(" "),
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-md-3" }, [
@@ -67103,11 +67173,11 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-5" }, [
+                                      _vm._m(5, true),
+                                      _vm._v(" "),
                                       _vm._m(6, true),
                                       _vm._v(" "),
                                       _vm._m(7, true),
-                                      _vm._v(" "),
-                                      _vm._m(8, true),
                                       _vm._v(" "),
                                       _c("input", {
                                         staticClass: "btn-block",
@@ -67488,14 +67558,14 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(9),
+                _vm._m(8),
                 _vm._v(" "),
-                _vm._m(10)
+                _vm._m(9)
               ]),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _vm._m(11)
+              _vm._m(10)
             ]
           )
         ])
@@ -67519,9 +67589,9 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog modal-small " }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(12),
+            _vm._m(11),
             _vm._v(" "),
-            _vm._m(13),
+            _vm._m(12),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer text-center" }, [
               _c(
@@ -67567,9 +67637,9 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog modal-small " }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(14),
+            _vm._m(13),
             _vm._v(" "),
-            _vm._m(15),
+            _vm._m(14),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer text-center" }, [
               _c(
@@ -67610,39 +67680,6 @@ var staticRenderFns = [
       _c("h2", [
         _c("span", { staticClass: "fa fa-file-o" }),
         _vm._v(" Job Order Form - Web")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3 form-group" }, [
-      _c("label", { attrs: { for: "brand" } }, [_vm._v("Board:")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "btn-group bootstrap-select" }, [
-        _c(
-          "select",
-          {
-            staticClass: "selectpicker",
-            attrs: {
-              name: "board_id",
-              "data-style": "btn btn-sm btn-info btn-simple",
-              type: "text"
-            }
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("---")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Board 1")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Board 1")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Board 1")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Board 1")])
-          ]
-        )
       ])
     ])
   },
@@ -68354,6 +68391,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -68363,6 +68401,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             brand: {
                 name: '',
                 brand_id: '',
+                board_id: '',
                 status: 1,
                 date_in: '',
                 date_due: ''
@@ -68379,12 +68418,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         };
     },
     created: function created() {
-        this.$store.dispatch('onCreate');
-        console.log(this.brands);
+        var _this = this;
+
+        $(this.$el).find('.selectpicker').selectpicker('refresh');
+        this.$store.dispatch('onCreate').then(function () {
+            $(_this.$el).find('.selectpicker').selectpicker('refresh');
+        });
+        this.$store.dispatch('getUserBoards', { type: 1 }).then(function () {
+            $(_this.$el).find('.selectpicker').selectpicker('refresh');
+        });
     },
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        brands: 'getBrands'
+        brands: 'getBrands',
+        boards: 'userBoards'
     })),
     methods: {
         addNewTask: function addNewTask() {
@@ -68618,9 +68665,73 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(1),
+                _vm.boards
+                  ? _c("div", { staticClass: "col-md-3 form-group" }, [
+                      _c("label", { attrs: { for: "brand" } }, [
+                        _vm._v("Board:")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "btn-group bootstrap-select" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.brand.board_id,
+                                expression: "brand.board_id"
+                              }
+                            ],
+                            staticClass: "selectpicker",
+                            attrs: {
+                              name: "board_id",
+                              "data-style": "btn btn-sm btn-info btn-simple",
+                              type: "text"
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.brand,
+                                  "board_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("---")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.boards, function(board) {
+                              return _c(
+                                "option",
+                                {
+                                  key: board.id,
+                                  domProps: { value: board.id }
+                                },
+                                [_vm._v(_vm._s(board.name))]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(1)
               ]),
               _vm._v(" "),
               _c("hr"),
@@ -68628,7 +68739,7 @@ var render = function() {
               _c("div", { staticClass: "row form-row" }, [
                 _c("div", { staticClass: "col-md-4" }, [
                   _c("div", { staticClass: "form-group" }, [
-                    _vm._m(3),
+                    _vm._m(2),
                     _vm._v(" "),
                     _c("input", {
                       directives: [
@@ -68654,7 +68765,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group" }, [
-                    _vm._m(4),
+                    _vm._m(3),
                     _vm._v(" "),
                     _c("input", {
                       directives: [
@@ -68681,7 +68792,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-8" }, [
-                  _vm._m(5),
+                  _vm._m(4),
                   _vm._v(" "),
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-md-4" }, [
@@ -69119,7 +69230,7 @@ var render = function() {
               _c("div", { staticClass: "row" }, [
                 _c("div", { staticClass: "col-md-4" }, [
                   _c("div", { staticClass: "row" }, [
-                    _vm._m(6),
+                    _vm._m(5),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-6" }, [
                       _c("div", { staticClass: "checkbox" }, [
@@ -69424,7 +69535,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-8" }, [
                   _c("div", { staticClass: "row" }, [
-                    _vm._m(7),
+                    _vm._m(6),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-4" }, [
                       _c("div", { staticClass: "checkbox" }, [
@@ -69961,11 +70072,11 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-5" }, [
+                                      _vm._m(7, true),
+                                      _vm._v(" "),
                                       _vm._m(8, true),
                                       _vm._v(" "),
                                       _vm._m(9, true),
-                                      _vm._v(" "),
-                                      _vm._m(10, true),
                                       _vm._v(" "),
                                       _c("input", {
                                         staticClass: "btn-block",
@@ -70066,12 +70177,12 @@ var render = function() {
                   })
                 ]),
                 _vm._v(" "),
-                _vm._m(11)
+                _vm._m(10)
               ]),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _vm._m(12)
+              _vm._m(11)
             ]
           )
         ])
@@ -70095,9 +70206,9 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog modal-small " }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(13),
+            _vm._m(12),
             _vm._v(" "),
-            _vm._m(14),
+            _vm._m(13),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer text-center" }, [
               _c(
@@ -70138,33 +70249,6 @@ var staticRenderFns = [
       _c("h2", [
         _c("span", { staticClass: "fa fa-file-o" }),
         _vm._v(" Job Order Form - Creatives")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3 form-group" }, [
-      _c("label", { attrs: { for: "brand" } }, [_vm._v("Board:")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "btn-group bootstrap-select" }, [
-        _c(
-          "select",
-          {
-            staticClass: "selectpicker",
-            attrs: {
-              name: "board_id",
-              "data-style": "btn btn-sm btn-info btn-simple",
-              type: "text"
-            }
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("---")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Board 1")])
-          ]
-        )
       ])
     ])
   },
@@ -107504,11 +107588,15 @@ var actions = {
     onCreate: function onCreate(_ref) {
         var commit = _ref.commit;
 
-        axios.get('/api/onLoad').then(function (response) {
-            // console.log(response);
-            commit('setOnCreate', response.data);
-        }).catch(function (error) {
-            console.log(error);
+        return new Promise(function (resolve, reject) {
+            axios.get('/api/onLoad').then(function (response) {
+                // console.log(response);
+                commit('setOnCreate', response.data);
+                resolve();
+            }).catch(function (error) {
+                console.log(error);
+                reject();
+            });
         });
     },
     newJOC: function newJOC(_ref2, data) {
@@ -107795,11 +107883,15 @@ var actions = {
     getUserBoards: function getUserBoards(_ref2, data) {
         var commit = _ref2.commit;
 
-        axios.post('/api/getUserBoards', data).then(function (response) {
-            // console.log(response);
-            commit('setUserBoards', response.data);
-        }).catch(function (error) {
-            console.log(error);
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/getUserBoards', data).then(function (response) {
+                // console.log(response);
+                commit('setUserBoards', response.data);
+                resolve();
+            }).catch(function (error) {
+                console.log(error);
+                reject();
+            });
         });
     },
     deleteBoard: function deleteBoard(_ref3, id) {
