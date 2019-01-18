@@ -129,7 +129,7 @@ export default {
     created() {
         this.$store.dispatch('getTandemsList')
             .then(() => {
-                console.log(this.tandemList)
+                // console.log(this.tandemList)
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
     },

@@ -150,15 +150,18 @@ const actions = {
     },
 
     getUserBoards({commit}, data) {
-        axios.post('/api/getUserBoards', data)
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/getUserBoards', data)
             .then(response => {
                 // console.log(response);
                 commit('setUserBoards', response.data)
+                resolve();
             })
             .catch(error => {
                 console.log(error);
-                
+                reject();
             })
+        })
     },
 
     deleteBoard({commit}, id) {

@@ -20,7 +20,7 @@ class BoardCreated extends Notification implements ShouldQueue
      */
     public function __construct($board)
     {
-        $this->board = $board;
+        $this->board = json_decode($board, true);
     }
 
     /**
@@ -42,15 +42,15 @@ class BoardCreated extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        if($this->board->type == 1) {
+        if($this->board['type'] == 1) {
             return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', config('services.passport.login_endpoint').'boards/kanban/'.$this->board->id)
+                    ->action('Notification Action', config('services.passport.login_endpoint').'boards/kanban/'.$this->board['id'])
                     ->line('Thank you for using our application!');
         }
         return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', config('services.passport.login_endpoint').'boards/scrum/'.$this->board->id)
+                    ->action('Notification Action', config('services.passport.login_endpoint').'boards/scrum/'.$this->board['id'])
                     ->line('Thank you for using our application!');
     }
 
@@ -62,9 +62,12 @@ class BoardCreated extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
+        $name = (string)$this->board['created_by']['name'];
+        // var_dump($name);
+        // $name = 'shei';
         return [
-            'data' => 'Shei added you to Captivate board',
-            'action' => '/boards/kanban/'.$this->board->id
+            'data' => $name.' added you to '.$this->board['name'].' board',
+            'action' => '/boards/kanban/'.$this->board['id']
         ];
     }
 }
