@@ -29,7 +29,7 @@
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
         </div>
-        <router-link :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add task</span></router-link>
+        <router-link :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="text-center add-task-btn" href=""><span class="icon-sm icon-add"></span><span>+ Add Task</span></router-link>
     </div>
 </template>
 

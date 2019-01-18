@@ -22,10 +22,12 @@
         <div class="table-responsive" style="margin-top: 10px; max-height: 35vh; overflow:auto">
             <table class="table table-bordered table-brands">
                 <thead>
+                    <tr>
                     <th>Brand Name</th>
                     <th>Date Added</th>
                     <th>Total JO</th>
                     <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
                    <slot></slot>

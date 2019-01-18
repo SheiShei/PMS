@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-file-o"></span> Job Order Form - Web <small>Panel</small></h2>
+            <h2><span class="fa fa-file-o"></span> Job Order Form - Web</h2>
         </div>
 
         <div class="first-column col-md-1"></div>

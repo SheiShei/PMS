@@ -21,6 +21,10 @@ import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
 import Axios from 'axios';
 import Workload from './components/views/pages/Workload.vue';
+import Workbook from './components/views/pages/Workbook.vue';
+import AddWorkbook from './components/views/pages/workbook/AddWorkbook.vue';
+import ViewWorkbook from './components/views/pages/workbook/ViewWorkbook.vue';
+import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWorkbook.vue';
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
@@ -75,7 +79,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brand-profile-:brandId',
+                path: 'brands/brand-profile-:brandId',
                 name: 'brand_profile',
                 component: BrandProfile,
                 props: true,
@@ -92,7 +96,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brands/jo',
+                path: 'jo',
                 name: 'all_jo_list',
                 component: JobOrders,
                 meta: {
@@ -100,7 +104,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brands/:id/jo',
+                path: 'brands/jo/:id',
                 name: 'brands_jo_list',
                 component: JobOrders,
                 meta: {
@@ -116,7 +120,7 @@ export const routes = [
                 },
             },
             {
-                path: 'new-jo-web',
+                path: 'jo/new-jo-web',
                 name: 'new_jo_web',
                 component: NewJobOrderWeb,
                 meta: {
@@ -124,7 +128,7 @@ export const routes = [
                 },
             },
             {
-                path: 'new-jo-creative',
+                path: 'jo/new-jo-creative',
                 name: 'new_jo_creative',
                 component: NewJobOrderCreative,
                 meta: {
@@ -159,6 +163,38 @@ export const routes = [
                 path: 'workload',
                 name: 'workload',
                 component: Workload,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook',
+                name: 'workbook',
+                component: Workbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/add',
+                name: 'add_workbook',
+                component: AddWorkbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/view',
+                name: 'view_workbook',
+                component: ViewWorkbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/review',
+                name: 'review_workbook',
+                component: ClientViewWorkbook,
                 meta: {
                     requiresAuth: true
                 }

@@ -24,7 +24,7 @@
             <table class="table table-bordered table-brands">
                 <thead>
                     <tr>
-                        <th class="text-center">ID</th>
+                        <!-- <th class="text-center">ID</th> -->
                         <th class="">Name</th>
                         <th>Email</th>
                         <th>Type</th>
@@ -56,7 +56,7 @@ export default {
     methods: {
         getUsersData() {
             let data = this.data
-            this.$store.dispatch('setUsers', {url : '/api/shittycaptivateusers', data});
+            this.$store.dispatch('setUsers', data);
         },
 
         search: _.debounce(function (e) {

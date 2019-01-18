@@ -1,3 +1,3 @@
 <template>
-    <p>Please select a chat to start messaging.</p>
+    <p style="margin: auto auto">Please select a chat to start messaging.</p>
 </template>

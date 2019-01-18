@@ -15,6 +15,7 @@ use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
+        // return $request;
         if($request->notArchive){
             $query = User::with('role:id,name')->with('department:id,name')->orderBy('created_at', 'desc');
         }

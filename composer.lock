@@ -1015,16 +1015,16 @@
         },
         {
             "name": "laravel/passport",
-            "version": "v7.0.4",
+            "version": "v7.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "670a358d15e4320bd5d2ddb0253ec65344df4a3c"
+                "reference": "d7f24f6d4e95049b04369d60596d7a5b619a1dc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/670a358d15e4320bd5d2ddb0253ec65344df4a3c",
-                "reference": "670a358d15e4320bd5d2ddb0253ec65344df4a3c",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/d7f24f6d4e95049b04369d60596d7a5b619a1dc9",
+                "reference": "d7f24f6d4e95049b04369d60596d7a5b619a1dc9",
                 "shasum": ""
             },
             "require": {
@@ -1080,7 +1080,7 @@
                 "oauth",
                 "passport"
             ],
-            "time": "2018-12-31T15:03:54+00:00"
+            "time": "2019-01-02T10:25:07+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -1261,7 +1261,7 @@
                 {
                     "name": "Luís Otávio Cobucci Oblonczyk",
                     "email": "lcobucci@gmail.com",
-                    "role": "developer"
+                    "role": "Developer"
                 }
             ],
             "description": "A simple library to work with JSON Web Token and JSON Web Signature",
@@ -3444,16 +3444,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e"
+                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
-                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/cfd5dc225767ca154853752abc93aeec040fcf36",
+                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36",
                 "shasum": ""
             },
             "require": {
@@ -3490,7 +3490,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2018-07-29T20:33:41+00:00"
+            "time": "2018-10-30T17:29:25+00:00"
         },
         {
             "name": "webpatser/laravel-uuid",

@@ -10,7 +10,7 @@
   <g class="gantt-elastic__calendar-wrapper" :style="root.style('calendar-wrapper')">
     <foreignObject :x="getX" :y="getY" :width="getWidth" :height="root.state.calendar.height">
       <div class="gantt-elastic__calendar" :style="root.style('calendar')" xmlns="http://www.w3.org/1999/xhtml"></div>
-    </foreignObject>
+    </foreignObject> 
     <calendar-row
       class="gantt-elastic__calendar-row--month"
       v-for="month in months"

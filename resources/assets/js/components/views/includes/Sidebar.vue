@@ -6,6 +6,14 @@
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
         <div class="menu-list"  v-if="cUser">
             <ul id="menu-content" class="menu-content collapse out">
+
+                <li class="profile-link">
+                    <img src="/images/default.png"/>
+                    <p>Samantha Millos<span>ADMIN</span></p>
+                    <!-- <p><small>ACMA</small></p> -->
+                </li>
+
+
                 <!-- <li class=""> -->
                     <router-link :to="{ name: 'dashboard' }" tag="li" active-class="active" exact>
                         <i class="fa fa-dashboard fa-lg"></i>&nbsp;&nbsp;&nbsp;Dashboard
@@ -17,8 +25,40 @@
                         <i class="fa fa-user-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Employees
                     </router-link>
                 <!-- </li> -->
+                    <router-link :to="{ name: 'workbook' }" tag="li" active-class="active">
+                        <i class="fa fa-book fa-lg"></i>&nbsp;&nbsp;&nbsp;Workbook
+                    </router-link>
 
-                <!-- <li class="" v-if="cUser.role.id === 4"> -->
+                    <router-link :to="{ name: 'messages'}" tag="li" active-class="active" >
+                        <i class="fa fa-commenting-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Messages
+                        <!--Will appear when new message was sent-->
+                        <span class="new-msg-dot fa fa-circle fa-xs text-warning"></span>
+                    </router-link>
+
+                    <router-link :to="{ name: 'brands' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
+                        <i class="fa fa-suitcase fa-lg"></i>&nbsp;&nbsp;&nbsp;Brands 
+                        <!-- <span class="arrow"></span> -->
+                    </router-link>
+
+                    <router-link :to="{ name: 'all_jo_list' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
+                        <i class="fa fa-copy fa-lg"></i>&nbsp;&nbsp;&nbsp;Job Order 
+                        <!-- <span class="arrow"></span> -->
+                    </router-link>
+
+                    <!-- <ul class="sub-menu collapse" id="brandsList">
+                    <li data-toggle="collapse" class="collapsed">
+                        <router-link :to="{ name: 'brands' }" >
+                            <i class="fa fa-circle-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Overview
+                        </router-link>
+                    </li>
+                    <li data-toggle="collapse" class="collapsed">
+                        <router-link :to="{ name: 'brands' }">
+                            <i class="fa fa-circle-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Blue Books
+                        </router-link>
+                    </li>
+                </ul> -->
+
+                <!-- <li class="" v-if="cUser.role.id !== 4"> -->
                     <router-link :to="{ name: 'boards' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
                         <i class="fa fa-trello fa-lg"></i>&nbsp;&nbsp;&nbsp;Boards
                     </router-link>
@@ -45,35 +85,23 @@
                     </li>
                 </ul>  -->
 
-                <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#brandsList" class="collapsed">
-                    <!-- <router-link :to="{ name: 'brands' }" data-toggle="collapse" data-target="#brandsList" class="collapsed" tag="li" active-class="active"> -->
+                <!-- <li v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#brandsList" class="collapsed"> -->
+                    <!-- <router-link :to="{ name: 'brands' }" v-if="cUser.role.id !== 4" data-toggle="collapse" data-target="#brandsList" class="collapsed" tag="li" active-class="active">
                         <i class="fa fa-suitcase fa-lg"></i>&nbsp;&nbsp;&nbsp;Brands <span class="arrow"></span>
-                    <!-- </router-link> -->
-                </li> 
+                    </router-link> -->
+                <!-- </li>  -->
 
-                <ul class="sub-menu collapse" id="brandsList">
-                    <li data-toggle="collapse" class="collapsed">
-                        <router-link :to="{ name: 'brands' }" >
-                            <i class="fa fa-circle-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Overview
-                        </router-link>
-                    </li>
-                    <li data-toggle="collapse" class="collapsed">
-                        <router-link :to="{ name: 'brands' }">
-                            <i class="fa fa-circle-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Blue Books
-                        </router-link>
-                    </li>
-                </ul>
 
                 <!-- <li v-if="cUser.role.id !== 4"> -->
-                    <router-link :to="{ name: 'workload' }" tag="li" active-class="active">
+                    <router-link :to="{ name: 'workload' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
                         <i class="fa fa-align-left fa-lg"></i>&nbsp;&nbsp;&nbsp;Workload
                     </router-link>
                 <!-- </li> -->
 
                 <!-- <li class=""> -->
-                    <router-link :to="{ name: 'messages'}" tag="li" active-class="active" >
+                    <!-- <router-link :to="{ name: 'messages'}" tag="li" active-class="active" >
                         <i class="fa fa-commenting-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Messages
-                    </router-link>
+                    </router-link> -->
                 <!-- </li> -->
 
                 <!-- <li class="">
@@ -142,3 +170,34 @@ export default {
 
 }
 </script>
+
+<style scoped lang="scss">
+.profile-link{
+    padding: 10px auto !important;
+    text-align: center;
+    img{
+        margin-top: 5px;
+        height: 40px; 
+        width: 40px;
+        border-radius: 50%;
+    }
+    p{
+        margin-top: 3px;
+        margin-bottom: 5px;
+    }
+    p span{
+        display: block;
+    }
+    span{
+        line-height: 10px;
+        font-size: 9px;
+        text-transform: uppercase;
+    }
+}
+.profile-link:hover{
+    background-color: unset;
+    cursor:default;
+
+}
+
+</style>
