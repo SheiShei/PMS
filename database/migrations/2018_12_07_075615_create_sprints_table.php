@@ -19,6 +19,10 @@ class CreateSprintsTable extends Migration
             $table->char('board_id', 36)->index();
             $table->string('name');
             $table->char('created_by', 36)->index();
+            $table->tinyInteger('type');
+            $table->date('started_at')->nullable();
+            $table->date('finished_at')->nullable();
+            $table->date('due_date')->nullable();
             $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

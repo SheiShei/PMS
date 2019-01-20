@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-user-o"></span> Employees <small>Manage Employees</small></h2>
+            <h2><span class="fa fa-user-o"></span> Employees</h2>
         </div>
 
         <div class="col-md-9">
@@ -13,7 +13,7 @@
                 </div>
                 <users-table :data="data" v-if="users">
                     <tr v-for="user in users" :key="user.id">
-                        <td class="text-center">{{ user.id }}</td>
+                        <!-- <td class="text-center">{{ user.id }}</td> -->
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.role.name }}</td>

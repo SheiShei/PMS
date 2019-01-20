@@ -2,11 +2,11 @@
     <section class="main-main-container" style="">
 
         <div class="title-head">
-            <h2><span class="fa fa-suitcase"></span> Brands <small>Panel</small></h2>
+            <h2><span class="fa fa-suitcase"></span> Brands</h2>
         </div>
 
         <div class="first-column col-md-8 col-sm-12"> 
-            <div class="mybox">
+            <!-- <div class="mybox">
                 <div class="mybox-head">
                     <h6><strong>SUMMARY </strong></h6>
                 </div>
@@ -55,7 +55,7 @@
                             </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="mybox">
                 <div class="mybox-head">
@@ -63,7 +63,6 @@
                 </div>
                 <brands-filter-search :data="data">
                                 <tr v-for="brand in brands" :key="brand.id">
-                                    <td>{{ brand.id  }}</td>
                                     <td>{{ brand.name }}</td>
                                     <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
                                     <!-- <td>{{ moment }}(brand.created_at).format("MMM D, YYYY")}}</td> -->
@@ -82,50 +81,19 @@
                                          </button>
                                     </td>
                                 </tr>
-                </brands-filter-search>       
-             </div>
+                       
+                </brands-filter-search>    
                 <div class="mybox-footer">
                     <div class="row">
-                        <div class="col-md-12">
-                            <router-link :to="{name: 'new_brand'}" class="btn btn-sm btn-info pull-right">+ New Brand</router-link>
+                        <div class="col-md-12 text-right">
+                            <router-link :to="{name: 'new_brand'}" tag="button" class="btn btn-sm btn-success">+ New Brand</router-link>
                         </div>
                     </div> 
-                </div>
+                </div>   
+             </div>
             </div>
         
         <div class="sec-column col-md-4 col-sm-12">
-            <div class="mybox">
-                <div class="mybox-head">
-                    <h6><strong>ACTIVE JOB ORDERS</strong></h6>
-                </div>
-                <div class="mybox-body white-bg" v-if="jos">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="jo-list">
-                                <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
-                                    <router-link v-if="jo.type == 1" :to="{name: 'viewjocreative', params: {jo_id: jo.id}}">
-                                        <span class="fa fa-file-o"></span>
-                                        {{ jo.name }}
-                                    </router-link>
-                                    <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
-                                        <span class="fa fa-file-o"></span>
-                                        {{ jo.name }}
-                                    </router-link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> 
-                </div> 
-                <div class="mybox-footer">
-                    <div class="row text-center">
-                        <div class="col-md-12">
-                            <router-link :to="{name: 'all_jo_list'}" class="btn btn-sm btn-info btn-md btn-simple">See All Job Order Forms</router-link>
-                        </div>
-                        <div class="col-md-12">
-                        </div>
-                    </div>
-                </div>                                     
-            </div>
             <div class="mybox">
                 <div class="mybox-head">
                     <h6><strong>NEW JOB ORDER</strong></h6>
@@ -167,6 +135,38 @@
                     </div>
                 </div>                                      -->
             </div>
+            <div class="mybox">
+                <div class="mybox-head">
+                    <h6><strong>ACTIVE JOB ORDERS</strong></h6>
+                </div>
+                <div class="mybox-body white-bg" v-if="jos">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="jo-list">
+                                <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
+                                    <router-link v-if="jo.type == 1" :to="{name: 'viewjocreative', params: {jo_id: jo.id}}">
+                                        <span class="fa fa-file-o"></span>
+                                        {{ jo.name }}
+                                    </router-link>
+                                    <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
+                                        <span class="fa fa-file-o"></span>
+                                        {{ jo.name }}
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> 
+                </div> 
+                <div class="mybox-footer">
+                    <div class="row text-center">
+                        <div class="col-md-12">
+                            <router-link :to="{name: 'all_jo_list'}" class="btn btn-sm btn-info btn-md btn-simple">See All Job Order Forms</router-link>
+                        </div>
+                        <div class="col-md-12">
+                        </div>
+                    </div>
+                </div>                                     
+            </div>
         </div>
 
     </section>
@@ -194,7 +194,7 @@ export default {
             jo: '',
             disabled: true,
             data: {
-                filter: {position: 'asc', category:'name'},
+                filter: {position: 'desc', category:'created_at'},
                 search: '',
                 notArchive: true
                 
@@ -230,7 +230,6 @@ export default {
     created() {
         let data = this.data;
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
-        this.$store.dispatch('getTandemsList');
         const ndata = {
             search: '',
             sort: 'created_at.desc'

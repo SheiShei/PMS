@@ -39,21 +39,18 @@ class BrandsController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
-           'telephone' => 'required|string|max:15',
-           'mobile' => 'required',
            'tandem_id' => 'required',
-           'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-           //'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
         ]);
 
-        
         $input = $request->all();
+        $name = null;
     
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('./images/logo', $name);
+            $file->move('images/logo/', $name);
+            // $file->copy('/images/logo/'.$name, '/images');
+            copy('images/logo/'.$name, 'images/'.$name);
             $input['logo'] = $name;
         }
         if(!$request->hasFile('logo')){
@@ -81,6 +78,15 @@ class BrandsController extends Controller
             'picture' => $brand->logo
         ]);
 
+        User::create([
+            'brand_id' => $brand->id,
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>bcrypt($request->password),
+            'role_id'=>4,
+            'picture'=>$input['logo'] //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
+        ]);
+
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
 
     }
@@ -89,10 +95,8 @@ class BrandsController extends Controller
        
         $brand = Brand::findOrFail($request->id);
         $brand->delete();
-
         $user = User::where('brand_id', $request->id)->first();
         $user->delete();
-
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
@@ -142,7 +146,7 @@ class BrandsController extends Controller
         
         //$brand = Brand::findOrFail($request->file('id'));
         $brand = Brand::findOrFail($request->id);
-        $user = User::where('brand_id', $request->id)->first();        
+        $user = User::where('brand_id', $request->id)->first();
         $input = $request->all();
        
         if($file = $request->file('logo')){
@@ -152,27 +156,12 @@ class BrandsController extends Controller
         }
         
 
-        $brand->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'telephone' => $request->telephone,
-            'mobile' => $request->mobile,
-            'tandem_id' => $request->tandem_id,
-            'about' => $request->about,
-            'logo' => $input['logo'],
-            'contact_person' => $request->contact_person
-        ]);
-
+       // dd($request);
+        $brand->update($input);
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-           // 'role_id' => 4,
-           // 'brand_id' => $request->id,
             'picture' => $input['logo']
         ]);
-
 
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();

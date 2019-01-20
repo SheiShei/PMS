@@ -137,9 +137,14 @@ ul > li > span.page-of:hover{
 
 /*PAGE HEADER*/
 .title-head{
-  padding: 8px 15px;
-  background-color: #eeeeee; 
-  width: 100%
+  padding: 13px 15px !important;
+    width: 100%;
+    line-height: 50px !important;
+    background-color: rgb(67, 160, 185);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
 
 .title-head > h2 {
@@ -182,6 +187,7 @@ ul > li > span.page-of:hover{
     float: left; 
     position:relative;
     padding: 0;
+    background-color: whitesmoke;
   } 
   .pl-10 {
     padding-left: 10px !important;
@@ -205,7 +211,7 @@ ul > li > span.page-of:hover{
   }
   .nav-side-menu .brand {
     background-color: #00161c;
-    line-height: 54px;
+    line-height: 50px;
     display: block;
     text-align: center;
     font-size: 14px;
@@ -246,7 +252,9 @@ ul > li > span.page-of:hover{
     // float: right;
   }
   .nav-side-menu ul .active,
-  .nav-side-menu li .active {
+  .nav-side-menu li .active,
+  .nav-side-menu li.router-link-active,
+  .nav-side-menu li.router-link-exact-active, {
     border-left: 3px solid #00bcd4;
     background-color: #4f5b69;
   }
@@ -262,7 +270,7 @@ ul > li > span.page-of:hover{
   }
   .nav-side-menu ul .sub-menu li,
   .nav-side-menu li .sub-menu li {
-    background-color: #181c20;
+    background-color: #2e353d;
     padding: 5px 47px;
     border: none;
     line-height: 28px;
@@ -271,7 +279,7 @@ ul > li > span.page-of:hover{
   }
   .nav-side-menu ul .sub-menu li:hover,
   .nav-side-menu li .sub-menu li:hover {
-    background-color: #020203;
+    background-color: rgb(55, 155, 185);
   }
   .nav-side-menu ul .sub-menu li:before,
   .nav-side-menu li .sub-menu li:before {
@@ -283,7 +291,7 @@ ul > li > span.page-of:hover{
     vertical-align: middle;
   }
   .nav-side-menu li {
-    padding: 3px 5px;
+    padding: 3px 20px;
     // border-left: 3px solid #2e353d;
     // border-bottom: 1px solid #23282e;
   }
@@ -292,13 +300,13 @@ ul > li > span.page-of:hover{
     color: #ffffff;
     display: block;
   }
-  .nav-side-menu li a i {
-    padding-left: 10px;
-    width: 20px;
-    padding-right: 20px;
-  }
+  // .nav-side-menu li a i {
+  //   padding-left: 10px;
+  //   width: 20px;
+  //   padding-right: 20px;
+  // }
   .nav-side-menu li:hover {
-    border-left: 4px solid #e6fcff;
+    // border-left: 4px solid #e6fcff;
     background-color:  rgb(55, 155, 185) /* #5ebfff*/;
     -webkit-transition: all .5s ease;
     -moz-transition: all .5s ease;
@@ -306,11 +314,11 @@ ul > li > span.page-of:hover{
     -ms-transition: all .5s ease;
     transition: all .5 s ease;
   }
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     .nav-side-menu {
       position: relative;
       width: 100%;
-      margin-bottom: 10px;
+      // margin-bottom: 10px;
     }
     .nav-side-menu .toggle-btn {
       display: block;
@@ -332,7 +340,7 @@ ul > li > span.page-of:hover{
       line-height: 50px !important;
     }
   }
-  @media (min-width: 767px) {
+  @media (min-width: 768px) {
     .nav-side-menu .menu-list .menu-content {
       display: block;
     }
@@ -560,10 +568,18 @@ hr{
 #message-component .date-sent{
   padding: 3px auto;
   text-align: center;
+  text-transform: uppercase;
+  font-size: 11px;
   /* color:white; */
   color: #bfbfbf;
   /* background-color: rgba(255,255,255,0.2); */
   /* border-top: 1px dashed white; */
+}
+#message-component .group-created{
+  padding: 3px auto;
+  text-align: center;
+  font-size: 10px;
+  color: #bfbfbf;
 }
 #message-component .my-time-sent-div,
 #message-component .their-time-sent-div{
@@ -637,6 +653,9 @@ hr{
   color:white;
   margin: 0;
 }
+#message-component .my-msg > a{
+  color:white;
+}
 /* .msg-my-msg{
   background-color: #e4dcdc;
   border: 1px solid gray;
@@ -671,6 +690,7 @@ hr{
 #message-component .contacts-cont{
   width: 40%;
   position: relative;
+  border-right: 1px solid #d3d3d3;
 }
 #message-component .cont-head{
   padding: 0;
@@ -703,7 +723,7 @@ hr{
 }
 #message-component .main-msg-body{
   width: 75%;
-  border-left: 1px solid #e4dcdc;
+  // border-left: 1px solid #e4dcdc;
   /* padding: 2px; */
   position: relative;
 }
@@ -730,7 +750,7 @@ hr{
 #message-component .head-name{
   vertical-align: middle;
   /* margin: 14px 10px; */
-  color: white;
+  color: black;
 }
 #message-component .msg-display{
   display: relative;
@@ -823,7 +843,10 @@ hr{
   font-size: 15px;
 }
 
-
+.new-msg-dot{
+  font-size: 7px; 
+  vertical-align: text-top;
+}
 // VIEW JO STYLES
 .taskimgdiv{
   /* max-width:fit-content; 
@@ -986,24 +1009,207 @@ padding-bottom: 20px;
 // display: flex;
 // position: relative;
 }
-.board-header{
-width: 100%;
-color: white;
-.board-name{
-display:inline-block;
-h4{
-  margin: 10px 0; 
-}
-}
-.board-info{
-display:inline-block;
-margin-left: 20px;
-p{
-  font-size: 12px;
-}
-}
+.board-header,
+.workload-header{
+  width: 100%;
+  color: white;
+  .board-name,
+  .workload-name{
+    display:inline-block;
+    h4{
+      margin: 10px 0; 
+    }
+  }
+  .board-info,
+  .workload-info{
+    display:inline-block;
+    margin-left: 20px;
+    p{
+      font-size: 12px;
+    }
+  }
 }
 .board-wrapper{
 padding: 0 20px;
 }
+
+/*lipat hehe */
+
+    //Gallery style
+    .kanban-component .btn-eks{
+      position: absolute;
+      top: 2px;
+      right: 0;
+  }
+  .kanban-component .gallery{
+      width: 100%;
+      background-color: rgba(0,0,0,0.6);
+      height: 100%;
+      margin: 0 auto;
+      text-align: center;
+      padding: 30px auto;
+  }
+  //end of Gallery style
+
+  // TASK VIEW
+  .kanban-component .taskView{
+      background-color: white;
+      height: 80%; 
+      overflow-y: auto;
+      width: 80%;
+      padding: 10px 30px; 
+      margin: 5% auto; 
+      border-radius: 5px;
+      input, textarea, select {
+          padding: 8px 12px;
+          height: auto;
+          
+      }
+      label{
+          color: #4d4d4d;
+      }
+      .formfooter{
+          position: absolute;
+          bottom: 0;
+          left: 0;
+      }
+  }
+
+  //comment section
+  .kanban-component .comment-icon{
+      height: 20px; 
+      width: 20px; 
+      border-radius: 50%;
+  }
+  .kanban-component .comment-box{
+      background-color: #f9f9f9; 
+      max-height: 300px; 
+      overflow-y: auto; 
+      border: 1px solid #e4e3e3;
+  }
+  .kanban-component .comment-input-wrap{
+      display: inline-flex;
+      width: 100%;
+      vertical-align: middle;
+      background-color: white;
+      box-sizing: border-box;
+      padding: 2px 10px;
+      position: relative;
+      min-height: 70px;
+  }
+  .kanban-component .comment-input-wrap > textarea{
+      width:80%;
+  }
+  .kanban-component .comment-input-wrap > button{
+      width: 10%;
+  }
+  .kanban-component .comment-msg{
+      padding: 3px 10px;
+
+      h6{
+          margin: 3px 0; 
+      }
+      p{
+          margin: 3px 25px;
+      }
+      .comment-comment > img{
+          margin: 3px 25px;
+      }
+  }
+  //end of comment section
+  //end of Task View
+
+  //ADD TASK style
+  .kanban-component .newTaskForm{
+      background-color: white;
+      height: auto; 
+      width: 500px; 
+      padding: 10px 30px; 
+      margin: 5% auto; 
+      border-radius: 5px;
+      input, textarea, select {
+          padding: 8px 12px;
+          height: auto;
+      }
+      label{
+          color: #4d4d4d;
+      }
+      .formfooter{
+          position: absolute;
+          bottom: 0;
+          left: 0;
+      }
+  }
+  //end of ADD TASK style
+  
+  //stay here
+  .kanban-component .btn-close{
+      padding: 3px 5px;
+      font-size: 11px;
+      margin: 0;
+      border-radius: 2px;
+  }
+  .kanban-component .btn-close:hover{
+      color: rgb(235, 42, 42);
+  }
+
+  /* gawagawa */
+  .kanban-component #ataskment-wrapper{
+      overflow-x:hidden;
+  }
+  .kanban-component .ataskment{
+      margin-top: 8px;
+  }
+  .kanban-component .media p{
+      font-size: 14px;
+      margin: 0;
+      color: unset;
+  }
+  .kanban-component .media-left{
+      padding: 0;
+      padding-right: 10px;
+  }
+  .kanban-component .ataskment-thumb{
+      background-color: rgba(9,45,66,.08);
+      background-position: 50%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      border-radius: 3px;
+      height: 80px;
+      width: 112px;
+      display:block;
+  }
+  .kanban-component .ataskment-thumb > span{
+      color: #6b808c;
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      height: 100%;
+      line-height: 80px;
+      text-align: center;
+      text-transform: uppercase;
+      text-decoration: none;
+      width: 100%;
+  }
+  .kanban-component .taskInput{
+      background: transparent;
+      outline: none;
+      border: none;
+  }
   //end of KANBAN STYLES
+
+//Workbook Styles
+.blue-select{
+  border: 1px solid #43a0b9;
+  padding: 4px;
+  color: #43a0b9;
+  border-radius: 3px;
+}
+.blue-input{
+      padding: 5px;
+      line-height: normal;
+      border: 1px solid #43a0b9;
+      color: #43a0b9;
+      border-radius: 3px;
+  }
+//end of Workbook Styles

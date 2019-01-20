@@ -1,7 +1,7 @@
 <template>
     <section class="main-main-container" style="" v-if="jos && cUser">
         <div class="title-head">
-            <h2><span class="fa fa-copy"></span> Job Orders <small>List</small></h2>
+            <h2><span class="fa fa-copy"></span> Job Orders</h2>
         </div>
         <div class="col-md-9">
             <div class="mybox">
@@ -48,7 +48,7 @@
                                     <td v-if="jo.type == 2">Web</td>
                                     <td>{{ jo.brand.name }}</td>
                                     <td>
-                                        <span v-if="jo.status == 1" class="label label-warning">Active</span>
+                                        <span v-if="jo.status == 1" class="label label-info">Active</span>
                                         <span v-if="jo.status == 2" class="label label-success">Completed</span>
                                         <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
                                     </td>
@@ -82,8 +82,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="note">Select a JO type to create a new Job Order form.</p>
-                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Web JO</router-link>
-                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ Create New Creatives JO</router-link>
+                            <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ New Web JO</router-link>
+                            <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ New Creatives JO</router-link>
                         </div>
                                     
                     </div> 

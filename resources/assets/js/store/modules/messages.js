@@ -76,6 +76,12 @@ const mutations = {
 
     insertLoadMessage(state, data) {
         state.messages.unshift(data);
+    },
+
+    sendFiles(state, data) {
+        data.forEach(file => {
+            state.messages.push(file)
+        });
     }
 };
 
@@ -146,6 +152,7 @@ const actions = {
             })
                 .then( (response) => {
                     // console.log(response);
+                    commit('sendFiles', response.data);
                     resolve(response);
                 })
                 .catch( (error) => {
@@ -164,7 +171,8 @@ const actions = {
                 }
             })
                 .then( (response) => {
-                    console.log(response);
+                    // console.log(response);
+                    commit('sendFiles', response.data);
                     resolve(response);
                 })
                 .catch( (error) => {
@@ -217,7 +225,7 @@ const actions = {
             axios.post('/api/sendFiles', data, config)
                 .then((response) => {
                     // console.log(response);
-                    // commit('setConvoMessages', response.data);
+                    commit('sendFiles', response.data);
                     resolve(response);
 
                 })

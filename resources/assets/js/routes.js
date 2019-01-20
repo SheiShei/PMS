@@ -15,13 +15,25 @@ import ViewJoCrea from './components/views/pages/joborders/ViewJoCrea.vue';
 import NewJobOrderWeb from './components/views/pages/joborders/NewJobOrderWeb.vue';
 import NewJobOrderCreative from './components/views/pages/joborders/NewJobOrderCreative.vue';
 import Messages from './components/views/pages/Messages.vue';
-import Boards from './components/views/pages/boards/Boards.vue';
+import Boards from './components/views/pages/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
-import UpdateWebJO from './components/views/pages/joborders/UpdateJobOrderWeb.vue';
-import UpdateCreativeJO from './components/views/pages/joborders/UpdateJobOrderCreative.vue';
 import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
 import Axios from 'axios';
+import Workload from './components/views/pages/Workload.vue';
+import Workbook from './components/views/pages/Workbook.vue';
+import AddWorkbook from './components/views/pages/workbook/AddWorkbook.vue';
+import ViewWorkbook from './components/views/pages/workbook/ViewWorkbook.vue';
+import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWorkbook.vue';
+import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
+import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
+import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
+import BoardScrum from './components/views/pages/boards/Scrum.vue';
+import ScrumAddTask from './components/views/pages/boards/scrum/AddTask.vue';
+import ScrumViewTask from './components/views/pages/boards/scrum/ViewTask.vue';
+import ScrumNewSprint from './components/views/pages/boards/scrum/AddSprint.vue';
+import Sprint from './components/views/pages/boards/scrum/Sprint.vue';
+import SprintAddTask from './components/views/pages/boards/scrum/sprint/AddTask.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -67,7 +79,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brand-profile-:brandId',
+                path: 'brands/brand-profile-:brandId',
                 name: 'brand_profile',
                 component: BrandProfile,
                 props: true,
@@ -84,7 +96,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brands/jo',
+                path: 'jo',
                 name: 'all_jo_list',
                 component: JobOrders,
                 meta: {
@@ -92,7 +104,7 @@ export const routes = [
                 },
             },
             {
-                path: 'brands/:id/jo',
+                path: 'brands/jo/:id',
                 name: 'brands_jo_list',
                 component: JobOrders,
                 meta: {
@@ -100,7 +112,7 @@ export const routes = [
                 },
             },
             {
-                path: 'stiky-notes',
+                path: 'sticky-notes',
                 name: 'sticky_notes',
                 component: StickyNotes,
                 meta: {
@@ -108,7 +120,7 @@ export const routes = [
                 },
             },
             {
-                path: 'new-jo-web',
+                path: 'jo/new-jo-web',
                 name: 'new_jo_web',
                 component: NewJobOrderWeb,
                 meta: {
@@ -116,7 +128,7 @@ export const routes = [
                 },
             },
             {
-                path: 'new-jo-creative',
+                path: 'jo/new-jo-creative',
                 name: 'new_jo_creative',
                 component: NewJobOrderCreative,
                 meta: {
@@ -146,6 +158,46 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+            },
+            {
+                path: 'workload',
+                name: 'workload',
+                component: Workload,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook',
+                name: 'workbook',
+                component: Workbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/add',
+                name: 'add_workbook',
+                component: AddWorkbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/view',
+                name: 'view_workbook',
+                component: ViewWorkbook,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            {
+                path: 'workbook/review',
+                name: 'review_workbook',
+                component: ClientViewWorkbook,
+                meta: {
+                    requiresAuth: true
+                }
             },
             {
                 path: 'messages',
@@ -199,29 +251,165 @@ export const routes = [
                 },
             },
             {
-                path: 'boards/kanban',
+                path: 'boards/kanban/:board_id',
                 name: 'kanboard',
                 component: BoardKanban,
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 1
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                },
+                children: [
+                    {
+                        path: 'addtask/:list_id',
+                        name: 'kanboard_addtask',
+                        component: KanbanAddTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'kanboard_viewtask',
+                        component: KanbanViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'kanboard_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
+            },
+            {
+                path: 'boards/scrum/:board_id',
+                name: 'scrumboard',
+                component: BoardScrum,
+                meta: {
+                    requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 2
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                },
+                children: [
+                    {
+                        path: 'addtask/:sprint_id',
+                        name: 'scrumboard_addtask',
+                        component: ScrumAddTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'scrumboard_viewtask',
+                        component: ScrumViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'scrumboard_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'newsprint/',
+                        name: 'scrumboard_newsprint',
+                        component: ScrumNewSprint,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
+            },
+            {
+                path: 'boards/scrum/:board_id/:sprint_id',
+                name: 'sprint',
+                component: Sprint,
+                meta: {
+                    requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.board_id;
+                    let sprint_id = to.params.sprint_id;
+                    axios.post('/api/verifyBoardUsers', {
+                        id: param,
+                        type: 2,
+                        sprint_id: sprint_id
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                },
+                children: [
+                    {
+                        path: 'viewtask/:task_id',
+                        name: 'sprint_viewtask',
+                        component: ScrumViewTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'gallery/:task_id',
+                        name: 'sprint_gallery',
+                        component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'addtask/:status_id',
+                        name: 'sprint_addtask',
+                        component: SprintAddTask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                ]
             }
-            // {
-            //     path: 'update/web/:jo_id',
-            //     name: 'updateweb',
-            //     component: UpdateWebJO,
-            //     meta: {
-            //         requiresAuth: true
-            //     },
-            // },
-            // {
-            //     path: 'update/creative/:jo_id',
-            //     name: 'updatecrea',
-            //     component: UpdateCreativeJO,
-            //     meta: {
-            //         requiresAuth: true
-            //     },
-            // }
         ]
     },
     {
