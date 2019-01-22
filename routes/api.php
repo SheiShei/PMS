@@ -66,6 +66,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
     Route::delete('/deletejo', 'AdminController@deletejo');
+    Route::post('/restorejo', 'AdminController@restorejo'); 
+
 
     //Boards
     Route::post('/newBoard', 'BoardController@newBoard');

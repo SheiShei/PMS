@@ -424,11 +424,22 @@ class AdminController extends Controller
     public function getJobOrders(Request $request) {
         $sort_key = explode(".",$request->sort)[0];
         $sort_type = explode(".",$request->sort)[1];
-        $query = JobOrder::with('brand:id,name')->orderBy($sort_key, $sort_type);
+        if($request->notArchive=="true"){
+            if($sort_key){
+                $query = JobOrder::with('brand:id,name')->orderBy($sort_key, $sort_type);         
+               }
+        }
+        else { 
+           if($sort_key){
+            $query = JobOrder::onlyTrashed()->with('brand:id,name')->orderBy($sort_key, $sort_type);
+           }
+         }
+
 
         if($request->search) {
             $query->where('name', 'like', $request->search.'%');
         }
+
 
         $jos = $query->get();
         return $jos;
@@ -438,6 +449,13 @@ class AdminController extends Controller
         $jo = JobOrder::findOrFail($request->id);
         $jo->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
+    }
+
+    public function restorejo(Request $request) {
+        
+        $jo= JobOrder::onlyTrashed()->where('id' , $request->data['id'])->restore();
+       
+        return response()->json(['status' => 'success', 'message' => 'restores succesfully'], 200);
     }
 
     public function finishJOC(Request $request) {

@@ -56677,10 +56677,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 notArchive: true
 
             },
-            brandinfos: {}
-            // errors: [],
+            brandinfos: {},
+            ndata: {
+                search: '',
+                sort: 'created_at.desc',
+                notArchive: true
+                // errors: [],
 
-        };
+            } };
     },
 
 
@@ -56706,7 +56710,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.$store.dispatch('setBrands', { url: '/api/getbrands', data: data });
         var ndata = {
             search: '',
-            sort: 'created_at.desc'
+            sort: 'created_at.desc',
+            notArchive: true
         };
         this.$store.dispatch('getJobOrders', ndata);
     },
@@ -56743,6 +56748,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             }).catch(function () {
                 alert('Something went wrong, try reloading the page');
             });
+        },
+        archiveJO: function archiveJO() {
+            // let _this = this;
+            var ndata = this.ndata;
+            this.ndata.notArchive = !this.ndata.notArchive;
+            this.$store.dispatch('getJobOrders', ndata);
+            console.log('archive');
         }
     }
 });
@@ -57065,6 +57077,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -57177,18 +57199,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
+        var _brand;
+
         return {
-            brand: {
+            brand: (_brand = {
                 name: '',
                 contact_person: '',
+                email: '',
+                password: '',
                 telephone: '',
                 mobile: '',
                 tandem_id: '',
                 logo: '',
-                about: '',
-                email: '',
-                password: ''
-            },
+                about: ''
+            }, _defineProperty(_brand, 'email', ''), _defineProperty(_brand, 'password', ''), _brand),
             pwdType: 'password'
         };
     },
@@ -57214,6 +57238,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             form.append('logo', this.brand.logo[0]);
             form.append('name', this.brand.name);
             form.append('telephone', this.brand.telephone);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
@@ -57225,6 +57251,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 _this2.brand.name = '';
                 _this2.brand.contact_person = '';
                 _this2.brand.telephone = '';
+                _this2.brand.email = '';
+                _this2.brand.password = '';
                 _this2.brand.mobile = '';
                 _this2.brand.tandem_id = '';
                 _this2.brand.about = '';
@@ -59462,7 +59490,30 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "mybox" }, [
-        _vm._m(2),
+        _c("div", { staticClass: "mybox-head" }, [
+          _c("h6", [
+            _c("strong", [_vm._v("ACTIVE JOB ORDERS")]),
+            _vm._v(" "),
+            _c("span", [
+              _c("small", [
+                _vm._v("| "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.archiveJO($event)
+                      }
+                    }
+                  },
+                  [_vm._v("Archive")]
+                )
+              ])
+            ])
+          ])
+        ]),
         _vm._v(" "),
         _vm.jos
           ? _c("div", { staticClass: "mybox-body white-bg" }, [
@@ -59519,7 +59570,7 @@ var render = function() {
                                       _vm._v(
                                         "\n                                    " +
                                           _vm._s(jo.name) +
-                                          "\n                                "
+                                          " -->\n                                 "
                                       )
                                     ]
                                   )
@@ -59578,14 +59629,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "mybox-head" }, [
       _c("h6", [_c("strong", [_vm._v("NEW JOB ORDER")])])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mybox-head" }, [
-      _c("h6", [_c("strong", [_vm._v("ACTIVE JOB ORDERS")])])
     ])
   }
 ]
@@ -59811,13 +59854,28 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
+
+// import JOfilter from "./joborders/JOfilter.vue";
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    // components:{
+    //     JOfilter: JOfilter
+    // },
     data: function data() {
         return {
-            search: '',
-            sort: 'created_at.desc'
+            data: {
+                sort: 'created_at.desc',
+                search: '',
+                notArchive: true
+            }
         };
     },
 
@@ -59826,10 +59884,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         cUser: 'currentUser'
     })),
     created: function created() {
-        var data = {
-            search: '',
-            sort: 'created_at.desc'
-        };
+        var data = this.data;
         this.$store.dispatch('getJobOrders', data);
     },
 
@@ -59842,29 +59897,35 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 this.$router.push({ name: 'viewjoweb', params: { jo_id: id } });
             }
         },
-
-
-        // update(id, type) {
-        //     if(type == 1) {
-        //         this.$router.push({name: 'updatecrea', params: {jo_id: id}});
-        //     }
-        //     else{
-        //         this.$router.push({name: 'updateweb', params: {jo_id: id}});
-        //     }
-        // },
-
         deleteJO: function deleteJO(id) {
             var _this = this;
             this.$store.dispatch('deleteJO', id).then(function (response) {
                 _this.$toaster.warning('JO Deleted!.');
             });
         },
+        archiveJO: function archiveJO() {
+            // let _this = this;
+            var data = this.data;
+            this.data.notArchive = !this.data.notArchive;
 
+            this.$store.dispatch('getJobOrders', data);
+            console.log('archive');
+        },
+        restoreJO: function restoreJO(id) {
+            var _this2 = this;
+
+            this.$store.dispatch('restoreJO', id).then(function () {
+                _this2.$toaster.success('Job Order restored succesfully!.');
+            }).catch(function () {
+                alert('Something went wrong, try reloading the page');
+            });
+        },
 
         searched: _.debounce(function (e) {
-            this.$store.dispatch('getJobOrders', { search: this.search, sort: this.sort });
+            this.$store.dispatch('getJobOrders', { search: this.data.search, sort: this.data.sort, notArchive: this.data.notArchive });
             // console.log('shei');
         }, 500)
+
     }
 });
 
@@ -59882,7 +59943,30 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-9" }, [
           _c("div", { staticClass: "mybox" }, [
-            _vm._m(1),
+            _c("div", { staticClass: "mybox-head" }, [
+              _c("h6", [
+                _c("strong", [_vm._v("JOB ORDERS LIST")]),
+                _vm._v(" "),
+                _c("span", [
+                  _c("small", [
+                    _vm._v("| "),
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.archiveJO($event)
+                          }
+                        }
+                      },
+                      [_vm._v("Archive")]
+                    )
+                  ])
+                ])
+              ])
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "mybox-body" }, [
               _c("form", { attrs: { action: "" } }, [
@@ -59897,8 +59981,8 @@ var render = function() {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.sort,
-                            expression: "sort"
+                            value: _vm.data.sort,
+                            expression: "data.sort"
                           }
                         ],
                         staticClass: "my-input",
@@ -59913,30 +59997,58 @@ var render = function() {
                                   var val = "_value" in o ? o._value : o.value
                                   return val
                                 })
-                              _vm.sort = $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
+                              _vm.$set(
+                                _vm.data,
+                                "sort",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
                             },
                             _vm.searched
                           ]
                         }
                       },
                       [
-                        _c("option", { attrs: { value: "created_at.desc" } }, [
-                          _vm._v("Date (Descending)")
-                        ]),
-                        _vm._v(" "),
-                        _c("option", { attrs: { value: "created_at.asc" } }, [
-                          _vm._v("Date (Ascending)")
-                        ]),
-                        _vm._v(" "),
                         _c("option", { attrs: { value: "name.asc" } }, [
                           _vm._v("Name (Ascending)")
                         ]),
                         _vm._v(" "),
                         _c("option", { attrs: { value: "name.desc" } }, [
                           _vm._v("Name (Descending)")
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.data.notArchive
+                          ? _c(
+                              "option",
+                              { attrs: { value: "created_at.desc" } },
+                              [_vm._v("Date (Descending)")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        !_vm.data.notArchive
+                          ? _c(
+                              "option",
+                              { attrs: { value: "deleted_at.desc" } },
+                              [_vm._v("Deleted (Descending)")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.data.notArchive
+                          ? _c(
+                              "option",
+                              { attrs: { value: "created_at.asc" } },
+                              [_vm._v("Date (Ascending)")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        !_vm.data.notArchive
+                          ? _c(
+                              "option",
+                              { attrs: { value: "deleted_at.asc" } },
+                              [_vm._v("Deleted (Ascending)")]
+                            )
+                          : _vm._e()
                       ]
                     )
                   ]),
@@ -59947,20 +60059,20 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.search,
-                          expression: "search"
+                          value: _vm.data.search,
+                          expression: "data.search"
                         }
                       ],
                       staticClass: "my-input",
                       attrs: { type: "search", placeholder: "Search..." },
-                      domProps: { value: _vm.search },
+                      domProps: { value: _vm.data.search },
                       on: {
                         input: [
                           function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.search = $event.target.value
+                            _vm.$set(_vm.data, "search", $event.target.value)
                           },
                           _vm.searched
                         ]
@@ -59987,7 +60099,7 @@ var render = function() {
                     "table",
                     { staticClass: "table table-bordered table-brands" },
                     [
-                      _vm._m(2),
+                      _vm._m(1),
                       _vm._v(" "),
                       _c(
                         "tbody",
@@ -60033,26 +60145,30 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "td-actions text-right" }, [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info btn-simple btn-xs",
-                                  attrs: {
-                                    type: "button",
-                                    rel: "tooltip",
-                                    "data-original-title": "",
-                                    title: "Open"
-                                  },
-                                  on: {
-                                    click: function($event) {
-                                      _vm.view(jo.id, jo.type)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-eye" })]
-                              ),
+                              _vm.data.notArchive
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info btn-simple btn-xs",
+                                      attrs: {
+                                        type: "button",
+                                        rel: "tooltip",
+                                        "data-original-title": "",
+                                        title: "Open"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.view(jo.id, jo.type)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fa fa-eye" })]
+                                  )
+                                : _vm._e(),
                               _vm._v(" "),
-                              jo.created_by == _vm.cUser.id
+                              jo.created_by == _vm.cUser.id &&
+                              _vm.data.notArchive
                                 ? _c(
                                     "button",
                                     {
@@ -60072,6 +60188,28 @@ var render = function() {
                                     },
                                     [_c("i", { staticClass: "fa fa-trash-o" })]
                                   )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              !_vm.data.notArchive
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-danger btn-simple btn-xs",
+                                      attrs: {
+                                        type: "button",
+                                        rel: "tooltip",
+                                        "data-original-title": "",
+                                        title: "Restore"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.restoreJO(jo.id)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fa fa-refresh" })]
+                                  )
                                 : _vm._e()
                             ])
                           ])
@@ -60089,7 +60227,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-3" }, [
           _c("div", { staticClass: "mybox" }, [
-            _vm._m(3),
+            _vm._m(2),
             _vm._v(" "),
             _c("div", { staticClass: "mybox-body" }, [
               _c("div", { staticClass: "row" }, [
@@ -60138,14 +60276,6 @@ var staticRenderFns = [
         _c("span", { staticClass: "fa fa-copy" }),
         _vm._v(" Job Orders")
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mybox-head" }, [
-      _c("h6", [_c("strong", [_vm._v("JOB ORDERS LIST")])])
     ])
   },
   function() {
@@ -107909,11 +108039,13 @@ var actions = {
     getJobOrders: function getJobOrders(_ref7, data) {
         var commit = _ref7.commit;
 
+        console.log(data);
         axios.get('/api/getJobOrders', { params: {
                 search: data.search,
-                sort: data.sort
+                sort: data.sort,
+                notArchive: data.notArchive
             } }).then(function (response) {
-            // console.log(response);
+            console.log(response.data);
             commit('setJOs', response.data);
         }).catch(function (error) {
             console.log(error);
@@ -107926,16 +108058,34 @@ var actions = {
             axios.delete('/api/deletejo', {
                 data: { id: id }
             }).then(function (response) {
-                console.log(response);
-                // commit('deletejo', id);
-                // resolve(response);
+                console.log(response.data);
+                commit('deletejo', id);
+                resolve(response);
             }).catch(function (error) {
                 console.log(error);
             });
         });
     },
-    creativeSignOff: function creativeSignOff(_ref9, data) {
+    restoreJO: function restoreJO(_ref9, id) {
         var commit = _ref9.commit;
+
+        return new Promise(function (resolve, reject) {
+            axios.post('/api/restorejo', {
+                data: { id: id }
+            }).then(function (response) {
+                console.log(response.data);
+                commit('deletejo', id);
+                resolve(response);
+            }).catch(function (error) {
+                if (error.response.status == 422) {
+                    console.log(error);
+                    reject(error);
+                }
+            });
+        });
+    },
+    creativeSignOff: function creativeSignOff(_ref10, data) {
+        var commit = _ref10.commit;
 
         return new Promise(function (resolve, reject) {
             axios.post('/api/finishJOC', data).then(function (response) {
@@ -107951,8 +108101,8 @@ var actions = {
             });
         });
     },
-    webSignOff: function webSignOff(_ref10, data) {
-        var commit = _ref10.commit;
+    webSignOff: function webSignOff(_ref11, data) {
+        var commit = _ref11.commit;
 
         return new Promise(function (resolve, reject) {
             axios.post('/api/finishJOW', data).then(function (response) {
