@@ -8,7 +8,7 @@
             <ul id="menu-content" class="menu-content collapse out">
 
                 <li class="profile-link">
-                    <img src="/images/default.png"/>
+                    <a href="/profile"><img src="/images/default.png"/></a>
                     <p>Samantha Millos<span>ADMIN</span></p>
                     <!-- <p><small>ACMA</small></p> -->
                 </li>
@@ -17,6 +17,10 @@
                 <!-- <li class=""> -->
                     <router-link :to="{ name: 'dashboard' }" tag="li" active-class="active" exact>
                         <i class="fa fa-dashboard fa-lg"></i>&nbsp;&nbsp;&nbsp;Dashboard
+                    </router-link>
+
+                    <router-link :to="{ name: 'profile_user' }" tag="li" active-class="active" exact>
+                        <i class="fa fa-gears fa-lg"></i>&nbsp;&nbsp;&nbsp;Profile & Settings
                     </router-link>
                 <!-- </li> -->
             
@@ -128,11 +132,11 @@
                     </router-link>
                 <!-- </li> -->
 
-                <li class="" >
+                <!-- <li class="" > -->
                     <!-- <router-link :to="{ name: 'dashboard' }" tag="li" active-class="active" exact> -->
-                    <a><i class="fa fa-gear fa-lg"></i>&nbsp;&nbsp;&nbsp;Settings</a>
+                    <!-- <a><i class="fa fa-gear fa-lg"></i>&nbsp;&nbsp;&nbsp;Settings</a> -->
                     <!-- </router-link> -->
-                </li>
+                <!-- </li> -->
 
                 <li class="">
                     <a @click.prevent="logout">
