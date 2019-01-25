@@ -34,6 +34,10 @@ import ScrumViewTask from './components/views/pages/boards/scrum/ViewTask.vue';
 import ScrumNewSprint from './components/views/pages/boards/scrum/AddSprint.vue';
 import Sprint from './components/views/pages/boards/scrum/Sprint.vue';
 import SprintAddTask from './components/views/pages/boards/scrum/sprint/AddTask.vue';
+import ProfileUser from './components/views/pages/ProfileUser.vue';
+import BurndownChart from './components/views/pages/boards/scrum/sprint/BurndownChart.vue';
+import CumulativeChart from './components/views/pages/boards/scrum/sprint/CumulativeChart.vue';
+
 /* end of import vue components */
 
 export const routes = [
@@ -50,6 +54,14 @@ export const routes = [
                 path: '',
                 name: 'dashboard',
                 component: Dashboard,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: '/profile',
+                name: 'profile_user',
+                component: ProfileUser,
                 meta: {
                     requiresAuth: true
                 },
@@ -297,7 +309,7 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
-                    },
+                    }
                 ]
             },
             {
@@ -356,6 +368,14 @@ export const routes = [
                             requiresAuth: true
                         },
                     },
+                    {
+                        path: 'bdchart',
+                        name: 'burndown_chart',
+                        component: BurndownChart,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    }
                 ]
             },
             {

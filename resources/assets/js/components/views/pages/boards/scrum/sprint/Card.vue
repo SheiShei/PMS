@@ -2,7 +2,13 @@
     <div class="list-div">
         <div class="list-head">
             <div class="list-title" title="Tasks List">
-                <b>{{ status.name }}</b>
+                <b>
+                    <span v-if="status.name=='New'" class="fa fa-circle text-info"></span>
+                    <span v-if="status.name=='In progress'" class="fa fa-circle text-success"></span> 
+                    <span v-if="status.name=='Ready for Test'" class="fa fa-circle text-warning"></span> 
+                    <span v-if="status.name=='Closed'" class="fa fa-circle text-danger"></span> 
+                    
+                    {{ status.name }}</b>
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ statPoints }} pts</small>
@@ -215,7 +221,10 @@ export default {
     }
     .add-task-btn {
         border-radius: 0 0 3px 3px;
+        border: 2px dashed #bfbaba;
+        background-color: gainsboro;
         color: #6b808c;
+        text-align: center;
         display: block;
         flex: 0 0 auto;
         padding: 8px;

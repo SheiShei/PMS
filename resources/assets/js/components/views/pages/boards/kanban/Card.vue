@@ -2,7 +2,7 @@
     <div class="list-div" @drag="checkListMove">
         <div style="cursor: move;" class="list-head">
             <div class="list-title" title="Tasks List">
-                <b>{{ list.name }}</b>
+                <b><span class="fa fa-align-left text-default"></span>&nbsp;{{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ listPoints }} pts</small>
@@ -225,6 +225,9 @@ export default {
     .add-task-btn {
         border-radius: 0 0 3px 3px;
         color: #6b808c;
+        border: 2px dashed #bfbaba;
+        background-color: gainsboro;
+        text-align: center;
         display: block;
         flex: 0 0 auto;
         padding: 8px;

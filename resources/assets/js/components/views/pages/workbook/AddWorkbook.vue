@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-md-7" >
                         <h6><strong><small>UPLOAD FILES</small></strong></h6>
-                        <vue-clip :options="options" class="uploader">
+                        <vue-clip @change="shei" :options="options" class="uploader">
                             <template slot="clip-uploader-action">
                                 <div class="uploader-action text-center">
                                     <div class="dz-message">
@@ -106,6 +106,13 @@ export default {
 				url: 'http://captivate.test/upload',
                 paramName: 'file'
 			}
+        }
+    },
+
+    methods: {
+        shei() {
+            console.log('sehi');
+            
         }
     }
 }
