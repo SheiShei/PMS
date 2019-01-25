@@ -106,7 +106,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     //testRoute
-    Route::post('/testFunc', 'BoardController@testFunc');
+    Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
     
 
 });

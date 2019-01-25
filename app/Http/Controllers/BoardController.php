@@ -67,7 +67,7 @@ class BoardController extends Controller
         }   
 
         // auth()->user()->notify(new BoardCreated());
-        Notification::send($board->boardUsers()->get(), new BoardCreated($board));
+        Notification::send($board->boardUsers()->get(), new BoardCreated($board->load('created_by')->toJson()));
         
         event(new CreateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
 
@@ -240,6 +240,10 @@ class BoardController extends Controller
                     'extension' => $extension
                 ]);                
             }
+        }
+
+        if($request->assigned_to) {
+            
         }
 
         event(new AddListTaskEvent($task->load('assigned_to'), $request->board_id));
@@ -656,5 +660,18 @@ class BoardController extends Controller
         }
 
         return response()->json($tasks);
+    }
+
+    public function getUserNotifications(Request $request) {
+        $user = User::find($request->id);
+        // return $user->notifications()->get();
+        $notifs = [];
+
+        foreach ($user->notifications as $notification) {
+            // echo $notification->type;
+            array_push($notifs, $notification);
+        }
+
+        return $notifs;
     }
 }

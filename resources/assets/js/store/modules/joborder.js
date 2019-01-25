@@ -39,15 +39,18 @@ const mutations = {
 
 const actions = {
     onCreate({commit}) {
-        axios.get('/api/onLoad')
-            .then ((response) => {
-                // console.log(response);
-                commit('setOnCreate', response.data);
-            })
-            .catch ((error) => {
-                console.log(error);
-                
-            }) 
+        return new Promise ((resolve, reject) => {
+            axios.get('/api/onLoad')
+                .then ((response) => {
+                    // console.log(response);
+                    commit('setOnCreate', response.data);
+                    resolve();
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    reject();
+                })
+        }) 
     },
     newJOC ({commit}, data) {
         return new Promise ((resolve, reject) => {
