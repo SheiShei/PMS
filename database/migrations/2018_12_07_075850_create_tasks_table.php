@@ -18,6 +18,7 @@ class CreateTasksTable extends Migration
             $table->primary('id');
             $table->unsignedInteger('card_id')->index()->nullable();
             $table->char('sprint_id', 36)->index()->nullable();
+            $table->unsignedInteger('us_id')->index()->nullable();
             $table->char('jo_id', 36)->index()->nullable();
             $table->string('name');
             $table->text('description')->nullable();

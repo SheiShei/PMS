@@ -8,7 +8,7 @@
                         <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
                     </div>
                     <div class="col-md-6 text-right">
-                        <router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
+                        <a href="" @click.prevent="$router.go(-1)" class="btn btn-simple btn-close"><i class="fa fa-close"></i></a> 
                     </div>
                 </div>
                 <br />
@@ -44,18 +44,23 @@
                         <label for="">Assign To: </label>
                         <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
-                            <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
+                            <option v-for="(user) in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
+                    <!-- <div class="col-md-3">
+                        <label for="">Points: </label>
+                        <input v-model="taskData.points" type="number" class="my-input my-inp-blk" min="0" max="9">
+                    </div> -->
                     <div class="col-md-6">
                         <label for="">Due: </label>
+                        <!-- <input v-model="taskData.due" type="date" class="my-input my-inp-blk"> -->
                         <date-picker @change="changeDateFormat" v-model="taskData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-md-6">
-                        <router-link :to="{ name: 'kanboard'}" class="btn btn-danger btn-block">Cancel</router-link>
+                        <button @click="$router.go(-1)" class="btn btn-danger btn-block">Cancel</button>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-success btn-block">Add to Board</button>
@@ -67,8 +72,8 @@
     </transition>
 </template>
 <script>
-import {mapGetters} from 'vuex';
 import DatePicker from 'vue2-datepicker'
+import {mapGetters} from 'vuex';
 export default {
     components: {
         DatePicker 
@@ -82,12 +87,13 @@ export default {
                 points: 1,
                 due: '',
                 assign_to: ''
-            }
+            },
         }
     },
     computed: {
         ...mapGetters({
                 boardMembers: 'boardMembers',
+                usData: 'getCusData'
             }),
     },
     methods: {
@@ -112,13 +118,15 @@ export default {
             task.append('points',this.taskData.points);
             task.append('assign_to',this.taskData.assign_to);
             task.append('desc',this.taskData.desc);
-            task.append('list_id',this.$route.params.list_id);
+            task.append('sprint_id',this.$route.params.sprint_id);
+            task.append('us_id',this.$route.params.us_id);
             task.append('board_id',this.$route.params.board_id);
 
-            this.$store.dispatch('addTask', task)
-                .then(() => {
-                    this.$toaster.warning('Task Added succesfully!.')
-                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}});
+            this.$store.dispatch('addSprintTask', task)
+                .then((response) => {
+                    this.$store.commit('addUSSprintTask', response);
+                    this.$toaster.success('Task Added succesfully!.')
+                    this.$router.push({name: 'test_sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}});
                     // let listDiv = document.querySelector('.list-body');
                     // listDiv.scrollTo(0, listDiv.scrollHeight);
                 })

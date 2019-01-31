@@ -1002,10 +1002,20 @@ margin: 0;
 .board-body{
 max-width: 100%;
 // max-height: 80%;
-overflow-x: auto;
+// overflow-x: auto;
 overflow-y: hidden;
 white-space: nowrap;
-padding-bottom: 20px;
+// padding-bottom: 20px;
+// display: flex;
+// position: relative;
+}
+.board-body-wrapper{
+max-width: 100%;
+// max-height: 80%;
+// overflow-x: auto;
+// overflow-y: auto;
+white-space: nowrap;
+// padding-bottom: 20px;
 // display: flex;
 // position: relative;
 }
@@ -1213,3 +1223,12 @@ padding: 0 20px;
       border-radius: 3px;
   }
 //end of Workbook Styles
+
+.testcntnt[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #6B808C; 
+}
+
+.testcntnt[placeholder]:empty:focus:before {
+  content: "";
+}

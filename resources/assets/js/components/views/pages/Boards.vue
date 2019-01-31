@@ -23,12 +23,12 @@
             <p class="pull-right">Found: {{ userBoards.length }} board</p>
             <hr />
             <div class="boardlist" style="max-height: 70vh; overflow-y:auto">
-                <div href="/boards/kanban" class="boarddiv" v-for="board in userBoards" :key="board.id">
+                <div class="boarddiv" v-for="board in userBoards" :key="board.id">
                     <div class="boardname"><router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" style="color: gray;">{{ board.name }}</router-link></div>
                     <div class="boardoptions">
                         <p><span class="">
                             <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
-                            <router-link v-if="board.type == 2" :to="{ name: 'scrumboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
+                            <router-link v-if="board.type == 2" :to="{ name: 'test', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
                             <a href="" @click.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
                             <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                         </span></p>

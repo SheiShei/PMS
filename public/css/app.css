@@ -12487,10 +12487,13 @@ hr {
 
 .board-body {
   max-width: 100%;
-  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  padding-bottom: 20px;
+}
+
+.board-body-wrapper {
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 .board-header,
@@ -12728,6 +12731,15 @@ hr {
   border: 1px solid #43a0b9;
   color: #43a0b9;
   border-radius: 3px;
+}
+
+.testcntnt[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #6B808C;
+}
+
+.testcntnt[placeholder]:empty:focus:before {
+  content: "";
 }
 
 .table > thead > tr > th,

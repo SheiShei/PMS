@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Board extends Model
 {
-    use Uuids;
+    use Uuids, Notifiable;
     
     public $incrementing = false;
     

@@ -19,7 +19,6 @@ import Boards from './components/views/pages/Boards.vue';
 import BoardKanban from './components/views/pages/boards/Kanban.vue';
 import Conversation from './components/views/pages/messages/Conversation.vue';
 import Welcome from './components/views/pages/messages/Welcome.vue';
-import Axios from 'axios';
 import Workload from './components/views/pages/Workload.vue';
 import Workbook from './components/views/pages/Workbook.vue';
 import AddWorkbook from './components/views/pages/workbook/AddWorkbook.vue';
@@ -28,12 +27,17 @@ import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWork
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
-import BoardScrum from './components/views/pages/boards/Scrum.vue';
-import ScrumAddTask from './components/views/pages/boards/scrum/AddTask.vue';
-import ScrumViewTask from './components/views/pages/boards/scrum/ViewTask.vue';
-import ScrumNewSprint from './components/views/pages/boards/scrum/AddSprint.vue';
-import Sprint from './components/views/pages/boards/scrum/Sprint.vue';
-import SprintAddTask from './components/views/pages/boards/scrum/sprint/AddTask.vue';
+import USAddTask from './components/views/pages/boards/test/AddTask.vue';
+import USViewTask from './components/views/pages/boards/test/ViewTask.vue';
+import dConf from './components/views/pages/boards/test/dConf.vue';
+import dSprintConf from './components/views/pages/boards/test/SprintDConf.vue';
+import ScrumNewSprint from './components/views/pages/boards/test/AddSprint.vue';
+import Test from './components/views/pages/boards/Test.vue';
+import TestSprint from './components/views/pages/boards/test/Test.vue';
+import SNT from './components/views/pages/boards/test/AddUS.vue';
+import ViewUS from './components/views/pages/boards/test/ViewUS.vue';
+import AddUStask from './components/views/pages/boards/test/sprint/AddTask.vue';
+import ViewUStask from './components/views/pages/boards/test/sprint/ViewTask.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -302,8 +306,8 @@ export const routes = [
             },
             {
                 path: 'boards/scrum/:board_id',
-                name: 'scrumboard',
-                component: BoardScrum,
+                name: 'test',
+                component: Test,
                 meta: {
                     requiresAuth: true
                 },
@@ -325,29 +329,32 @@ export const routes = [
                 },
                 children: [
                     {
-                        path: 'addtask/:sprint_id',
-                        name: 'scrumboard_addtask',
-                        component: ScrumAddTask,
+                        path: 'addus/:sprint_id',
+                        name: 'snt',
+                        component: SNT,
                         meta: {
                             requiresAuth: true
                         },
                     },
+                    
                     {
-                        path: 'viewtask/:task_id',
-                        name: 'scrumboard_viewtask',
-                        component: ScrumViewTask,
+                        path: 'delus/:us_id',
+                        name: 'd_conf',
+                        component: dConf,
                         meta: {
                             requiresAuth: true
                         },
                     },
+
                     {
-                        path: 'gallery/:task_id',
-                        name: 'scrumboard_gallery',
-                        component: KanbanGallery,
+                        path: 'delsprint/:sprint_id',
+                        name: 'dsprint_conf',
+                        component: dSprintConf,
                         meta: {
                             requiresAuth: true
                         },
                     },
+
                     {
                         path: 'newsprint/',
                         name: 'scrumboard_newsprint',
@@ -356,12 +363,47 @@ export const routes = [
                             requiresAuth: true
                         },
                     },
+                    
+                    {
+                        path: 'us/:sprint_id/:us_id',
+                        name: 'us_view',
+                        component: ViewUS,
+                        meta: {
+                            requiresAuth: true
+                        },
+                        children: [
+                            {
+                                path: 'addtask/',
+                                name: 'us_addtask',
+                                component: USAddTask,
+                                meta: {
+                                    requiresAuth: true
+                                },
+                            },
+                            {
+                                path: 'viewtask/:task_id',
+                                name: 'us_viewtask',
+                                component: USViewTask,
+                                meta: {
+                                    requiresAuth: true
+                                },
+                            },
+                            {
+                                path: 'gallery/:task_id',
+                                name: 'scrumboard_gallery',
+                                component: KanbanGallery,
+                                meta: {
+                                    requiresAuth: true
+                                },
+                            },
+                        ]
+                    },
                 ]
             },
             {
                 path: 'boards/scrum/:board_id/:sprint_id',
-                name: 'sprint',
-                component: Sprint,
+                name: 'test_sprint',
+                component: TestSprint,
                 meta: {
                     requiresAuth: true
                 },
@@ -385,9 +427,17 @@ export const routes = [
                 },
                 children: [
                     {
-                        path: 'viewtask/:task_id',
-                        name: 'sprint_viewtask',
-                        component: ScrumViewTask,
+                        path: 'addtask/:us_id',
+                        name: 'addtask_sprint',
+                        component: AddUStask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'vt/:us_id/:task_id',
+                        name: 'viewtask_sprint',
+                        component: ViewUStask,
                         meta: {
                             requiresAuth: true
                         },
@@ -396,14 +446,6 @@ export const routes = [
                         path: 'gallery/:task_id',
                         name: 'sprint_gallery',
                         component: KanbanGallery,
-                        meta: {
-                            requiresAuth: true
-                        },
-                    },
-                    {
-                        path: 'addtask/:status_id',
-                        name: 'sprint_addtask',
-                        component: SprintAddTask,
                         meta: {
                             requiresAuth: true
                         },

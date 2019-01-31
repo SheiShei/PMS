@@ -10,7 +10,7 @@
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
-                            <span class="pull-right"><router-link :to="{ name: 'kanboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
+                            <span class="pull-right"><button @click="$router.go(-1)" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></button></span>
                             <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
@@ -22,7 +22,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
-                                <select @change="updateTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
+                                <select @change="updateSprintTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
                                     <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
                                 </select>
@@ -31,7 +31,8 @@
                             </div>
                             <div class="col-md-6">
                                 <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
-                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}</span>
+                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}
+                                    </span>
                                     <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                                 </p>
                             </div>
@@ -54,7 +55,7 @@
                                         <div class="ataskment" v-if="attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif'">
                                             <div class="media">
                                                 <div class="media-left media-top">
-                                                    <a href="" @click.exact="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
+                                                    <a href="" @click.prevent="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb">
                                                     </a>
                                                 </div>
                                                 <div class="media-body">
@@ -138,10 +139,8 @@ export default {
         return {
             data: null,
             isError: false,
-            // pointsEditable: 0,
             updateData: {
                 name: '',
-                points: '',
                 desc: '',
                 id: '',
                 assign_to: '',
@@ -161,9 +160,15 @@ export default {
     },
 
     mounted() {
-        this.listenTask();
+        this.listenUpdates()
+        $(".testcntnt").focusout(function(){
+            var element = $(this);        
+            if (!element.text().replace(" ", "").length) {
+                element.empty();
+            }
+        });
     },
-    
+
     destroyed() {
         this.stopEventListeners();
     },
@@ -189,35 +194,25 @@ export default {
                 })
         },
 
-        changeDateFormat() {
-            // this.data.due = new Date(this.data.due).toISOString().slice(0, 10).replace('T', ' ');
-            this.updateData.due = moment(this.updateData.due).format('YYYY-MM-DD')
-            this.updateTask();
-        },
-
         debounceWait: _.debounce(function (e) {
-            this.updateTask();
+            this.updateSprintTask();
         }, 500),
 
-        updateTask() {
-            // var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            // if(contenteditable) {
-                // let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
-                let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
-                let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
-                this.updateData.name = contenteditableName;
-                // this.updateData.points = contenteditablePoints;
-                this.updateData.desc = contenteditableDesc;
-                this.updateData.id = this.$route.params.task_id;
-                this.updateData.board_id = this.$route.params.board_id;
-                // console.log(this.updateData);
-                this.$store.dispatch('updateTask', this.updateData)
-                    .then(response => {
-                        // console.log(response);
-                        this.data.assigned_to.name = response.assigned_to.name
-                        this.data.due = response.due
-                    })
-            // }
+        updateSprintTask() {
+            let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
+            let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
+            this.updateData.name = contenteditableName;
+            this.updateData.desc = contenteditableDesc;
+            this.updateData.id = this.$route.params.task_id;
+            this.updateData.board_id = this.$route.params.board_id;
+            // console.log(this.updateData);
+            this.$store.dispatch('updateSprintTask', this.updateData)
+                .then(response => {
+                    // console.log(response);
+                    this.$store.commit('updateSprintTask', response);
+                    this.data.assigned_to.name = response.assigned_to.name;
+                    this.data.due = response.due;
+                })
         },
 
         chooseFile() {
@@ -260,7 +255,7 @@ export default {
                 .then(response => {
                     // console.log(response);
                     this.data.task_cover = response.data.task_cover
-                    this.$store.commit('updateTask', response.data);
+                    this.$store.commit('updateSprintTask', response.data);
                 })
                 .catch(error => {
                     console.log(error);
@@ -277,7 +272,7 @@ export default {
                 }
             });
             this.$store.commit('setGImg', gimg);
-            this.$router.push({ name: 'kanboard_gallery', params: {task_id: this.data.id} })
+            this.$router.push({ name: 'sprint_gallery', params: {task_id: this.data.id} })
         },
 
         cFile(e) {
@@ -327,23 +322,33 @@ export default {
             gimg.push({name: name, src: '/storage/task/comment/'+ff});
             this.$store.commit('setGImg', gimg);
 
-            this.$router.push({ name: 'kanboard_gallery', params: {task_id: this.data.id} })
+            this.$router.push({ name: 'sprint_gallery', params: {task_id: this.data.id} })
 
         },
 
         dT() {
-            this.$store.dispatch('deleteTask', {id:this.data.id, board_id: this.$route.params.board_id})
-                .then(() => {
-                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}})
+            this.$store.dispatch('deleteSprintTask', {id:this.data.id, board_id: this.$route.params.board_id})
+                .then((response) => {
+                    this.$store.commit('deleteSprintTask', response)
+                    // if(this.$route.params.sprint_id) {
+                    //     this.$router.push({name: 'sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
+                    // }
+                    // else {
+                        this.$router.push({name: 'test_sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
+                    // }
                     this.$toaster.warning('Task deleted succesfully!.')
                 })
         },
 
-        listenTask() {
+        changeDateFormat() {
+            this.updateData.due = moment(this.updateData.due).format('YYYY-MM-DD')
+            this.updateSprintTask();
+        },
+
+        listenUpdates() {
             Echo.private('list.'+this.$route.params.board_id)
                 .listen('UpdateListTaskEvent', (e) => {
                     this.data.task_cover = e.task.task_cover
-                    // this.data.points = e.task.points
                     this.data.description = e.task.description
                     this.data.name = e.task.name
                     this.data.assigned_to.name = e.task.assigned_to.name
@@ -368,7 +373,7 @@ export default {
         stopEventListeners() {
             Echo.leave();
         }
+
     }
 }
 </script>
-

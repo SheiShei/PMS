@@ -106,7 +106,14 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     //testRoute
+    Route::post('/testFunc', 'BoardController@testFunc');
     Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
     
+    //test Scrum
+    Route::post('/newUS', 'BoardController@newUS');
+    Route::post('/getUS', 'BoardController@getUS');
+    Route::post('/getUSData', 'BoardController@getUSData');
+    Route::patch('/updateUS', 'BoardController@updateUS');
+    Route::delete('/deleteUS', 'BoardController@deleteUS');
 
 });
