@@ -2,8 +2,19 @@
     <div class="list-div">
         <div class="list-head">
             <div class="list-title" >
-                <b v-if="sprint.type == 2"><router-link style="color: #262626" :title="'Click to open '+sprint.name+' Backlog'" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}">{{ sprint.name }}</router-link></b>
-                <b v-else>{{ sprint.name }}</b>
+                <b>
+                    <span v-if="sprint.finished_at" class="fa fa-circle text-gray"></span>
+                    <span v-else-if="sprint.type != 1" class="fa fa-circle text-success"></span>
+
+                    <span v-if="sprint.finished_at">
+                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" class="text-gray" style="">{{ sprint.name }}</router-link>
+                    </span>
+                    <span v-else>
+                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" style="color: #262626">{{ sprint.name }}</router-link>
+                    </span>
+
+                    <span v-if="sprint.type == 1">{{ sprint.name }} </span>
+                </b>
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ sprintPoints }} pts</small>
@@ -178,6 +189,9 @@ export default {
     }
     .add-task-btn {
         border-radius: 0 0 3px 3px;
+        border: 2px dashed #bfbaba;
+        background-color: gainsboro;
+        text-align: center;
         color: #6b808c;
         display: block;
         flex: 0 0 auto;

@@ -442,8 +442,12 @@ class BoardController extends Controller
         // event(new DeleteSprintEvent($sprint));
         $backlogid = Sprint::where('board_id', $sprint->board_id)->where('name', 'Backlog')->first()->id;
 
-        foreach ($sprint->us as $key => $task) {
-            if($task['status'] != 4) {
+        foreach ($sprint->us as $key => $us) {
+            $us->update([
+                'sprint_id' => $backlogid
+            ]);
+
+            foreach ($us->tasks()->get() as $key => $task) {
                 $task->update([
                     'sprint_id' => $backlogid
                 ]);
@@ -519,6 +523,11 @@ class BoardController extends Controller
                 'order' => $u['order'],
                 'sprint_id' => $u['sprint_id']
             ]);
+            foreach ($toUp->tasks()->get() as $key => $task) {
+                $task->update([
+                    'sprint_id' => $u['sprint_id']
+                ]);
+            }
         }
 
         $nlists = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}])->orderBy('created_at' , 'asc')->get();

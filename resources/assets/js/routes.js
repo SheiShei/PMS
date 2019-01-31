@@ -39,8 +39,10 @@ import ViewUS from './components/views/pages/boards/test/ViewUS.vue';
 import AddUStask from './components/views/pages/boards/test/sprint/AddTask.vue';
 import ViewUStask from './components/views/pages/boards/test/sprint/ViewTask.vue';
 import ProfileUser from './components/views/pages/ProfileUser.vue';
-import BurndownChart from './components/views/pages/boards/scrum/sprint/BurndownChart.vue';
-import CumulativeChart from './components/views/pages/boards/scrum/sprint/CumulativeChart.vue';
+import BurndownChart from './components/views/pages/boards/test/sprint/BurndownChart.vue';
+import KanbanSettings from './components/views/pages/boards/kanban/KanbanSettings.vue';
+import ScrumSettings from './components/views/pages/boards/test/ScrumSettings.vue';
+import CumulativeChart from './components/views/pages/boards/test/sprint/CumulativeChart.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -312,6 +314,14 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                    },
+                    {
+                        path: 'settings',
+                        name: 'kanboard_settings',
+                        component: KanbanSettings,
+                        meta: {
+                            requiresAuth: true
+                        },
                     }
                 ]
             },
@@ -379,6 +389,15 @@ export const routes = [
                         path: 'bdchart',
                         name: 'burndown_chart',
                         component: BurndownChart,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+
+                    {
+                        path: 'settings',
+                        name: 'scrum_settings',
+                        component: ScrumSettings,
                         meta: {
                             requiresAuth: true
                         },

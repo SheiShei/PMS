@@ -1011,9 +1011,9 @@ white-space: nowrap;
 }
 .board-body-wrapper{
 max-width: 100%;
-// max-height: 80%;
+max-height: 90vh;
 // overflow-x: auto;
-// overflow-y: auto;
+overflow-y: scroll;
 white-space: nowrap;
 // padding-bottom: 20px;
 // display: flex;

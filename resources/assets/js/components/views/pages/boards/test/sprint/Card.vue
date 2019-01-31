@@ -2,7 +2,13 @@
     <div class="list-div" :style="ind == 0?'margin-top: 10px;' : ''">
         <div class="list-head" v-if="ind == 0">
             <div class="list-title" title="Tasks List">
-                <b>{{ status.name }}</b>
+                <b>
+                    <span v-if="status.id==1" class="fa fa-circle text-info"></span>
+                    <span v-if="status.id==2" class="fa fa-circle text-success"></span> 
+                    <span v-if="status.id==3" class="fa fa-circle text-warning"></span> 
+                    <span v-if="status.id==4" class="fa fa-circle text-danger"></span> 
+                    
+                    {{ status.name }}</b>
             </div>
         </div>
         <div class="list-body">

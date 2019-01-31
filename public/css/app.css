@@ -12493,6 +12493,8 @@ hr {
 
 .board-body-wrapper {
   max-width: 100%;
+  max-height: 90vh;
+  overflow-y: scroll;
   white-space: nowrap;
 }
 
