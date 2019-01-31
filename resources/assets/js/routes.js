@@ -38,6 +38,9 @@ import SNT from './components/views/pages/boards/test/AddUS.vue';
 import ViewUS from './components/views/pages/boards/test/ViewUS.vue';
 import AddUStask from './components/views/pages/boards/test/sprint/AddTask.vue';
 import ViewUStask from './components/views/pages/boards/test/sprint/ViewTask.vue';
+import ProfileUser from './components/views/pages/ProfileUser.vue';
+import BurndownChart from './components/views/pages/boards/scrum/sprint/BurndownChart.vue';
+import CumulativeChart from './components/views/pages/boards/scrum/sprint/CumulativeChart.vue';
 /* end of import vue components */
 
 export const routes = [
@@ -54,6 +57,14 @@ export const routes = [
                 path: '',
                 name: 'dashboard',
                 component: Dashboard,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: '/profile',
+                name: 'profile_user',
+                component: ProfileUser,
                 meta: {
                     requiresAuth: true
                 },
@@ -301,7 +312,7 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
-                    },
+                    }
                 ]
             },
             {
@@ -359,6 +370,15 @@ export const routes = [
                         path: 'newsprint/',
                         name: 'scrumboard_newsprint',
                         component: ScrumNewSprint,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+
+                    {
+                        path: 'bdchart',
+                        name: 'burndown_chart',
+                        component: BurndownChart,
                         meta: {
                             requiresAuth: true
                         },
