@@ -115,5 +115,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getUSData', 'BoardController@getUSData');
     Route::patch('/updateUS', 'BoardController@updateUS');
     Route::delete('/deleteUS', 'BoardController@deleteUS');
+    Route::post('/monitorTask', 'BoardController@monitorTask');
+    Route::post('/getBD', 'BoardController@getBD');
 
 });

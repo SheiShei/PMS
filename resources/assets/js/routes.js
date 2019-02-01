@@ -42,6 +42,7 @@ import ProfileUser from './components/views/pages/ProfileUser.vue';
 import BurndownChart from './components/views/pages/boards/test/sprint/BurndownChart.vue';
 import KanbanSettings from './components/views/pages/boards/kanban/KanbanSettings.vue';
 import ScrumSettings from './components/views/pages/boards/test/ScrumSettings.vue';
+import Statistics from './components/views/pages/boards/test/sprint/Statistics.vue';
 import CumulativeChart from './components/views/pages/boards/test/sprint/CumulativeChart.vue';
 /* end of import vue components */
 
@@ -386,15 +387,6 @@ export const routes = [
                     },
 
                     {
-                        path: 'bdchart',
-                        name: 'burndown_chart',
-                        component: BurndownChart,
-                        meta: {
-                            requiresAuth: true
-                        },
-                    },
-
-                    {
                         path: 'settings',
                         name: 'scrum_settings',
                         component: ScrumSettings,
@@ -485,6 +477,14 @@ export const routes = [
                         path: 'gallery/:task_id',
                         name: 'sprint_gallery',
                         component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'statistics',
+                        name: 'sprint_stats',
+                        component: Statistics,
                         meta: {
                             requiresAuth: true
                         },

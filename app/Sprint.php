@@ -31,4 +31,8 @@ class Sprint extends Model
     public function us() {
         return $this->hasMany('App\UserStory');
     }
+
+    public function progress() {
+        return $this->hasMany('App\Progress');
+    }
 }

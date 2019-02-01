@@ -15,13 +15,21 @@ export default {
         return{
             series: [{
                 name: "Task Done",
-                data: [160, 134, 120, 50, 37, 0]
+                data: [
+                    {x:'2019-01-05', y:160},
+                    {x:'2019-01-05', y:134}, 
+                    {x:'2019-01-05', y:120}, 
+                    {x:'2019-01-08', y:null}, 
+                    {x:'2019-01-09', y:null}, 
+                    {x:'2019-01-10', y:null}, 
+                    {x:'2019-01-11', y:null},
+                ]
             }],
             chartOptions: {
                 chart: {
                     height: 350,
                     zoom: {
-                        enabled: false
+                        enabled: true
                     }
                 },
             dataLabels: {
@@ -41,7 +49,8 @@ export default {
                 },
             },
             xaxis: {
-                categories: ['2018 Jan 1-4', '2018 Jan 5-9', '2018 Jan 10-20', '2018 Jan 21-Feb 20', '2018 Feb 21- 2019 Jan 1', '2019 Jan 2-10'],
+                type: "datetime",
+                // categories: ['2018 Jan 1', '2018 Jan 2', '2018 Jan 3', '2018 Jan 4', '2018 Jan 5', '2018 Jan 6', '2018 Jan 7'],
             },
             yaxis:{
                 min: 0 ,
@@ -49,6 +58,10 @@ export default {
             }
             }
         }
+    },
+
+    methods: {
+        
     }
 }
 </script>

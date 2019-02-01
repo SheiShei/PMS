@@ -7,6 +7,7 @@ use App\Card;
 use App\Task;
 use App\User;
 use App\UserStory;
+use App\Progress;
 
 use Carbon\Carbon;
 
@@ -745,5 +746,61 @@ class BoardController extends Controller
         $us->delete();
 
         return $us;
+    }
+
+    public function monitorTask(Request $request) {
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach (Sprint::find($request->task['sprint_id'])->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
+        }
+
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $us = UserStory::find($request->task['us_id']);
+        $totalUSTask = count($us->tasks()->get());
+        $totalUSTaskCompleted = 0;
+
+        foreach ($us->tasks()->get() as $key => $task) {
+            if($task->status == 4) {
+                $totalUSTaskCompleted++;
+            }
+        }
+
+        if($totalUSTask == $totalUSTaskCompleted) {
+            Progress::create([
+                'sprint_id' => $request->task['sprint_id'],
+                'remaining_points' => $totalSprintPoints
+            ]);
+        }
+
+    }
+
+    public function getBD(Request $request) {
+        // return $request;
+        $bdData = [];
+        foreach ($request->dates as $key => $date) {
+            $statData = Progress::where('sprint_id', $request->sprint_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
+            $singleData = array(
+                'x' => $date,
+                'y' => $statData->remaining_points
+            );
+
+            array_push($bdData, $singleData);
+        }
+
+        return $bdData;
     }
 }

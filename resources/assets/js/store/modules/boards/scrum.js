@@ -321,14 +321,17 @@ const actions = {
     },
 
     updateSprintTaskOrder({commit}, data) {
-        axios.patch('/api/updateSprintTaskOrder', data) 
+        return new Promise ((resolve, reject) => {
+            axios.patch('/api/updateSprintTaskOrder', data) 
             .then(() => {
                 // console.log(response);
+                resolve();
             })
             .catch(error => {
                 console.error(error);
-                
+                reject()
             })
+        })
     },
 
     newUS({commit}, data) {

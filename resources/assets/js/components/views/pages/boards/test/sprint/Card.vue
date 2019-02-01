@@ -77,7 +77,28 @@ export default {
         test(e, status, us) {
             // console.log(e);
             this.$store.commit('mapUSTOrder', {sprint_id: this.$route.params.sprint_id, us_id: us, status: status, e: e})
-            this.$store.dispatch('updateSprintTaskOrder', {sprint_id: this.$route.params.sprint_id  ,tasks: this.uStory.tasks});
+            this.$store.dispatch('updateSprintTaskOrder', {sprint_id: this.$route.params.sprint_id  ,tasks: this.uStory.tasks})
+                .then(() => {
+                    if(e.added){
+                        this.monitorTask(e.added.element)
+                    }
+                })
+            
+        },
+
+        monitorTask(e) {
+            // console.log(e);
+            if(e.status == 4) {
+                axios.post('/api/monitorTask', {task: e})
+                    .then(response => {
+                        console.log(response);
+                        
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        
+                    })
+            }
         }
     }
 }
