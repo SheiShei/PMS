@@ -5,7 +5,7 @@
         <div class="board-background-overlay">
         </div>
         <div class="board-wrapper" v-if="cSprint">
-            <router-view></router-view>
+            <router-view></router-view> 
             <div class="board-header">
                 <div class="board-name">
                     <router-link :to="{name: 'scrumboard', params: {board_id: $route.params.board_id}}" style="color: #ffff"><h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;&nbsp;<span class="fa fa-angle-right"></span>&nbsp;&nbsp;{{ cSprint.name }}</h4></router-link>
