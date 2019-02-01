@@ -8,7 +8,7 @@
         </div>
 
         <div class="col-md-10" v-if="!!details">
-            <div class="joform">
+            <div class="joform shadow">
                 <div class="jo-head">
                     <h4 class="noprint"><span class="fa fa-file-o"></span> {{ details.name }}
                     <span>
