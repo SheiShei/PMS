@@ -1,0 +1,58 @@
+[33mcommit 52cd1809998ea2ac03afacecf98cec68a7da0cfb[m[33m ([m[1;36mHEAD -> [m[1;32msam[m[33m, [m[1;31morigin/sam[m[33m)[m
+Merge: dd43b36 398aed0
+Author: sammillos <millossamantha@gmail.com>
+Date:   Fri Jan 25 13:17:02 2019 +0800
+
+    Board&Account Settings with BD and Cumu Chart
+
+[33mcommit dd43b3647847e6f8f79a1a009eec7e5ff18cccdd[m
+Author: sammillos <millossamantha@gmail.com>
+Date:   Fri Jan 25 13:01:38 2019 +0800
+
+    Account and Board Settings with BD and Cumu Chart
+
+[33mcommit 398aed0b314bf7d1ed6c2ad652985868a7832bb1[m
+Merge: 7b22632 a8946e4
+Author: Sheira Man-awit <s.cmanawit@gmail.com>
+Date:   Fri Jan 18 05:21:23 2019 -0800
+
+    Test Functions
+    
+    Shei
+
+[33mcommit a8946e4b7416e5a7729367d03f5c678b50d1f306[m[33m ([m[1;31morigin/shei[m[33m)[m
+Merge: dc64f2a 7b22632
+Author: SheiShei <s.cmanawit@gmail.com>
+Date:   Fri Jan 18 21:20:10 2019 +0800
+
+    sda
+
+[33mcommit dc64f2a04c83d2c56a26b03f3eb0aee1e8db3798[m
+Author: SheiShei <s.cmanawit@gmail.com>
+Date:   Fri Jan 18 08:44:51 2019 +0800
+
+    testfunc
+
+[33mcommit 7b22632a3b1aed5728c003ff26fc67ebb0bce34e[m
+Merge: 1aaffba 5b42eb0
+Author: SamSamSam <millossamantha@gmail.com>
+Date:   Thu Jan 17 10:22:31 2019 +0800
+
+    Merge pull request #28 from SheiShei/sam
+    
+    asdasd
+
+[33mcommit 5b42eb07b7756c7e46ddfc4b3922d5472823b2ff[m
+Author: sammillos <millossamantha@gmail.com>
+Date:   Thu Jan 17 10:20:26 2019 +0800
+
+    asdasd
+
+[33mcommit 1aaffba0d4841db3c43c17e3459485245a9d30f9[m
+Merge: 51d5cb3 7291ad6
+Author: SamSamSam <millossamantha@gmail.com>
+Date:   Thu Jan 17 09:47:44 2019 +0800
+
+    Workbook (ACMA&Client)
+    
+    Workbook (ACMA&Client)

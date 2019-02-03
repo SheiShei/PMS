@@ -8,7 +8,10 @@
 -->
 <template>
   <section class="main-main-container" style="background-color: #43a0b9">
-    <div class="workload-header" style="margin: 5px 20px;">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+    <div class="workload-header">
 
       <div class="workload-name">
         <h4 class="" style=""><span class="fa fa-align-left"></span> Workloads</h4>
@@ -36,15 +39,24 @@
         <p title="Persons involved"><span class="fa fa-user-o"></span>&nbsp;7</p>
       </div>
     </div>
-           
+    </div>
+
+       </div>    
 
 
-  <div style="margin: 10px 20px; border: 1px solid lightgray">                
+  <!-- <div style="margin: 10px 20px; border: 1px solid lightgray">                 -->
+  
+  <!-- <div style="margin: 10px 20px">                 -->
+    <div class="row">
+        <div class="col-md-12">
   <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
     <gantt-header slot="header"></gantt-header>
     <!-- <gantt-footer slot="footer"></gantt-footer> -->
   </gantt-elastic>
    </div>
+   </div>
+   </div>
+
   </section>
  
 

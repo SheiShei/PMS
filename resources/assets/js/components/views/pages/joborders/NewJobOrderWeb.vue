@@ -7,7 +7,7 @@
         <div class="first-column col-md-1"></div>
 
         <div class="col-md-10">
-            <div class="joform">
+            <div class="joform shadow">
                 <div class="jo-head">
                     <div class="row">
                         <div class="col-md-12">

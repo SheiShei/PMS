@@ -9,7 +9,7 @@
 
         <div class="col-md-10" v-if="!!details">
             <form @submit.prevent="signed">
-            <div class="joform">
+            <div class="joform shadow">
                 <div class="jo-head">
                     <h4 class="noprint"><span class="fa fa-file-o"></span> {{ details.name }}
                         <span>

@@ -1,22 +1,18 @@
 <template>
     <section class="main-main-container kanban-component" style="background-color: rgb(67, 160, 185);">
-        <div class="board-background-image" style="background-image: url('/images/above-art2.jpg');">
+        <div class="board-background-image" style="background-image: url('/images/bts.jpg');">
             <div class="board-background-overlay">
             </div>
             <div class="board-wrapper" v-if="board">
                 <router-view></router-view>
-
                 <div class="board-header">
                     <div class="board-name">
                         <h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;{{ board.name }}</h4>
                     </div>
                     <div class="board-info">
-                        <button v-if="viewBAbout==false" @click="viewBAbout = !viewBAbout" class="btn btn-white btn-simple btn-xs">
+                        <button @click="viewBAbout = !viewBAbout" class="btn btn-white btn-simple btn-xs">
                             <span class="fa fa-info-circle"></span> 
-                            About <span class="fa fa-angle-down"></span>
-                        </button>
-                        <button v-else @click="viewBAbout = !viewBAbout" class="btn btn-white btn-simple btn-xs">
-                            <span class="fa fa-info-circle"></span> About <span class="fa fa-angle-up"></span>
+                            <span class="hidden-sm hidden-xs"> Details</span>
                         </button>
                     </div>
                     <div class="board-info">
@@ -55,7 +51,7 @@
                 </div>
 
 
-                <div v-if="!viewBAbout">
+                <div>
                     <button class="btn btn-success btn-sm" @click="addNewList"> + Add New List</button>          
                     <div id="testTaskDiv" class="board-body">
                         <draggable v-model="boardLists" :options="{animation:200, group:'status'}" @change="updateListOrder" :element="'div'">
@@ -63,6 +59,239 @@
                         </draggable>
                     </div>
                 </div>
+                
+                <transition name="fade">
+                    <div class="overlay" v-if="viewBAbout">
+                        <div class="aboutmod">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="taskchart shadow bl-gray">
+                                        <h4><span class="fa fa-trello"></span> Kanban Board Name Here - Details <span class="pull-right"><button @click="viewBAbout=!viewBAbout" class="btn btn-xs btn-danger btn-simple"><span class="fa fa-times"></span></button></span> </h4>
+                                        <p class="note">Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore accusamus officia placeat, qui dolorum quis aspernatur fugit laudantium perferendis similique, minima tempore nesciunt amet enim inventore delectus dolorem possimus a.</p>
+                                    </div>
+                                </div>
+                            </div> 
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="taskchart shadow">
+                                        <h6 class="txt-bold"><span class="fa fa-history"></span> Activities</h6>
+                                        <hr/>
+                                        <div class="actlist">
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-success">
+                                                        <i class="fa fa-trello medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam created the board: Board Name</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-success">
+                                                        <i class="fa fa-user-o medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam added Jenjen to the board</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-warning">
+                                                        <i class="fa fa-star medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam assgined Jenjen as admin</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-success">
+                                                        <i class="fa fa-align-left medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam created new list: TaskList</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-danger">
+                                                        <i class="fa fa-align-left medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam deleted the list: TaskList</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-info">
+                                                        <i class="fa fa-align-left medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam renamed the list Tasklist to: Tasklist2</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-success">
+                                                        <i class="fa fa-tasks medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam created new task: TaskTitleHere</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-info">
+                                                        <i class="fa fa-tasks medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam updated the details of task: TaskTitleHere</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-danger">
+                                                        <i class="fa fa-tasks medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam deleted the task: TaskTitleHere</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-info">
+                                                        <i class="fa fa-gears medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Admin Sam updated board settings</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-info">
+                                                        <i class="fa fa-tasks medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam changed the status of task TaskTitle to In Progress</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-warning">
+                                                        <i class="fa fa-star-o medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam removed Jenjen as admin</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="actdiv">
+                                                <div class="act-left">
+                                                    <div class="act-icon bg-danger">
+                                                        <i class="fa fa-user-o medium-avatar" alt=""></i>
+                                                    </div>
+                                                </div>
+                                                <div class="act-right">
+                                                    <p>Sam removed Jenjen from the board</p>
+                                                    <p class="acttime"><small>
+                                                        <span class="fa fa-clock-o"></span>&nbsp;10:30 am January </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="taskchart shadow">
+                                        <h6 class="txt-bold"><span class="fa fa-user-o"></span> Members</h6>
+                                        <hr/>
+                                        <div class="membbb">
+                                            <div class="membdiv">
+                                                <div class="memb-left">
+                                                    <img src="/images/default.png" class="medium-avatar" alt="">
+                                                </div>
+                                                <div class="memb-right">
+                                                    <p class="text-default membsender"><span class="txt-bold">Samantha Millos</span></p>
+                                                    <p class="mainmemb">Admin</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="membbb">
+                                            <div class="membdiv">
+                                                <div class="memb-left">
+                                                    <img src="/images/default.png" class="medium-avatar" alt="">
+                                                </div>
+                                                <div class="memb-right">
+                                                    <p class="text-default membsender"><span class="txt-bold">Samantha Millos</span></p>
+                                                    <p class="mainmemb">Member</p>
+                                                </div>
+                                            </div>
+                                            <div class="membdiv">
+                                                <div class="memb-left">
+                                                    <img src="/images/default.png" class="medium-avatar" alt="">
+                                                </div>
+                                                <div class="memb-right">
+                                                    <p class="text-default membsender"><span class="txt-bold">Samantha Millos</span></p>
+                                                    <p class="mainmemb">Member</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+
             </div>
         </div>
     </section>
@@ -181,8 +410,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
+.taskchart{
+    p, h6, h4{
+        margin:0;
+    }
+}
 .overlay{
     position: absolute;
     top:0;
