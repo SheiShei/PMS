@@ -1,5 +1,5 @@
 <template>
-    <div class="list-div" :style="ind == 0?'margin-top: 10px;' : ''">
+    <div class="list-div" :style="ind == 0?'' : 'margin-top: 0px;'">
         <div class="list-head" v-if="ind == 0">
             <div class="list-title" title="Tasks List">
                 <b>
