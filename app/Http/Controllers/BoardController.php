@@ -1003,6 +1003,12 @@ class BoardController extends Controller
             }
         }
 
+        $totalDoneTask = count(Card::find($request->card_id)->tasks()->get());
+        Progress::create([
+            'board_id' => $request->board_id ,
+            'completed_tasks' => $totalDoneTask
+        ]);
+
         $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
 
         return $lists;
