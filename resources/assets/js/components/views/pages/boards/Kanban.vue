@@ -22,6 +22,9 @@
                     <div class="board-info">
                         <router-link :to="{name: 'kanboard_settings'}" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears"></span> Board Settings</router-link>
                     </div>
+                    <div class="board-info">
+                        <a @click="$router.push({name: 'kanboard_stats'})" class="btn btn-white btn-simple btn-xs"><span class="fa fa-bar-chart"></span> View Stats</a>
+                    </div>
                 </div>
 
                 <div class="row" v-if="viewBAbout">

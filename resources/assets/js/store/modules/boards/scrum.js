@@ -264,15 +264,17 @@ const actions = {
     },
 
     updateSprintOrder({commit}, data) {
-        axios.patch('/api/updateSprintOrder', data)
+        return new Promise ((resolve, reject) => {
+            axios.patch('/api/updateSprintOrder', data)
             .then(() => {
                 // console.log(response);
-                
+                resolve()
             })
             .catch((error) => {
                 console.error(error);
-                
+                reject()
             })
+        })
     },
 
     deleteSprintTask({commit}, id) {

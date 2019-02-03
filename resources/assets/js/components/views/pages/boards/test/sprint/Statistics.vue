@@ -34,10 +34,10 @@
 					<div class="card-content">
 						<div class="tab-content text-center">
 							<div class="tab-pane active" id="burndownchart">
-                                <burndown-chart></burndown-chart>
+                                <burndown-chart v-if="data" :chartData="data"></burndown-chart>
 							</div>
 							<div class="tab-pane" id="cumulativechart">
-								<cumu-chart></cumu-chart>
+								<cumu-chart v-if="data" :chartData="data"></cumu-chart>
 							</div>
 						</div>
 					</div>
@@ -56,6 +56,11 @@ export default {
         burndownChart: BurndownChart,
         cumuChart: CumulativeChart
     },
+    data() {
+        return {
+            data: null
+        }
+    },
     created() {
         this.getArrayOfDates()
     },
@@ -67,6 +72,7 @@ export default {
     methods: {
         getArrayOfDates() {
             var startDate = new Date(this.cSprint.started_at);
+            // var startDate = startDate.setDate(startDate.getDate() - 1);
             var endDate = new Date(this.cSprint.due_date);
 
             var datesArray = [];
@@ -82,8 +88,15 @@ export default {
             // console.log(datesArray);
             axios.post('/api/getBD', {dates: datesArray, sprint_id: this.$route.params.sprint_id})
                 .then((response) => {
-                    console.log(response);
-                    
+                    // console.log(response);
+                    var max = 0;
+                    response.data.data.forEach(date => {
+                        if(date.y > max) {
+                            max = date.y
+                        }
+                    });
+                    response.data.max = max;
+                    this.data = response.data
                 })
                 .catch(error => {
                     console.error(error);

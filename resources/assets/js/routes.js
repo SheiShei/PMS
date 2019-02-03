@@ -43,6 +43,7 @@ import BurndownChart from './components/views/pages/boards/test/sprint/BurndownC
 import KanbanSettings from './components/views/pages/boards/kanban/KanbanSettings.vue';
 import ScrumSettings from './components/views/pages/boards/test/ScrumSettings.vue';
 import Statistics from './components/views/pages/boards/test/sprint/Statistics.vue';
+import KanbanStatistics from './components/views/pages/boards/kanban/Statistics.vue';
 import CumulativeChart from './components/views/pages/boards/test/sprint/CumulativeChart.vue';
 /* end of import vue components */
 
@@ -320,6 +321,14 @@ export const routes = [
                         path: 'settings',
                         name: 'kanboard_settings',
                         component: KanbanSettings,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'statistics',
+                        name: 'kanboard_stats',
+                        component: KanbanStatistics,
                         meta: {
                             requiresAuth: true
                         },

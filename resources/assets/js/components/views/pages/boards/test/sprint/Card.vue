@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="list-body">
-            <draggable v-model="uStory.tasks" :options="{animation:200, group:'status'}" :element="'div'" @change="test($event, status.id, uStory.id)">
+            <draggable v-model="uStory.tasks" :options="{animation:200, group:'status', disabled: false}" :element="'div'" @change="test($event, status.id, uStory.id)">
                 <card-task v-for="(task, index) in uStory.tasks" v-if="task.status == status.id" :key="index" :task="task"></card-task>
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
@@ -88,7 +88,7 @@ export default {
 
         monitorTask(e) {
             // console.log(e);
-            if(e.status == 4) {
+            // if(e.status == 4) {
                 axios.post('/api/monitorTask', {task: e})
                     .then(response => {
                         console.log(response);
@@ -98,7 +98,7 @@ export default {
                         console.error(error);
                         
                     })
-            }
+            // }
         }
     }
 }

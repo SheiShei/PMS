@@ -35,7 +35,7 @@
             </form>
         </div>
         <div class="list-body">
-            <draggable v-model="sprint.us" :options="{animation:200, group:'status'}" :element="'div'" @change="usChange($event, sprint.id)">
+            <draggable v-model="sprint.us" :options="{animation:200, group:'status'}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
                 <card-task v-for="(us, index) in sprint.us" :key="us.id" :us="us" :i="index" :sname="sprint.name"></card-task>                
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
@@ -77,14 +77,48 @@ export default {
         revert(){
             this.showEditList = !this.showEditList;
         },
-        usChange(e, sid) {
+        usChange(e, sid, type) {
             this.$store.commit('mapSprintUSOrder', sid);
             this.$store.dispatch('updateSprintOrder', this.sprint)
+                .then(() => {
+                    if(e.added){
+                        if(type == 2){
+                            this.monitorUS(e.added.element)
+                        }
+                    }
+                    if(e.removed){
+                        if(type == 2){
+                            this.monitorRemovedUS(sid)
+                        }
+                    }
+                })
         },
         updateUSname(id) {
             this.$store.dispatch('updateSprint', {id: id, name: this.sprint_name})
                 .then(() => {
                     this.showEditList = false;
+                })
+        },
+        monitorUS(e) {
+            axios.post('/api/monitorUS', {us: e})
+                .then(response => {
+                    console.log(response);
+                    
+                })
+                .catch(error => {
+                    console.error(error);
+                    
+                })
+        },
+        monitorRemovedUS(e) {
+            axios.post('/api/monitorRemovedUS', {sprint_id: e})
+                .then(response => {
+                    console.log(response);
+                    
+                })
+                .catch(error => {
+                    console.error(error);
+                    
                 })
         }
     }

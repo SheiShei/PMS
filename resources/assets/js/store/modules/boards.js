@@ -320,15 +320,17 @@ const actions = {
     },
 
     updateTaskOrder({commit}, data) {
-        axios.patch('/api/updateTaskOrder', data)
-            .then(() => {
-                // console.log(response);
-                
-            })
-            .catch(error => {
-                console.error(error);
-                
-            })
+        return new Promise ((resolve, reject) => {
+            axios.patch('/api/updateTaskOrder', data)
+                .then(() => {
+                    // console.log(response);
+                    resolve();
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject();
+                })
+        })
     },
 
     sendComment({commit}, data) {

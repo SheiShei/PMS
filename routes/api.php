@@ -90,7 +90,11 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
     Route::patch('/uBoard', 'BoardController@updateBoard');
+    Route::patch('/setAsDoneList', 'BoardController@setAsDoneList');
     Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
+    Route::post('/monitorAddTask', 'BoardController@monitorAddTask');
+    Route::post('/monitorRemovedTask', 'BoardController@monitorRemovedTask');
+    Route::post('/getBUData', 'BoardController@getBUData');
 
 
         //Scrum
@@ -116,6 +120,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::patch('/updateUS', 'BoardController@updateUS');
     Route::delete('/deleteUS', 'BoardController@deleteUS');
     Route::post('/monitorTask', 'BoardController@monitorTask');
+    Route::post('/monitorUS', 'BoardController@monitorUS');
+    Route::post('/monitorRemovedUS', 'BoardController@monitorRemovedUS');
     Route::post('/getBD', 'BoardController@getBD');
 
 });

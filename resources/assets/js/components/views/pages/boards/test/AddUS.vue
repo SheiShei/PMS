@@ -5,7 +5,7 @@
             <div class="newTaskForm" style="">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
+                        <h4><span class="fa fa-tasks"></span> Add User Story: </h4>
                     </div>
                     <div class="col-md-6 text-right">
                         <router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
@@ -40,7 +40,11 @@
                                 <option value="3">3</option>
                                 <option value="4">4</option>
                                 <option value="5">5</option>
-                                <option value="6">8</option>
+                                <option value="8">8</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="40">40</option>
                             </select>
                         </div>
                     </div>

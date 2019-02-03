@@ -11,19 +11,12 @@ export default {
     components: {
         apexchart: VueApexCharts
     },
+    props: ['chartData'],
     data(){
         return{
             series: [{
-                name: "Task Done",
-                data: [
-                    {x:'2019-01-05', y:160},
-                    {x:'2019-01-05', y:134}, 
-                    {x:'2019-01-05', y:120}, 
-                    {x:'2019-01-08', y:null}, 
-                    {x:'2019-01-09', y:null}, 
-                    {x:'2019-01-10', y:null}, 
-                    {x:'2019-01-11', y:null},
-                ]
+                name: "Story Points Remaining",
+                data: this.chartData.data
             }],
             chartOptions: {
                 chart: {
@@ -54,7 +47,7 @@ export default {
             },
             yaxis:{
                 min: 0 ,
-                max: 160
+                max: this.chartData.max
             }
             }
         }

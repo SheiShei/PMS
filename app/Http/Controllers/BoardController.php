@@ -749,9 +749,10 @@ class BoardController extends Controller
     }
 
     public function monitorTask(Request $request) {
+        $sprint = Sprint::find($request->task['sprint_id']);
         $totalSprintPoints = 0;
         $pointsFinished = 0;
-        foreach (Sprint::find($request->task['sprint_id'])->us()->get() as $key => $story) {
+        foreach ($sprint->us()->get() as $key => $story) {
             $totalSprintPoints = $totalSprintPoints + $story->points;
             $tUSTask = count($story->tasks()->get());
             $tUSTaskCompleted = 0;
@@ -769,38 +770,298 @@ class BoardController extends Controller
 
         $totalSprintPoints = $totalSprintPoints - $pointsFinished;
 
-        $us = UserStory::find($request->task['us_id']);
-        $totalUSTask = count($us->tasks()->get());
-        $totalUSTaskCompleted = 0;
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
 
-        foreach ($us->tasks()->get() as $key => $task) {
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
             if($task->status == 4) {
-                $totalUSTaskCompleted++;
+                $closed++;
             }
         }
 
-        if($totalUSTask == $totalUSTaskCompleted) {
+        // if($totalUSTask == $totalUSTaskCompleted) {
             Progress::create([
                 'sprint_id' => $request->task['sprint_id'],
-                'remaining_points' => $totalSprintPoints
+                'remaining_points' => $totalSprintPoints,
+                'todo' => $todo,
+                'in_progress' => $in_progress,
+                'for_test' => $for_test,
+                'closed' => $closed,
             ]);
+        // }
+
+    }
+
+    public function monitorUS(Request $request) {
+        $sprint = Sprint::find($request->us['sprint_id']); 
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach ($sprint->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
         }
 
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
+
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
+            if($task->status == 4) {
+                $closed++;
+            }
+        }
+
+        Progress::create([
+            'sprint_id' => $request->us['sprint_id'],
+            'remaining_points' => $totalSprintPoints,
+            'todo' => $todo,
+            'in_progress' => $in_progress,
+            'for_test' => $for_test,
+            'closed' => $closed,
+        ]);
+    }
+
+    public function monitorRemovedUS(Request $request) {
+        $sprint = Sprint::find($request->sprint_id);
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach ($sprint->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
+        }
+
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
+
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
+            if($task->status == 4) {
+                $closed++;
+            }
+        }
+        
+        Progress::create([
+            'sprint_id' => $request->sprint_id,
+            'remaining_points' => $totalSprintPoints,
+            'todo' => $todo,
+            'in_progress' => $in_progress,
+            'for_test' => $for_test,
+            'closed' => $closed,
+        ]);
     }
 
     public function getBD(Request $request) {
         // return $request;
         $bdData = [];
+
+        $tdData = [];
+        $ipData = [];
+        $ftData = [];
+        $cData = [];
+
         foreach ($request->dates as $key => $date) {
-            $statData = Progress::where('sprint_id', $request->sprint_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
-            $singleData = array(
-                'x' => $date,
-                'y' => $statData->remaining_points
-            );
+            $newdate = Carbon::parse($date);
+            // if($key == 0) {
+            //     $statData = Progress::where('sprint_id', $request->sprint_id)->orderBy('created_at', 'asc')->first();
+            //     $singleData = array(
+            //         'x' => $date,
+            //         'y' => $statData->remaining_points
+            //     );
+            //     array_push($bdData, $singleData);
+            // }
+            // else {
+                if($newdate <= Carbon::now()) {
+                    $statData = Progress::where('sprint_id', $request->sprint_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => $statData->remaining_points
+                    );
+
+                    $tdSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->todo
+                    );
+                    $ipSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->in_progress
+                    );
+                    $ftSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->for_test
+                    );
+                    $cSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->closed
+                    );
+                }
+                else{
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $tdSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $ipSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $ftSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $cSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                }
+
+            array_push($tdData, $tdSingleData);
+            array_push($ipData, $ipSingleData);
+            array_push($ftData, $ftSingleData);
+            array_push($cData, $cSingleData);
+            // }
+            
 
             array_push($bdData, $singleData);
         }
 
-        return $bdData;
+        return response()->json(['data' => $bdData, 'todo' => $tdData, 'in_progress' => $ipData, 'for_test' => $ftData, 'closed' => $cData]);
+    }
+
+    public function setAsDoneList(Request $request) {
+        $cards = Board::find($request->board_id)->cards()->get();
+
+        foreach ($cards as $key => $card) {
+            if($card->id == $request->card_id) {
+                $card->update([
+                    'isDone' => true
+                ]);
+            }
+            else {
+                $card->update([
+                    'isDone' => false
+                ]);
+            }
+        }
+
+        $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+
+        return $lists;
+    }
+
+    public function monitorAddTask(Request $request) {
+        $card = Card::find($request->task['card_id']);
+
+        if($card->isDone) {
+            $totalDoneTask = count($card->tasks()->get());
+            Progress::create([
+                'board_id' => $card->board_id ,
+                'completed_tasks' => $totalDoneTask
+            ]);
+        }
+    }
+    
+    public function monitorRemovedTask(Request $request) {
+        $card = Card::find($request->list_id);
+
+        if($card->isDone) {
+            $totalDoneTask = count($card->tasks()->get());
+            Progress::create([
+                'board_id' => $card->board_id ,
+                'completed_tasks' => $totalDoneTask
+            ]);
+        }
+    }
+
+    public function getBUData(Request $request) {
+        $buData = [];
+
+        foreach ($request->dates as $key => $date) {
+            $newdate = Carbon::parse($date);
+            if($newdate <= Carbon::now()) {
+                $statData = Progress::where('board_id', $request->board_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
+                if($statData) {
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => $statData->completed_tasks
+                    );
+                }
+                else {
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => 0
+                    );
+                }
+            }
+            else {
+                $singleData = array(
+                    'x' => $date,
+                    'y' => null
+                );
+            }
+
+            array_push($buData, $singleData);
+        }
+
+        return response()->json(['data' => $buData]);
     }
 }
