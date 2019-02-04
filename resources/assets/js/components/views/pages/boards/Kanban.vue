@@ -5,6 +5,7 @@
             </div>
             <div class="board-wrapper" v-if="board">
                 <router-view></router-view>
+                <kanban-settings v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :boardMembers="boardMembers"></kanban-settings>
                 <div class="board-header">
                     <div class="board-name">
                         <h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;{{ board.name }}</h4>
@@ -16,7 +17,7 @@
                         </button>
                     </div>
                     <div class="board-info">
-                        <router-link :to="{name: 'kanboard_settings'}" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears"></span> Board Settings</router-link>
+                        <button @click="viewBSettings = true" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears"></span> Board Settings</button>
                     </div>
                     <div class="board-info">
                         <a @click="$router.push({name: 'kanboard_stats'})" class="btn btn-white btn-simple btn-xs"><span class="fa fa-bar-chart"></span> View Stats</a>
@@ -299,12 +300,14 @@
 
 <script>
 import draggable from 'vuedraggable';
+import KanbanSettings from './kanban/KanbanSettings.vue';
 import Card from './kanban/Card.vue';
 import {mapGetters} from 'vuex';
 export default {
     components: {
         draggable,
-        listCard: Card
+        listCard: Card,
+        kanbanSettings: KanbanSettings
     },
     data() {
         return {

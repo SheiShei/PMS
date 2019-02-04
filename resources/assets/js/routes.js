@@ -40,7 +40,6 @@ import AddUStask from './components/views/pages/boards/test/sprint/AddTask.vue';
 import ViewUStask from './components/views/pages/boards/test/sprint/ViewTask.vue';
 import ProfileUser from './components/views/pages/ProfileUser.vue';
 import BurndownChart from './components/views/pages/boards/test/sprint/BurndownChart.vue';
-import KanbanSettings from './components/views/pages/boards/kanban/KanbanSettings.vue';
 import ScrumSettings from './components/views/pages/boards/test/ScrumSettings.vue';
 import Statistics from './components/views/pages/boards/test/sprint/Statistics.vue';
 import KanbanStatistics from './components/views/pages/boards/kanban/Statistics.vue';
@@ -313,14 +312,6 @@ export const routes = [
                         path: 'gallery/:task_id',
                         name: 'kanboard_gallery',
                         component: KanbanGallery,
-                        meta: {
-                            requiresAuth: true
-                        },
-                    },
-                    {
-                        path: 'settings',
-                        name: 'kanboard_settings',
-                        component: KanbanSettings,
                         meta: {
                             requiresAuth: true
                         },

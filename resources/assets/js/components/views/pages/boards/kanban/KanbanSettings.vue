@@ -5,10 +5,10 @@
                 <form>
                     <div class="row">
                         <div class="col-md-11">
-                            <h4><span class="fa fa-gears"></span> Settings - Kanban Board 1</h4>
+                            <h4><span class="fa fa-gears"></span> Settings - {{ boardData.name }}</h4>
                         </div>
                         <div class="col-md-1 text-right">
-                            <a class="btn btn-danger btn-simple btn-round btn-xs" @click="$router.go(-1)"><span class="fa fa-times-circle"></span></a>
+                            <a class="btn btn-danger btn-simple btn-round btn-xs" @click="$emit('close')"><span class="fa fa-times-circle"></span></a>
                         </div>
                     </div>
                     <div class="row">
@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <label class="control-label text-grey"><span class="fa fa-trello"></span> Name:</label>
-                                    <input type="text" value="Sample Scrum Board" class="my-input my-inp-blk">
+                                    <input type="text" v-model="boardData.name" class="my-input my-inp-blk">
                                     <label class="control-label text-grey"><span class="fa fa-align-left"></span> Description:</label>
                                     <textarea rows="4" class="my-text-area my-inp-blk">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae earum, natus culpa recusandae ipsa fugit nisi? Facilis, nihil dignissimos! Voluptatibus magni blanditiis placeat doloribus autem voluptate beatae earum iste tempore.
                                     </textarea>
@@ -179,3 +179,9 @@
         </div>        
     </transition>
 </template>
+
+<script>
+export default {
+    props: ['boardData', 'boardMembers']
+}
+</script>

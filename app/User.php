@@ -144,7 +144,7 @@ class User extends Authenticatable
     }
 
     public function userBoards() {
-        return $this->belongsToMany('App\Board')->withPivot('added_by')->withTimestamps();
+        return $this->belongsToMany('App\Board')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
     }
 
     public function getPictureAttribute($pic) {

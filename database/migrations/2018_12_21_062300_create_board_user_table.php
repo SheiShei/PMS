@@ -18,6 +18,8 @@ class CreateBoardUserTable extends Migration
             $table->char('user_id', 36)->index();
             $table->char('board_id', 36)->index();
             $table->char('added_by', 36)->index();
+            $table->unsignedInteger('bRole_id')->index()->nullable();
+            $table->boolean('isAdmin')->default(false);
             $table->timestamps();
 
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
