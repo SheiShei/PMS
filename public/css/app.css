@@ -11440,6 +11440,42 @@ button.close {
   opacity: 0;
 }
 
+.flip-list-move {
+  -webkit-transition: -webkit-transform 1s;
+  transition: -webkit-transform 1s;
+  transition: transform 1s;
+  transition: transform 1s, -webkit-transform 1s;
+}
+
+.list-complete-item {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.list-complete-enter,
+.list-complete-leave-to {
+  opacity: 0;
+  -webkit-transform: translateX(-10px);
+          transform: translateX(-10px);
+  display: table-row;
+}
+
+.list-complete-leave-active {
+  position: absolute;
+  /* width: 100%; */
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
 div.bootstrap-select > .btn.btn-info.btn-simple {
   border: 1px solid #00bcd4;
 }
@@ -12786,6 +12822,27 @@ hr {
 .my-thin-select {
   padding: 2px;
   border-radius: 3px;
+  border: 1px solid #e8e8e8;
+  color: #848484;
+}
+
+.my-thin-input {
+  padding: 2px;
+  border-radius: 3px;
+  border: 1px solid #e8e8e8;
+  color: #848484;
+}
+
+@media screen and (max-width: 768px) {
+  .my-thin-select,
+  .my-thin-input {
+    margin-bottom: 5px;
+    float: left;
+  }
+
+  .my-thin-input ~ span {
+    display: none;
+  }
 }
 
 .boardsettings {
@@ -13160,6 +13217,14 @@ hr {
   margin-top: 1.5rem;
 }
 
+.no-margin {
+  margin: 0;
+}
+
+.nm-top {
+  margin-top: 0;
+}
+
 .main2 {
   background: none;
 }
@@ -13264,6 +13329,86 @@ hr {
 .torevdiv:hover {
   background-color: #f8f8f8;
   border-left: 3px solid #ffc852;
+}
+
+.torev2 {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.torev2 .torevdiv2 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+  width: 100%;
+  cursor: pointer;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+.torev2 .torevdiv2 .torev-left {
+  display: inline-block;
+  padding: 15px 10px;
+  width: 10%;
+}
+
+.torev2 .torevdiv2 .torev-left .torev-icon {
+  height: 34px;
+  width: 34px;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.torev2 .torevdiv2 .torev-left .torev-icon i {
+  font-size: 30px;
+  color: #b9cee2;
+}
+
+.torev2 .torevdiv2 .torev-right {
+  display: inline-block;
+  padding: 15px 10px;
+  width: 70%;
+}
+
+.torev2 .torevdiv2 .torev-right h6,
+.torev2 .torevdiv2 .torev-right p {
+  margin: 0;
+}
+
+.torev2 .torevdiv2 .torev-right h6 > a {
+  color: dimgray;
+}
+
+.torev2 .torevdiv2 .torev-right p {
+  color: gray;
+}
+
+.torev2 .torevdiv2 .very-right {
+  display: none;
+  padding: 15px 10px;
+  width: 20%;
+  vertical-align: middle;
+}
+
+.torevdiv2:hover {
+  background-color: #f8f8f8;
+  border-left: 3px solid #52baff;
+  cursor: default;
+}
+
+.torevdiv2:hover {
+  cursor: pointer;
+}
+
+.torevdiv2:hover .very-right {
+  display: inline-block;
+}
+
+.torevdiv2:hover .wb-title > a {
+  color: #09aec3 !important;
 }
 
 .taskremdiv {
