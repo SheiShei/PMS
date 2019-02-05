@@ -3,186 +3,90 @@
         <div class="title-head">
             <h2><span class="fa fa-book"></span> Workbook <small></small></h2>
         </div>
-            <div class="col-md-8">
-                <div class="mybox mybox-v2" style="margin: 20px 10px">
-                        <form>
-                        <div class="mybox-head text-right boxheadv2">
-                            <h6 class="pull-left"><strong>Total:</strong>&nbsp;10</h6>
-                            <!-- <div class="col-md-6"> -->
-                                
-                            <!-- </div> -->
-                            <!-- <div class="col-md-6 text-right"> -->
-                                <input type="text" class="" placeholder="Search Workbook">
-                                <select name="" id="" class="">
-                                    <option value="">--Brand--</option>
-                                    <option value="">MFI</option>
-                                    <option value="">Luljetta's</option>
-                                    <option value="">Potato Corner</option>
-                                </select>
-                            <!-- </div> -->
-                        </div>
-                        <div class="mybox-body white-white-bg" style="max-height: 75vh; overflow-y: auto">
-                           <!-- <p class="note"><span class="fa fa-check text-success text-left"></span> = Reviewed by Client</p> -->
-                           <div class="wb-list-div">
-                               <div class="img text-center">
-                                    <img src="images/agenda_icon_by_Freepik.png" alt="">
-                                    
+        <div class="container-fluid">
+            <div class="main2">
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="taskchart shadow">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6 class="nm-top"><strong><span class="fa fa-book"></span> WORKBOOKS LIST</strong>&nbsp;<span><small>| <a href="">Archive</a></small></span></h6>
                                 </div>
-                                <div class="wb-details">
-                                    <p class="wb-title">
-                                        <router-link ref="" :to="{ name: 'view_workbook' }"  tag="a" href="">
-                                        Proposed Pages for Instagram Posts
-                                        </router-link>
-                                        <span class="fa fa-check text-success" title="Reviewed by Client"></span>
-                                    </p>
-                                    <p class="wb-brand">
-                                        <!-- <span>
-                                            <img src="images/mfilogo.png" style="height: 15px; 15px; border-radius: 50%" alt="">
-                                        </span> -->
-                                        <a href="#">LULJETTA</a></p>
-                                    <p class="text-default"><small><span class="fa fa-image"></span></small>&nbsp;1&nbsp;<small><span class="fa fa-file-text-o"></span></small>&nbsp;2</p>
-
-                                    <p class="note">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis rerum, assumenda dolores est doloremque obcaecati doloribus omnis eveniet tenetur illo labore odit reprehenderit. Nobis repellendus illum consequuntur magni deleniti reiciendis.</p>
-                                    <div class="wb-delete">
-                                        <button type="button" title="Archive" class="btn btn-danger btn-simple btn-xs"><i class="fa fa-trash-o"></i><div class="ripple-container"></div></button>
-                                    </div>
+                                <div class="col-md-8 text-right">
+                                    <select class="my-input my-thin-select" name="" id="">
+                                        <option value="" selected>Reviewed & For Review</option>
+                                        <option value="">Reviewed</option>
+                                        <option value="">For Review</option>
+                                    </select>
+                                    <input type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    &nbsp;<span class="fa fa-search text-default"></span>
                                 </div>
-                           </div>
-                           <div class="wb-list-div">
-                               <div class="img text-center">
-                                    <img src="images/agenda_icon_by_Freepik.png" alt="">
-                                    
-                                </div>
-                                <div class="wb-details">
-                                    <p class="wb-title">
-                                        
-                                        <a href="#">Proposed Pages for Instagram Posts</a>
-                                        <span class="fa fa-check text-success"></span>
-                                    </p>
-                                    <p class="wb-brand">
-                                        <!-- <span>
-                                            <img src="images/mfilogo.png" style="height: 15px; 15px; border-radius: 50%" alt="">
-                                        </span> -->
-                                        <a href="#">LULJETTA</a></p>
-                                    <p class="text-default"><small><span class="fa fa-image"></span></small>&nbsp;1&nbsp;<small><span class="fa fa-file-text-o"></span></small>&nbsp;2</p>
-
-                                    <div class="wb-delete">
-                                        <button type="button" title="Archive" class="btn btn-danger btn-simple btn-xs"><i class="fa fa-trash-o"></i><div class="ripple-container"></div></button>
-                                    </div>
-                                    
-                                </div>
-                           </div>
-                           <div class="wb-list-div">
-                               <div class="img text-center">
-                                    <img src="images/agenda_icon_by_Freepik.png" alt="">
-                                    
-                                </div>
-                                <div class="wb-details">
-                                    <p class="wb-title">
-                                        
-                                        <a href="#">Proposed Pages for Instagram Posts</a>
-                                        <span class="fa fa-check text-success"></span>
-                                    </p>
-                                    <p class="wb-brand">
-                                        <!-- <span>
-                                            <img src="images/mfilogo.png" style="height: 15px; 15px; border-radius: 50%" alt="">
-                                        </span> -->
-                                        <a href="#">LULJETTA</a></p>
-                                                                        <p class="text-default"><small><span class="fa fa-image"></span></small>&nbsp;1&nbsp;<small><span class="fa fa-file-text-o"></span></small>&nbsp;2</p>
-
-                                    <p class="note">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis rerum, assumenda dolores est doloremque obcaecati doloribus omnis eveniet tenetur illo labore odit reprehenderit. Nobis repellendus illum consequuntur magni deleniti reiciendis.</p>
-                                    <div class="wb-delete">
-                                        <button type="button" title="Archive" class="btn btn-danger btn-simple btn-xs"><i class="fa fa-trash-o"></i><div class="ripple-container"></div></button>
-                                    </div>
-                                </div>
-                           </div>
-                           <div class="wb-list-div">
-                               <div class="img text-center">
-                                    <img src="images/agenda_icon_by_Freepik.png" alt="">
-                                    
-                                </div>
-                                <div class="wb-details">
-                                    <p class="wb-title">
-                                        
-                                        <a href="#">Proposed Pages for Instagram Posts</a>
-                                        <span class="fa fa-check text-success"></span>
-                                    </p>
-                                    <p class="wb-brand">
-                                        <!-- <span>
-                                            <img src="images/mfilogo.png" style="height: 15px; 15px; border-radius: 50%" alt="">
-                                        </span> -->
-                                        <a href="#">LULJETTA</a></p>
-                                    <p class="text-default"><small><span class="fa fa-image"></span></small>&nbsp;1&nbsp;<small><span class="fa fa-file-text-o"></span></small>&nbsp;2</p>
-
-                                    <div class="wb-delete">
-                                        <button type="button" title="Archive" class="btn btn-danger btn-simple btn-xs"><i class="fa fa-trash-o"></i><div class="ripple-container"></div></button>
-                                    </div>
-                                    
-                                </div>
-                           </div>
-                        </div>
-                        <div class="mybox-footer">
-                            <div class="row form-group text-center">
+                            </div>
+                            <hr/>
+                            <div class="row">
                                 <div class="col-md-12">
-                                    <!-- <button class="btn btn-success">SEND NEW WORKBOOK</button> -->
+                                    <div style="max-height: 75vh; overflow-y: auto">
+                                        <div class="torev2">
+                                        <a href="#parent" class="torev2">
+                                            <div class="torevdiv2">
+                                                <div class="torev-left">
+                                                    <div class="torev-icon">
+                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    </div>
+                                                </div>  
+                                                <div class="torev-right">
+                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a> <span title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
+                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
+                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                </div>
+                                                <div class="very-right hidden-sm hidden-xs text-right">
+                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                    <span class="fa fa-trash-o"></span> Archive
+                                                </a>
+                                            </div>
+                                            </div>
+                                        </a>
+                                        </div>
+                                        <div class="torev2">
+                                        <a href="#parent" class="torev2">
+                                            <div class="torevdiv2">
+                                                <div class="torev-left">
+                                                    <div class="torev-icon">
+                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    </div>
+                                                </div>  
+                                                <div class="torev-right">
+                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a></h6> 
+                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
+                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                </div>
+                                                <div class="very-right hidden-sm hidden-xs text-right">
+                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                    <span class="fa fa-trash-o"></span> Archive
+                                                </a>
+                                            </div>
+                                            </div>
+                                        </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="taskchart shadow">
+                            <p class="txt-bold"><span class="fa fa-plus-square-o text-success"></span> Create New</p>
+                            <hr>
+                            <a class="btn btn-success btn-md btn-block">Create Workbook</a>
+                        </div>        
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <!-- <div class="mybox" style="margin: 20px 10px">
-                        <form>
-                        <div class="mybox-body white-white-bg" style="max-height: 75vh; overflow-y: auto"> -->
-                            <router-link ref="" :to="{ name: 'add_workbook' }"  tag="button" class="btn btn-success btn-block" style="margin-top: 20px">
-                                        NEW WORKBOOK
-                            </router-link>
-                            <!-- <a href="workbook/add" >NEW WORKBOOK</a> -->
-                        <!-- </div>
-                        </form>
-                </div> -->
-                <!-- <div class="mybox" >
-                        <form>
-                        <div class="mybox-head">
-                            <h6><strong>NOTICE</strong></h6>
-                        </div>
-                        <div class="mybox-body white-white-bg" style="max-height: 75vh; overflow-y: auto">
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                            <p class="note">You haven't submitted any to-review files.</p>
-                        </div>
-                        <div class="mybox-footer">
-                            <div class="row form-group text-center">
-                                <div class="col-md-12">
-                                    <button class="btn btn-success">SEND NEW WORKBOOK</button>
-                                </div>
-                            </div>
-                        </div>
-                        </form>
-                </div> -->
-            </div>
+        </div>
     </section>
 </template>
 
 <style scoped lang="scss">
-.mybox-v2{
-    // border: none;
-    // .mybox-head{
-        // border: none;
-    // }
-    .mybox-body{
-        padding: 0
-    }
-}
 .wb-list-div{
     display: inline-flex;
     width: 100%;

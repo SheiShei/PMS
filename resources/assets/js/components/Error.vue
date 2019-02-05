@@ -27,6 +27,11 @@ div.errordiv{
         }
     }
 }
+@media screen and (max-width: 767px){
+    h1{
+        font-size: 5em !important;
+    }
+}
 </style>
 
 
