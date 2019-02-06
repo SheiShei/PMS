@@ -107,35 +107,35 @@
                        
                 </div>
             </div>
-
             <div class="col-md-3">
                 <transition name="fade">
-                    <div class="mybox" v-show="showThreadForm" style="margin-top: 20px">
+                    <div class="taskchart shadow mt-4" v-show="showThreadForm">
+                        <p class="nm-top txt-bold"><span class="fa fa-plus-square-o text-info"></span> Create New Group Chat</p>
+                        <hr/>
                         <form @submit.prevent="addConvo" >
-                        <div class="mybox-head">
-                            <h6><strong>NEW GROUP CHAT</strong></h6>
-                        </div>
-                        <div class="mybox-body white-white-bg">
-                            <div class="form-group is-empty">
-                                <label class="control-label">Group Name</label> 
-                                <input v-model="credentials.name" type="text" class="form-control" required> 
-                                <span class="material-input"></span>
-                                <span class="material-input"></span>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Share with</label> 
-                                <div class="btn-group bootstrap-select">
-                                    <select @change="checkBox" class="selectpicker" v-model="privacy" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                        <!-- <option selected disabled="">Privacy</option> -->
-                                        <option value="all">All</option>
-                                        <option value="web">Web Team</option>
-                                        <option value="creative">Creatives Team</option>
-                                        <option value="custom">Custom</option>
-                                    </select>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group is-empty">
+                                        <label class="control-label">Group Name</label> 
+                                        <input v-model="credentials.name" type="text" class="form-control" required> 
+                                        <span class="material-input"></span>
+                                        <span class="material-input"></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div >
-                                <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="control-label">Share with</label> 
+                                    <div class="btn-group bootstrap-select">
+                                        <select @change="checkBox" class="selectpicker" v-model="privacy" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                        <!-- <option selected disabled="">Privacy</option> -->
+                                            <option value="all">All</option>
+                                            <option value="web">Web Team</option>
+                                            <option value="creative">Creatives Team</option>
+                                            <option value="custom">Custom</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                     <input v-model="data.search" @input="search()" type="search" style="width: 100%; margin-top: 10px" placeholder="Search..." class="my-input">
                                 </div>
                                 <div class="choose-mem" style="max-height: 130px; overflow:auto">
@@ -147,21 +147,23 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div>
                             </div>
-                        </div>
-                        <div class="mybox-footer">
-                            <div class="row form-group text-center">
-                                <div class="col-md-12">
-                                    <button @click="showThreadForm = !showThreadForm" class="btn btn-info btn-simple btn-sm" type="button" value="submit">Close</button>
-                                    <button class="btn btn-info btn-sm" type="submit" value="">OK!</button>
+                                </div>
+                             </div>
+                             <div class="row form-group text-center">
+                                <div class="col-md-6">
+                                    <button @click="showThreadForm = !showThreadForm" class="btn btn-block btn-default btn-sm" type="button">Close</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-info btn-sm btn-block" type="submit" value="">OK!</button>
                                 </div>
                             </div>
-                        </div>
                         </form>
                     </div>
+                    
                 </transition>
             </div>
-
         </section>
 </template>
 

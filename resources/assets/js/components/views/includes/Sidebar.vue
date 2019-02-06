@@ -26,7 +26,7 @@
             
                 <!-- <li class="" v-if="cUser.role.id === 1"> -->
                     <router-link :to="{ name: 'users' }" v-if="cUser.role.id === 1" tag="li" active-class="active">
-                        <i class="fa fa-user-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Employees
+                        <i class="fa fa-user-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Users
                     </router-link>
                 <!-- </li> -->
                     <router-link :to="{ name: 'workbook' }" tag="li" active-class="active">
@@ -40,7 +40,7 @@
                     </router-link>
 
                     <router-link :to="{ name: 'brands' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
-                        <i class="fa fa-suitcase fa-lg"></i>&nbsp;&nbsp;&nbsp;Brands 
+                        <i class="fa fa-briefcase fa-lg"></i>&nbsp;&nbsp;&nbsp;Brands 
                         <!-- <span class="arrow"></span> -->
                     </router-link>
 

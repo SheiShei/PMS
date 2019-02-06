@@ -1,91 +1,117 @@
 <template>
-    <section class="main-main-container" style="background-color: ;">
+    <section class="main-main-container">
          <div class="title-head">
             <h2><span class="fa fa-trello"></span> Boards</h2>
         </div>
-        <!-- <br/> -->
-        <!-- <div class="col-md-1"></div>  -->
-        <div class="first-column col-md-6">
-            <!-- <h4 class="">Board List</h4> -->
-            <p class="note" style="margin-top: 10px">Filter boards by type and access below.</p>
-            
-            <select @change="getUserBoards" v-model="boarddata.type" class="my-input">
-                <option value="" selected>All Boards</option> 
-                <option value="1">Kanban</option>
-                <option value="2">Scrum</option> 
-            </select>
-            &nbsp;&nbsp;&nbsp;
-            <select @change="getUserBoards" v-model="boarddata.privacy" class="my-input">
-                <option value="">Team & Personal</option> 
-                <option value="1">Personal</option> 
-                <option value="2">Team</option> 
-            </select>
-            <p class="pull-right">Found: {{ userBoards.length }} board</p>
-            <hr />
-            <div class="boardlist" style="max-height: 70vh; overflow-y:auto">
-                <div class="boarddiv" v-for="board in userBoards" :key="board.id">
-                    <div class="boardname"><router-link :to="{ name: 'kanboard', params: {board_id: board.id} }" style="color: gray;">{{ board.name }}</router-link></div>
-                    <div class="boardoptions">
-                        <p><span class="">
-                            <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
-                            <router-link v-if="board.type == 2" :to="{ name: 'test', params: {board_id: board.id} }" class="text-primary"><i class="fa fa-eye"></i></router-link>
-                            <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
-                        </span></p>
-                    </div>
-                </div>             
-            </div>
-        </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-4 profilesec">
-            <br/>
-            <transition name="slide">
-                <div class="mybox">
-                    <div class="mybox-head">
-                        <h6><strong>NEW BOARD</strong></h6>
-                    </div>
-                    <div class="mybox-body white-white-bg">
-                        <div class="radio">
-                            <p for="">Type:
-                                <span>
-                                    <label>
-									    <input v-model="board.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
-									    Kanban
-								    </label>
+        <div class="container-fluid">
+            <div class="main2">
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="taskchart shadow">
+                            <h6 class="no-margin"><span class="txt-bold"><span class="fa fa-trello"></span> Board List</span>&nbsp;
+                                <span class="">
+                                    <select @change="getUserBoards" v-model="boarddata.type" class="my-thin-select text-default">
+                                        <option value="" selected>All Boards</option> 
+                                        <option value="1">Kanban</option>
+                                        <option value="2">Scrum</option> 
+                                    </select>
                                 </span>
-                                <span>
-                                    <label>
-									    <input v-model="board.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
-									    Scrum
-								    </label>
+                                <!-- <span class="">
+                                    <select @change="getUserBoards" v-model="boarddata.privacy" class="my-thin-select text-default">
+                                        <option value="">Team & Personal</option> 
+                                        <option value="1">Personal</option> 
+                                        <option value="2">Team</option> 
+                                    </select>
+                                </span> -->
+                                <span class="pull-right">
+                                    <p class="no-margin"><small>Found:</small> {{ userBoards.length }}</p>
                                 </span>
-                            </p>
-						</div>
-                        <p for="">Name: 
-                            <span>
-                                <input v-model="board.name" type="text" class="my-input my-inp-blk">
-                            </span>
-                        </p>
-                        <p for="">Description: 
-                            <span>
-                                <!-- <input v-model="board.name" type="text" class="my-input my-inp-blk"> -->
-                                <textarea v-model="board.desc" class="my-input my-inp-blk" rows="3"></textarea>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="mybox-footer">
-                        <div class="row form-group text-center">
-                            <div class="col-md-6">
-                                <button @click="cancel" class="btn btn-danger btn-sm btn-block" type="button">CANCEL</button>
-                            </div>
-                            <div class="col-md-6">
-                                <button @click="createBoard" class="btn btn-success btn-sm btn-block" type="button" value="">CREATE</button>
+                            </h6>
+                            <hr/>
+                            <div class="boardlist" style="max-height: 70vh; overflow-y:auto" is="transition-group" name="list-complete">
+                                <div v-for="board in userBoards" :key="board.id" class="list-complete-item">
+                                    <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="boarddiv">
+                                        <div class="boardname">{{ board.name }}</div>
+                                        <div class="boardoptions">
+                                            <p><span class="pull-right">
+                                                <!-- <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
+                                                <a href="" @click.stop="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                            </span></p>
+                                        </div>
+                                    </router-link>
+                                    <router-link v-if="board.type == 2" :to="{ name: 'test', params: {board_id: board.id} }" class="boarddiv">
+                                        <div class="boardname">{{ board.name }}</div>
+                                        <div class="boardoptions">
+                                            <p><span class="pull-right">
+                                                <!-- <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
+                                                <a href="" @click.stop.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                            </span></p>
+                                        </div>
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
+                        <br/>
                     </div>
+                    <div class="col-md-4 profilesec">
+                        <transition name="slide">
+                            <div class="taskchart shadow">
+                                <p class="no-margin txt-bold"><span class="fa fa-plus-square-o text-info"></span> Create New Board</p>
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group is-empty">
+                                            <label class="control-label">Board Type:</label>
+                                            <div class="radio">
+                                                <span>
+                                                    <label>
+									                    <input v-model="board.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									                    Kanban
+								                    </label>
+                                                </span>
+                                                <span>
+                                                    <label>
+									                    <input v-model="board.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									                    Scrum
+								                    </label>                                
+                                                </span>
+						                    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group is-empty">
+                                            <label class="control-label">Board Name:</label>
+                                            <input v-model="board.name" required type="text" class="form-control">
+                                            <span class="material-input"></span>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group is-empty">
+                                            <label class="control-label">Board Description:</label>
+                                            <textarea v-model="board.desc" required type="text" class="form-control"></textarea>
+                                            <span class="material-input"></span>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row form-group text-center">
+                                    <div class="col-md-6">
+                                        <button @click="cancel" class="btn btn-default btn-md btn-block" type="button">Cancel</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button @click="createBoard" class="btn btn-info btn-md btn-block" type="button" value="">CREATE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>        
                 </div>
-            </transition>
-        </div>
-        <div class="col-md-1"></div>
+            </div>
+        </div> 
     </section>
 </template>
 
@@ -202,13 +228,19 @@ export default {
     .boarddiv{
         position: relative;
         display: block;
-        padding: 7px 10px;
+        padding: 10px 15px;
     }
     .boarddiv:hover{
-        background-color: white;
+        background-color: #fafafa;
+        .boardname{
+            color: #09aec3;
+            font-weight: bold;
+        }
     }
     .boarddiv:hover .boardoptions{
         display: inline-block;
+        position: absolute;
+        right:0;
         transition-delay: opacity 0.3s;
     }
     .boardoptions{

@@ -45,7 +45,8 @@
                                     <hr>
                                     <div class="notifsss">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="notifdiv">
+                                    
+                                    <a href="#"><div class="notifdiv">
                                         <div class="notif-left">
                                             <div class="notif-icon bg-info">
                                                 <i class="fa fa-envelope-o medium-avatar" alt=""></i>
@@ -54,8 +55,8 @@
                                         <div class="notif-right">
                                             <p>You have new message received!</p>
                                         </div>
-                                    </div>
-                                    <div class="notifdiv">
+                                    </div></a>
+                                    <a href="#"><div class="notifdiv">
                                         <div class="notif-left">
                                             <div class="notif-icon bg-success">
                                                 <i class="fa fa-trello medium-avatar" alt=""></i>
@@ -64,8 +65,8 @@
                                         <div class="notif-right">
                                             <p><span class="highlight">Sam</span> added you to board <span class="highlight">Board Name Here</span></p>
                                         </div>
-                                    </div>
-                                    <div class="notifdiv">
+                                    </div></a>
+                                    <a href="#"><div class="notifdiv">
                                         <div class="notif-left">
                                             <div class="notif-icon bg-warning">
                                                 <i class="fa fa-star medium-avatar" alt=""></i>
@@ -74,7 +75,7 @@
                                         <div class="notif-right">
                                             <p>The workbook <span class="highlight">_____</span> has been reviewed by <span class="highlight">Luljetta's</span></p>
                                         </div>
-                                    </div>
+                                    </div></a>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -86,7 +87,7 @@
                                     <hr>
                                     <!-- <p class="note">No messages to show</p> -->
                                     <div class="mess">
-                                        <div class="msgdiv">
+                                        <a href="#"><div class="msgdiv">
                                             <div class="msg-left">
                                                 <img src="/images/default.png" class="medium-avatar" alt="">
                                             </div>
@@ -95,8 +96,8 @@
                                                 <small><span class="fa fa-clock-o"></span>&nbsp;5:31am 1/06</small></p>
                                                 <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
                                             </div>
-                                        </div>
-                                        <div class="msgdiv">
+                                        </div></a>
+                                        <a href="#"><div class="msgdiv">
                                             <div class="msg-left">
                                                 <img src="/images/default.png" class="medium-avatar" alt="">
                                             </div>
@@ -104,8 +105,8 @@
                                                 <p class="txt-bold text-default msgsender">Samantha Millos</p>
                                                 <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
                                             </div>
-                                        </div>
-                                        <div class="msgdiv">
+                                        </div></a>
+                                        <a href="#"><div class="msgdiv">
                                             <div class="msg-left">
                                                 <img src="/images/default.png" class="medium-avatar" alt="">
                                             </div>
@@ -113,7 +114,7 @@
                                                 <p class="txt-bold text-default msgsender">Samantha Millos</p>
                                                 <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
                                             </div>
-                                        </div>
+                                        </div></a>
                                     </div>
 
                                 </div>
@@ -125,7 +126,7 @@
                                     <hr>
                                     <div class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="torevdiv">
+                                    <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -136,7 +137,7 @@
                                             <p><small>by: Aya on Sept. 13, 2019</small></p>
                                             <p><small>Potato Corner</small></p>
                                         </div>
-                                    </div>
+                                    </div></a>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -146,7 +147,7 @@
                                     <hr>
                                     <div class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="torevdiv">
+                                    <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -157,7 +158,7 @@
                                             <p><small>by: Aya on Sept. 13, 2019</small></p>
                                             <p><small>Potato Corner</small></p>
                                         </div>
-                                    </div>
+                                    </div></a>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -167,7 +168,7 @@
                                     <hr>
                                     <div class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="torevdiv">
+                                    <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -178,8 +179,8 @@
                                             <p><small>by: Aya on Sept. 13, 2019</small></p>
                                             <p><small>Potato Corner</small></p>
                                         </div>
-                                    </div>
-                                    <div class="torevdiv">
+                                    </div></a>
+                                    <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -190,8 +191,8 @@
                                             <p><small>by: Aya on Sept. 13, 2019</small></p>
                                             <p><small>Potato Corner</small></p>
                                         </div>
-                                    </div>
-                                    <div class="torevdiv">
+                                    </div></a>
+                                    <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -202,7 +203,7 @@
                                             <p><small>by: Aya on Sept. 13, 2019</small></p>
                                             <p><small>Potato Corner</small></p>
                                         </div>
-                                    </div>
+                                    </div></a>
                                     </div>
                                 </div>
                                 <br/>

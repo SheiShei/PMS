@@ -20,6 +20,31 @@
 .fade-enter, .fade-leave-to{
   opacity: 0;
 }
+
+.flip-list-move{
+  transition: transform 1s;
+}
+.list-complete-item{
+  transition: all 0.3s;
+}
+.list-complete-enter, .list-complete-leave-to{
+  opacity: 0;
+  transform: translateX(-10px);
+  display: table-row;
+}
+.list-complete-leave-active{
+  position: absolute;
+  // display: table-row;
+  /* width: 100%; */
+}
+.fade-enter-active,
+.fade-leave-active{
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to{
+  opacity:0;
+}
 //end of VUE ANIMATIONS
 
 div.bootstrap-select > .btn.btn-info.btn-simple{
@@ -1282,7 +1307,28 @@ padding: 0 20px;
 .my-thin-select{
   padding: 2px;
   border-radius: 3px;
+  border: 1px solid #e8e8e8;
+  color: #848484;
+  // margin-left: 5px;
   // width: 100%;
+}
+.my-thin-input{
+  padding: 2px;
+  border-radius: 3px;
+  border: 1px solid #e8e8e8;
+  color: #848484;
+  // margin-left: 5px;
+  // width: 100%;
+}
+@media screen and (max-width:768px){
+  .my-thin-select,
+  .my-thin-input{
+    margin-bottom: 5px;
+    float: left;
+  }
+  .my-thin-input ~ span{
+    display: none;
+  }
 }
 .boardsettings{
   width: 100%;
@@ -1635,6 +1681,12 @@ padding: 0 20px;
 .mt-4{
   margin-top: 1.5rem;
 }
+.no-margin{
+  margin:0;
+}
+.nm-top{
+  margin-top:0;
+}
 .main2{
   background: none;
 }
@@ -1720,7 +1772,76 @@ padding: 0 20px;
   background-color:#f8f8f8;
   border-left: 3px solid rgb(255, 200, 82);
 }
-
+.torev2{
+  display: block;
+  position: relative;
+  width: 100%;
+.torevdiv2{
+  display: flex;
+  transition: 0.3s ease-in-out;
+  width: 100%;
+  cursor: pointer;
+  vertical-align: middle;
+  overflow-x: hidden;
+  .torev-left{
+      display: inline-block;
+      padding: 15px 10px;
+      width: 10%;
+      .torev-icon{
+          height: 34px;
+          width: 34px;
+          // padding: 20x 25px;
+          // background-color: white;
+          border-radius: 50%;
+          text-align: center;
+          i{
+              font-size: 30px;
+              color:rgb(185, 206, 226);
+          }
+      }
+  }
+  .torev-right{
+      display: inline-block;
+      padding: 15px 10px;
+      width: 70%;
+      h6,p{
+          margin: 0;
+      }
+      h6 > a{
+          // font-weight: bold;
+          color: rgb(105, 105, 105);
+      }
+      p{
+          color:gray;
+      }
+      // width: 70%;
+  }
+  .very-right{
+    display: none;
+    padding: 15px 10px;
+    // margin: 12px;
+    width: 20%;
+    // position:absolute;
+    // top:0;
+    // right:0;
+    vertical-align: middle;
+  }
+}
+}
+.torevdiv2:hover{
+  background-color:#f8f8f8;
+  border-left: 3px solid rgb(82, 186, 255);
+  cursor: default;
+}
+.torevdiv2:hover{
+  .very-right{
+    display:inline-block;
+  }
+  cursor: pointer;
+  .wb-title > a{
+    color: #09aec3 !important;
+  }
+}
 .taskremdiv{
   display: flex;
   width: 100%;
