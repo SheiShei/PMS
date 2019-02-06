@@ -7,7 +7,10 @@ const state = {
     gImg: null,
     comments: [],
     cBoard: null,
-    tasks: []
+    tasks: [],
+    permissionsList: [],
+    role_permissions: null,
+    boardNotMembers: null
 };
 
 const getters = {
@@ -31,6 +34,15 @@ const getters = {
     },
     getWorkload: state => {
         return state.tasks
+    },
+    getPermissionsList: state => {
+        return state.permissionsList
+    },
+    getRolePermissions: state => {
+        return state.role_permissions;
+    },
+    getBoardNotMembers: state => {
+        return state.boardNotMembers;
     }
 };
 
@@ -130,6 +142,18 @@ const mutations = {
     uBoard(state, data) {
         let index = _.findIndex(state.boards, {id: data.id})
         Vue.set(state.boards, index, data);
+    },
+
+    setPermissionsList(state, data) {
+        state.permissionsList = data;
+    },
+
+    setRolePermissions(state, data) {
+        state.role_permissions = data;
+    },
+
+    setBoardNotMembers(state, data) {
+        state.boardNotMembers = data
     }
 };
 
@@ -364,7 +388,9 @@ const actions = {
         axios.post('/api/getCBoard', {id: data})
             .then((response) => {
                 // console.log(response);
-                commit('setCBoard', response.data)
+                commit('setCBoard', response.data.data)
+                commit('setPermissionsList', response.data.permissions)
+                commit('setRolePermissions', response.data.role_permissions)
             })
             .catch(error => {
                 console.error(error);
@@ -373,14 +399,82 @@ const actions = {
     },
 
     uBoard({commit}, data) {
+        const config = { headers : {'Content-Type': 'multipart/form-data'} }
         return new Promise((resolve, reject) => {
-            axios.patch('/api/uBoard', data)     
+            axios.post('/api/uBoard', data, config)     
                 .then((response) => {
                     // console.log(response);
-                    commit('uBoard', response.data);
+                    // commit('uBoard', response.data);
                     resolve();
                 })
                 .catch((error) => {
+                    console.error(error);
+                    reject();
+                })
+        })
+    },
+
+    PermissionChanged({commit}, data) {
+        axios.post('/api/permissionChanged', data)
+            .then((response) => {
+                console.log(response);
+                
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
+    },
+
+    getBoardNotMembers({commit}, data) {
+        axios.post('/api/getBoardNotMembers', data) 
+            .then((response) => {
+                // console.log(response);
+                commit('setBoardNotMembers', response.data);
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
+    },
+
+    addBoardMember({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/addBoardMember', data)
+            .then(response => {
+                // console.log(response);
+                commit('setCBoard', response.data.data)
+                commit('setBoardNotMembers', response.data.users);
+                resolve();
+            })
+            .catch(error => {
+                console.error(error);
+                reject();
+            })
+        })
+    },
+
+    removeBoardMember({commit}, data) {
+        axios.post('/api/removeBoardMember', data)
+            .then(response => {
+                // console.log(response);
+                commit('setCBoard', response.data.data)
+                commit('setBoardNotMembers', response.data.users);
+            })
+            .catch(error => {
+                console.error(error);
+                
+            })
+    },
+
+    setAsAdmin({commit}, data) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/setAsAdmin', data)
+                .then((response) => {
+                    console.log(response);
+                    resolve();
+                })
+                .catch(error => {
                     console.error(error);
                     reject();
                 })

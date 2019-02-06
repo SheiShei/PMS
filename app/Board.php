@@ -11,7 +11,7 @@ class Board extends Model
     
     public $incrementing = false;
     
-    protected $fillable = ['name', 'type', 'created_by', 'privacy'];
+    protected $fillable = ['name', 'description', 'type', 'created_by', 'privacy', 'board_image'];
 
     public function created_by() {
         return $this->belongsTo('App\User', 'created_by');
@@ -29,7 +29,18 @@ class Board extends Model
         return $this->belongsToMany('App\User')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
     }
 
+    public function bu() {
+        return $this->belongsToMany('App\User')->using('App\BoardUser')->withPivot('added_by', 'bRole_id', 'isAdmin');
+    }
+
     public function roles() {
         return $this->hasMany('App\BRole');
+    }
+
+    public function getBoardImageAttribute($image) {
+        if($image) {
+            return '/storage/boards/' . $image;
+        }
+        return null;
     }
 }

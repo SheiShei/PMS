@@ -89,12 +89,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/sendComment', 'BoardController@sendComment');
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
-    Route::patch('/uBoard', 'BoardController@updateBoard');
+    Route::post('/uBoard', 'BoardController@updateBoard');
     Route::patch('/setAsDoneList', 'BoardController@setAsDoneList');
     Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
     Route::post('/monitorAddTask', 'BoardController@monitorAddTask');
     Route::post('/monitorRemovedTask', 'BoardController@monitorRemovedTask');
     Route::post('/getBUData', 'BoardController@getBUData');
+    Route::post('/permissionChanged', 'BoardController@permissionChanged');
+    Route::post('/getBoardNotMembers', 'BoardController@getBoardNotMembers');
+    Route::post('/addBoardMember', 'BoardController@addBoardMember');
+    Route::post('/removeBoardMember', 'BoardController@removeBoardMember');
+    Route::post('/setAsAdmin', 'BoardController@setAsAdmin');
 
 
         //Scrum

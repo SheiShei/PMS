@@ -5,7 +5,7 @@
             </div>
             <div class="board-wrapper" v-if="board">
                 <router-view></router-view>
-                <kanban-settings v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :boardMembers="boardMembers"></kanban-settings>
+                <kanban-settings v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></kanban-settings>
                 <div class="board-header">
                     <div class="board-name">
                         <h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;{{ board.name }}</h4>
@@ -319,7 +319,7 @@ export default {
     created() {
         this.$store.dispatch('getBoardLists', this.$route.params.board_id);
         this.getCuBoard();
-        this.getBoardMembers();
+        this.getBoardNotMembers();
     },
     mounted() {
         this.listenList();
@@ -331,8 +331,10 @@ export default {
     computed: {
         ...mapGetters({
                 boardLists: 'boardLists',
-                boardMembers: 'boardMembers',
                 board: 'getCBoard',
+                permissions: 'getPermissionsList',
+                role_permissions: 'getRolePermissions',
+                not_members: 'getBoardNotMembers'
             }),
         boardLists: {
             get () {
@@ -365,8 +367,8 @@ export default {
             this.$store.dispatch('updateListOrder', {board_id: this.$route.params.board_id, lists: this.boardLists})
         },
 
-        getBoardMembers() {
-            this.$store.dispatch('getBoardMembers', this.$route.params.board_id)
+        getBoardNotMembers() {
+            this.$store.dispatch('getBoardNotMembers', {board_id: this.$route.params.board_id})
         },
 
         getCuBoard() {

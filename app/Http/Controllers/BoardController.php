@@ -8,6 +8,8 @@ use App\Task;
 use App\User;
 use App\UserStory;
 use App\Progress;
+use App\BPermission;
+use App\BRole;
 
 use Carbon\Carbon;
 
@@ -41,33 +43,53 @@ use Illuminate\Support\Facades\Notification;
 class BoardController extends Controller
 {
     public function newBoard(Request $request) {
-        // return $request;
-        if($request->share == null) {
-            $board = auth()->user()->boards()->create([
-                'name' => $request->name,
-                'privacy' => 1,
-                'type' => $request->type,
-            ]);
-        }
-        else {
-            $board = auth()->user()->boards()->create([
-                'name' => $request->name,
-                'privacy' => 2,
-                'type' => $request->type,
-            ]);
-
-            $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id]);
-        }
-
-        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+        $board = auth()->user()->boards()->create([
+            'name' => $request->name,
+            'description' => $request->desc,
+            'type' => $request->type,
+        ]);
 
         if($board->type == 2) {
+            $permissionsId = BPermission::where('type', '!=' ,'list')->get()->pluck('id');
             $sprint = $board->sprints()->create([
                 'name' => 'Backlog',
                 'created_by' => auth()->user()->id,
                 'type' => 1
             ]);
+
+            $po = $board->roles()->create([
+                'name' => 'Product Owner'
+            ]);
+
+            $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Scrum Master'
+            ]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Development Team'
+            ]);
+            $po->permissions()->attach($permissionsId);
         }   
+
+        else {
+            $permissionsId = BPermission::where('type','task')->orWhere('type', 'list')->get()->pluck('id');
+
+            $po = $board->roles()->create([
+                'name' => 'Project Leader'
+            ]);
+
+            $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Member'
+            ]);
+            $po->permissions()->attach($permissionsId);
+        }
 
         $board->notify(new BoardCreated($board->load('created_by')->toJson()));
 
@@ -123,24 +145,24 @@ class BoardController extends Controller
     }
 
     public function updateBoard(Request $request) {
+        // dd($request);
+        $input = $request->all();
         $board = Board::findOrFail($request->id);
-        $board->boardUsers()->sync([]);
-        if($request->share == null) {
-            $board->update([
-                'name' => $request->name,
-                'privacy' => 1,
-            ]);
+        
+        if($file = $request->file('image')) {
+            $name = time() . $file->getClientOriginalName();
+            $file->move('storage/boards/', $name);
+            $input['image'] = $name;
         }
         else {
-            $board->update([
-                'name' => $request->name,
-                'privacy' => 2,
-            ]);
-
-            $board->boardUsers()->attach($request->newId, ['added_by' => auth()->user()->id]);
+            $input['image'] = null;
         }
 
-        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+        $board->update([
+            'name' => $input['name'],
+            'description' => $input['desc'],
+            'board_image' => $input['image'],
+        ]);
 
         event(new UpdateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
 
@@ -391,8 +413,36 @@ class BoardController extends Controller
     }
     
     public function getCBoard(Request $request) {
-        $board = Board::find($request->id);
-        return $board;
+        $board = Board::where('id',$request->id)->with(['bu'])->first();
+        if($board->type == 1) {
+            $permissions = BPermission::where('type','task')->orWhere('type', 'list')->get();
+            $checkedPer = $board->roles()->where('name', 'Member')->with('permissions')->first();
+            $checkedPer = $checkedPer->toArray();
+            $checkedPer['permissions'] = collect($checkedPer['permissions'])->pluck('id');
+        }
+        else {
+            $permissions = BPermission::where('type', '!=' ,'list')->get();
+            $checkedPer = $board->roles()->with('permissions')->get();
+            $checkedPer = $checkedPer->toArray();
+            foreach ($checkedPer as $key => $role) {
+                $checkedPer[$key]['permissions'] = collect($role['permissions'])->pluck('id');
+            }
+        }
+        $boards = $board->toJson();
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+        // dd($boards);
+        return response()->json(['data' => $nBoard, 'permissions' => $permissions, 'role_permissions' => $checkedPer]);
     }
 
     public function getScrumLists(Request $request) {
@@ -1069,5 +1119,79 @@ class BoardController extends Controller
         }
 
         return response()->json(['data' => $buData]);
+    }
+
+    public function permissionChanged(Request $request) {
+        $role = BRole::find($request->role_id);
+        $role->permissions()->sync($request->permissions_id);
+        $newRole = $role->load('permissions')->toArray();
+        $newRole['permissions'] = collect($newRole['permissions'])->pluck('id');
+        return $newRole;
+    }
+
+    public function getBoardNotMembers(Request $request) {
+        $boardUsersId = Board::find($request->board_id)->boardUsers()->get()->pluck('id');
+        $query = User::whereNotIn('id',$boardUsersId);
+
+        if($request->search) {
+            $query->where('name', 'like', $request->search . '%');
+        }
+
+        $notMembers = $query->get();
+
+        return response()->json($notMembers);
+    }
+
+    public function addBoardMember(Request $request) {
+        $board = Board::find($request->board_id);
+        $role = $board->roles()->where('name', 'Member')->first();
+        $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $role->id]);
+        // return $board->load('bu');
+        $boards = $board->load('bu');
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+
+        $boardUsersId = $board->boardUsers()->get()->pluck('id');
+        $users = User::whereNotIn('id',$boardUsersId)->get();
+
+        return response()->json(['data' => $nBoard, 'users' => $users]);
+    }
+
+    public function removeBoardMember(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->detach($request->user_id);
+        $boards = $board->load('bu');
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+
+        $boardUsersId = $board->boardUsers()->get()->pluck('id');
+        $users = User::whereNotIn('id',$boardUsersId)->get();
+
+        return response()->json(['data' => $nBoard, 'users' => $users]);
+    }
+
+    public function setAsAdmin(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) !$request->isAdmin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
     }
 }
