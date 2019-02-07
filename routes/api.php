@@ -112,6 +112,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
     Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
     Route::patch('/finishSprint', 'BoardController@finishSprint');
+    Route::post('/changeRole', 'BoardController@changeRole');
 
 
     //testRoute

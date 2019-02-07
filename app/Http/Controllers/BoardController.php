@@ -1144,7 +1144,12 @@ class BoardController extends Controller
 
     public function addBoardMember(Request $request) {
         $board = Board::find($request->board_id);
-        $role = $board->roles()->where('name', 'Member')->first();
+        if($board->type == 1) {
+            $role = $board->roles()->where('name', 'Member')->first();
+        }
+        else {
+            $role = $board->roles()->where('name', 'Development Team')->first();
+        }
         $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $role->id]);
         // return $board->load('bu');
         $boards = $board->load('bu');
@@ -1193,5 +1198,10 @@ class BoardController extends Controller
     public function setAsAdmin(Request $request) {
         $board = Board::find($request->board_id);
         $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) !$request->isAdmin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
+    }
+    
+    public function changeRole(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) $request->admin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
     }
 }

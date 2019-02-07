@@ -479,6 +479,18 @@ const actions = {
                     reject();
                 })
         })
+    },
+
+    changeRole({commit}, data) {
+        axios.post('/api/changeRole', data) 
+            .then((response) => {
+                console.log(response);
+                
+            })
+            .catch(error => {
+                console.log(error);
+                
+            })
     }
 }
 

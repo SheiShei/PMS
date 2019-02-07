@@ -40,7 +40,6 @@ import AddUStask from './components/views/pages/boards/test/sprint/AddTask.vue';
 import ViewUStask from './components/views/pages/boards/test/sprint/ViewTask.vue';
 import ProfileUser from './components/views/pages/ProfileUser.vue';
 import BurndownChart from './components/views/pages/boards/test/sprint/BurndownChart.vue';
-import ScrumSettings from './components/views/pages/boards/test/ScrumSettings.vue';
 import Statistics from './components/views/pages/boards/test/sprint/Statistics.vue';
 import KanbanStatistics from './components/views/pages/boards/kanban/Statistics.vue';
 import CumulativeChart from './components/views/pages/boards/test/sprint/CumulativeChart.vue';
@@ -381,15 +380,6 @@ export const routes = [
                         path: 'newsprint/',
                         name: 'scrumboard_newsprint',
                         component: ScrumNewSprint,
-                        meta: {
-                            requiresAuth: true
-                        },
-                    },
-
-                    {
-                        path: 'settings',
-                        name: 'scrum_settings',
-                        component: ScrumSettings,
                         meta: {
                             requiresAuth: true
                         },
