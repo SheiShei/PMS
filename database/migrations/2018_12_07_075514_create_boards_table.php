@@ -17,8 +17,9 @@ class CreateBoardsTable extends Migration
             $table->uuid('id');
             $table->primary('id');
             $table->string('name');
+            $table->string('board_image')->nullable();
+            $table->text('description')->nullable();
             $table->tinyInteger('type');
-            $table->tinyInteger('privacy');
             $table->char('created_by', 36)->index();
             $table->timestamps();
 

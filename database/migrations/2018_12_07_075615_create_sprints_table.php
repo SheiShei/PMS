@@ -18,6 +18,7 @@ class CreateSprintsTable extends Migration
             $table->primary('id');
             $table->char('board_id', 36)->index();
             $table->string('name');
+            $table->text('goals')->nullable();
             $table->char('created_by', 36)->index();
             $table->tinyInteger('type');
             $table->date('started_at')->nullable();

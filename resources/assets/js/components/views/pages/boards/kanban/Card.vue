@@ -2,7 +2,7 @@
     <div class="list-div" @drag="checkListMove">
         <div style="cursor: move;" class="list-head">
             <div class="list-title" title="Tasks List">
-                <b><span class="fa fa-align-left text-default"></span>&nbsp;{{ list.name }}</b>
+                <b><span v-if="!list.isDone" class="fa fa-align-left text-default"></span><span v-if="list.isDone" class="fa fa-circle text-success"></span>&nbsp;{{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ listPoints }} pts</small>
@@ -18,6 +18,7 @@
                 <div class="list-edit-save">
                     <button type="submit" class="btn-save">SAVE</button>
                     <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+                    <!-- <button class="btn-close btn btn-simple btn-default btn-xs" @click="setAsDoneList(list.id)" title="Cancel"><span class="fa fa-times"></span></button> -->
                 </div>
             </form>
         </div>
@@ -108,8 +109,49 @@ export default {
             this.$store.commit('mapListUpdateOrder', {event: e, list_index: list_index, list_id: list_id})
             // console.log(this.list);
             this.$store.dispatch('updateTaskOrder', this.list)
+                .then(() => {
+                    if(e.added) {
+                        this.monitorAddTask(e.added.element)
+                    }
+                    if(e.removed) {
+                        this.monitorRemovedTask(list_id)
+                    }
+                })
 
-        }
+        },
+        setAsDoneList(id) {
+            axios.patch('/api/setAsDoneList', {card_id: id, board_id: this.$route.params.board_id})
+                .then((response) => {
+                    // console.log(response);
+                    this.$store.commit('setBoardLists', response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
+        monitorAddTask(e) {
+            axios.post('/api/monitorAddTask', {task: e})
+                .then((response) => {
+                    // console.log(response);
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
+        monitorRemovedTask(e) {
+            axios.post('/api/monitorRemovedTask', {list_id: e})
+                .then((response) => {
+                    // console.log(response);
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
     }
 
 }

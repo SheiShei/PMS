@@ -36,6 +36,7 @@ class BrandsController extends Controller
          }
 
     public function addBrands(Request $request) {
+        dd($request);
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
