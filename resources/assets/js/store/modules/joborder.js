@@ -123,12 +123,14 @@ const actions = {
         })
     },
     getJobOrders ({commit}, data) {
+        console.log(data)
         axios.get('/api/getJobOrders', {params: {
             search: data.search,
-            sort: data.sort
+            sort: data.sort,
+            notArchive: data.notArchive,
         }})
             .then ((response) => {
-                // console.log(response);
+                 console.log(response.data);
                 commit('setJOs', response.data);
             })
             .catch ((error) => {
@@ -143,14 +145,34 @@ const actions = {
                 data: { id: id}
             })
                 .then((response) => {
-                    console.log(response);
-                    // commit('deletejo', id);
-                    // resolve(response);
+                    console.log(response.data);
+                     commit('deletejo', id);
+                     resolve(response);
                 })
 
                 .catch((error) => {
                     console.log(error);
                     
+                })
+        });
+    },
+
+    restoreJO({commit}, id) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/restorejo', { 
+                data: { id: id}
+            })
+                .then((response) => {
+                    console.log(response.data);
+                    commit('deletejo',id);
+                    resolve(response);
+                })
+
+                .catch((error) => {
+                    if(error.response.status == 422){
+                        console.log(error);
+                        reject(error);
+                    }
                 })
         });
     },

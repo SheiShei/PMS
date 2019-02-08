@@ -145,6 +145,8 @@ export default {
             brand:{
                 name: '',
                 contact_person: '',
+                email:'',
+                password: '',
                 telephone: '',
                 mobile: '',
                 tandem_id: '',
@@ -176,6 +178,8 @@ export default {
             form.append('logo', this.brand.logo[0]);
             form.append('name', this.brand.name);
             form.append('telephone', this.brand.telephone);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
             form.append('tandem_id', this.brand.tandem_id);
@@ -188,6 +192,8 @@ export default {
                         this.brand.name='';
                         this.brand.contact_person='';
                         this.brand.telephone='';
+                        this.brand.email='';
+                        this.brand.password='';
                         this.brand.mobile='';
                         this.brand.tandem_id='';
                         this.brand.about='';
@@ -202,7 +208,7 @@ export default {
 
         onLogoChanged (event) {
             this.brand.logo = event.target.files
-            // console.log(this.brand.logo);
+             console.log(this.brand.logo[0]);
         },
 
         passwordType(){

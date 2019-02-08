@@ -125,6 +125,8 @@ export default {
                id: this.$route.params.brand_Id,
                name: '',
                contact_person: '',
+               email: '',
+               password: '',
                telephone: '',
                mobile: '',
                tandem_id: '',
@@ -145,6 +147,7 @@ export default {
                 this.brand.name = brandData.name;
                 this.brand.contact_person = brandData.contact_person;
                 this.brand.telephone = brandData.telephone;
+                this.brand.email = brandData.email;
                 this.brand.mobile = brandData.mobile;
                 this.brand.tandem_id = brandData.tandem_id;
                 this.brand.logo = brandData.logo;
@@ -171,11 +174,14 @@ export default {
             if(this.haslogo==true)
             {
                 form.append('logo', this.brand.logo[0]);
+                console.log('in if',this.brand.logo[0]);
             }
             else{
                 form.append('logo', this.brand.logo);
                 }
             form.append('name', this.brand.name);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('telephone', this.brand.telephone);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
