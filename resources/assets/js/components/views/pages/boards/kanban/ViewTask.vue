@@ -20,7 +20,7 @@
                         <h6><b>ABOUT</b></h6>
                         <hr />
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
@@ -29,19 +29,20 @@
                                 
                                 </p>
                             </div>
-                            <div class="col-md-4">
-                                <p><span class="fa fa-trophy text-warning"></span> <span :id="'points_'+data.id" contenteditable="true" @input="checkNumberRange" @keypress="checkIfNumber">{{ data.points }}</span> pts <i v-if="isError">(1-9)</i></p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><span class="fa fa-clock-o text-danger"></span> {{ data.due | moment("MMM D, YYYY") }}</p>
+                            <div class="col-md-6">
+                                <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
+                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}</span>
+                                    <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
+                                </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <p @input="debounceWait" :id="'desc_'+data.id" contenteditable="true">{{ data.description }}</p>
+                                <div class="testcntnt" @input="debounceWait" :id="'desc_'+data.id" contenteditable="true" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
                             </div>
                         </div>
+                        <br>
                         <h6><b>ATTACHMENTS</b></h6>
                         <hr />
                         <!-- <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
@@ -127,24 +128,30 @@
 </template>
 
 <script>
+import DatePicker from 'vue2-datepicker'
 import {mapGetters} from 'vuex';
 export default {
+    components: {
+        DatePicker 
+    },
     data() {
         return {
             data: null,
             isError: false,
-            pointsEditable: 0,
+            // pointsEditable: 0,
             updateData: {
                 name: '',
                 points: '',
                 desc: '',
                 id: '',
-                assign_to: ''
+                assign_to: '',
+                due: ''
             },
             clickAssigned: false,
             attachments: [],
             comFiles: [],
-            cTxt: ''
+            cTxt: '',
+            isDueClicked: false
         }
     },
 
@@ -178,39 +185,14 @@ export default {
                 .then((response) => {
                     this.data = response.data
                     this.updateData.assign_to = this.data.assigned_to.id;
+                    this.updateData.due = this.data.due;
                 })
         },
 
-        checkIfNumber(event) {
-            // console.log(event);
-            if(!(event.keyCode >= 48 && event.keyCode <= 57)){
-                
-                // alert('asd')
-                
-                event.preventDefault()
-            }
-            else {
-                var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-                this.pointsEditable = contenteditable;
-                this.isError = false;
-                // alert(this.pointsEditable)
-            }
-        },
-
-        checkNumberRange(event) {
-
-            var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            // console.log(Number(contenteditable));
-            // if(!(contenteditable <= 9 && contenteditable >= 0) && contenteditable == '') {
-            if(Number(contenteditable) > 9 || Number(contenteditable) < 0) {
-                document.querySelector('#points_'+this.data.id).innerText = this.pointsEditable;
-                this.isError = true;
-                // event.preventDefault()
-            }
-            else {
-                this.debounceWait();
-            }
-            
+        changeDateFormat() {
+            // this.data.due = new Date(this.data.due).toISOString().slice(0, 10).replace('T', ' ');
+            this.updateData.due = moment(this.updateData.due).format('YYYY-MM-DD')
+            this.updateTask();
         },
 
         debounceWait: _.debounce(function (e) {
@@ -218,13 +200,13 @@ export default {
         }, 500),
 
         updateTask() {
-            var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            if(contenteditable) {
-                let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
+            // var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
+            // if(contenteditable) {
+                // let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
                 let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
                 let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
                 this.updateData.name = contenteditableName;
-                this.updateData.points = contenteditablePoints;
+                // this.updateData.points = contenteditablePoints;
                 this.updateData.desc = contenteditableDesc;
                 this.updateData.id = this.$route.params.task_id;
                 this.updateData.board_id = this.$route.params.board_id;
@@ -233,8 +215,9 @@ export default {
                     .then(response => {
                         // console.log(response);
                         this.data.assigned_to.name = response.assigned_to.name
+                        this.data.due = response.due
                     })
-            }
+            // }
         },
 
         chooseFile() {
@@ -360,7 +343,7 @@ export default {
             Echo.private('list.'+this.$route.params.board_id)
                 .listen('UpdateListTaskEvent', (e) => {
                     this.data.task_cover = e.task.task_cover
-                    this.data.points = e.task.points
+                    // this.data.points = e.task.points
                     this.data.description = e.task.description
                     this.data.name = e.task.name
                     this.data.assigned_to.name = e.task.assigned_to.name

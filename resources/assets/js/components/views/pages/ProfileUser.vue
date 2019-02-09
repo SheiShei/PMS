@@ -456,61 +456,7 @@ export default{
 
 
 <style lang="scss" scoped>
-.ws-wrapper{
-    display:flex;
-    position: relative;
-    height: 40px; 
-    padding: 8px 12px;
-    overflow: hidden;
-    margin-bottom: 5px;
-    .ws-info{
-        display: inline-block;
-        width: 70%;
-        overflow: hidden;
-        .ws-info-title{
-            font-size: 12px;
-            p{
-                margin: 5px 10px;
-            }
-        }
-        .ws-info-icon{
-            margin-top: -7px;
-            margin-left: -20px;
-            font-size: 45px;
-            color: #e3ecec;
-            position: absolute;
-            left: 0;
-            top: 6px;
-            z-index: -1;
-            transition: 0.6s ease-in-out all;
-            -webkit-transition: 0.6s ease-in-out all;
-        }
-    }
-    .ws-number{
-        display: inline-block;
-        width:30%;
-        text-align: right;
-        font-size: 26px;
-        p{
-           margin-top: 5px;
-        }
-    }
-}
 
-.ws-wrapper:hover{
-    .ws-info-icon{
-        // font-size: 60px;
-        margin-left: 4px;
-    }
-}
-
-
-
-
-
-.profile-page .page-header {
-    height: 230px;
-}
 .header-filter::before {
     background-color: rgba(0, 0, 0, 0.3);
 }

@@ -92,8 +92,7 @@
                             <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">+ New Web JO</router-link>
                             <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">+ New Creatives JO</router-link>
                         </div>
-                                    
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>

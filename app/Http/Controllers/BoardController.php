@@ -6,6 +6,10 @@ use App\Sprint;
 use App\Card;
 use App\Task;
 use App\User;
+use App\UserStory;
+use App\Progress;
+use App\BPermission;
+use App\BRole;
 
 use Carbon\Carbon;
 
@@ -31,6 +35,7 @@ use App\Events\UpdateBoardEvent;
 use App\Events\DeleteBoardEvent;
 
 use App\Notifications\BoardCreated;
+use App\Notifications\BoardUserAdded;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -38,36 +43,61 @@ use Illuminate\Support\Facades\Notification;
 class BoardController extends Controller
 {
     public function newBoard(Request $request) {
-        // return $request;
-        if($request->share == null) {
-            $board = auth()->user()->boards()->create([
-                'name' => $request->name,
-                'privacy' => 1,
-                'type' => $request->type,
-            ]);
-        }
-        else {
-            $board = auth()->user()->boards()->create([
-                'name' => $request->name,
-                'privacy' => 2,
-                'type' => $request->type,
-            ]);
-
-            $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id]);
-        }
-
-        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+        $board = auth()->user()->boards()->create([
+            'name' => $request->name,
+            'description' => $request->desc,
+            'type' => $request->type,
+        ]);
 
         if($board->type == 2) {
+            $permissionsId = BPermission::where('type', '!=' ,'list')->get()->pluck('id');
             $sprint = $board->sprints()->create([
                 'name' => 'Backlog',
                 'created_by' => auth()->user()->id,
                 'type' => 1
             ]);
+
+            $po = $board->roles()->create([
+                'name' => 'Product Owner'
+            ]);
+
+            $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Scrum Master'
+            ]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Development Team'
+            ]);
+            $po->permissions()->attach($permissionsId);
         }   
 
-        // auth()->user()->notify(new BoardCreated());
-        Notification::send($board->boardUsers()->get(), new BoardCreated($board->load('created_by')->toJson()));
+        else {
+            $permissionsId = BPermission::where('type','task')->orWhere('type', 'list')->get()->pluck('id');
+
+            $po = $board->roles()->create([
+                'name' => 'Project Leader'
+            ]);
+
+            $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+            $po->permissions()->attach($permissionsId);
+
+            $po = $board->roles()->create([
+                'name' => 'Member'
+            ]);
+            $po->permissions()->attach($permissionsId);
+        }
+
+        $board->notify(new BoardCreated($board->load('created_by')->toJson()));
+
+        foreach ($board->boardUsers()->get() as $key => $user) {
+            $user->notify(new BoardUserAdded($board->load('created_by')->toJson(), $user->toJson()));
+        }
+        // Notification::send($board, new BoardCreated($board->load('created_by')->toJson()));
+        // Notification::send($board->boardUsers()->get(), new BoardCreated($board->load('created_by')->toJson()));
         
         event(new CreateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
 
@@ -115,24 +145,24 @@ class BoardController extends Controller
     }
 
     public function updateBoard(Request $request) {
+        // dd($request);
+        $input = $request->all();
         $board = Board::findOrFail($request->id);
-        $board->boardUsers()->sync([]);
-        if($request->share == null) {
-            $board->update([
-                'name' => $request->name,
-                'privacy' => 1,
-            ]);
+        
+        if($file = $request->file('image')) {
+            $name = time() . $file->getClientOriginalName();
+            $file->move('storage/boards/', $name);
+            $input['image'] = $name;
         }
         else {
-            $board->update([
-                'name' => $request->name,
-                'privacy' => 2,
-            ]);
-
-            $board->boardUsers()->attach($request->newId, ['added_by' => auth()->user()->id]);
+            $input['image'] = null;
         }
 
-        $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id]);
+        $board->update([
+            'name' => $input['name'],
+            'description' => $input['desc'],
+            'board_image' => $input['image'],
+        ]);
 
         event(new UpdateBoardEvent($board->load('boardUsers.department', 'boardUsers.role')));
 
@@ -258,7 +288,7 @@ class BoardController extends Controller
     public function updateTask(Request $request) {
         $task = Task::find($request->id);
         $ta = [
-            'points' => $request->points,
+            'due' => $request->due,
             'name' => $request->name,
             'description' => $request->desc
         ];
@@ -383,14 +413,42 @@ class BoardController extends Controller
     }
     
     public function getCBoard(Request $request) {
-        $board = Board::find($request->id);
-        return $board;
+        $board = Board::where('id',$request->id)->with(['bu'])->first();
+        if($board->type == 1) {
+            $permissions = BPermission::where('type','task')->orWhere('type', 'list')->get();
+            $checkedPer = $board->roles()->where('name', 'Member')->with('permissions')->first();
+            $checkedPer = $checkedPer->toArray();
+            $checkedPer['permissions'] = collect($checkedPer['permissions'])->pluck('id');
+        }
+        else {
+            $permissions = BPermission::where('type', '!=' ,'list')->get();
+            $checkedPer = $board->roles()->with('permissions')->get();
+            $checkedPer = $checkedPer->toArray();
+            foreach ($checkedPer as $key => $role) {
+                $checkedPer[$key]['permissions'] = collect($role['permissions'])->pluck('id');
+            }
+        }
+        $boards = $board->toJson();
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+        // dd($boards);
+        return response()->json(['data' => $nBoard, 'permissions' => $permissions, 'role_permissions' => $checkedPer]);
     }
 
     public function getScrumLists(Request $request) {
         $board = Board::find($request->id);
 
-        $sprints = $board->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
         foreach ($sprints as $key => $sprint) {
             if($sprint->due_date == Carbon::now()->toDateString()){
                 $sprint->update([
@@ -406,15 +464,16 @@ class BoardController extends Controller
         $board = Board::find($request->id);
         $sprint = $board->sprints()->create([
             'name' => $request->name,
-            'started_at' => $request->start,
-            'due_date' => $request->end,
+            'goals' => $request->goals,
+            'started_at' => $request->interval[0],
+            'due_date' => $request->interval[1],
             'created_by' => auth()->user()->id,
             'type' => 2
         ]);
 
         event(new AddSprintEvent($sprint->load('tasks')));
 
-        return $sprint->load('tasks');
+        return $sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to']);
     }
 
     public function updateSprint(Request $request) {
@@ -431,11 +490,26 @@ class BoardController extends Controller
     
     public function deleteSprint(Request $request) {
         $sprint = Sprint::find($request->id);
-        event(new DeleteSprintEvent($sprint));
-        
+        // event(new DeleteSprintEvent($sprint));
+        $backlogid = Sprint::where('board_id', $sprint->board_id)->where('name', 'Backlog')->first()->id;
+
+        foreach ($sprint->us as $key => $us) {
+            $us->update([
+                'sprint_id' => $backlogid
+            ]);
+
+            foreach ($us->tasks()->get() as $key => $task) {
+                $task->update([
+                    'sprint_id' => $backlogid
+                ]);
+            }
+        }
+
         $sprint->delete();
 
-        return $sprint;
+        $sprints = Sprint::where('board_id', $sprint->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+
+        return $sprints;
     }
 
     public function addSprintTask(Request $request) {
@@ -444,6 +518,7 @@ class BoardController extends Controller
         if($request->status) {
             $task = Task::create([
                 'sprint_id' => $request->sprint_id,
+                'us_id' => $request->us_id,
                 'name' => $request->name,
                 'description' => $request->desc,
                 'created_by' => auth()->user()->id,
@@ -459,6 +534,7 @@ class BoardController extends Controller
         else {
             $task = Task::create([
                 'sprint_id' => $request->sprint_id,
+                'us_id' => $request->us_id,
                 'name' => $request->name,
                 'description' => $request->desc,
                 'created_by' => auth()->user()->id,
@@ -492,17 +568,22 @@ class BoardController extends Controller
     }
 
     public function updateSprintOrder(Request $request) {
-        foreach ($request->tasks as $key => $task) {
-            $toUp = Task::find($task['id']);
+        foreach ($request->us as $key => $u) {
+            $toUp = UserStory::find($u['id']);
             $toUp->update([
-                'order' => $task['order'],
-                'sprint_id' => $task['sprint_id']
+                'order' => $u['order'],
+                'sprint_id' => $u['sprint_id']
             ]);
+            foreach ($toUp->tasks()->get() as $key => $task) {
+                $task->update([
+                    'sprint_id' => $u['sprint_id']
+                ]);
+            }
         }
 
-        $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
+        $nlists = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}])->orderBy('created_at' , 'asc')->get();
         // print_r($nlists);
-        event(new SprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+        // event(new SprintTaskOrderEvent($nlists->toJson(), $request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -521,15 +602,16 @@ class BoardController extends Controller
             foreach ($request->tasks as $updateTask) {
                 if($updateTask['id'] == $id) {
                     $task->update([
-                        'status_order' => $updateTask['status_order'],
-                        'status' => $updateTask['status']
+                        'order' => $updateTask['order'],
+                        'status' => $updateTask['status'],
+                        'us_id' => $updateTask['us_id']
                     ]);
                 }
             }
         }
-        $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
+        // $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
         // print_r($nlists);
-        event(new ISprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+        // event(new ISprintTaskOrderEvent($nlists->toJson(), $request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -595,6 +677,8 @@ class BoardController extends Controller
         }
 
         $users = $query->get();
+
+        // return $users;
 
         $tasks = [];
 
@@ -673,5 +757,451 @@ class BoardController extends Controller
         }
 
         return $notifs;
+    }
+
+    public function newUS(Request $request) {
+        $order = count(Sprint::find($request->sprint_id)->us()->get());
+        $us = UserStory::create([
+            'name' => $request->name,
+            'description' => $request->desc,
+            'created_by' => auth()->user()->id,
+            'points' => $request->points,
+            'sprint_id' => $request->sprint_id,
+            'order' => $order+1
+        ]);
+
+        return $us;
+    }
+
+    public function getUSData(Request $request) {
+        $us = UserStory::where('id', $request->us_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->first();
+
+        return $us;
+    }
+
+    public function updateUS(Request $request) {
+        $us = UserStory::find($request->us_id);
+
+        $us->update([
+            'name' => $request->name,
+            'description' => $request->desc,
+            'points' => $request->points
+        ]);
+
+        return $us;
+    }
+
+    public function deleteUS(Request $request) {
+        $us = UserStory::find($request->id);
+        $us->delete();
+
+        return $us;
+    }
+
+    public function monitorTask(Request $request) {
+        $sprint = Sprint::find($request->task['sprint_id']);
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach ($sprint->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
+        }
+
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
+
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
+            if($task->status == 4) {
+                $closed++;
+            }
+        }
+
+        // if($totalUSTask == $totalUSTaskCompleted) {
+            Progress::create([
+                'sprint_id' => $request->task['sprint_id'],
+                'remaining_points' => $totalSprintPoints,
+                'todo' => $todo,
+                'in_progress' => $in_progress,
+                'for_test' => $for_test,
+                'closed' => $closed,
+            ]);
+        // }
+
+    }
+
+    public function monitorUS(Request $request) {
+        $sprint = Sprint::find($request->us['sprint_id']); 
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach ($sprint->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
+        }
+
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
+
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
+            if($task->status == 4) {
+                $closed++;
+            }
+        }
+
+        Progress::create([
+            'sprint_id' => $request->us['sprint_id'],
+            'remaining_points' => $totalSprintPoints,
+            'todo' => $todo,
+            'in_progress' => $in_progress,
+            'for_test' => $for_test,
+            'closed' => $closed,
+        ]);
+    }
+
+    public function monitorRemovedUS(Request $request) {
+        $sprint = Sprint::find($request->sprint_id);
+        $totalSprintPoints = 0;
+        $pointsFinished = 0;
+        foreach ($sprint->us()->get() as $key => $story) {
+            $totalSprintPoints = $totalSprintPoints + $story->points;
+            $tUSTask = count($story->tasks()->get());
+            $tUSTaskCompleted = 0;
+            if($tUSTask) {
+                foreach ($story->tasks()->get() as $key => $usTask) {
+                    if($usTask->status == 4) {
+                        $tUSTaskCompleted++;
+                    }
+                }
+                if($tUSTask == $tUSTaskCompleted) {
+                    $pointsFinished = $pointsFinished + $story->points;
+                }
+            }
+        }
+
+        $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+        $todo = 0;
+        $in_progress = 0;
+        $for_test = 0;
+        $closed = 0;
+
+        foreach ($sprint->tasks()->get() as $key => $task) {
+            if($task->status == 1) {
+                $todo++;
+            }
+            if($task->status == 2) {
+                $in_progress++;
+            }
+            if($task->status == 3) {
+                $for_test++;
+            }
+            if($task->status == 4) {
+                $closed++;
+            }
+        }
+        
+        Progress::create([
+            'sprint_id' => $request->sprint_id,
+            'remaining_points' => $totalSprintPoints,
+            'todo' => $todo,
+            'in_progress' => $in_progress,
+            'for_test' => $for_test,
+            'closed' => $closed,
+        ]);
+    }
+
+    public function getBD(Request $request) {
+        // return $request;
+        $bdData = [];
+
+        $tdData = [];
+        $ipData = [];
+        $ftData = [];
+        $cData = [];
+
+        foreach ($request->dates as $key => $date) {
+            $newdate = Carbon::parse($date);
+            // if($key == 0) {
+            //     $statData = Progress::where('sprint_id', $request->sprint_id)->orderBy('created_at', 'asc')->first();
+            //     $singleData = array(
+            //         'x' => $date,
+            //         'y' => $statData->remaining_points
+            //     );
+            //     array_push($bdData, $singleData);
+            // }
+            // else {
+                if($newdate <= Carbon::now()) {
+                    $statData = Progress::where('sprint_id', $request->sprint_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => $statData->remaining_points
+                    );
+
+                    $tdSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->todo
+                    );
+                    $ipSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->in_progress
+                    );
+                    $ftSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->for_test
+                    );
+                    $cSingleData = array(
+                        'x' => $date,
+                        'y' => $statData->closed
+                    );
+                }
+                else{
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $tdSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $ipSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $ftSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                    $cSingleData = array(
+                        'x' => $date,
+                        'y' => null
+                    );
+                }
+
+            array_push($tdData, $tdSingleData);
+            array_push($ipData, $ipSingleData);
+            array_push($ftData, $ftSingleData);
+            array_push($cData, $cSingleData);
+            // }
+            
+
+            array_push($bdData, $singleData);
+        }
+
+        return response()->json(['data' => $bdData, 'todo' => $tdData, 'in_progress' => $ipData, 'for_test' => $ftData, 'closed' => $cData]);
+    }
+
+    public function setAsDoneList(Request $request) {
+        $cards = Board::find($request->board_id)->cards()->get();
+
+        foreach ($cards as $key => $card) {
+            if($card->id == $request->card_id) {
+                $card->update([
+                    'isDone' => true
+                ]);
+            }
+            else {
+                $card->update([
+                    'isDone' => false
+                ]);
+            }
+        }
+
+        $totalDoneTask = count(Card::find($request->card_id)->tasks()->get());
+        Progress::create([
+            'board_id' => $request->board_id ,
+            'completed_tasks' => $totalDoneTask
+        ]);
+
+        $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+
+        return $lists;
+    }
+
+    public function monitorAddTask(Request $request) {
+        $card = Card::find($request->task['card_id']);
+
+        if($card->isDone) {
+            $totalDoneTask = count($card->tasks()->get());
+            Progress::create([
+                'board_id' => $card->board_id ,
+                'completed_tasks' => $totalDoneTask
+            ]);
+        }
+    }
+    
+    public function monitorRemovedTask(Request $request) {
+        $card = Card::find($request->list_id);
+
+        if($card->isDone) {
+            $totalDoneTask = count($card->tasks()->get());
+            Progress::create([
+                'board_id' => $card->board_id ,
+                'completed_tasks' => $totalDoneTask
+            ]);
+        }
+    }
+
+    public function getBUData(Request $request) {
+        $buData = [];
+
+        foreach ($request->dates as $key => $date) {
+            $newdate = Carbon::parse($date);
+            if($newdate <= Carbon::now()) {
+                $statData = Progress::where('board_id', $request->board_id)->whereDate('created_at', '<=', $date)->orderBy('created_at', 'desc')->first();
+                if($statData) {
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => $statData->completed_tasks
+                    );
+                }
+                else {
+                    $singleData = array(
+                        'x' => $date,
+                        'y' => 0
+                    );
+                }
+            }
+            else {
+                $singleData = array(
+                    'x' => $date,
+                    'y' => null
+                );
+            }
+
+            array_push($buData, $singleData);
+        }
+
+        return response()->json(['data' => $buData]);
+    }
+
+    public function permissionChanged(Request $request) {
+        $role = BRole::find($request->role_id);
+        $role->permissions()->sync($request->permissions_id);
+        $newRole = $role->load('permissions')->toArray();
+        $newRole['permissions'] = collect($newRole['permissions'])->pluck('id');
+        return $newRole;
+    }
+
+    public function getBoardNotMembers(Request $request) {
+        $boardUsersId = Board::find($request->board_id)->boardUsers()->get()->pluck('id');
+        $query = User::whereNotIn('id',$boardUsersId);
+
+        if($request->search) {
+            $query->where('name', 'like', $request->search . '%');
+        }
+
+        $notMembers = $query->get();
+
+        return response()->json($notMembers);
+    }
+
+    public function addBoardMember(Request $request) {
+        $board = Board::find($request->board_id);
+        if($board->type == 1) {
+            $role = $board->roles()->where('name', 'Member')->first();
+        }
+        else {
+            $role = $board->roles()->where('name', 'Development Team')->first();
+        }
+        $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $role->id]);
+        // return $board->load('bu');
+        $boards = $board->load('bu');
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+
+        $boardUsersId = $board->boardUsers()->get()->pluck('id');
+        $users = User::whereNotIn('id',$boardUsersId)->get();
+
+        return response()->json(['data' => $nBoard, 'users' => $users]);
+    }
+
+    public function removeBoardMember(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->detach($request->user_id);
+        $boards = $board->load('bu');
+        $pivotArr = [];
+        $nBoard = json_decode($boards, true);
+        foreach ($board->bu as $key => $user) {
+            $pivot = $user->pivot->brole()->first()->toJson();
+            array_push($pivotArr, $pivot);
+        }
+        foreach ($nBoard['bu'] as $key => $bu) {
+            // array_push($bu['pivot'], $pivotArr[$key]);
+            $bu['pivot']['role'] = json_decode($pivotArr[$key], true);
+            // print_r($bu);
+            $nBoard['bu'][$key] = $bu;
+        }
+
+        $boardUsersId = $board->boardUsers()->get()->pluck('id');
+        $users = User::whereNotIn('id',$boardUsersId)->get();
+
+        return response()->json(['data' => $nBoard, 'users' => $users]);
+    }
+
+    public function setAsAdmin(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) !$request->isAdmin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
+    }
+    
+    public function changeRole(Request $request) {
+        $board = Board::find($request->board_id);
+        $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) $request->admin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
     }
 }

@@ -3,9 +3,9 @@
     <section class="main-main-container kanban-component" style="background-color: rgb(67, 160, 185);">
         <div class="board-background-image" style="background-image: url('/images/above-art1.jpg');">
         <div class="board-background-overlay">
-        </div>
+        </div></div>
         <div class="board-wrapper" v-if="cSprint">
-            <router-view></router-view>
+            <router-view></router-view> 
             <div class="board-header">
                 <div class="board-name">
                     <router-link :to="{name: 'scrumboard', params: {board_id: $route.params.board_id}}" style="color: #ffff"><h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;&nbsp;<span class="fa fa-angle-right"></span>&nbsp;&nbsp;{{ cSprint.name }}</h4></router-link>
@@ -78,8 +78,8 @@
 
 <script>
 import Card from './sprint/Card.vue';
-import BurndownChart from './sprint/BurndownChart.vue';
-import CumulativeChart from './sprint/CumulativeChart.vue';
+// import BurndownChart from './sprint/BurndownChart.vue';
+// import CumulativeChart from './sprint/CumulativeChart.vue';
 import {mapGetters} from 'vuex';
 // import Gallery from './kanban/Gallery.vue'
 export default {

@@ -2,7 +2,7 @@
     <div class="list-div" @drag="checkListMove">
         <div style="cursor: move;" class="list-head">
             <div class="list-title" title="Tasks List">
-                <b><span class="fa fa-align-left text-default"></span>&nbsp;{{ list.name }}</b>
+                <b><span v-if="!list.isDone" class="fa fa-align-left text-default"></span><span v-if="list.isDone" class="fa fa-circle text-success"></span>&nbsp;{{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ listPoints }} pts</small>
@@ -18,6 +18,7 @@
                 <div class="list-edit-save">
                     <button type="submit" class="btn-save">SAVE</button>
                     <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+                    <!-- <button class="btn-close btn btn-simple btn-default btn-xs" @click="setAsDoneList(list.id)" title="Cancel"><span class="fa fa-times"></span></button> -->
                 </div>
             </form>
         </div>
@@ -108,138 +109,50 @@ export default {
             this.$store.commit('mapListUpdateOrder', {event: e, list_index: list_index, list_id: list_id})
             // console.log(this.list);
             this.$store.dispatch('updateTaskOrder', this.list)
+                .then(() => {
+                    if(e.added) {
+                        this.monitorAddTask(e.added.element)
+                    }
+                    if(e.removed) {
+                        this.monitorRemovedTask(list_id)
+                    }
+                })
 
-        }
+        },
+        setAsDoneList(id) {
+            axios.patch('/api/setAsDoneList', {card_id: id, board_id: this.$route.params.board_id})
+                .then((response) => {
+                    // console.log(response);
+                    this.$store.commit('setBoardLists', response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
+        monitorAddTask(e) {
+            axios.post('/api/monitorAddTask', {task: e})
+                .then((response) => {
+                    // console.log(response);
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
+        monitorRemovedTask(e) {
+            axios.post('/api/monitorRemovedTask', {list_id: e})
+                .then((response) => {
+                    // console.log(response);
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                    
+                })
+        },
     }
 
 }
 </script>
-
-<style lang="scss" scoped>
-
-
-    .list-edit{
-        padding: 5px 8px;
-        background-color: whitesmoke;
-        display: flex;
-
-        .list-edit-input{
-            display: inline-block;
-            width: 70%;
-            margin-right: 5px;
-            input{
-                border: 1px solid rgb(158, 158, 158);
-                padding: 2px 3px;
-                border-radius: 2px;
-                border: 1px solid #4CAF50;
-                font-size: 12px;
-            }
-        }
-
-        .list-edit-save{
-            display: inline-block;
-            width: 20%;
-            button.btn-save{
-                width: 100%;
-                box-shadow: none;
-                border: none;
-                border-radius: 2px;
-                background-color: #4caf50;
-                color: white;
-                padding: 3px 5px;
-                font-size: 11px;
-            }
-            button.btn-save:focus{
-                background-color: #3e9140;
-            }
-            button.btn-close{
-                padding: 3px 5px;
-                font-size: 11px;
-                margin: 0;
-                border-radius: 2px;
-            }
-            button.btn-close:hover{
-                color: rgb(235, 42, 42);
-            }
-        }
-
-    }
-
-    .list-head{
-        background-color: #dcdcdc;
-        position: relative;
-    }
-
-    .list-title{
-        display:inline-block;
-        padding: 5px 8px;
-        color: rgb(38,38,38);
-        width: 50%;
-        font-size: 13px;
-        font-style: bold;
-        overflow-x: hidden;
-    }
-
-    .editListBtn{
-        display:inline-block ;
-        width: 50%;
-        text-align: right;
-        button{
-            background: transparent;
-            color: rgb(105, 105, 105);
-            padding: 5px 9px;
-            border: none;
-            box-shadow: none;
-            margin: 0;
-            border-radius: 50%;
-        }
-        button:hover{
-            background-color: rgb(199, 199, 199);
-            color: rgb(92, 92, 92);
-            transition: 0.5s;
-        }
-    }
-
-    .list-body{
-        background-color: rgb(234,234,234);
-        max-height: 63vh; 
-        overflow-y: auto !important;
-        padding: 10px;
-    }
-
-    .list-footer{
-        background-color: rgb(234,234,234);
-    }
-
-    .list-div{
-        height: auto;
-        width: 300px;
-        overflow-y:visible;
-        background-color:beige;
-        padding: 0;
-        margin-top: 10px;
-        display: inline-block;
-        margin-right: 10px;
-        vertical-align:text-top;
-    }
-    .add-task-btn {
-        border-radius: 0 0 3px 3px;
-        color: #6b808c;
-        border: 2px dashed #bfbaba;
-        background-color: gainsboro;
-        text-align: center;
-        display: block;
-        flex: 0 0 auto;
-        padding: 8px;
-        position: relative;
-        text-decoration: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    .add-task-btn:hover {
-        background-color: #DCDCDC;
-    }
-    
-</style>

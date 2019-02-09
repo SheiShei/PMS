@@ -40,20 +40,16 @@
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-md-5" v-if="boardMembers">
+                    <div class="col-md-6" v-if="boardMembers">
                         <label for="">Assign To: </label>
                         <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
                             <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="">Points: </label>
-                        <input v-model="taskData.points" type="number" class="my-input my-inp-blk" min="0" max="9">
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label for="">Due: </label>
-                        <input v-model="taskData.due" type="date" class="my-input my-inp-blk">
+                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                     </div>
                 </div>
                 <br/>
@@ -72,7 +68,11 @@
 </template>
 <script>
 import {mapGetters} from 'vuex';
+import DatePicker from 'vue2-datepicker'
 export default {
+    components: {
+        DatePicker 
+    },
     data() {
         return {
             attachments: [],
@@ -124,6 +124,10 @@ export default {
                 })
         },
 
+        changeDateFormat() {
+            // this.taskData.due = new Date(this.taskData.due).toISOString().slice(0, 10).replace('T', ' ');
+            this.taskData.due = moment(this.taskData.due).format('YYYY-MM-DD')
+        }
         
     }
 }

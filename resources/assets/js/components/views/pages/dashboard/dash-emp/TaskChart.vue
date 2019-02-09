@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="chart">
-            <apexchart type=line height=350 :options="chartOptions" :series="series" />
+            <apexchart type=line height=200 :options="chartOptions" :series="series" />
         </div>
     </div>
 </template>
@@ -14,8 +14,8 @@ export default {
     data(){
         return{
             series: [{
-                name: "Task Done",
-                data: [160, 134, 120, 50, 37, 0]
+                name: "Tasks",
+                data: [160, 134, 120, 50, 37, 0, 54]
             }],
             chartOptions: {
                 chart: {
@@ -31,7 +31,7 @@ export default {
                 curve: 'straight'
             },
             title: {
-                text: 'Burndown Chart',
+                text: 'Total Tasks Assigned (last 7 days)',
                 align: 'left'
             },
             grid: {
@@ -41,7 +41,7 @@ export default {
                 },
             },
             xaxis: {
-                categories: ['2018 Jan 1-4', '2018 Jan 5-9', '2018 Jan 10-20', '2018 Jan 21-Feb 20', '2018 Feb 21- 2019 Jan 1', '2019 Jan 2-10'],
+                categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan'],
             },
             yaxis:{
                 min: 0 ,

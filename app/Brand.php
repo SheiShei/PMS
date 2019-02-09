@@ -10,8 +10,8 @@ class Brand extends Model
     use SoftDeletes, Uuids;
 
     public $incrementing = false;
-
-    protected $fillable = ['name', 'contact_person', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
+    
+    protected $fillable = ['name', 'contact_person', 'email', 'password', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
 
     public function tandem() {
         return $this->belongsTo('App\Tandem');

@@ -31,7 +31,7 @@ class BoardCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'mail'];
+        return ['database'];
     }
 
     /**
@@ -66,8 +66,9 @@ class BoardCreated extends Notification implements ShouldQueue
         // var_dump($name);
         // $name = 'shei';
         return [
-            'data' => $name.' added you to '.$this->board['name'].' board',
-            'action' => '/boards/kanban/'.$this->board['id']
+            'data' => 'created a board '.$this->board['name'],
+            'action' => '/boards/kanban/'.$this->board['id'],
+            'creator' => $this->board['created_by']
         ];
     }
 }

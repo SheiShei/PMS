@@ -10,7 +10,7 @@
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
-                            <span class="pull-right"><a href="" @click.prevent="$router.go(-1)" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></a></span>
+                            <span class="pull-right"><router-link :to="{name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
                             <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
@@ -20,7 +20,7 @@
                         <h6><b>ABOUT</b></h6>
                         <hr />
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateSprintTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
@@ -29,17 +29,18 @@
                                 
                                 </p>
                             </div>
-                            <div class="col-md-4">
-                                <p><span class="fa fa-trophy text-warning"></span> <span :id="'points_'+data.id" contenteditable="true" @input="checkNumberRange" @keypress="checkIfNumber">{{ data.points }}</span> pts <i v-if="isError">(1-9)</i></p>
-                            </div>
-                            <div class="col-md-4">
-                                <p><span class="fa fa-clock-o text-danger"></span> {{ data.due | moment("MMM D, YYYY") }}</p>
+                            <div class="col-md-6">
+                                <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
+                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}
+                                    </span>
+                                    <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
+                                </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <p @input="debounceWait" :id="'desc_'+data.id" contenteditable="true">{{ data.description }}</p>
+                                <div class="testcntnt" @input="debounceWait" :id="'desc_'+data.id" contenteditable="true" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
                             </div>
                         </div>
                         <h6><b>ATTACHMENTS</b></h6>
@@ -127,24 +128,28 @@
 </template>
 
 <script>
+import DatePicker from 'vue2-datepicker'
 import {mapGetters} from 'vuex';
 export default {
+    components: {
+        DatePicker 
+    },
     data() {
         return {
             data: null,
             isError: false,
-            pointsEditable: 0,
             updateData: {
                 name: '',
-                points: '',
                 desc: '',
                 id: '',
-                assign_to: ''
+                assign_to: '',
+                due: ''
             },
             clickAssigned: false,
             attachments: [],
             comFiles: [],
-            cTxt: ''
+            cTxt: '',
+            isDueClicked: false
         }
     },
 
@@ -178,39 +183,8 @@ export default {
                 .then((response) => {
                     this.data = response.data
                     this.updateData.assign_to = this.data.assigned_to.id;
+                    this.updateData.due = this.data.due
                 })
-        },
-
-        checkIfNumber(event) {
-            // console.log(event);
-            if(!(event.keyCode >= 48 && event.keyCode <= 57)){
-                
-                // alert('asd')
-                
-                event.preventDefault()
-            }
-            else {
-                var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-                this.pointsEditable = contenteditable;
-                this.isError = false;
-                // alert(this.pointsEditable)
-            }
-        },
-
-        checkNumberRange(event) {
-
-            var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            // console.log(Number(contenteditable));
-            // if(!(contenteditable <= 9 && contenteditable >= 0) && contenteditable == '') {
-            if(Number(contenteditable) > 9 || Number(contenteditable) < 0) {
-                document.querySelector('#points_'+this.data.id).innerText = this.pointsEditable;
-                this.isError = true;
-                // event.preventDefault()
-            }
-            else {
-                this.debounceWait();
-            }
-            
         },
 
         debounceWait: _.debounce(function (e) {
@@ -218,23 +192,20 @@ export default {
         }, 500),
 
         updateSprintTask() {
-            var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
-            if(contenteditable) {
-                let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
-                let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
-                let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
-                this.updateData.name = contenteditableName;
-                this.updateData.points = contenteditablePoints;
-                this.updateData.desc = contenteditableDesc;
-                this.updateData.id = this.$route.params.task_id;
-                this.updateData.board_id = this.$route.params.board_id;
-                // console.log(this.updateData);
-                this.$store.dispatch('updateSprintTask', this.updateData)
-                    .then(response => {
-                        // console.log(response);
-                        this.data.assigned_to.name = response.assigned_to.name
-                    })
-            }
+            let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
+            let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
+            this.updateData.name = contenteditableName;
+            this.updateData.desc = contenteditableDesc;
+            this.updateData.id = this.$route.params.task_id;
+            this.updateData.board_id = this.$route.params.board_id;
+            // console.log(this.updateData);
+            this.$store.dispatch('updateSprintTask', this.updateData)
+                .then(response => {
+                    // console.log(response);
+                    this.$store.commit('updateCusTask', response);
+                    this.data.assigned_to.name = response.assigned_to.name;
+                    this.data.due = response.due
+                })
         },
 
         chooseFile() {
@@ -294,12 +265,7 @@ export default {
                 }
             });
             this.$store.commit('setGImg', gimg);
-            if(this.$route.params.sprint_id) {
-                this.$router.push({ name: 'sprint_gallery', params: {task_id: this.data.id} })
-            }
-            else{
-                this.$router.push({ name: 'scrumboard_gallery', params: {task_id: this.data.id} })
-            }
+            this.$router.push({ name: 'scrumboard_gallery', params: {task_id: this.data.id} })
         },
 
         cFile(e) {
@@ -355,22 +321,28 @@ export default {
 
         dT() {
             this.$store.dispatch('deleteSprintTask', {id:this.data.id, board_id: this.$route.params.board_id})
-                .then(() => {
-                    if(this.$route.params.sprint_id) {
-                        this.$router.push({name: 'sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
-                    }
-                    else {
-                        this.$router.push({name: 'scrumboard', params: {board_id: this.$route.params.board_id}})
-                    }
+                .then((response) => {
+                    this.$store.commit('deleteCusTask', response)
+                    // if(this.$route.params.sprint_id) {
+                    //     this.$router.push({name: 'sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
+                    // }
+                    // else {
+                        this.$router.push({name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}})
+                    // }
                     this.$toaster.warning('Task deleted succesfully!.')
                 })
+        },
+
+        changeDateFormat() {
+            // this.data.due = new Date(this.data.due).toISOString().slice(0, 10).replace('T', ' ');
+            this.updateData.due = moment(this.updateData.due).format('YYYY-MM-DD')
+            this.updateSprintTask();
         },
 
         listenUpdates() {
             Echo.private('list.'+this.$route.params.board_id)
                 .listen('UpdateListTaskEvent', (e) => {
                     this.data.task_cover = e.task.task_cover
-                    this.data.points = e.task.points
                     this.data.description = e.task.description
                     this.data.name = e.task.name
                     this.data.assigned_to.name = e.task.assigned_to.name
