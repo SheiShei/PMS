@@ -138,6 +138,14 @@ class User extends Authenticatable
     public function receiver(){
         return $this->hasMany('App\Message', 'receiver_id');
     }
+    
+    public function comments(){
+        return $this->hasMany('App\Comment');
+    }
+
+    public function userBoards() {
+        return $this->belongsToMany('App\Board')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
+    }
 
     public function getPictureAttribute($pic) {
         return '/images/'.$pic;

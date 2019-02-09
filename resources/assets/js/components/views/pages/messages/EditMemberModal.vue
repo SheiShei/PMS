@@ -64,10 +64,16 @@ export default {
                 slug: this.$route.params.convo_id,
                 ids: this.checkedRemoveMember
             };
+            $('#membersEditModal').modal('hide');
             this.$store.dispatch('removeMember', data)
                 .then ((response) => {
                     this.checkedRemoveMember = [];
-                    $('#membersEditModal').modal('hide');
+                    let data = {
+                        slug: this.$route.params.convo_id,
+                        search: ''
+                    };
+                    this.$store.dispatch('getNotMembers', data)
+                    this.$store.dispatch('getConvoUsers', data.slug);
                 })
         },
     }

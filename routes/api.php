@@ -62,8 +62,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/getJobOrders', 'AdminController@getJobOrders');
     Route::post('/newJobOrderCreative', 'AdminController@createJOCreative');
     Route::post('/newJobOrderWeb', 'AdminController@createJOWeb');
-    // Route::post('/updateJobOrderCreative', 'AdminController@updateJOCreative');
-    // Route::post('/updateJobOrderWeb', 'AdminController@updateJOWeb');
     Route::post('/getJoDetails', 'AdminController@getJoDetails');
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
@@ -73,6 +71,63 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/newBoard', 'BoardController@newBoard');
     Route::post('/newCard', 'BoardController@newCard');
     Route::post('/newSprint', 'BoardController@newSprint');
-    Route::delete('/deleteBoard', 'AdminController@deleteBoard');
+    Route::delete('/deleteBoard', 'BoardController@deleteBoard');
+    Route::post('/getUserBoards', 'BoardController@getUserBoards');
+    Route::post('/createList', 'BoardController@createList');
+    Route::post('/getBoardLists', 'BoardController@getBoardLists');
+    Route::patch('/updateList', 'BoardController@updateList');
+    Route::delete('/deleteList', 'BoardController@deleteList');
+    Route::patch('/updateListOrder', 'BoardController@updateListOrder');
+    Route::post('/getBoardMembers', 'BoardController@getBoardMembers');
+    Route::post('/addTask', 'BoardController@addTask');
+    Route::post('/getTaskData', 'BoardController@getTaskData');
+    Route::patch('/updateTask', 'BoardController@updateTask');
+    Route::post('/addAttachment', 'BoardController@addAttachment');
+    Route::patch('/taskPhoto', 'BoardController@taskPhoto');
+    Route::delete('/deleteTask', 'BoardController@deleteTask');
+    Route::patch('/updateTaskOrder', 'BoardController@updateTaskOrder');
+    Route::post('/sendComment', 'BoardController@sendComment');
+    Route::post('/getComments', 'BoardController@getComments');
+    Route::post('/getCBoard', 'BoardController@getCBoard');
+    Route::post('/uBoard', 'BoardController@updateBoard');
+    Route::patch('/setAsDoneList', 'BoardController@setAsDoneList');
+    Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
+    Route::post('/monitorAddTask', 'BoardController@monitorAddTask');
+    Route::post('/monitorRemovedTask', 'BoardController@monitorRemovedTask');
+    Route::post('/getBUData', 'BoardController@getBUData');
+    Route::post('/permissionChanged', 'BoardController@permissionChanged');
+    Route::post('/getBoardNotMembers', 'BoardController@getBoardNotMembers');
+    Route::post('/addBoardMember', 'BoardController@addBoardMember');
+    Route::post('/removeBoardMember', 'BoardController@removeBoardMember');
+    Route::post('/setAsAdmin', 'BoardController@setAsAdmin');
+
+
+        //Scrum
+    Route::post('/getScrumLists', 'BoardController@getScrumLists');
+    Route::post('/addsprint', 'BoardController@addsprint');
+    Route::patch('/updateSprint', 'BoardController@updateSprint');
+    Route::delete('/deleteSprint', 'BoardController@deleteSprint');
+    Route::post('/addSprintTask', 'BoardController@addSprintTask');
+    Route::patch('/updateSprintOrder', 'BoardController@updateSprintOrder');
+    Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
+    Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
+    Route::patch('/finishSprint', 'BoardController@finishSprint');
+    Route::post('/changeRole', 'BoardController@changeRole');
+
+
+    //testRoute
+    Route::post('/testFunc', 'BoardController@testFunc');
+    Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
+    
+    //test Scrum
+    Route::post('/newUS', 'BoardController@newUS');
+    Route::post('/getUS', 'BoardController@getUS');
+    Route::post('/getUSData', 'BoardController@getUSData');
+    Route::patch('/updateUS', 'BoardController@updateUS');
+    Route::delete('/deleteUS', 'BoardController@deleteUS');
+    Route::post('/monitorTask', 'BoardController@monitorTask');
+    Route::post('/monitorUS', 'BoardController@monitorUS');
+    Route::post('/monitorRemovedUS', 'BoardController@monitorRemovedUS');
+    Route::post('/getBD', 'BoardController@getBD');
 
 });

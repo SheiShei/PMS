@@ -15,6 +15,7 @@ use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
+        // return $request;
         if($request->notArchive){
             $query = User::with('role:id,name')->with('department:id,name')->orderBy('created_at', 'desc');
         }
@@ -72,14 +73,11 @@ class AdminController extends Controller
                 'role_id' => $request->role,
                 'department_id' => $request->team
             ]);
-
             if($user->role_id==4)
             {
                 $brand = Brand::where('id', $user->brand_id)->first();
                 $brand->update([
                     'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
                 ]);
             }
         // }
@@ -106,7 +104,7 @@ class AdminController extends Controller
         if($client->role_id==4)
         {
             $brand= Brand::onlyTrashed()->where('id' , $client->brand_id)->restore();
-        }      
+        }  
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 

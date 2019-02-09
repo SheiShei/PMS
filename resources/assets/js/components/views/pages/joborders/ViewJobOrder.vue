@@ -9,7 +9,7 @@
 
         <div class="col-md-10" v-if="!!details">
             <form @submit.prevent="signed">
-            <div class="joform">
+            <div class="joform shadow">
                 <div class="jo-head">
                     <h4 class="noprint"><span class="fa fa-file-o"></span> {{ details.name }}
                         <span>
@@ -18,7 +18,7 @@
                             </button>
                         </span>
                         <span class="pull-right"><small>Status: </small>
-                            <span v-if="details.status == 1" class="label label-warning">Active</span>
+                            <span v-if="details.status == 1" class="label label-info">Active</span>
                             <span v-if="details.status == 2" class="label label-success">Completed</span>
                             <span v-if="details.status == 3" class="label label-danger">Blocked</span>
                         </span>

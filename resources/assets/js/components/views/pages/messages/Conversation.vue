@@ -1,15 +1,15 @@
 <template>
     <div class="main-msg-body">
-        <div class="msg-head" style="background-color:rgb(13, 181, 202)">
+        <div class="msg-head" style="background-color:#f4f4f4">
             <div class="msg-head-1">
                 <div class="dropdown">
                     <h4 v-if="selectedConvo || receiverData" class="media-head head-name">{{ selectedConvo ? selectedConvo.name : receiverData.name }}</h4>
                 </div>
             </div>
 
-            <div class="msg-head-2" v-if="selectedConvo">
+            <div class="msg-head-2" v-if="selectedConvo && isL">
                 <div class="dropdown pull-right">
-	                <button href="#" class="dropdown-toggle btn btn-simple btn-info btn-white btn-xs" data-toggle="dropdown" aria-expanded="true">
+	                <button href="#" class="dropdown-toggle btn btn-simple btn-default btn-xs" data-toggle="dropdown" aria-expanded="true">
                         <span class="fa fa-gears fa-xs"></span>
                         <b class="caret"></b>
                         <div class="ripple-container"></div>
@@ -23,12 +23,12 @@
 			    </div>
 
                 <div class="dropdown pull-right"  >
-                    <button href="#pablo" class="dropdown-toggle btn btn-simple btn-info btn-white btn-xs" data-toggle="dropdown" aria-expanded="true">
+                    <button href="#pablo" class="dropdown-toggle btn btn-simple btn-default btn-xs" data-toggle="dropdown" aria-expanded="true">
                         <span class="fa fa-user-o fa-xs"></span>
                         <div class="ripple-container"></div>
                     </button>
 	                <ul id="membersDrop" class="dropdown-menu dropdown-menu-left">
-	                    <router-link style="color:white" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
+	                    <router-link style="color:gray" v-for="user in convoUsers" :key="user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"><li><p class="memDrop">{{ user.name }}</p></li></router-link>
 	                </ul>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-            <div v-for="(message, index) in messages" :key="message.id">
+            <div v-for="(message, index) in messages" :key="index">
                 
                 <!-- date -->
                 <div v-if="messages[index-1]">
@@ -109,7 +109,7 @@
                                     </div>
                                 </div>
                                 <div class="media-body my-msg">
-                                    <a :href="message.new_filename" class="text-gray filedisp" download>
+                                    <a :href="message.new_filename" class="filedisp" download>
                                         <span class="fa fa-file-text-o"></span>&nbsp;{{ message.original_filename }}
                                     </a>
                                 </div>
@@ -186,7 +186,7 @@
                 <!-- created conversation -->
                 <div v-else-if="message.action == 2">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto">
+                        <div class="group-created mr-auto ml-auto">
                             {{ message.sender.name }} created this group.
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                 <!-- Add member -->
                 <div v-else-if="message.action == 3">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto">
+                        <div class="group-created mr-auto ml-auto">
                             {{ message.sender.name }} added {{ message.receiver.name }}
                         </div>
                     </div>
@@ -204,11 +204,11 @@
                 <!-- leave or remove -->
                 <div v-else-if="message.action == 4">
                     <div class="msg-wrap">
-                        <div class="date-sent mr-auto ml-auto" v-if="message.sender_id == message.receiver_id">
-                            {{ message.sender.name }} leave the group.
+                        <div class="group-created mr-auto ml-auto" v-if="message.sender_id == message.receiver_id">
+                            {{ message.sender.name }} left the group.
                         </div>
-                        <div class="date-sent mr-auto ml-auto" v-else>
-                            {{ message.sender.name }} remove {{ message.receiver.name }}.
+                        <div class="group-created mr-auto ml-auto" v-else>
+                            {{ message.sender.name }} removed {{ message.receiver.name }}.
                         </div>
                     </div>
                 </div>
@@ -240,7 +240,7 @@
                 </div>
             </div> -->
 
-            <div class="form-group is-empty msg-input-wrap">
+            <div v-if="isL" class="form-group is-empty msg-input-wrap">
                 <button @click="chooseFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                     <i class="fa fa-paperclip"></i>
                 </button>
@@ -249,7 +249,7 @@
             </div>
 
             <!--Leave Confirmation Modal -->
-            <convo-leave-confirmation-modal></convo-leave-confirmation-modal>
+            <convo-leave-confirmation-modal @leave="leaveC"></convo-leave-confirmation-modal>
             
             <!-- Edit Members Modal-->
             <convo-edit-member-modal></convo-edit-member-modal>
@@ -279,27 +279,36 @@ export default {
             form: new FormData,
             isTyping: false,
             last_page: 0,
-            prev: ''
+            prev: '',
+            isL: true
         }
     },
     created() {
+        this.$store.commit('messageDestroy');
         this.getConvoUsers();
         this.getMessages();
     },
     mounted () {
         this.listenMessages();
     },
+    destroyed () {
+        this.stopListening();
+        // this.$store.commit('messageDestroy');
+    },
     watch: {
         '$route' (to, from) {
+            this.isL = true;
+            this.stopListening();
             this.getConvoUsers();
             this.getMessages();
+            this.listenMessages();
         },
 
         messageTxt(){
-            Echo.private('message.'+this.$route.params.convo_id)
-                .whisper('typing', {
-                    name: this.messageTxt
-                });
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .whisper('typing', {
+            //         name: this.messageTxt
+            //     });
         }
     },
     computed: {
@@ -397,20 +406,62 @@ export default {
 
         listenMessages() {
             var _this = this
+            // console.log(this.$route.params.convo_id);
+            
             // if(this.selectedConvo) {
-            Echo.private('message.'+this.$route.params.convo_id)
-                .listen('DirectMessageEvent', (e) => {
-                    let index = _.findIndex(this.messages, {id: e.message.id});
-                    if(index === -1) {
-                        console.log(e);
-                        this.$store.commit('newMessage', e.message);
+            // Echo.private('message.'+this.$route.params.convo_id)
+            //     .listen('DirectMessageEvent', (e) => {
+            //         let index = _.findIndex(this.messages, {id: e.message.id});
+            //         if(index === -1) {
+            //             console.log(e);
+            //             this.$store.commit('newMessage', e.message);
+            //         }
+            //     })
+            //     .listenForWhisper('typing', (e) => {
+            //         this.isTyping = Boolean(e.name);
+            //     });
+            // }
+
+            Echo.private('convo.'+this.$route.params.convo_id)
+                .listen('SendTextMessageEvent', (e) => {
+                    let parseM = JSON.parse(e.newMessage)
+                    if(parseM.conversation_id === this.$route.params.convo_id || parseM.sender.slug === this.$route.params.convo_id){
+                        // console.log(parseM);
+                        this.$store.commit('newMessage', parseM);
+                    }
+                    
+                })
+                .listen('SendMessageArrayEvent', (e) => {
+                    if(e.convo_id.conversation_id === this.$route.params.convo_id || e.convo_id === this.$route.params.convo_id){
+                        // console.log(e);
+                        this.$store.commit('sendFiles', e.messages);
                     }
                 })
-                .listenForWhisper('typing', (e) => {
-                    this.isTyping = Boolean(e.name);
-                });
-            // }
+                .listen('RemoveConvoMemberEvent', (e) => {
+                    if(e.convo_id.conversation_id === this.$route.params.convo_id || e.convo_id === this.$route.params.convo_id){
+                        // console.log(e);
+                        this.$store.commit('sendFiles', e.messages);
+                        e.messages.forEach(message => {
+                            if(message.action == 4) {
+                                if(message.receiver_id == this.cUser.id){
+                                    this.leaveC();
+                                }
+                            }
+                        });
+                        let data = {
+                            slug: this.$route.params.convo_id,
+                            search: ''
+                        };
+                        this.$store.dispatch('getNotMembers', data)
+                        this.$store.dispatch('getConvoUsers', data.slug);
+                    }
+                })
+
         }, 
+
+        stopListening() {
+            Echo.leave('convo.'+this.$route.params.convo_id);
+        },
 
         infiniteHandler(event) {
             // this.last_page--;
@@ -449,6 +500,10 @@ export default {
                     })
             }
             
+        },
+
+        leaveC() {
+            this.isL = false;
         }
     }
 }

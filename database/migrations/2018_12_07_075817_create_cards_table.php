@@ -19,6 +19,8 @@ class CreateCardsTable extends Migration
             $table->char('sprint_id', 36)->index()->nullable();
             $table->string('name');
             $table->char('created_by', 36)->index();
+            $table->tinyInteger('order');
+            $table->boolean('isDone')->default(false);
             $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

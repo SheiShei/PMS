@@ -1,0 +1,83 @@
+LIHAM PANG-THESISMATE
+------------------------
+
+
+Dear Jenella, 
+
+    Nais kong mabasa mo ito upang kahit papaano'y magabayan kita sa feature ng plugin na ito.
+
+    Una sa lahat, Workload.vue lang yung kailangan mong i-edit for backend since view na lang naman
+ng workload ang gagawin naten kasi wala palang feature to na na-a-adjust, tsaka MAHIRAP. 
+Specifically, dun sa may data return tasks[] lang. 
+
+    Bale yung 'id' na nakaspecify don, yun yung id ng task at hindi ng 
+specific user. Yung sa plugin kasi, yung id nya nakabase sa task. Eh dun din sa id na yon
+nakabase yung expand expand ng row. So di ko alam gagawin ko kasi diba kailangan user muna sa unang 
+column since kailangan makita yung workload nya. Kaya hindi ibig sabihin na nasa tabi ng pangalan ng 
+user yung expand button ([+][-]) eh sa user id nakabase yung pag-expand ng ibang rows. Ikaw na bahala
+kung anong bet mong way.
+
+    Ang point ko talaga: dapat magkakasunud-sunod yung tasks na may same user. Tapos yung 
+pinaka-parent ng row na yon, ay yung "id ng task ng certain user na may pinaka-maagang start date". 
+Meron kasi ron na attribute na 'parentID'. Don nakabase yung sa expanding. 
+
+    Halimbawa:
+
+                    ID          USER         TASK
+    ID ng Task <-   1       [-] Benben       Encode directors        -> task na may pinakamaagang date sa task ni Benben; walang parentID kasi parent row sya ng tasks ng user         
+                    2           Benben       Make new banner         -> merong 'parentId:1'
+                    3           Benben       New page for contacts   -> merong 'parentId:1' din kasi pareho sila ng user
+
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
+    And if kaya, pa-empty ng value ng 'user' sa sunod na row ng tasks na na-specify sa parent row nya. 
+    Parang ganto:
+
+                    ID          USER         TASK
+    ID ng Task <-   1       [-] Benben       Encode directors             
+                    2                        Make new banner        
+                    3                        New page for contacts 
+                    4       [+] Magdalena    Say hello
+    ------------------------------------------------------------------
+
+
+
+    Meron pa pala , 'dependentOn:[]'. Dyan naman nakabase yung linking, yung may linya
+linya sa pagitan ng rectangles. Ang lalagyan mo lang ng attribute na 'dependentOn' ay hindi yung 
+parent row but yung tasks na gumamit ng parentId. Ang value ng dependentOn ay id ng sinundan nyang
+task. Gusto ko lang ilagay rin yang linking para di gaanong plain yung itsura ng gantt
+chart. Tsaka para na rin malaman yung flow ng tasks ni certain user. 
+
+    Jen, lagyan mo rin pala ng "type:'task'" bawat isa. Di sya pwede mawala.
+
+    Tapos isa pa, yung 'progress' don. Ginawa ko na lang syang pandesign. Wala kasi tayong basehan
+ng progress ng task diba. Lalo na kung nasa kanban yung task. Yung progress don, yun yung para 
+makikita moyung parang slash slash sa loob ng rectangle. Basta kapag parent row sya, set mo sa 0 
+yung value nya. Kapag sumunod lang naman, set mo sa 100.
+
+    Lastly, yung colors ng rectangle. Hmmm.. bawat task dapat merong colors na in-assign ng system 
+randomly upon creation ng task. Eto lang yung mga kulay:
+
+                                            #fc5c65
+                                            #fd9644
+                                            #45aaf2
+                                            #A3CB38
+                                            #ffc048
+                                            #D6A2E8
+                                            #fd79a8
+
+    Pakilagay na lang sya sa 'fill' attribute. Tapos yun 'stroke', dapat lagi lang '#ffffff'.
+
+    Yun lang naman, salamat sa pagbabasa kahit ang gulo haha. Kung may nais ka pang itanong, 
+maaaaring iwanan mo ako ng personal na mensahe sa fb, or kaya si Shei na lang.
+
+
+
+                                                                    Nagmamahal,
+                                                                    Samantha 사맨터
+
+
+
+
+

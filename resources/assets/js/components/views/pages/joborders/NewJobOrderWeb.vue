@@ -1,13 +1,13 @@
 <template>
     <section class="main-main-container" style="">
         <div class="title-head">
-            <h2><span class="fa fa-file-o"></span> Job Order Form - Web <small>Panel</small></h2>
+            <h2><span class="fa fa-file-o"></span> Job Order Form - Web</h2>
         </div>
 
         <div class="first-column col-md-1"></div>
 
         <div class="col-md-10">
-            <div class="joform">
+            <div class="joform shadow">
                 <div class="jo-head">
                     <div class="row">
                         <div class="col-md-12">
@@ -43,15 +43,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-3 form-group" v-if="boards">
                             <label for="brand">Board:</label>
                             <div class="btn-group bootstrap-select">
-                                <select name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                <select v-model="brand.board_id" name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                     <option value="">---</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
-                                    <option value="">Board 1</option>
+                                        <!-- <option value="new">New Board</option> -->
+                                        <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -461,6 +459,7 @@ export default {
             brand: {
                 name: '',
                 brand_id: '',
+                board_id: '',
                 status: 1,
                 date_in: '',
                 date_due: ''
@@ -483,8 +482,14 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch('onCreate');
-        console.log(this.brands);
+        this.$store.dispatch('onCreate')
+            .then(() => {
+                $(this.$el).find('.selectpicker').selectpicker('refresh');
+            })
+        this.$store.dispatch('getUserBoards', {type: 2})
+            .then(() => {
+                $(this.$el).find('.selectpicker').selectpicker('refresh');
+            })
     },
     mounted() {
         // $('#ErrorNewJoWeb').modal('show');
@@ -492,6 +497,7 @@ export default {
     computed: {
         ...mapGetters({
                 brands: 'getBrands',
+                boards: 'userBoards'
             }),        
     },
     methods: {

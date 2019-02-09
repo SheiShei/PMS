@@ -36,10 +36,14 @@ export default {
                 slug: this.$route.params.convo_id,
                 ids: this.checkedLeaveMember
             };
-            this.$store.dispatch('removeMember', data);
-            this.$store.commit('leaveConvo', this.$route.params.convo_id);
-            // this.$router.push({name: 'messages'});
             $('#confirmLeaveModal').modal('hide');
+            this.$store.dispatch('removeMember', data)
+                .then(() => {
+                    this.$store.commit('leaveConvo', this.$route.params.convo_id);
+                    this.$emit('leave');
+                })
+            
+            // this.$router.push({name: 'messages'});
 
         },
     }
