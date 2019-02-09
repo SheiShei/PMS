@@ -15,4 +15,8 @@ class BRole extends Model
     public function permissions() {
         return $this->belongsToMany('App\BPermission', 'role_permissions', 'role_id', 'permission_id');
     }
+
+    public function roleuser() {
+        return $this->hasMany('App\BoardUser','bRole_id');
+    }
 }

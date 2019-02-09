@@ -22,9 +22,9 @@
                     <p>warn</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <button @click="$router.push({name: 'viewtask_sprint', params: {task_id: task.id, us_id: task.us_id}})" class="mysm-btn"><span class="fa fa-eye"></span></button>
+                    <button v-if="taskPermission.view" @click="$router.push({name: 'viewtask_sprint', params: {task_id: task.id, us_id: task.us_id}})" class="mysm-btn"><span class="fa fa-eye"></span></button>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button @click="dTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <button v-if="taskPermission.delete" @click="dTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
                    
                 </div>
             </div>
@@ -33,7 +33,7 @@
 </template>
 <script>
 export default {
-    props: ['task'],
+    props: ['task', 'usPermission', 'taskPermission'],
     data() {
         return {
             openTaskOpt: false,

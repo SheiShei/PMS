@@ -62,6 +62,7 @@ const mutations = {
     updateList(state, data) {
         var index = _.findIndex(state.boardLists, {id: data.id});
         state.boardLists[index].name = data.name;
+        state.boardLists[index].isDone = data.isDone;
     },
 
     setBoardLists(state, data) {
@@ -385,17 +386,20 @@ const actions = {
     },
 
     getCBoard({commit}, data) {
-        axios.post('/api/getCBoard', {id: data})
-            .then((response) => {
-                // console.log(response);
-                commit('setCBoard', response.data.data)
-                commit('setPermissionsList', response.data.permissions)
-                commit('setRolePermissions', response.data.role_permissions)
-            })
-            .catch(error => {
-                console.error(error);
-                
-            })
+        return new Promise ((resolve,reject) => {
+            axios.post('/api/getCBoard', {id: data})
+                .then((response) => {
+                    // console.log(response);
+                    commit('setCBoard', response.data.data);
+                    commit('setPermissionsList', response.data.permissions);
+                    commit('setRolePermissions', response.data.role_permissions);
+                    resolve(response.data.userPermit);
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject();
+                })
+        })
     },
 
     uBoard({commit}, data) {

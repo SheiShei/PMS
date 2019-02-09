@@ -34,6 +34,10 @@ use App\Events\CreateBoardEvent;
 use App\Events\UpdateBoardEvent;
 use App\Events\DeleteBoardEvent;
 
+use App\Events\NewUSEvent;
+use App\Events\DeleteUSEvent;
+use App\Events\UpdateUSEvent;
+
 use App\Notifications\BoardCreated;
 use App\Notifications\BoardUserAdded;
 
@@ -442,7 +446,36 @@ class BoardController extends Controller
             $nBoard['bu'][$key] = $bu;
         }
         // dd($boards);
-        return response()->json(['data' => $nBoard, 'permissions' => $permissions, 'role_permissions' => $checkedPer]);
+
+        //permissions
+        $userRoleID = auth()->user()->userBoards()->where('board_id', $request->id)->first()->pivot->bRole_id;
+        
+        $all = [];
+
+        foreach ($permissions as $key => $per) {
+            $role = $per->roles()->find($userRoleID);
+
+            if($role) {
+                $arr = array(
+                    'type' => $per->type,
+                    'name' => $per->name,
+                    'isAuthenticated' => true
+                );
+
+                array_push($all, $arr);
+            }
+            else {
+                $arr = array(
+                    'type' => $per->type,
+                    'name' => $per->name,
+                    'isAuthenticated' => false
+                );
+
+                array_push($all, $arr);
+            }
+        }
+
+        return response()->json(['data' => $nBoard, 'permissions' => $permissions, 'role_permissions' => $checkedPer, 'userPermit' => $all]);
     }
 
     public function getScrumLists(Request $request) {
@@ -471,7 +504,7 @@ class BoardController extends Controller
             'type' => 2
         ]);
 
-        event(new AddSprintEvent($sprint->load('tasks')));
+        event(new AddSprintEvent($sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])));
 
         return $sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to']);
     }
@@ -490,7 +523,7 @@ class BoardController extends Controller
     
     public function deleteSprint(Request $request) {
         $sprint = Sprint::find($request->id);
-        // event(new DeleteSprintEvent($sprint));
+        event(new DeleteSprintEvent($sprint));
         $backlogid = Sprint::where('board_id', $sprint->board_id)->where('name', 'Backlog')->first()->id;
 
         foreach ($sprint->us as $key => $us) {
@@ -581,9 +614,9 @@ class BoardController extends Controller
             }
         }
 
-        $nlists = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}])->orderBy('created_at' , 'asc')->get();
+        $sprints = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
         // print_r($nlists);
-        // event(new SprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+        event(new SprintTaskOrderEvent($sprints->toJson(), $request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -649,7 +682,17 @@ class BoardController extends Controller
                 if($request->sprint_id) {
                     $sprint = $board->sprints()->where('id', $request->sprint_id)->first();
                     if($sprint) {
-                        return response()->json(['status' => 'authenticated'], 200);
+                        $userRoleID = auth()->user()->userBoards()->where('board_id', $request->id)->first()->pivot->bRole_id;
+        
+                        $taskPermission = BPermission::where('type', 'sprint')->where('name', 'View')->first();
+
+                        $role = $taskPermission->roles()->find($userRoleID);
+
+                        if($role) {
+                            return response()->json(['status' => 'authenticated'], 200);
+                        }
+
+                        return response()->json(['status' => 'error'], 200);
                     }
                     return response()->json(['status' => 'error'], 200);
                 }
@@ -760,7 +803,8 @@ class BoardController extends Controller
     }
 
     public function newUS(Request $request) {
-        $order = count(Sprint::find($request->sprint_id)->us()->get());
+        $sprint = Sprint::find($request->sprint_id);
+        $order = count($sprint->us()->get());
         $us = UserStory::create([
             'name' => $request->name,
             'description' => $request->desc,
@@ -769,6 +813,8 @@ class BoardController extends Controller
             'sprint_id' => $request->sprint_id,
             'order' => $order+1
         ]);
+
+        event(new NewUSEvent($us, $sprint->board_id));
 
         return $us;
     }
@@ -788,12 +834,17 @@ class BoardController extends Controller
             'points' => $request->points
         ]);
 
+        event(new UpdateUSEvent($us->load(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to']), $request->board_id));
+
         return $us;
     }
 
     public function deleteUS(Request $request) {
         $us = UserStory::find($request->id);
+        event(new DeleteUSEvent($us, $request->board_id));
+
         $us->delete();
+
 
         return $us;
     }
@@ -1060,6 +1111,7 @@ class BoardController extends Controller
         ]);
 
         $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        event(new UpdateListOrderEvent($lists->toJson(), $request->board_id));
 
         return $lists;
     }
@@ -1203,5 +1255,31 @@ class BoardController extends Controller
     public function changeRole(Request $request) {
         $board = Board::find($request->board_id);
         $board->boardUsers()->syncWithoutDetaching([$request->user_id => ['isAdmin' => (bool) $request->admin, 'added_by' => auth()->user()->id, 'bRole_id' => $request->role_id]]);
+    }
+
+    public function verifyKanbanTask(Request $request) {
+        $userRoleID = auth()->user()->userBoards()->where('board_id', $request->board_id)->first()->pivot->bRole_id;
+        
+        $taskPermission = BPermission::where('type', $request->type)->where('name', $request->action)->first();
+
+        $role = $taskPermission->roles()->find($userRoleID);
+
+        if($role) {
+            return response()->json(['status' => 'authenticated'], 200);
+        }
+
+        // echo $userRoleID;
+
+        return response()->json(['status' => 'error'], 200);
+    }
+
+    public function verifyListKanban(Request $request) {
+        
+
+        
+
+        // echo $userRoleID;
+
+        return response()->json($all, 200);
     }
 }

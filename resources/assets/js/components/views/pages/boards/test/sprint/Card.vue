@@ -13,7 +13,7 @@
         </div>
         <div class="list-body">
             <draggable v-model="uStory.tasks" :options="{animation:200, group:'status', disabled: false}" :element="'div'" @change="test($event, status.id, uStory.id)">
-                <card-task v-for="(task, index) in uStory.tasks" v-if="task.status == status.id" :key="index" :task="task"></card-task>
+                <card-task v-for="(task, index) in uStory.tasks" v-if="task.status == status.id" :key="index" :task="task" :usPermission="usPermission" :taskPermission="taskPermission"></card-task>
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
         </div>
@@ -29,7 +29,7 @@ export default {
         draggable,
         cardTask: Task
     },
-    props: ['status', 'ind', 'uStory'],
+    props: ['status', 'ind', 'uStory', 'usPermission', 'taskPermission'],
     data() {
         return {
             noCard: true,

@@ -6,12 +6,12 @@
                 <div class="row">
                     <div class="col-md-10 col-sm-10 col-xs-10">
                         <!-- <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4> -->
-                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" contenteditable="true">{{ data.name }}</span></h4>
+                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="taskPermission.modify">{{ data.name }}</span></h4>
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
                             <span class="pull-right"><button @click="$router.go(-1)" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></button></span>
-                            <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                            <span v-if="taskPermission.modify" class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                         <hr />
                         <div class="row">
                             <div class="col-md-6">
-                                <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
+                                <p><span @click="taskPermission.modify ? clickAssigned = !clickAssigned : ''" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="taskPermission.modify ? clickAssigned = !clickAssigned : ''" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateSprintTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
                                     <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
@@ -30,8 +30,8 @@
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
-                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}
+                                <p><span @click="taskPermission.modify ? isDueClicked = !isDueClicked : ''" class="fa fa-clock-o text-danger"></span> 
+                                    <span v-if="!isDueClicked" @click="taskPermission.modify ? isDueClicked = !isDueClicked : ''">{{ data.due | moment("MMM D, YYYY") }}
                                     </span>
                                     <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                                 </p>
@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <div class="testcntnt" @input="debounceWait" :id="'desc_'+data.id" contenteditable="true" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
+                                <div :class="taskPermission.modify ? 'testcntnt' : ''" @input="debounceWait" :id="'desc_'+data.id" :contenteditable="taskPermission.modify" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
                             </div>
                         </div>
                         <br>
@@ -60,7 +60,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="taskPermission.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="taskPermission.modify">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
                                 <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
@@ -110,7 +110,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap">
+                                    <div v-if="taskPermission.comment" class="form-group is-empty comment-input-wrap">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
                                         <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                                             <i class="fa fa-paperclip"></i>
@@ -135,6 +135,7 @@ export default {
     components: {
         DatePicker 
     },
+    props: ['usPermission', 'taskPermission'],
     data() {
         return {
             data: null,
@@ -160,6 +161,7 @@ export default {
     },
 
     mounted() {
+        this.stopEventListeners();
         this.listenUpdates()
         $(".testcntnt").focusout(function(){
             var element = $(this);        
@@ -351,10 +353,15 @@ export default {
                     this.data.task_cover = e.task.task_cover
                     this.data.description = e.task.description
                     this.data.name = e.task.name
+                    this.data.due = e.task.due
                     this.data.assigned_to.name = e.task.assigned_to.name
                     this.updateData.assign_to = e.task.assigned_to.id
                     // console.log(e);
-                    // this.$store.commit('updateTask', e.task);
+                    this.$store.commit('updateSprintTask', e.task);
+                })
+                .listen('DeleteListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteSprintTask', e.task_id);
                 })
             Echo.private('task.'+this.$route.params.task_id)
                 .listen('AddTaskAttachmentEvent', (e) => {
@@ -371,7 +378,8 @@ export default {
         },
 
         stopEventListeners() {
-            Echo.leave();
+            Echo.leave('list.'+this.$route.params.board_id);
+            Echo.leave('task.'+this.$route.params.task_id);
         }
 
     }

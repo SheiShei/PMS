@@ -40,11 +40,11 @@
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-md-6" v-if="boardMembers">
+                    <div class="col-md-6" v-if="board">
                         <label for="">Assign To: </label>
                         <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
-                            <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
+                            <option v-for="user in board.bu" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -87,7 +87,7 @@ export default {
     },
     computed: {
         ...mapGetters({
-                boardMembers: 'boardMembers',
+                board: 'getCBoard'
             }),
     },
     methods: {

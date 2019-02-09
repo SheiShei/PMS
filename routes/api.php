@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/addBoardMember', 'BoardController@addBoardMember');
     Route::post('/removeBoardMember', 'BoardController@removeBoardMember');
     Route::post('/setAsAdmin', 'BoardController@setAsAdmin');
+    Route::post('/verifyKanbanTask', 'BoardController@verifyKanbanTask');
+    Route::post('/verifyListKanban', 'BoardController@verifyListKanban');
 
 
         //Scrum

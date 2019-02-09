@@ -6,11 +6,12 @@
                     <span v-if="sprint.finished_at" class="fa fa-circle text-gray"></span>
                     <span v-else-if="sprint.type != 1" class="fa fa-circle text-success"></span>
 
-                    <span v-if="sprint.finished_at">
-                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" class="text-gray" style="">{{ sprint.name }}</router-link>
+                    <span v-if="sprintPermission.view && sprint.type == 2">
+                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2 && sprint.finished_at" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" class="text-gray" style="">{{ sprint.name }}</router-link>
+                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2 && !sprint.finished_at" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" style="color: #262626">{{ sprint.name }}</router-link>
                     </span>
-                    <span v-else>
-                        <router-link title="Click to open sprint backlog" v-if="sprint.type == 2" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" style="color: #262626">{{ sprint.name }}</router-link>
+                    <span v-if="!sprintPermission.view && sprint.type == 2">
+                        {{ sprint.name }}
                     </span>
 
                     <span v-if="sprint.type == 1">{{ sprint.name }} </span>
@@ -18,8 +19,8 @@
             </div>
             <div class="editListBtn pull-right">
                 <small>{{ sprintPoints }} pts</small>
-                <button v-if="sprint.type == 2" class="" @click="revert" title="Edit Sprint"><span class="fa fa-edit"></span></button>
-                <button v-if="sprint.type == 2" @click="$router.push({name: 'dsprint_conf', params: {sprint_id: sprint.id}})" class="" title="Delete Sprint"><span class="fa fa-trash-o"></span></button>
+                <button v-if="sprint.type == 2 && sprintPermission.modify" class="" @click="revert" title="Edit Sprint"><span class="fa fa-edit"></span></button>
+                <button v-if="sprint.type == 2 && sprintPermission.delete" @click="$router.push({name: 'dsprint_conf', params: {sprint_id: sprint.id}})" class="" title="Delete Sprint"><span class="fa fa-trash-o"></span></button>
                 <!-- <button class="" title="Close Sprint?"><span class="fa fa-stop"></span></button> -->
             </div>
         </div>
@@ -35,12 +36,18 @@
             </form>
         </div>
         <div class="list-body">
-            <draggable v-model="sprint.us" :options="{animation:200, group:'status'}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
-                <card-task v-for="(us, index) in sprint.us" :key="us.id" :us="us" :i="index" :sname="sprint.name"></card-task>                
+            <draggable v-model="sprint.us" :options="{animation:200, group:'status', disabled: !sprintPermission.modify}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
+                <card-task 
+                    v-for="(us, index) in sprint.us" 
+                    :key="us.id" :us="us" :i="index" 
+                    :sname="sprint.name" 
+                    :sprintPermission="sprintPermission" 
+                    :usPermission="usPermission" 
+                    :taskPermission="taskPermission"></card-task>                
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
         </div>
-        <router-link v-if="sprint.type == 1" :to="{name: 'snt', params: {sprint_id: sprint.id}}" class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add User Story</span></router-link>
+        <router-link v-if="sprint.type == 1 && usPermission.add" :to="{name: 'snt', params: {sprint_id: sprint.id}}" class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add User Story</span></router-link>
     </div>
 </template>
 
@@ -52,7 +59,7 @@ export default {
         draggable,
         cardTask : Task
     },
-    props: ['sprint'],
+    props: ['sprint', 'usPermission', 'taskPermission', 'sprintPermission'],
     data() {
         return {
             showEditList: false,

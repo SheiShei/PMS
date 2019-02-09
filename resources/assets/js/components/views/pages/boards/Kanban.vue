@@ -4,7 +4,7 @@
             <div class="board-background-overlay">
             </div>
             <div class="board-wrapper" v-if="board">
-                <router-view></router-view>
+                <router-view :per="task"></router-view>
                 <kanban-settings v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></kanban-settings>
                 <div class="board-header">
                     <div class="board-name">
@@ -53,10 +53,10 @@
 
 
                 <div>
-                    <button class="btn btn-success btn-sm" @click="addNewList"> + Add New List</button>          
+                    <button v-if="addList" class="btn btn-success btn-sm" @click="addNewList"> + Add New List</button>          
                     <div id="testTaskDiv" class="board-body">
                         <draggable v-model="boardLists" :options="{animation:200, group:'status'}" @change="updateListOrder" :element="'div'">
-                            <list-card v-for="(list , index) in boardLists" :key="index" :li="index" :list="list"></list-card>
+                            <list-card v-for="(list , index) in boardLists" :key="index" :li="index" :list="list" :modifyList="modifyList" :delList="deleteList" :taskPerm="task"></list-card>
                         </draggable>
                     </div>
                 </div>
@@ -313,7 +313,18 @@ export default {
         return {
             viewBSettings: false,
             viewBAbout: false,
-            viewMemmod: false
+            viewMemmod: false, 
+            userPermit: null,
+            addList: false,
+            modifyList: false,
+            deleteList: false,
+            task: {
+                modify: false,
+                view: false,
+                add: false,
+                delete: false,
+                comment: false
+            }
         }
     },
     created() {
@@ -322,6 +333,7 @@ export default {
         this.getBoardNotMembers();
     },
     mounted() {
+        this.stopListen();
         this.listenList();
     },
     destroyed() {
@@ -351,7 +363,7 @@ export default {
                 totalTask += list.tasks.length
             });
             return totalTask;
-        }
+        },
     },
     methods: {
         addNewList(){
@@ -373,6 +385,48 @@ export default {
 
         getCuBoard() {
             this.$store.dispatch('getCBoard', this.$route.params.board_id)
+                .then((response) => {
+                    this.userPermit = response;
+                    this.checkListPerm();
+                })
+        },
+        
+        checkListPerm() {
+            // console.log(this.userPermit);
+            
+            if(this.userPermit) {
+                this.userPermit.forEach(permit => {
+                    if(permit.type == "list" && permit.name == "Add" && permit.isAuthenticated) {
+                        this.addList = true
+                    }
+                    else if(permit.type == "list" && permit.name == "Modify" && permit.isAuthenticated) {
+                        this.modifyList = true
+                    }
+                    else if(permit.type == "list" && permit.name == "Delete" && permit.isAuthenticated) {
+                        this.deleteList = true
+                    }
+                    else if(permit.type == "list" && permit.name == "Delete" && permit.isAuthenticated) {
+                        this.deleteList = true
+                    }
+                    else if(permit.type == "task" && permit.name == "Add" && permit.isAuthenticated) {
+                        this.task.add = true
+                    }
+                    else if(permit.type == "task" && permit.name == "Modify" && permit.isAuthenticated) {
+                        this.task.modify = true
+                    }
+                    else if(permit.type == "task" && permit.name == "Delete" && permit.isAuthenticated) {
+                        this.task.delete = true
+                    }
+                    else if(permit.type == "task" && permit.name == "View" && permit.isAuthenticated) {
+                        this.task.view = true
+                    }
+                    else if(permit.type == "task" && permit.name == "Comment" && permit.isAuthenticated) {
+                        this.task.comment = true
+                    }
+                });
+                // this.addList = false;
+                // return false;
+            }
         },
 
         listenList() {

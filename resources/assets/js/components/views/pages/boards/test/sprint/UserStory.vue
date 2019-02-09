@@ -11,14 +11,14 @@
             </div>
             <div class="story-body">
                 <div class="editListBtn pull-right">
-                    <button @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task"><span class="fa fa-plus"></span></button>
+                    <button v-if="taskPermission.add" @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task"><span class="fa fa-plus"></span></button>
                 </div>
                 <h4>{{ uStory.name }}</h4>
                 <small>{{ uStory.points }} pts</small>
                 
             </div>
         </div>
-        <list-card v-for="(status , index) in statuses" :key="index" :status="status" :ind="i" :uStory="uStory"></list-card>
+        <list-card v-for="(status , index) in statuses" :key="index" :status="status" :ind="i" :uStory="uStory" :usPermission="usPermission" :taskPermission="taskPermission"></list-card>
     </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     components: {
         listCard: Card,
     },
-    props: ['uStory', 'i'],
+    props: ['uStory', 'i', 'usPermission', 'taskPermission'],
     data() {
         return {
             statuses: [
