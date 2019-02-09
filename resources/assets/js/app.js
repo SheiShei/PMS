@@ -12,7 +12,8 @@ import Toaster from 'v-toaster'
     // toaster css
     import 'v-toaster/dist/v-toaster.css'
 /* end of import all vue libraries */
-
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 /* next import all modules */
 import {routes} from './routes';
 import StoreData from './store/store';
@@ -40,6 +41,17 @@ const router = new VueRouter({
 
 });
 
+router.beforeResolve((to, from, next) => {
+    if (to.path) {
+        NProgress.start()
+    }
+    next()
+  });
+  
+  router.afterEach((to, from) => {
+    NProgress.done()
+  });
+  
 // Vue.component('user-datatable', require('./components/datatable/user/Main.vue'));
 
 initialize(store, router);
