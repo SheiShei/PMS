@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture'
+        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture', 'bg_image'
     ];
 
     /**
@@ -148,6 +148,10 @@ class User extends Authenticatable
     }
 
     public function getPictureAttribute($pic) {
-        return '/images/'.$pic;
+        return '/storage/'.$pic;
+    }
+
+    public function getBgImageAttribute($bg) {
+        return '/storage/'.$bg;
     }
 }

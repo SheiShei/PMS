@@ -27,12 +27,12 @@
                     <div class="row">
                         <div v-if="details.brand" class="col-md-6">
                             <p><span class="txt-bold">Brand :</span> {{ details.brand.name }}</p>
-                            <p><span class="txt-bold">Client :</span> Robert Fereno</p>
+                            <p><span class="txt-bold">Client :</span> {{details.brand.contact_person }}</p>
                             <p><span class="txt-bold">Brand Owner :</span> {{ details.brand.tandem.name }}</p>
                         </div>
                         <div class="col-md-6">
                             <!-- <label for="" class="align-right">JO No.</label> -->
-                            <p><span class="txt-bold">JO No. :</span>{{ details.id }}</p>
+                            <p><span class="txt-bold">JO No. : </span>{{ details.id }}</p>
                             <!-- <img class="" style="height: 70px" src="/images/nightsky3.jpg" alt=""> -->
                             <p><span class="txt-bold">Date In :</span> {{ details.indate }}</p>
                             <p><span class="txt-bold">Date Due :</span> {{ details.duedate }}</p>

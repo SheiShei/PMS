@@ -10,7 +10,7 @@ class Brand extends Model
     use SoftDeletes, Uuids;
 
     public $incrementing = false;
-    
+
     protected $fillable = ['name', 'contact_person', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
 
     public function tandem() {
@@ -20,4 +20,8 @@ class Brand extends Model
     public function jos() {
         return $this->hasMany('App\JobOrder');
     }
+
+     public function getLogoAttribute($pic) {
+         return '/storage/'.$pic;
+     }
 }

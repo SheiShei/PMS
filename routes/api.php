@@ -65,7 +65,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getJoDetails', 'AdminController@getJoDetails');
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
-    Route::delete('/deletejo', 'AdminController@deletejo');
+    Route::delete('/deletejo', 'AdminController@deletejo'); 
+    Route::post('/restorejo', 'AdminController@restorejo'); 
 
     //Boards
     Route::post('/newBoard', 'BoardController@newBoard');
@@ -108,5 +109,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     //testRoute
     Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
     
+    //settings
+    Route::get('/getuser_info', 'SettingsController@getuser_info');
+    Route::post('/updatemyself', 'SettingsController@updatemyself');
+
+
 
 });

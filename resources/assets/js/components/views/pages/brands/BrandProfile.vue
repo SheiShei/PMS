@@ -10,7 +10,7 @@
                 <div class="mybox-body white-white-bg" v-if="brandProfile">
                     <div class="br-prof text-center">
                         <p  class="info-name">{{brandProfile.name}}</p>
-                        <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="'./images/logo/'+brandProfile.logo">
+                        <img style="height: 60px; margin-bottom: 5px;" :alt="brandProfile.name+' logo'" :src="brandProfile.logo">
                     </div>
                     <hr />
                     <p class="other-info"><span class="">Brand Owner: </span>{{brandProfile.tandem.name}}</p>

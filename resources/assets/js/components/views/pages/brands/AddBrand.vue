@@ -172,7 +172,7 @@ export default {
 
         onLogoChanged (event) {
             this.brand.logo = event.target.files
-            // console.log(this.brand.logo);
+             console.log(this.brand.logo[0]);
         },
 
         passwordType(){

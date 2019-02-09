@@ -3,7 +3,7 @@
         
 <div class="profile-page">
 
-	<div class="page-header header-filter" data-parallax="true" style="background-image: url('/images/above-art1.jpg');"></div>
+	<div class="page-header header-filter" data-parallax="true" :style="{ 'background-image': 'url('+user_info.bg_image+')' }"></div>
 
 	<div class="main main-raised">
 		<div class="profile-content" style="padding: 0 20px">
@@ -13,16 +13,19 @@
 	                <div class="col-md-4 col-xs-12 col-xs-offset-0 col-md-offset-0">
         	           <div class="profile">
 	                        <div class="avatar">
-	                            <img src="/images/default.png" alt="Circle Image" class="img-circle img-responsive img-raised">
+	                            <img :src="user_info.picture" :alt="user_info.name+' Photo'" class="img-circle img-responsive img-raised">
 	                        </div>
-	                        <div class="name">
-	                            <h4><b>Samantha Millos</b></h4>
-								<p><small>Employee | Web Team</small></p>
+	                         <div class="name">
+	                            <h4><b>{{user_info.name}}</b></h4>
+								<p v-if="user_info.role_id==1" ><small> Admin </small></p>
+								<p v-if="user_info.role_id==2"><small> ACMA </small></p>
+								<p v-if="user_info.role_id==3 && user_info.department_id==1" ><small>Employee | Web Team</small></p>
+								<p v-if="user_info.role_id==3 && user_info.department_id==2" ><small>Employee | Creatives Team</small></p>								<p v-if="user_info.role_id==4"><small> Client </small></p>
                                 <hr/>
 
                                 <!--For ACMA--> 
 								
-                                <div class="text-left work-summary">
+                                <div v-if="user_info.role_id==2 || user_info.role_id==1" class="text-left work-summary">
                                     <div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -64,10 +67,11 @@
                                     </div>
                                 </div>
 								
+								
 
 								<!--For Regular Employee -->
-								<!--
-								<div class="text-left work-summary">
+								
+								<div v-if="user_info.role_id==3" class="text-left work-summary">
                                     <div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -95,11 +99,11 @@
                                         </div>
                                     </div>
                                 </div>
-								-->
+								
 
 								<!--For Client-->
-								<!--
-								<div class="text-left work-summary">
+								
+								<div v-if="user_info.role_id==4" class="text-left work-summary">
 									<div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -127,7 +131,7 @@
                                         </div>
                                     </div>
                                 </div>
-				               -->
+				              
 
                                
 	                        </div>
@@ -161,27 +165,27 @@
 										</div> -->
 										<div class="tab-pane active" id="settings">
 											<div class="settingssec text-left">
-												<form>
+												<form @submit.prevent="updatemyself()">
 												<div class="row">
 													
 													<div class="col-md-4">
 														<div class="form-group is-empty">
 															<label class="control-label text-grey">Name</label>
-															<input type="text" class="form-control" value="Samantha Millos">
+															<input v-model="data.name" required type="text" class="form-control" >
 															<span class="material-input"></span>
 														</div>
 													</div>
 													<div class="col-md-4">
 														<div class="form-group is-empty">
 															<label class="control-label text-gray">Email</label>
-															<input type="email" class="form-control" value="sammillos@gmail.com">
+															<input v-model="data.email" required type="email"  class="form-control" >
 															<span class="material-input"></span>
 														</div>
 													</div>
 													<div class="col-md-4">
 														<div class="form-group is-empty">
 															<label class="control-label text-gray">Password</label>
-															<input type="password" class="form-control" value="8743872467">
+															<input v-model="data.password" required minlength="6" type="password" class="form-control">
 															<span class="material-input"></span>
 														</div>
 													</div>
@@ -209,7 +213,7 @@
         														lang-type="en"
 																:value.sync="show"
 																img-format="png"></my-upload>
-															<img src="/images/default.png" class="img-raised img-circle" v-if="imgDataUrl==''">
+															<img :src="user_info.picture" class="img-raised img-circle" v-if="imgDataUrl==''">
 															<img :src="imgDataUrl" class="img-raised img-circle">
 															<!-- :src="imgDataURL" -->
 														</div>
@@ -223,13 +227,13 @@
 																<span class="btn btn-raised btn-info btn-simple btn-xs btn-default btn-file">
 																	<span class="fileinput-new">Update Background Image</span>
 																	<span class="fileinput-exists">Update Background Image</span>
-																	<input type="file" name="..."><div class="ripple-container"></div></span>
+																	<input type="file" name="..." @change="bg_image" format="jpeg" ><div class="ripple-container"></div></span>
 																<br>
 																<!-- <a href="#pablo" class="btn btn-xs btn-danger fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a> -->
 															</div>
 															<div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
 															<div class="fileinput-new thumbnail img-raised">
-																<img src="/images/above-art1.jpg" style="height: 200px; width: auto" alt="...">
+																<img :src="user_info.bg_image" style="height: 200px; width: auto" alt="...">
 															</div>
 														</div>
 													</div>
@@ -239,7 +243,7 @@
 												<div class="row">
 													<div class="col-md-12 text-right">
 														<button type="reset" @click="clearImgDataUrl" class="btn btn-sm btn-danger">Cancel</button>
-														<button class="btn btn-sm btn-success">Save Changes</button>
+														<button class="btn btn-sm btn-success" >Save Changes</button>
 													</div>
 												</div>
 												</form>
@@ -250,251 +254,21 @@
 							</div>
 
 
-
-                        <!-- <div class="profile-tabs">
-		                    <div class="nav-align-center">
-								<ul class="nav nav-pills nav-pills-icons" role="tablist">
-									<li class="active">
-			                            <a href="#work" role="tab" data-toggle="tab">
-											<i class="fa fa-suitcase"></i>
-											Work
-			                            </a>
-			                        </li>
-                                    <li>
-										<a href="#connections" role="tab" data-toggle="tab">
-											<i class="fa fa-user-o"></i>
-											Connections
-										</a>
-									</li>
-			                        <li>
-			                            <a href="#media" role="tab" data-toggle="tab">
-											<i class="fa fa-camera"></i>
-			                                Media
-			                            </a>
-			                        </li>
-			                    </ul>
-
-
-							</div>
-						</div> -->
-	                   <!-- <button class="btn btn-fab btn-primary" rel="tooltip" title="Send a Message">
-                            <i class="fa fa-commenting-o"></i>
-                        </button> -->
 	                </div>
                 </div>
 
 
-                <!-- <div class="description text-center">
-                    <p>An artist of considerable range, Chet Faker — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. </p>
-                </div> -->
 
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3">
-						<!-- <div class="profile-tabs">
-		                    <div class="nav-align-center">
-								<ul class="nav nav-pills nav-pills-icons" role="tablist">
-									<li class="active">
-			                            <a href="#work" role="tab" data-toggle="tab">
-											<i class="material-icons">palette</i>
-											Work
-			                            </a>
-			                        </li>
-                                    <li>
-										<a href="#connections" role="tab" data-toggle="tab">
-											<i class="material-icons">people</i>
-											Connections
-										</a>
-									</li>
-			                        <li>
-			                            <a href="#media" role="tab" data-toggle="tab">
-											<i class="material-icons">camera</i>
-			                                Media
-			                            </a>
-			                        </li>
-			                    </ul>
-
-
-							</div>
-						</div> -->
-						<!-- End Profile Tabs -->
+						
 					</div>
                 </div>
                 <div class="tab-content">
 			        <div class="tab-pane active work" id="work">
-				        <!-- <div class="row">
-	                        <div class="col-md-7 col-md-offset-1">
-		                        <h4 class="title">Latest Collections</h4>
-		                        <div class="row collections">
-			                        <div class="col-md-6">
-			                            <div class="card card-background" style="background-image: url('/images/business_desk.jpg')">
-                    						<a href="#pablo"></a>
-                    						<div class="card-content">
-                    							<label class="label label-primary">Spring 2016</label>
-                    							<a href="#pablo">
-                    								<h2 class="card-title">Stilleto</h2>
-                    							</a>
-                    						</div>
-                    					</div>
-			                        </div>
-                                    <div class="col-md-6">
-			                            <div class="card card-background" style="background-image: url('/images/above-art1.jpg')">
-                    						<a href="#pablo"></a>
-                    						<div class="card-content">
-                    							<label class="label label-primary">Spring 2016</label>
-                    							<a href="#pablo">
-                    								<h2 class="card-title">High Heels</h2>
-                    							</a>
-                    						</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-			                            <div class="card card-background" style="background-image: url('/images/pp.jpg')">
-                    						<a href="#pablo"></a>
-                    						<div class="card-content">
-                    							<label class="label label-primary">Summer 2016</label>
-                    							<a href="#pablo">
-                    								<h2 class="card-title">Flats</h2>
-                    							</a>
-                    						</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-			                            <div class="card card-background" style="background-image: url('/images/mfilogo.png')">
-                    						<a href="#pablo"></a>
-                    						<div class="card-content">
-                    							<label class="label label-primary">Winter 2015</label>
-                    							<a href="#pablo">
-                    								<h2 class="card-title">Men's Sneakers</h2>
-                    							</a>
-                    						</div>
-                                        </div>
-                                    </div>
-                                </div>
-		                    </div>
-		                    <div class="col-md-2 col-md-offset-1 stats">
-			                    <h4 class="title">Stats</h4>
-			                    <ul class="list-unstyled">
-				                    <li><b>60</b> Products</li>
-				                    <li><b>4</b> Collections</li>
-				                    <li><b>331</b> Influencers</li>
-				                    <li><b>1.2K</b> Likes</li>
-				                </ul>
-				                <hr />
-				                <h4 class="title">About his Work</h4>
-				                <p class="description">French luxury footwear and fashion. The footwear has incorporated shiny, red-lacquered soles that have become his signature.</p>
-				                <hr />
-				                <h4 class="title">Focus</h4>
-				                <span class="label label-primary">Footwear</span>
-				                <span class="label label-rose">Luxury</span>
-			                </div>
-	                    </div> -->
+				     
 			        </div>
-                    <!-- <div class="tab-pane connections" id="connections">
-                        <div class="row">
-            				<div class="col-md-5 col-md-offset-1">
-            					<div class="card card-profile card-plain">
-            						<div class="col-md-5">
-            							<div class="card-image">
-            								<a href="#pablo">
-            									<img class="img" src="../assets/img/faces/avatar.jpg" />
-            								</a>
-            							</div>
-            						</div>
-            						<div class="col-md-7">
-            							<div class="card-content">
-            								<h4 class="card-title">Gigi Hadid</h4>
-            								<h6 class="category text-muted">Model</h6>
-
-            								<p class="card-description">
-            									Don't be scared of the truth because we need to restart the human foundation in truth...
-            								</p>
-            							</div>
-            						</div>
-            					</div>
-            				</div>
-
-            				<div class="col-md-5">
-            					<div class="card card-profile card-plain">
-            						<div class="col-md-5">
-            							<div class="card-image">
-            								<a href="#pablo">
-            									<img class="img" src="../assets/img/faces/marc.jpg" />
-            								</a>
-            							</div>
-            						</div>
-            						<div class="col-md-7">
-            							<div class="card-content">
-            								<h4 class="card-title">Marc Jacobs</h4>
-            								<h6 class="category text-muted">Designer</h6>
-
-            								<p class="card-description">
-            									Don't be scared of the truth because we need to restart the human foundation in truth...
-            								</p>
-            							</div>
-            						</div>
-            					</div>
-            				</div>
-                        </div>
-                        <div class="row">
-            				<div class="col-md-5 col-md-offset-1">
-            					<div class="card card-profile card-plain">
-            						<div class="col-md-5">
-            							<div class="card-image">
-            								<a href="#pablo">
-            									<img class="img" src="../assets/img/faces/kendall.jpg" />
-            								</a>
-            							</div>
-            						</div>
-            						<div class="col-md-7">
-            							<div class="card-content">
-            								<h4 class="card-title">Kendall Jenner</h4>
-            								<h6 class="category text-muted">Model</h6>
-
-            								<p class="card-description">
-            									I love you like Kanye loves Kanye. Don't be scared of the truth.
-            								</p>
-            							</div>
-            						</div>
-            					</div>
-            				</div>
-
-            				<div class="col-md-5">
-            					<div class="card card-profile card-plain">
-            						<div class="col-md-5">
-            							<div class="card-image">
-            								<a href="#pablo">
-            									<img class="img" src="../assets/img/faces/card-profile2-square.jpg" />
-            								</a>
-            							</div>
-            						</div>
-            						<div class="col-md-7">
-            							<div class="card-content">
-            								<h4 class="card-title">George West</h4>
-            								<h6 class="category text-muted">Model/DJ</h6>
-
-            								<p class="card-description">
-            									I love you like Kanye loves Kanye.
-            								</p>
-            							</div>
-            						</div>
-            					</div>
-            				</div>
-
-            			</div>
-                    </div> -->
-                    <!-- <div class="tab-pane text-center gallery" id="media">
-						<div class="row">
-							<div class="col-md-3 col-md-offset-3">
-								<img src="../assets/img/examples/chris4.jpg" class="img-rounded" />
-								<img src="../assets/img/examples/chris6.jpg" class="img-rounded" />
-							</div>
-							<div class="col-md-3">
-								<img src="../assets/img/examples/chris7.jpg" class="img-rounded" />
-								<img src="../assets/img/examples/chris5.jpg" class="img-rounded" />
-								<img src="../assets/img/examples/chris9.jpg" class="img-rounded" />
-							</div>
-						</div>
-                    </div> -->
+                    
 			    </div>
             </div>
         </div>
@@ -509,7 +283,7 @@
 
 <script>
 import 'babel-polyfill'; 
-// import Vue from 'vue';
+import {mapGetters} from 'vuex';
 import myUpload from 'vue-image-crop-upload';
 	
 export default{
@@ -518,6 +292,16 @@ export default{
 	},
 	data(){
 		return{
+			data:{
+				id: '',
+				name: '',
+				email: '',
+				password: '',
+				pw:'',
+				bg_image: '',
+			},
+			hasBG: false,
+			errors:[],
 			show: false,
             params: {
                 token: '123456798',
@@ -529,44 +313,90 @@ export default{
             imgDataUrl: '' //the datebase64 url of created image
 		}
 	},
+	created() {
+		this.$store.dispatch('getuser_info')
+		.then((response) => {
+				const user_data = response;
+				this.data.id= user_data.id;
+                this.data.name = user_data.name;
+				this.data.email = user_data.email;
+				this.data.pw= user_data.password;
+				this.data.bg_image= user_data.bg_image;
+                // console.log(this.brand.logo);
+            })
+	},
+
+	computed: {
+         ...mapGetters({
+                user_info: 'getuser_info'
+			}),
+	},
+
 	methods:{
+		updatemyself(){
+			let form = new FormData;
+            form.append('id', this.data.id);
+            if(this.hasBG==true)
+            {
+                form.append('bg_image', this.data.bg_image[0]);
+            }
+            else{
+                form.append('bg_image', this.data.bg_image);
+                }
+            form.append('name', this.data.name);
+			form.append('email', this.data.email);
+			if(this.data.password=='')
+			{
+         	form.append('password', this.data.pw);
+            // console.log(form.append();
+			}
+			else{
+				form.append('password', this.data.password);
+			}
+			
+			this.$store.dispatch('updatemyself', form)
+			 .then((response) => {
+					
+                    this.$toaster.success('Info updated succesfully!.')
+					//this.getsData();
+                })
+
+                .catch((error) => {
+                    // console.log(error)
+                    this.errors = error;
+                })
+
+		},
+		bg_image(event){
+			  this.data.bg_image = event.target.files
+                console.log(this.data.bg_image[0]);
+                this.hasBG=true;
+
+		},
+		getsData() {
+             
+            this.$store.dispatch('getuser_info')
+				.then((response) => {
+				const user_data = response;
+				this.data.id= user_data.id;
+                this.data.name = user_data.name;
+				this.data.email = user_data.email;
+				this.data.pw= user_data.password;
+				this.data.bg_image= user_data.bg_image;
+                // console.log(this.brand.logo);
+            })
+        },
+
 		clearImgDataUrl(){
 			this.imgDataUrl = '';
 		},
 		toggleShow() {
 				this.show = !this.show;
 			},
-			cropSuccess(imgDataUrl, field){
-				console.log('-------- crop success --------');
-				this.imgDataUrl = imgDataUrl;
-			},
-			/**
-			 * upload success
-			 *
-			 * [param] jsonData  server api return data, already json encode
-			 * [param] field
-			 */
-			cropUploadSuccess(jsonData, field){
-				console.log('-------- upload success --------');
-				console.log(jsonData);
-				console.log('field: ' + field);
-			},
-			/**
-			 * upload fail
-			 *
-			 * [param] status    server api return error status, like 500
-			 * [param] field
-			 */
-			cropUploadFail(status, field){
-				console.log('-------- upload fail --------');
-				console.log(status);
-				console.log('field: ' + field);
-			}
-	},
-	events:{
 		cropSuccess(imgDataUrl, field){
 				console.log('-------- crop success --------');
 				this.imgDataUrl = imgDataUrl;
+				console.log(this.imgDataUrl);
 			},
 			/**
 			 * upload success
@@ -574,10 +404,10 @@ export default{
 			 * [param] jsonData  server api return data, already json encode
 			 * [param] field
 			 */
-			cropUploadSuccess(jsonData, field){
+		cropUploadSuccess(jsonData, field){
 				console.log('-------- upload success --------');
-				console.log(jsonData);
-				console.log('field: ' + field);
+				console.log('this is the file here method:', jsonData);
+				console.log('field: ', field);
 			},
 			/**
 			 * upload fail
@@ -585,12 +415,40 @@ export default{
 			 * [param] status    server api return error status, like 500
 			 * [param] field
 			 */
-			cropUploadFail(status, field){
+		cropUploadFail(status, field){
 				console.log('-------- upload fail --------');
-				console.log(status);
+				console.log('status: ',status);
 				console.log('field: ' + field);
 			}
-	}
+	},
+	// events:{
+	// 	cropSuccess(imgDataUrl, field){
+	// 			console.log('-------- crop success --------');
+	// 			this.imgDataUrl = imgDataUrl;
+	// 		},
+	// 		/**
+	// 		 * upload success
+	// 		 *
+	// 		 * [param] jsonData  server api return data, already json encode
+	// 		 * [param] field
+	// 		 */
+	// 		cropUploadSuccess(jsonData, field){
+	// 			console.log('-------- upload success --------');
+	// 			console.log('this is the file here event' +jsonData);
+	// 			console.log('field: ' + field);
+	// 		},
+	// 		/**
+	// 		 * upload fail
+	// 		 *
+	// 		 * [param] status    server api return error status, like 500
+	// 		 * [param] field
+	// 		 */
+	// 		cropUploadFail(status, field){
+	// 			console.log('-------- upload fail --------');
+	// 			console.log(status);
+	// 			console.log('field: ' + field);
+	// 		}
+	// }
 
 }
 </script>

@@ -137,7 +137,7 @@
             </div>
             <div class="mybox">
                 <div class="mybox-head">
-                    <h6><strong>ACTIVE JOB ORDERS</strong></h6>
+                    <h6><strong>ACTIVE JOB ORDERS</strong>&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                 </div>
                 <div class="mybox-body white-bg" v-if="jos">
                     <div class="row">
@@ -150,8 +150,8 @@
                                     </router-link>
                                     <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
                                         <span class="fa fa-file-o"></span>
-                                        {{ jo.name }}
-                                    </router-link>
+                                        {{ jo.name }} -->
+                                     </router-link>
                                 </li>
                             </ul>
                         </div>
@@ -199,7 +199,12 @@ export default {
                 notArchive: true
                 
             },
-            brandinfos: {}
+            brandinfos: {},
+            ndata: {
+            search: '',
+            sort: 'created_at.desc',
+            notArchive: true
+                    }
            // errors: [],
             
         }
@@ -232,7 +237,8 @@ export default {
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         const ndata = {
             search: '',
-            sort: 'created_at.desc'
+            sort: 'created_at.desc',
+            notArchive: true
         }
         this.$store.dispatch('getJobOrders', ndata);
     }, 
@@ -261,6 +267,8 @@ export default {
         },
         archiveBrands() {
             this.data.notArchive = !this.data.notArchive;
+            if(this.data.notArchive==true){ this.data.filter = {position: 'desc', category:'created_at'} }
+            else{ this.data.filter = {position: 'desc', category:'deleted_at'}};
             let data = this.data;
             this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         },
@@ -272,7 +280,14 @@ export default {
                 .catch(() => {
                     alert('Something went wrong, try reloading the page');
                 })
-        }
+        },
+         archiveJO() {
+           // let _this = this;
+            let ndata = this.ndata;
+            this.ndata.notArchive = !this.ndata.notArchive;
+            this.$store.dispatch('getJobOrders', ndata); 
+            console.log('archive');
+                   },
     }
 }
 </script>

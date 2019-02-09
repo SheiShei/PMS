@@ -56,7 +56,7 @@
                                         <div class="col-md-8">
                                             <div class="fileinput fileinput-new text-center" data-provides="fileinput">
                                                 <div class="fileinput-new thumbnail img-raised">
-                                                    <img :alt="brand.name+' logo'" :src="'/images/logo/'+brand.logo" height="50">
+                                                    <img :alt="brand.name+' logo'" :src="brand.logo" height="50">
                                                 </div>
                                                 <div class="fileinput-preview fileinput-exists thumbnail img-raised" style=""></div>
                                                 <div>
@@ -148,6 +148,7 @@ export default {
             if(this.haslogo==true)
             {
                 form.append('logo', this.brand.logo[0]);
+                console.log('in if',this.brand.logo[0]);
             }
             else{
                 form.append('logo', this.brand.logo);

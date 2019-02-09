@@ -5,6 +5,7 @@ import brands from "./modules/brands";
 import messages from "./modules/messages";
 import joborder from "./modules/joborder";
 import boards from "./modules/boards";
+import settings from "./modules/settings";
 
 
 const user = __initializeUser();
@@ -72,6 +73,7 @@ export default {
         brands,
         messages,
         joborder,
-        boards
+        boards,
+        settings
     }
 }
