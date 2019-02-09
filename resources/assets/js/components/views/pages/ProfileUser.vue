@@ -185,7 +185,7 @@
 													<div class="col-md-4">
 														<div class="form-group is-empty">
 															<label class="control-label text-gray">Password</label>
-															<input v-model="data.password" required minlength="6" type="password" class="form-control">
+															<input v-model="data.password" minlength="6" type="password" class="form-control">
 															<span class="material-input"></span>
 														</div>
 													</div>
@@ -396,7 +396,7 @@ export default{
 		cropSuccess(imgDataUrl, field){
 				console.log('-------- crop success --------');
 				this.imgDataUrl = imgDataUrl;
-				console.log(this.imgDataUrl);
+				console.log('laman ng imgdataURL', this.imgDataUrl);
 			},
 			/**
 			 * upload success
