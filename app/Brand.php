@@ -11,7 +11,7 @@ class Brand extends Model
 
     public $incrementing = false;
     
-    protected $fillable = ['name', 'contact_person', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
+    protected $fillable = ['name', 'contact_person', 'email', 'password', 'about', 'telephone', 'mobile', 'logo', 'tandem_id'];
 
     public function tandem() {
         return $this->belongsTo('App\Tandem');
@@ -20,4 +20,8 @@ class Brand extends Model
     public function jos() {
         return $this->hasMany('App\JobOrder');
     }
+
+     public function getLogoAttribute($pic) {
+         return '/storage/'.$pic;
+     }
 }

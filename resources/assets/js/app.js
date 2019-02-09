@@ -7,7 +7,6 @@ import VueRouter from "vue-router";
 import Vuex from "vuex";
 import VueMoment from "vue-moment";
 import VueChatScroll from 'vue-chat-scroll';
-import VueTextareaAutosize from 'vue-textarea-autosize'
 import Toaster from 'v-toaster'
     // toaster css
     import 'v-toaster/dist/v-toaster.css'
@@ -26,7 +25,6 @@ Vue.use(VueMoment);
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueChatScroll);
-Vue.use(VueTextareaAutosize)
 
 // optional set default imeout, the default is 10000 (10 seconds).
 Vue.use(Toaster, {timeout: 5000})

@@ -11,19 +11,24 @@ export default {
     components: {
         apexchart: VueApexCharts
     },
+    props: ['chartData'],
     data(){
         return{
         series: [
         {
           name: 'Todo',
-          data: [31, 40, 28, 51, 42, 109, 100]
+          data: this.chartData.todo
         }, {
           name: 'In Progress',
-          data: [11, 32, 45, 32, 34, 52, 41]
+          data: this.chartData.in_progress
         },
         {
-          name: 'Done',
-          data: [89, 80, 68, 12, 89, 12, 57]
+          name: 'Testing',
+          data: this.chartData.for_test
+        },
+        {
+          name: 'Closed',
+          data: this.chartData.closed
         }],
         chartOptions: {
             chart:{
@@ -38,13 +43,13 @@ export default {
 
 
           xaxis: {
-            // type: 'datetime',
-            categories: ["01 Jan", "02 Jan", "03 Jan", "04 Jan", "05 Jan", "06 Jan", "07 Jan"
-            ],
+            type: 'datetime',
+            // categories: ["01 Jan", "02 Jan", "03 Jan", "04 Jan", "05 Jan", "06 Jan", "07 Jan"
+            // ],
           },
           tooltip: {
             x: {
-              format: 'DD/MM/YYYY'
+              // format: 'DD/MM/YYYY'
             },
 
           }

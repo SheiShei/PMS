@@ -65,7 +65,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getJoDetails', 'AdminController@getJoDetails');
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
-    Route::delete('/deletejo', 'AdminController@deletejo');
+    Route::delete('/deletejo', 'AdminController@deletejo'); 
+    Route::post('/restorejo', 'AdminController@restorejo'); 
 
     //Boards
     Route::post('/newBoard', 'BoardController@newBoard');
@@ -89,8 +90,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/sendComment', 'BoardController@sendComment');
     Route::post('/getComments', 'BoardController@getComments');
     Route::post('/getCBoard', 'BoardController@getCBoard');
-    Route::patch('/uBoard', 'BoardController@updateBoard');
+    Route::post('/uBoard', 'BoardController@updateBoard');
+    Route::patch('/setAsDoneList', 'BoardController@setAsDoneList');
     Route::post('/verifyBoardUsers', 'BoardController@verifyBoardUsers');
+    Route::post('/monitorAddTask', 'BoardController@monitorAddTask');
+    Route::post('/monitorRemovedTask', 'BoardController@monitorRemovedTask');
+    Route::post('/getBUData', 'BoardController@getBUData');
+    Route::post('/permissionChanged', 'BoardController@permissionChanged');
+    Route::post('/getBoardNotMembers', 'BoardController@getBoardNotMembers');
+    Route::post('/addBoardMember', 'BoardController@addBoardMember');
+    Route::post('/removeBoardMember', 'BoardController@removeBoardMember');
+    Route::post('/setAsAdmin', 'BoardController@setAsAdmin');
 
 
         //Scrum
@@ -103,10 +113,27 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getSprintTasks', 'BoardController@getSprintTasks');
     Route::patch('/updateSprintTaskOrder', 'BoardController@updateSprintTaskOrder');
     Route::patch('/finishSprint', 'BoardController@finishSprint');
+    Route::post('/changeRole', 'BoardController@changeRole');
 
 
     //testRoute
+    Route::post('/testFunc', 'BoardController@testFunc');
     Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
     
+    //settings
+    Route::get('/getuser_info', 'SettingsController@getuser_info');
+    Route::post('/updatemyself', 'SettingsController@updatemyself');
+
+
+    //test Scrum
+    Route::post('/newUS', 'BoardController@newUS');
+    Route::post('/getUS', 'BoardController@getUS');
+    Route::post('/getUSData', 'BoardController@getUSData');
+    Route::patch('/updateUS', 'BoardController@updateUS');
+    Route::delete('/deleteUS', 'BoardController@deleteUS');
+    Route::post('/monitorTask', 'BoardController@monitorTask');
+    Route::post('/monitorUS', 'BoardController@monitorUS');
+    Route::post('/monitorRemovedUS', 'BoardController@monitorRemovedUS');
+    Route::post('/getBD', 'BoardController@getBD');
 
 });

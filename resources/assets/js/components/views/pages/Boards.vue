@@ -16,13 +16,13 @@
                                         <option value="2">Scrum</option> 
                                     </select>
                                 </span>
-                                <span class="">
+                                <!-- <span class="">
                                     <select @change="getUserBoards" v-model="boarddata.privacy" class="my-thin-select text-default">
                                         <option value="">Team & Personal</option> 
                                         <option value="1">Personal</option> 
                                         <option value="2">Team</option> 
                                     </select>
-                                </span>
+                                </span> -->
                                 <span class="pull-right">
                                     <p class="no-margin"><small>Found:</small> {{ userBoards.length }}</p>
                                 </span>
@@ -34,16 +34,16 @@
                                         <div class="boardname">{{ board.name }}</div>
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
-                                                <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
+                                                <!-- <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
                                                 <a href="" @click.stop="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
                                     </router-link>
-                                    <router-link v-if="board.type == 2" :to="{ name: 'scrumboard', params: {board_id: board.id} }" class="boarddiv">
+                                    <router-link v-if="board.type == 2" :to="{ name: 'test', params: {board_id: board.id} }" class="boarddiv">
                                         <div class="boardname">{{ board.name }}</div>
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
-                                                <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
+                                                <!-- <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
                                                 <a href="" @click.stop.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
@@ -65,13 +65,13 @@
                                             <div class="radio">
                                                 <span>
                                                     <label>
-									                    <input v-model="board.type" value="1" type="radio" name="optionsRadios" :disabled="add ? false : true" checked="true"><span class="circle"></span><span class="check"></span>
+									                    <input v-model="board.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
 									                    Kanban
 								                    </label>
                                                 </span>
                                                 <span>
                                                     <label>
-									                    <input v-model="board.type" value="2" type="radio" name="optionsRadios" :disabled="add ? false : true" checked="true"><span class="circle"></span><span class="check"></span>
+									                    <input v-model="board.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
 									                    Scrum
 								                    </label>                                
                                                 </span>
@@ -90,34 +90,11 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="" class="control-label">Share with:</label>
-                                            <div class="">
-                                                <div class="btn-group bootstrap-select">
-                                                    <select @change="checkBox" v-model="board.share" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                                        <option value="" selected>Only Me</option> 
-                                                        <option value="all">All</option> 
-                                                        <option value="web">Web</option> 
-                                                        <option value="creative">Creatives</option>
-                                                        <option value="custom">Custom</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div v-show="board.share">
-                                                <div class="form-group">
-                                                    <input  v-model="userdata.search" @input="search()" type="search" placeholder="Search member..." class="form-control mt-4">
-                                                </div>
-                                                <div class="choose-mem" style="max-height: 130px; overflow:auto">
-                                                    <div class="checkbox" v-for="user in users" :key="user.id"  >
-                                                        <label>
-                                                            <input type="checkbox" v-model="board.checkedNames" :value="user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id">
-                                                            <span class="check"></span>
-                                                            {{ user.name }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div class="form-group is-empty">
+                                            <label class="control-label">Board Description:</label>
+                                            <textarea v-model="board.desc" required type="text" class="form-control"></textarea>
+                                            <span class="material-input"></span>
+                                        </div> 
                                     </div>
                                 </div>
                                 <br/>
@@ -126,8 +103,7 @@
                                         <button @click="cancel" class="btn btn-default btn-md btn-block" type="button">Cancel</button>
                                     </div>
                                     <div class="col-md-6">
-                                        <button v-if="add" @click="createBoard" class="btn btn-info btn-md btn-block" type="button" value="">CREATE</button>
-                                        <button v-else @click="uBoard" class="btn btn-info btn-md btn-block" type="button" value="">UPDATE</button>
+                                        <button @click="createBoard" class="btn btn-info btn-md btn-block" type="button" value="">CREATE</button>
                                     </div>
                                 </div>
                             </div>
@@ -147,27 +123,17 @@ export default {
             board: {
                 type: 1,
                 name: '',
-                share: '',
-                ids: [],
-                checkedNames: []
-            },
-            userdata: {
-                filter: '',
-                search: '',
-                notArchive: true
+                desc: '',
             },
             boarddata: {
                 type: '',
                 privacy: '',
                 id: this.$store.state.loggedUser.id
             },
-            add: true,
-            pB: null
         }
     },
 
     created() {
-        this.getUsersData();
         this.getUserBoards();
     },
 
@@ -182,90 +148,27 @@ export default {
 
     computed: {
         ...mapGetters({
-                users: 'usersList',
-                currentUser: 'currentUser',
                 userBoards: 'userBoards'
             }),
-            checkedUser() {
-                let cuser = this.currentUser;
-                let _this = this;
-                this.users.forEach(function(user,index){ 
-                    if(user.id == cuser.id) {
-                        _this.users.splice(index,1);
-                    } 
-                }) 
-                return this.users.map(
-                    user => user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id
-                );
-            }
     },
 
     methods: {
-        getUsersData() {
-            let data = this.userdata;
-            this.$store.dispatch('setUsers', data)
-                .then((response) => {
-                    this.checkBox();
-                })
-        },
-
         getUserBoards() {
             this.$store.dispatch('getUserBoards', this.boarddata)
         },
 
-        checkBox() {
-            this.board.checkedNames = this.checkedUser;
-            if(this.board.share == 'all'){
-                this.board.checkedNames = this.checkedUser;
-            }
-            else if(this.board.share == 'web'){
-                this.board.checkedNames = [];
-                this.checkedUser.forEach(user => {
-                    if(user.includes('Web')){
-                        this.board.checkedNames.push(user);
-                    }
-                });
-            }
-            else if(this.board.share == 'creative'){
-                this.board.checkedNames = [];  
-                this.checkedUser.forEach(user => {
-                    if(user.includes('Creatives')){
-                        this.board.checkedNames.push(user);
-                    }
-                });          
-            }
-            else {
-                this.board.checkedNames = [];
-            }
-            // console.log(this.credentials.checkedNames);
-            
-        },
-
-        search: _.debounce(function (e) {
-            this.getUsersData();
-        }, 500),
-
         cancel() {
             this.board.type = 1
             this.board.name = '';
-            this.board.share = '';
-            this.board.checkedNames = [];
-            this.userdata.search = '';
-            this.add = true
+            this.board.desc = '';
         },
 
         createBoard() {
-            let newId = this.board.checkedNames.map(
-                    val => val.split('_')[1]
-                );
-            this.board.ids = newId;
             this.$store.dispatch('createBoard', this.board)
                 .then(() => {
                     this.board.type = 1;
                     this.board.name = '';
-                    this.board.share = '';
-                    this.board.ids = [];
-                    this.board.checkedNames = [];
+                    this.board.desc = '';
                 })
         },
 
@@ -275,55 +178,6 @@ export default {
                     this.$toaster.warning('Board deleted succesfully!.')
                 })
             
-        },
-
-        updateBoard(board) {
-            if(this.pB != board) {
-                this.board.checkedNames = []
-                this.add = false;
-                this.board.type = board.type;
-                this.board.name = board.name;
-
-                if(board.privacy == 2) {
-                    this.board.share = 'custom'
-                    board.board_users.forEach(user => {
-                        this.board.checkedNames.push(user.department ? user.department.name+'_'+user.id : user.role.name+'_'+user.id)
-                    });
-                }
-                else {
-                    this.board.share = ''
-                }
-                
-                this.board.id = board.id
-                this.pB = board;
-            }
-            else {
-                this.board.type = '';
-                this.board.name = '';
-                this.board.share = '';
-                this.board.checkedNames = []
-                this.pB = null;
-                this.add = true;
-            }
-
-            
-        },
-
-        uBoard() {
-            let newId = this.board.checkedNames.map(
-                val => val.split('_')[1]
-            );
-            this.board.newId = newId;
-            this.$store.dispatch('uBoard', this.board)
-                .then(() => {
-                    this.$toaster.success('Board Updated Successfully');
-                    this.board.type = '';
-                    this.board.name = '';
-                    this.board.share = '';
-                    this.board.checkedNames = []
-                    this.pB = null;
-                    this.add = true;
-                })
         },
 
         listenBoardEvents() {

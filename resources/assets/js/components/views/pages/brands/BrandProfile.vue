@@ -12,7 +12,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <img class="text-center img-raised" style="max-width: 50%; margin: 10px auto" :alt="brandProfile.name+' logo'" :src="'/images/logo/'+brandProfile.logo">
+                                <img class="text-center img-raised" style="max-width: 50%; margin: 10px auto" :alt="brandProfile.name+' logo'" :src="brandProfile.logo">
                             </div>
                         </div>
                         <div class="row">

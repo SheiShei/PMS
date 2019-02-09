@@ -77,7 +77,7 @@ export default {
   data() {
     return{
       team: '',
-      show: false,
+      show: true,
     tasks: [],
     options: {
       title: {

@@ -74,7 +74,7 @@ const actions = {
         })
         
             .then((response) => {
-                // console.log(response.data.data);
+                 console.log(response.data.data);
                 commit('setBrands', response.data.data)
                 
             })
@@ -87,7 +87,7 @@ const actions = {
                 id: id
             })
                 .then((response) => {
-                    // console.log(response);
+                     console.log(response.data);
                     commit('getOnebrand', response.data)
                     resolve(response.data)
                 })
@@ -209,7 +209,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios.post('/api/UpdateBrand', databrand, config)
                 .then((response) => {
-                    // console.log(response);
+                     console.log(response);
                     commit('UpdateBrand', response.data[0]);
                     resolve(response);
                 })

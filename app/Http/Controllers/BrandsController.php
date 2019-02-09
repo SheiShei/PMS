@@ -36,6 +36,7 @@ class BrandsController extends Controller
          }
 
     public function addBrands(Request $request) {
+        dd($request);
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
@@ -48,16 +49,35 @@ class BrandsController extends Controller
     
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('images/logo/', $name);
+            $file->move('storage/logo/', $name);
             // $file->copy('/images/logo/'.$name, '/images');
-            copy('images/logo/'.$name, 'images/'.$name);
+            copy('storage/logo/'.$name, 'storage/'.$name);
             $input['logo'] = $name;
         }
         if(!$request->hasFile('logo')){
             $input['logo'] = 'logooo2.png';
         }
 
-        $brand = Brand::create($input);
+        $brand = Brand::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'telephone' => $request->telephone,
+            'mobile' => $request->mobile,
+            'tandem_id' => $request->tandem_id,
+            'about' => $request->about,
+            'logo' => $input['logo'],
+            'contact_person' => $request->contact_person
+        ]);
+
+        $user = User::create([
+            'name' => $brand->name,
+            'email' => $brand->email,
+            'password' => Hash::make($brand->password),
+            'role_id' => 4,
+            'brand_id' => $brand->id,
+            'picture' => $brand->logo
+        ]);
 
         User::create([
             'brand_id' => $brand->id,
@@ -65,7 +85,8 @@ class BrandsController extends Controller
             'email'=>$request->email,
             'password'=>bcrypt($request->password),
             'role_id'=>4,
-            'picture'=>$input['logo'] //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
+            'picture'=>$input['logo'],
+            'bg_image'=>'1549014873pug.jpg' //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
         ]);
 
         return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
@@ -121,24 +142,29 @@ class BrandsController extends Controller
         //     'telephone' => 'required|string|max:15',
         //     'mobile' => 'required',
         //     'tandem_id' => 'required',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'password' => 'required|string|min:6',
         // ]);
         
         //$brand = Brand::findOrFail($request->file('id'));
         $brand = Brand::findOrFail($request->id);
         $user = User::where('brand_id', $request->id)->first();
         $input = $request->all();
-       
+        
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('./images/logo', $name);
+            $file->move('storage/', $name);
             $input['logo'] = $name;
         }
+        else{
+            $name1= $input['logo'];
+            $input['logo'] = str_replace('/storage/','',$name1);
+            echo($input['logo']);
+         }
         
-
-       // dd($request);
         $brand->update($input);
         $user->update([
-            'name' => $request->name,
+            'name' => $input['name'],
             'picture' => $input['logo']
         ]);
 

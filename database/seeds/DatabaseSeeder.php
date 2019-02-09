@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StickyNotesTableSeeder::class);
         // $this->call(ConversationsTableSeeder::class);
         $this->call(BoardsTableSeeder::class);
+        $this->call(BPermissionsTableSeeder::class);
     }
 }

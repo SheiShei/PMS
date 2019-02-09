@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture'
+        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture', 'bg_image'
     ];
 
     /**
@@ -144,10 +144,14 @@ class User extends Authenticatable
     }
 
     public function userBoards() {
-        return $this->belongsToMany('App\Board')->withPivot('added_by')->withTimestamps();
+        return $this->belongsToMany('App\Board')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
     }
 
     public function getPictureAttribute($pic) {
-        return '/images/'.$pic;
+        return '/storage/'.$pic;
+    }
+
+    public function getBgImageAttribute($bg) {
+        return '/storage/'.$bg;
     }
 }
