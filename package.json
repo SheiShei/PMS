@@ -38,6 +38,7 @@
         "vue-clip": "^1.0.0",
         "vue-image-crop-upload": "^2.5.0",
         "vue-moment": "^4.0.0",
+        "vue-rate-it": "^2.1.0",
         "vue-router": "^3.0.1",
         "vue-server-renderer": "^2.5.17",
         "vue-slider-component": "^2.8.2",

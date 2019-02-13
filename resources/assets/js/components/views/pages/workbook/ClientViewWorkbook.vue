@@ -75,6 +75,30 @@
                         <!-- {{ getCurrentImage.acmaCaption}} -->
                         </p>
                         <hr>
+                        
+                        <!-- <star-rating :item-size="25"
+                        active-color="#f7d21b"
+                        
+                        border-width="3"
+                        :increment="1" 
+                        v-model="rating">
+                        </star-rating> -->
+                        <div class="text-center">
+                        <fa-rating :glyph="star" 
+                        :item-size="35" 
+           :spacing="3"  
+           inactive-color="#e2e2e2" 
+           active-color="#ffc815"
+           border-width="2"
+           border-color="#fff"
+           :increment="1"
+           v-model="rating">
+</fa-rating>
+</div>
+
+
+
+
                         <p><span class="fa fa-commenting-o"></span> Comment:</p>
                         <textarea class="my-text-area btn-block" name="" id="" rows="5" max-rows="5"></textarea>
                     </div>
@@ -95,9 +119,22 @@
 
 
 <script>
+import {StarRating} from 'vue-rate-it';
+import {HeartRating} from 'vue-rate-it';
+import {FaRating} from 'vue-rate-it';
+import {ImageRating} from 'vue-rate-it';
+import Star from 'vue-rate-it/glyphs/star';
+// import StarRating from 'vue-rate-it';
 export default {
+    components:{
+        StarRating,
+        HeartRating,
+        FaRating
+    },
     data() {
         return {
+            thumbsUp: 'star',
+            rating: 3,
             currentSlide: 0,
             images:[
                 {
@@ -130,6 +167,9 @@ export default {
             let current = this.currentSlide
             if(current >= min) this.currentSlide--
         },
+    },
+    created(){
+        this.star = Star
     }
 }
 </script>
