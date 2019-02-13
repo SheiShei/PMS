@@ -70,9 +70,9 @@
 	                                        <tr v-for="member in boardData.bu" :key="member.id">
 	                                            <td><span v-if="member.pivot.isAdmin" class="fa fa-star text-warning" rel="tooltip" title="Board Admin"></span>&nbsp;{{ member.name }}</td>
 	                                            <td>{{ member.pivot.role.name }}</td>
-                                                <td>
+                                                <td><span v-if="member.id != boardData.created_by">
                                                     <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-if="!member.pivot.isAdmin" class="btn btn-xs btn-info btn-simple">Set as Admin</button>
-                                                    <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-else class="btn btn-xs btn-info btn-danger">Remove as Admin</button>
+                                                    <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-else class="btn btn-xs btn-info btn-danger">Remove as Admin</button></span>
                                                 </td>
                                                 <td class="td-actions text-right">
 	                                                <button @click="removeBoardMember(member.id)" type="button" rel="tooltip" class="btn btn-danger btn-xs btn-just-icon btn-simple btn-round" data-original-title="Remove Member" title="Remove Member">
@@ -127,11 +127,17 @@ export default {
     methods: {
         updateBoardDetails() {
             let form = new FormData;
-            form.append('image', this.image[0]);
+            if(this.image) {
+                form.append('image', this.image[0]);
+            }
             form.append('name', this.boardData.name);
             form.append('desc', this.boardData.description);
             form.append('id', this.$route.params.board_id);
-            this.$store.dispatch('uBoard', form);
+            this.$store.dispatch('uBoard', form)
+                .then((response) => {
+                    this.boardData.board_image = response.board_image
+                    this.image = '';
+                })
         },
 
         onImageChanged (event) {
@@ -141,7 +147,7 @@ export default {
 
         onInput: _.debounce(function() {
             this.updateBoardDetails();
-        }, 500),
+        }, 1000),
 
         permArrChanged(id) {
             this.$store.dispatch('PermissionChanged', {role_id: id, permissions_id: this.role_permissions.permissions})

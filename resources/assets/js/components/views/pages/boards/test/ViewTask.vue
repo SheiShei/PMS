@@ -191,7 +191,7 @@ export default {
 
         debounceWait: _.debounce(function (e) {
             this.updateSprintTask();
-        }, 500),
+        }, 1000),
 
         updateSprintTask() {
             let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;

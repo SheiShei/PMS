@@ -206,7 +206,7 @@ export default {
 
         debounceWait: _.debounce(function (e) {
             this.updateTask();
-        }, 500),
+        }, 1000),
 
         updateTask() {
             // var contenteditable = document.querySelector('#points_'+this.data.id).textContent;

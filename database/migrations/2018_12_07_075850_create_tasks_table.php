@@ -35,7 +35,7 @@ class CreateTasksTable extends Migration
 
             $table->foreign('jo_id')->references('id')->on('job_orders')->onDelete('cascade');
             $table->foreign('card_id')->references('id')->on('cards')->onDelete('cascade');
-            $table->foreign('sprint_id')->references('id')->on('sprints');
+            $table->foreign('sprint_id')->references('id')->on('sprints')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('assigned_by')->references('id')->on('users')->onDelete('cascade');

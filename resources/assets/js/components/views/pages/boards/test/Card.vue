@@ -89,9 +89,9 @@ export default {
             this.$store.dispatch('updateSprintOrder', this.sprint)
                 .then(() => {
                     if(e.added){
-                        if(type == 2){
+                        // if(type == 2){
                             this.monitorUS(e.added.element)
-                        }
+                        // }
                     }
                     if(e.removed){
                         if(type == 2){

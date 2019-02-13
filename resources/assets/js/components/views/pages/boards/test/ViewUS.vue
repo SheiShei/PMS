@@ -154,7 +154,7 @@ export default {
         
         inpdebounce: _.debounce(function(e) {
             this.updateUS()
-        }, 500),
+        }, 1000),
 
         deleteUStask(id) {
             this.$store.dispatch('deleteSprintTask', {id: id, board_id: this.$route.params.board_id})

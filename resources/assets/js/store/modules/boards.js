@@ -409,7 +409,7 @@ const actions = {
                 .then((response) => {
                     // console.log(response);
                     // commit('uBoard', response.data);
-                    resolve();
+                    resolve(response.data);
                 })
                 .catch((error) => {
                     console.error(error);

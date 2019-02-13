@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class BoardCreated extends Notification implements ShouldQueue
 {
@@ -62,13 +63,12 @@ class BoardCreated extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
-        $name = (string)$this->board['created_by']['name'];
-        // var_dump($name);
-        // $name = 'shei';
+        // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
         return [
-            'data' => 'created a board '.$this->board['name'],
-            'action' => '/boards/kanban/'.$this->board['id'],
-            'creator' => $this->board['created_by']
+            'text' => $this->board['created_by']['name'] . ' created the board: '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'bg-success',
+            'icon' => 'fa-trello'
         ];
     }
 }

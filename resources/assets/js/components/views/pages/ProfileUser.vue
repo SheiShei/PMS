@@ -208,7 +208,8 @@
 																:noRotate="false"
         														lang-type="en"
 																:value.sync="show"
-																img-format="png"></my-upload>
+																img-format="png"
+																@close="toggleShow"></my-upload>
 															<img src="/images/default.png" class="img-raised img-circle" v-if="imgDataUrl==''">
 															<img :src="imgDataUrl" class="img-raised img-circle">
 															<!-- :src="imgDataURL" -->
@@ -512,11 +513,11 @@ import 'babel-polyfill';
 // import Vue from 'vue';
 import myUpload from 'vue-image-crop-upload';
 	
-export default{
+export default {
 	components:{
 		'my-upload': myUpload
 	},
-	data(){
+	data() {
 		return{
 			show: false,
             params: {
@@ -526,7 +527,8 @@ export default{
             headers: {
                 smail: '*_~'
             },
-            imgDataUrl: '' //the datebase64 url of created image
+			imgDataUrl: '', //the datebase64 url of created image
+			viewDnD: false
 		}
 	},
 	methods:{
@@ -534,34 +536,38 @@ export default{
 			this.imgDataUrl = '';
 		},
 		toggleShow() {
-				this.show = !this.show;
-			},
-			cropSuccess(imgDataUrl, field){
-				console.log('-------- crop success --------');
-				this.imgDataUrl = imgDataUrl;
-			},
-			/**
-			 * upload success
-			 *
-			 * [param] jsonData  server api return data, already json encode
-			 * [param] field
-			 */
-			cropUploadSuccess(jsonData, field){
-				console.log('-------- upload success --------');
-				console.log(jsonData);
-				console.log('field: ' + field);
-			},
-			/**
-			 * upload fail
-			 *
-			 * [param] status    server api return error status, like 500
-			 * [param] field
-			 */
-			cropUploadFail(status, field){
-				console.log('-------- upload fail --------');
-				console.log(status);
-				console.log('field: ' + field);
-			}
+			this.show = !this.show;
+		},
+		cropSuccess(imgDataUrl, field){
+			console.log('-------- crop success --------');
+			this.imgDataUrl = imgDataUrl;
+		},
+		/**
+		 * upload success
+		 *
+		 * [param] jsonData  server api return data, already json encode
+		 * [param] field
+		 */
+		cropUploadSuccess(jsonData, field){
+			console.log('-------- upload success --------');
+			console.log(jsonData);
+			console.log('field: ' + field);
+		},
+		/**
+		 * upload fail
+		 *
+		 * [param] status    server api return error status, like 500
+		 * [param] field
+		 */
+		cropUploadFail(status, field){
+			console.log('-------- upload fail --------');
+			console.log(status);
+			console.log('field: ' + field);
+		},
+
+		testAlert() {
+			alert('sheira');
+		}
 	},
 	events:{
 		cropSuccess(imgDataUrl, field){

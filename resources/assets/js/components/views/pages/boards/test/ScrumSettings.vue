@@ -171,7 +171,10 @@ export default {
             form.append('name', this.boardData.name);
             form.append('desc', this.boardData.description);
             form.append('id', this.$route.params.board_id);
-            this.$store.dispatch('uBoard', form);
+            this.$store.dispatch('uBoard', form)
+                .then((response) => {
+                    this.boardData.board_image = response.board_image
+                })
         },
 
         onImageChanged (event) {

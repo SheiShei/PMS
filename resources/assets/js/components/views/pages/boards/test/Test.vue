@@ -1,9 +1,9 @@
 <template>
     <section class="main-main-container kanban-component" style="background-color: rgb(67, 160, 185);">
-        <div class="board-background-image" style="background-image: url('/images/above-art1.jpg');">
+        <div class="board-background-image" :style="'background-image: url('+board.board_image+');'" v-if="cSprint && board">
             <div class="board-background-overlay">
             </div>
-            <div class="board-wrapper" v-if="cSprint && board">
+            <div class="board-wrapper" >
                 <router-view :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
                 
                 <div class="board-header">

@@ -1,12 +1,12 @@
 <template>
 
     <section class="main-main-container kanban-component" style="background-color: rgb(67, 160, 185);">
-        <div class="board-background-image" style="background-image: url('/images/bts.jpg');"> 
+        <div class="board-background-image" :style="'background-image: url('+board.board_image+');'" v-if="board"> 
             <div class="board-background-overlay">
             </div>
-            <div class="board-wrapper" v-if="board">
+            <div class="board-wrapper">
                 <router-view :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
-                <scrum-about  v-if="viewBAbout" @close="viewBAbout = false"></scrum-about>
+                <scrum-about  v-if="viewBAbout" @close="viewBAbout = false" :board="board"></scrum-about>
                 <scrum-setting  v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></scrum-setting>
 
                 <div class="board-header">
