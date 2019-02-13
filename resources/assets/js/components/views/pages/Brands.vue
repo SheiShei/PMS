@@ -113,39 +113,7 @@
                             </div>
                         </div>
                     </div>
-                </div>                                      -->
-            </div>
-            <div class="mybox">
-                <div class="mybox-head">
-                    <h6><strong>ACTIVE JOB ORDERS</strong>&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
-                </div>
-                <div class="mybox-body white-bg" v-if="jos">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="jo-list">
-                                <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
-                                    <router-link v-if="jo.type == 1" :to="{name: 'viewjocreative', params: {jo_id: jo.id}}">
-                                        <span class="fa fa-file-o"></span>
-                                        {{ jo.name }}
-                                    </router-link>
-                                    <router-link v-if="jo.type == 2" :to="{name: 'viewjoweb', params: {jo_id: jo.id}}">
-                                        <span class="fa fa-file-o"></span>
-                                        {{ jo.name }} -->
-                                     </router-link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> 
-                </div> 
-                <div class="mybox-footer">
-                    <div class="row text-center">
-                        <div class="col-md-12">
-                            <router-link :to="{name: 'all_jo_list'}" class="btn btn-sm btn-info btn-md btn-simple">See All Job Order Forms</router-link>
-                        </div>
-                        <div class="col-md-12">
-                        </div>
-                    </div>
-                </div>                                     
+                </div>                                      
             </div>
         </div>
     </section>
