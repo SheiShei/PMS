@@ -22,7 +22,7 @@ class CreateBrandsTable extends Migration
             $table->string('telephone',15)->nullable();
             $table->string('mobile')->nullable();
             $table->string('logo')->nullable();
-            $table->unsignedInteger('tandem_id');
+            $table->char('acma_id', 36);
             $table->timestamps();
             $table->softDeletes();
         });
