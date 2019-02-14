@@ -36,7 +36,7 @@ class BrandsController extends Controller
          }
 
     public function addBrands(Request $request) {
-        dd($request);
+        
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
@@ -71,15 +71,6 @@ class BrandsController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $brand->name,
-            'email' => $brand->email,
-            'password' => Hash::make($brand->password),
-            'role_id' => 4,
-            'brand_id' => $brand->id,
-            'picture' => $brand->logo
-        ]);
-
-        User::create([
             'brand_id' => $brand->id,
             'name'=>$request->name,
             'email'=>$request->email,

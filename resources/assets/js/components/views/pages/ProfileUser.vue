@@ -25,7 +25,7 @@
 
                                 <!--For ACMA--> 
 								
-                                <div v-if="user_info.role_id==2 || user_info.role_id==1" class="text-left work-summary">
+                                <div v-if="user_info.role_id==2" class="text-left work-summary">
                                     <div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -36,7 +36,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>1439</p>
+                                            <p>{{dashboard_acma.handled_brands}}</p>
                                         </div>
                                     </div>
                                     <div class="ws-wrapper">
@@ -49,7 +49,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>95</p>
+                                            <p>{{dashboard_acma.jo_created}}</p>
                                         </div>
                                     </div>
                                     <div class="ws-wrapper">
@@ -82,7 +82,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>0</p>
+                                            <p>{{dashboard_emp.totaltasks}}</p>
                                         </div>
                                     </div>
                                     <div class="ws-wrapper">
@@ -95,7 +95,8 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>0</p>
+                                                <p>{{dashboard_emp.activetasks}}</p>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -204,11 +205,12 @@
 																@crop-success="cropSuccess"
         														@crop-upload-success="cropUploadSuccess"
         														@crop-upload-fail="cropUploadFail"
+																@close="toggleShow"
 																:width="300"
 																:height="300"
 																url="http://httpbin.org/post"
 																:params="params"
-																:headers="headers"
+																:headers="{'X-Requested-With': 'XMLHttpRequest'}"
 																:noRotate="false"
         														lang-type="en"
 																:value.sync="show"
@@ -297,8 +299,9 @@ export default{
 				name: '',
 				email: '',
 				password: '',
-				pw:'',
 				bg_image: '',
+				picture: ''
+
 			},
 			hasBG: false,
 			errors:[],
@@ -320,15 +323,23 @@ export default{
 				this.data.id= user_data.id;
                 this.data.name = user_data.name;
 				this.data.email = user_data.email;
-				this.data.pw= user_data.password;
 				this.data.bg_image= user_data.bg_image;
-                // console.log(this.brand.logo);
+				this.data.picture= user_data.picture;
             })
+        this.$store.dispatch('dashboard_admin')
+        this.$store.dispatch('dashboard_acma')
+        this.$store.dispatch('dashboard_emp')
+        this.$store.dispatch('dashboard_client')
+		
 	},
 
 	computed: {
          ...mapGetters({
-                user_info: 'getuser_info'
+                user_info: 'getuser_info',
+				dashboard_acma: 'dashboard_acma',
+				dashboard_emp: 'dashboard_emp',
+				dashboard_client: 'dashboard_client',
+				dashboard_admin: 'dashboard_admin',
 			}),
 	},
 
@@ -344,21 +355,15 @@ export default{
                 form.append('bg_image', this.data.bg_image);
                 }
             form.append('name', this.data.name);
+            // form.append('picture', this.data.picture);
 			form.append('email', this.data.email);
-			if(this.data.password=='')
-			{
-         	form.append('password', this.data.pw);
-            // console.log(form.append();
-			}
-			else{
-				form.append('password', this.data.password);
-			}
+			form.append('password', this.data.password);
+			
 			
 			this.$store.dispatch('updatemyself', form)
 			 .then((response) => {
 					
                     this.$toaster.success('Info updated succesfully!.')
-					//this.getsData();
                 })
 
                 .catch((error) => {
@@ -370,22 +375,23 @@ export default{
 		bg_image(event){
 			  this.data.bg_image = event.target.files
                 console.log(this.data.bg_image[0]);
+                console.log(this.data.bg_image);
                 this.hasBG=true;
 
 		},
-		getsData() {
+		// getsData() {
              
-            this.$store.dispatch('getuser_info')
-				.then((response) => {
-				const user_data = response;
-				this.data.id= user_data.id;
-                this.data.name = user_data.name;
-				this.data.email = user_data.email;
-				this.data.pw= user_data.password;
-				this.data.bg_image= user_data.bg_image;
-                // console.log(this.brand.logo);
-            })
-        },
+        //     this.$store.dispatch('getuser_info')
+		// 		.then((response) => {
+		// 		const user_data = response;
+		// 		this.data.id= user_data.id;
+        //         this.data.name = user_data.name;
+		// 		this.data.email = user_data.email;
+		// 		this.data.pw= user_data.password;
+		// 		this.data.bg_image= user_data.bg_image;
+        //         // console.log(this.brand.logo);
+        //     })
+        // },
 
 		clearImgDataUrl(){
 			this.imgDataUrl = '';
@@ -408,6 +414,7 @@ export default{
 				console.log('-------- upload success --------');
 				console.log('this is the file here method:', jsonData);
 				console.log('field: ', field);
+				this.data.picture = jsonData.files.img;
 			},
 			/**
 			 * upload fail

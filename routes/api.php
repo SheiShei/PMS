@@ -136,4 +136,18 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/monitorRemovedUS', 'BoardController@monitorRemovedUS');
     Route::post('/getBD', 'BoardController@getBD');
 
+    //dashboard
+    Route::get('/dashboard_admin', 'DashboardController@dashboard_admin');
+    Route::get('/date', 'DashboardController@date');
+    Route::get('/dashboard_acma', 'DashboardController@dashboard_acma');
+    Route::get('/display_joborders', 'DashboardController@display_joborders');
+    Route::get('/dashboard_emp', 'DashboardController@dashboard_emp');
+    Route::get('/dashboard_client', 'DashboardController@dashboard_client');
+    Route::get('/reminder_tasks', 'DashboardController@reminder_tasks');
+    Route::get('/overdued_tasks', 'DashboardController@overdued_tasks');
+    Route::get('/display_messages', 'DashboardController@display_messages');
+    Route::get('/display_notifs', 'DashboardController@display_notifs');
+
+
+
 });

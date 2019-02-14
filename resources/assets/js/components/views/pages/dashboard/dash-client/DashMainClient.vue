@@ -63,39 +63,20 @@
                                 <div class="taskchart shadow">
                                     <p><span class="fa fa-bell-o"></span> Notifications</p>
                                     <hr>
-                                    <div class="notifsss">
-                                        <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="notifdiv">
-                                        <div class="notif-left">
-                                            <div class="notif-icon bg-info">
-                                                <i class="fa fa-envelope-o medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="notif-right">
-                                            <p>You have new message received!</p>
-                                        </div>
-                                    </div>
-                                    <div class="notifdiv">
+                                   <div class="notifsss">
+                                        <p v-if="display_notifs.notifications==0" class="note">No notifications to show</p>
+                                    <a href="">
+                                    <div v-for="notif in display_notifs.notifications" :key="notif.id" class="notifdiv">
                                         <div class="notif-left">
                                             <div class="notif-icon bg-success">
                                                 <i class="fa fa-trello medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="notif-right">
-                                            <p><span class="highlight">Sam</span> added you to board <span class="highlight">Board Name Here</span></p>
+                                            <p><span class="highlight">{{notif.data.creator.name}}</span> {{notif.data.data}}</p>
                                         </div>
-                                    </div>
-                                    <div class="notifdiv">
-                                        <div class="notif-left">
-                                            <div class="notif-icon bg-warning">
-                                                <i class="fa fa-star medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="notif-right">
-                                            <p>The workbook <span class="highlight">_____</span> has been reviewed by <span class="highlight">Luljetta's</span></p>
-                                        </div>
-                                    </div>
-                                    <!--Please see DashboardNotifs.vue for other kinds of notifs-->
+                                    </div></a>
+                                                                        <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
                             </div>
@@ -103,40 +84,22 @@
                                 
                                 <div class="taskdisp shadow">
                                     <p><span class="fa fa-commenting-o"></span> Recent Messages |
-                                    <a href="#" class=""><small class="text-right">Go to Messages</small></a>
+                                    <router-link :to="{name: 'messages'}"><a><small class="text-right">Go to Messages</small></a></router-link>
                                     </p>
                                     <hr>
-                                    <!-- <p class="note">No messages to show</p> -->
+                                    <p v-if="display_messages==0" class="note">No messages to show</p>
                                     <div class="mess">
-                                        <div class="msgdiv">
+                                        <div v-for="messages in display_messages" :key="messages.id" class="msgdiv">
                                             <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
+                                                <img :src="messages.sender.picture" class="medium-avatar" alt="">
                                             </div>
-                                            <div class="msg-right">
-                                                <p class="text-default msgsender"><span class="txt-bold">Samantha Millos</span> . 
-                                                <small><span class="fa fa-clock-o"></span>&nbsp;5:31am 1/06</small></p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
-                                        </div>
-                                        <div class="msgdiv">
-                                            <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
-                                            </div>
-                                            <div class="msg-right">
-                                                <p class="txt-bold text-default msgsender">Samantha Millos</p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
-                                        </div>
-                                        <div class="msgdiv">
-                                            <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
-                                            </div>
-                                            <div class="msg-right">
-                                                <p class="txt-bold text-default msgsender">Samantha Millos</p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
+                                            <router-link :to="{ name: 'convo-view', params: {convo_id: messages.sender.slug} }" class="msg-right">
+                                                <p class="txt-bold text-default msgsender">{{messages.sender.name}} {{messages.message_date}} {{messages.message_sent}}</p>
+                                                <p class="mainmsg">{{messages.text}}</p>
+                                            </router-link>
                                         </div>
                                     </div>
+                                    
 
                                 </div>
                                 
@@ -165,23 +128,15 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="taskdisp shadow">
-                                    <p><span class="fa fa-files-o"></span> Job Orders (163) 
+                                    <p><span class="fa fa-files-o"></span> Job Orders ( {{dashboard_client.jocount}} ) 
                                     <!-- <span><a href="#" title="Create New JO" class="btn btn-just-icon btn-round btn-xs"><i class="fa fa-plus"></i></a></span> -->
                                     </p>
                                     <hr>
-                                    <!-- <p class="note">No created JO to show</p> -->
+                                    <p v-if="dashboard_client.jocount==0" class="note">No created JO to show</p>
                                     <div class="mess">
-                                    <ul class="list-unstyled">
+                                    <ul v-for="jo in display_joborders" :key="jo.id" class="list-unstyled">
                                         <li><span class="fa fa-circle text-info"></span>
-                                            <a href="">MFI JOB Order 10 </a></li>
-                                        <li><span class="fa fa-circle text-info"></span>
-                                            <a href="">MFI JOB Order 10 </a></li>
-                                        <li><span class="fa fa-circle text-info"></span>
-                                            <a href="">MFI JOB Order 10 </a></li>
-                                        <li><span class="fa fa-circle text-info"></span>
-                                            <a href="">MFI JOB Order 10 </a></li>
-                                        <li><span class="fa fa-circle text-info"></span>
-                                            <a href="">MFI JOB Order 10 </a></li>                             
+                                            <a @click="view(jo.id, jo.type)">{{jo.name}}</a></li>                            
                                     </ul>
                                     </div>
                                 </div>
@@ -195,11 +150,41 @@
 
 <script>
 // import VueApexCharts from 'vue-apexcharts';
-// export default {
-//     components:{
-//         apexchart: VueApexCharts
-//     }
-// }
+import {mapGetters} from 'vuex';
+
+export default {
+    // components:{
+    //     apexchart: VueApexCharts
+    // }
+     created() {
+        // this.$store.dispatch('getuser_info')
+        this.$store.dispatch('display_joborders')
+        this.$store.dispatch('dashboard_client')
+        this.$store.dispatch('display_messages')
+        this.$store.dispatch('display_notifs')
+        
+
+	},
+    computed: {
+        ...mapGetters({
+               // no_wb: 'no_wb',
+                 display_joborders: 'display_joborders',
+                 dashboard_client: 'dashboard_client',
+                  display_messages: 'display_messages',
+                display_notifs: 'display_notifs',
+                             }),
+    },
+     methods:{
+     view(id, type) {
+            if(type == 1) {
+                this.$router.push({name: 'viewjocreative', params: {jo_id: id}});
+            }
+            else{
+                this.$router.push({name: 'viewjoweb', params: {jo_id: id}});
+            }
+        },
+    }
+}
 </script>
 
 <style lang="scss" scoped>
