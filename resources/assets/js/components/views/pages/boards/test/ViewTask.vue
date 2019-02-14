@@ -215,7 +215,7 @@
 
                 <!-- <div class="row">
                     <div class="col-md-10 col-sm-10 col-xs-10">
-                        <!-- <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4> -->
+                        <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4>
                         <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="taskPermission.modify ? 'true' : 'false'">{{ data.name }}</span></h4>
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
@@ -255,9 +255,9 @@
                         </div>
                         <h6><b>ATTACHMENTS</b></h6>
                         <hr />
-                        <!-- <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
-                        <p style="cursor: pointer"><a @click="openGallery" class="btn-default btn-simple btn-sm"><span class="fa fa-photo"></span> View attached images</a></p> -->
-                        <!-- <div class="row" v-if="data.files.length">
+                        <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
+                        <p style="cursor: pointer"><a @click="openGallery" class="btn-default btn-simple btn-sm"><span class="fa fa-photo"></span> View attached images</a></p>
+                        <div class="row" v-if="data.files.length">
                             <div class="col-md-12">
                                 <div id="ataskment-wrapper">
                                     <div v-for="attachment in data.files" :key="attachment.id">

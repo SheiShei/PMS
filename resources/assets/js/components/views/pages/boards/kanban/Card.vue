@@ -11,6 +11,7 @@
                 <!-- <small>{{ listPoints }} pts</small> -->
                 <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
                 <button v-if="delList" @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
+                <button @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
