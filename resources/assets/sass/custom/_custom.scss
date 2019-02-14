@@ -1419,6 +1419,10 @@ padding: 0 20px;
 .list-head{
   position: relative;
   background-color: #dcdcdc;
+  transition: all .3s ease-in-out;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition:  all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
   .list-title{
     display:inline-block;
     padding: 5px 8px;

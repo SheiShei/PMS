@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <div class="row" v-if="viewBAbout">
+                <!-- <div class="row" v-if="viewBAbout">
                     <div class="col-md-8 col-sm-12 text-white" style="white-space: pre-line">
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem explicabo sint nisi accusantium excepturi libero temporibus adipisci fugiat ipsum magni.</p>
                         <hr/>
@@ -49,7 +49,7 @@
                             </span>
                         </p>  
                     </div>
-                </div>
+                </div> -->
 
 
                 <div>
