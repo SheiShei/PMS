@@ -2,7 +2,7 @@
     <!--VIEW TASK-->
             <transition name="fade">
                 <div class="overlay" v-if="usData">
-                    <router-view></router-view>
+                    <router-view :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
                     <div class="close-mod-btn">
                         <router-link :to="{ name: 'test'}" class="btn btn-simple btn-just-icon btn-default"><i class="fa fa-close"></i></router-link>
                     </div>
@@ -16,6 +16,9 @@
                         <div class="row">
                             <div class="col-md-9 col-sm-9 col-xs-9">
                                 <h4>
+                                    <!-- <span class="fa fa-tasks" @click="usPermission.modify ? editUSname = !editUSname : ''"></span> 
+                                    <span v-if="!editUSname" @click="usPermission.modify ? editUSname = !editUSname : ''">{{ usData.name }}</span>
+                                    <span v-if="editUSname"><input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text"></span> -->
                                     <span class="fa fa-list-ul"></span> 
                                     <span>{{ usData.name }} <small class="text-gray">( {{ usData.points }} pts )</small></span>
                                     <!-- <span v-if="editUSname"><input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text"></span> -->
@@ -25,6 +28,8 @@
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-3 text-right">
                                 <h4 class="">
+                                    <!-- <span class="pull-right"><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span>
+                                    <span v-if="usPermission.delete" class="pull-right"><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span> -->
                                     <span></span>
                                     <!-- <span class=""><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span> -->
                                     <span v-if="!editUSDetails"><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
@@ -35,6 +40,33 @@
                         </div>
                         <div class="row" v-if="!editUSDetails">
                             <div class="col-md-12">
+                                <!-- <h6><b>ABOUT</b></h6>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p><span @click="usPermission.modify ? editUSpoints = !editUSpoints : ''" class="fa fa-trophy text-warning"></span> <span v-if="!editUSpoints" @click="usPermission.modify ? editUSpoints = !editUSpoints : ''">{{ usData.points }}</span> 
+                                            <span v-if="editUSpoints">
+                                                <select @change="updateUS" required v-model="usData.points" class="my-input my-inp-blk" style="width: 30%">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="8">8</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="40">40</option>
+                                                </select>
+                                            </span>  pts</p>
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p v-if="!editUSdesc" @click="usPermission.modify ? editUSdesc = !editUSdesc : ''" :style="usData.description ? '' : 'color: #6B808C'" >{{ usData.description ? usData.description : 'Empty space is boring... go on be descriptive...' }}</p>
+                                        <p v-else><textarea @input="inpdebounce" @blur="editUSdesc = !editUSdesc" v-model="usData.description" class="my-text-area my-inp-blk" rows="4"></textarea></p>
+                                    </div> -->
                                 <p>{{ usData.description }}</p>
                             </div>
                         </div>
@@ -110,7 +142,7 @@
                             </div>
                             <div class="col-md-6 text-right">
 <!-- <span class="text-right"> -->
-                                        <a class="no-margin" style="cursor: pointer" title="Add Subtask"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn btn-success btn-xs no-margin">+ Add New</router-link></a>
+                                        <a v-if="taskPermission.add" class="no-margin" style="cursor: pointer" title="Add Subtask"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn btn-success btn-xs no-margin">+ Add New</router-link></a>
                                     <!-- </span>                            -->
                                      </div>
                         </div>
@@ -118,11 +150,19 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
+                                        <!-- <p v-if="taskPermission.add" style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></p> -->
                                         <!-- <p style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></p> -->
                                         <div>
                                             <div class="us-tasks-container">
                                                 <div class="us-tasks-wrapper" v-for="task in usData.tasks" :key="task.id">
                                                     <!-- <div class="us-task-name"> -->
+                                                        <!-- <ul>
+                                                            <li class="us-task-name" style="padding-left: 0; ">
+                                                                <router-link v-if="taskPermission.view" :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" style="color: #27568e">{{ task.name | taskLength }}</router-link>
+                                                                <a v-if="!taskPermission.view" @click.prevent href="" style="color: #27568e">{{ task.name | taskLength }}</a>
+                                                            </li>
+                                                            
+                                                            <li v-if="taskPermission.delete" @click="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li> -->
                                                         <!-- <ul> -->
                                                         <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" tag="ul">
                                                             <li class="us-task-name" style="padding-left: 0; ">
@@ -159,6 +199,7 @@
 <script>
 import {mapGetters} from 'vuex';
 export default {
+    props: ['usPermission', 'taskPermission', 'sprintPermission'],
     data() {
         return {
             editUSname: false,
@@ -169,6 +210,10 @@ export default {
     },
     created() {
         this.getUSData();
+    },
+    mounted() {
+        this.stopUSEvents();
+        this.listenUSEvents();
     },
     filters: {
         taskLength(name) {
@@ -202,7 +247,8 @@ export default {
                 name: this.usData.name,
                 desc: this.usData.description,
                 points: this.usData.points,
-                us_id: this.$route.params.us_id
+                us_id: this.$route.params.us_id,
+                board_id: this.$route.params.board_id
             }
             axios.patch('/api/updateUS', data)
                 .then((response) => {
@@ -217,7 +263,7 @@ export default {
         
         inpdebounce: _.debounce(function(e) {
             this.updateUS()
-        }, 500),
+        }, 1000),
 
         deleteUStask(id) {
             this.$store.dispatch('deleteSprintTask', {id: id, board_id: this.$route.params.board_id})
@@ -229,6 +275,30 @@ export default {
 
         deleteUS() {
             this.$router.push({name: 'd_conf', params: {us_id: this.usData.id}})
+        },
+
+        listenUSEvents() {
+            Echo.private('list.'+this.$route.params.board_id)
+                .listen('DeleteUSEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteUS', e.us_id);
+                })
+                .listen('DeleteListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteCusTask', e.task_id);
+                })
+                .listen('UpdateUSEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('setCusData', e.us);
+                })
+                .listen('AddListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('addCusTask', e.task);
+                })
+        },
+
+        stopUSEvents() {
+            Echo.leave('list.'+this.$route.params.board_id)
         }
     }
 }

@@ -8,10 +8,10 @@
                     {{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
-                <small>{{ listPoints }} pts</small>
-                <button class="" @click="revert"><span class="fa fa-edit"></span></button>
-                <button @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
-                <button v-if="!list.isDone" @click="setAsDoneList(list.id)" title="Set this list as 'Finished List'"><span class="fa fa-thumbs-o-up"></span></button>
+                <!-- <small>{{ listPoints }} pts</small> -->
+                <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
+                <button v-if="delList" @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
+                <button @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
@@ -30,11 +30,10 @@
                             
 
             <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, li, list.id)" class="list-body">
-                <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index"></card-task>
-                <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
+                <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index" :taskPerm="taskPerm"></card-task>
             </draggable>
         <!-- </div> -->
-        <router-link :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="text-center add-task-btn" href=""><span class="icon-sm icon-add"></span><span>+ Add Task</span></router-link>
+        <router-link v-if="taskPerm.add" :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="text-center add-task-btn" href=""><span class="icon-sm icon-add"></span><span>+ Add Task</span></router-link>
     </div>
 </template>
 
@@ -47,7 +46,7 @@ export default {
         draggable,
         cardTask : CardTask,
     },
-    props: ['list', 'li'],
+    props: ['list', 'li', 'modifyList', 'delList', 'taskPerm'],
     data() {
         return {
             showEditList: false,
@@ -56,6 +55,9 @@ export default {
             openTaskOpt: false,
             openTaskView: false,
         }
+    },
+    created() {
+        
     },
     mounted() {
         let taskdiv = document.querySelector("#testTaskDiv");

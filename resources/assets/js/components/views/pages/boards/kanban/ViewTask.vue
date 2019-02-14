@@ -6,12 +6,12 @@
                 <div class="row">
                     <div class="col-md-10 col-sm-10 col-xs-10">
                         <!-- <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4> -->
-                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" contenteditable="true">{{ data.name }}</span></h4>
+                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="per.modify ? 'true' : 'false'">{{ data.name }}</span></h4>
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
                             <span class="pull-right"><router-link :to="{ name: 'kanboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
-                            <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                            <span v-if="per.delete" class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                         <hr />
                         <div class="row">
                             <div class="col-md-6">
-                                <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
+                                <p><span @click="per.modify ? clickAssigned = !clickAssigned : ''" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="per.modify ? clickAssigned = !clickAssigned : ''" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
                                     <option v-for="user in board.bu" :key="user.id" :value="user.id">{{ user.name }}</option>
@@ -30,8 +30,8 @@
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
-                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}</span>
+                                <p><span @click="per.modify ? isDueClicked = !isDueClicked : ''" class="fa fa-clock-o text-danger"></span> 
+                                    <span v-if="!isDueClicked" @click="per.modify ? isDueClicked = !isDueClicked : ''">{{ data.due | moment("MMM D, YYYY") }}</span>
                                     <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                                 </p>
                             </div>
@@ -39,7 +39,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <div class="testcntnt" @input="debounceWait" :id="'desc_'+data.id" contenteditable="true" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
+                                <div :class="per.modify ? 'testcntnt' : ''" @input="debounceWait" :id="'desc_'+data.id" :contenteditable="per.modify ? 'true' : 'false'" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
                             </div>
                         </div>
                         <br>
@@ -51,7 +51,14 @@
                             <div class="col-md-12">
                                 <div id="ataskment-wrapper">
                                     <div v-for="attachment in data.files" :key="attachment.id">
-                                        <div class="ataskment" v-if="attachment.extension == 'jpg' || attachment.extension == 'jpeg' || attachment.extension == 'png' || attachment.extension == 'gif'">
+                                        <div class="ataskment" v-if="attachment.extension == 'jpg' || 
+                                                                    attachment.extension == 'JPG' || 
+                                                                    attachment.extension == 'jpeg' || 
+                                                                    attachment.extension == 'JPEG' || 
+                                                                    attachment.extension == 'png' || 
+                                                                    attachment.extension == 'PNG' || 
+                                                                    attachment.extension == 'GIF' || 
+                                                                    attachment.extension == 'gif'">
                                             <div class="media">
                                                 <div class="media-left media-top">
                                                     <a href="" @click.exact="openGallery(attachment.new_filename, attachment.original_filename)" :style="'background-image: url(\'/storage/task/'+ attachment.new_filename +'\')'" class="ataskment-thumb" @click.prevent="openGallery = !openGallery">
@@ -59,7 +66,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="per.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -83,7 +90,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
-                                <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
+                                <p v-if="per.modify" style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
                             </div>
                         </div>
                     </div>
@@ -109,7 +116,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap">
+                                    <div class="form-group is-empty comment-input-wrap" v-if="per.comment">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
                                         <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                                             <i class="fa fa-paperclip"></i>
@@ -134,6 +141,7 @@ export default {
     components: {
         DatePicker 
     },
+    props: ['per'],
     data() {
         return {
             data: null,
@@ -161,6 +169,7 @@ export default {
     },
 
     mounted() {
+        this.stopEventListeners();
         this.listenTask();
     },
     
@@ -170,7 +179,7 @@ export default {
 
     computed: {
         ...mapGetters({
-                boardMembers: 'boardMembers',
+                board: 'getCBoard',
                 comments: 'getTCom',
                 board: 'getCBoard'
             }),
@@ -198,7 +207,7 @@ export default {
 
         debounceWait: _.debounce(function (e) {
             this.updateTask();
-        }, 500),
+        }, 1000),
 
         updateTask() {
             // var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
@@ -367,7 +376,8 @@ export default {
         },
 
         stopEventListeners() {
-            Echo.leave();
+            Echo.leave('task.'+this.$route.params.task_id);
+            Echo.leave('list.'+this.$route.params.board_id);
         }
     }
 }

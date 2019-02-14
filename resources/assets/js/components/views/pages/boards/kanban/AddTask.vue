@@ -43,7 +43,7 @@
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-md-6" v-if="boardMembers">
+                    <div class="col-md-6" v-if="board">
                         <label for="">Assign To: </label>
                         <select required v-model="taskData.assign_to" class="my-input my-inp-blk" >
                             <option value="">Unassign</option>
@@ -90,7 +90,6 @@ export default {
     },
     computed: {
         ...mapGetters({
-                boardMembers: 'boardMembers',
                 board: 'getCBoard'
             }),
     },

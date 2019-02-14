@@ -28,7 +28,7 @@ export default {
 
     methods: {
         contDeleteUS() {
-            this.$store.dispatch('deleteUS', this.$route.params.us_id) 
+            this.$store.dispatch('deleteUS', {id: this.$route.params.us_id, board_id: this.$route.params.board_id}) 
                 .then((response) => {
                     this.$store.commit('deleteUS', response);
                     this.$router.push({name: 'test', params: {board_id: this.$route.params.board_id}});

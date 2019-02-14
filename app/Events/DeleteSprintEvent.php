@@ -35,6 +35,6 @@ class DeleteSprintEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('list.'.$this->sprint->board_id);
+        return new PrivateChannel('list.'.$this->sprint['board_id']);
     }
 }

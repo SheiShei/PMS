@@ -15,9 +15,9 @@
                     <p>{{ task.points }} pts</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
+                    <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <button v-if="taskPerm.delete" @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
                     <img class="task-member-avatar" :src="task.assigned_to.picture" :title="task.assigned_to.name">
                 </div>
             </div>
@@ -43,9 +43,9 @@
                     <p>{{ task.points }} pts</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <router-link :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
+                    <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id}, props: {per: taskPerm} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <button v-if="taskPerm.delete" @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
                     <img class="task-member-avatar" :src="task.assigned_to.picture" :title="task.assigned_to.name">
                 </div>
             </div>
@@ -55,7 +55,7 @@
 
 <script>
 export default {
-    props: ['i', 'task'],
+    props: ['i', 'task', 'taskPerm'],
     data() {
         return {
             openTaskOpt: false,

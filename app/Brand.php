@@ -21,6 +21,9 @@ class Brand extends Model
         return $this->hasMany('App\JobOrder');
     }
 
+    public function workbooks(){
+        return $this->hasMany('App\Workbook');
+    }
      public function getLogoAttribute($pic) {
          return '/storage/'.$pic;
      }

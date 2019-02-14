@@ -353,7 +353,7 @@ const actions = {
 
     deleteUS({commit}, id) {
         return new Promise ((resolve, reject) => {
-            axios.delete('/api/deleteUS', {data: {id: id}})
+            axios.delete('/api/deleteUS', {data: id})
                 .then((response) => {
                     // console.log(response);
                     resolve(response.data);

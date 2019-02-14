@@ -299,6 +299,23 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Add',
+                                type: 'task'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
                     },
                     {
                         path: 'viewtask/:task_id',
@@ -306,6 +323,23 @@ export const routes = [
                         component: KanbanViewTask,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'View',
+                                type: 'task'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         },
                     },
                     {
@@ -357,6 +391,23 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Add',
+                                type: 'us'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
                     },
                     
                     {
@@ -365,6 +416,23 @@ export const routes = [
                         component: dConf,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Delete',
+                                type: 'us'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         },
                     },
 
@@ -375,6 +443,23 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Delete',
+                                type: 'sprint'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
                     },
 
                     {
@@ -383,6 +468,23 @@ export const routes = [
                         component: ScrumNewSprint,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Add',
+                                type: 'sprint'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         },
                     },
                     
@@ -393,6 +495,23 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'View',
+                                type: 'us'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
                         children: [
                             {
                                 path: 'addtask/',
@@ -401,6 +520,23 @@ export const routes = [
                                 meta: {
                                     requiresAuth: true
                                 },
+                                beforeEnter: (to, from, next) => {
+                                    let param = to.params.board_id;
+                                    axios.post('/api/verifyKanbanTask', {
+                                        board_id: param,
+                                        action: 'Add',
+                                        type: 'task'
+                                    })
+                                        .then((response) => {
+                                            if(response.data.status === 'authenticated') {
+                                                next();
+                                            }
+                                            else{
+                                                next({ name: 'error404' });
+                                            }
+                                            
+                                        })
+                                },
                             },
                             {
                                 path: 'viewtask/:task_id',
@@ -408,6 +544,23 @@ export const routes = [
                                 component: USViewTask,
                                 meta: {
                                     requiresAuth: true
+                                },
+                                beforeEnter: (to, from, next) => {
+                                    let param = to.params.board_id;
+                                    axios.post('/api/verifyKanbanTask', {
+                                        board_id: param,
+                                        action: 'View',
+                                        type: 'task'
+                                    })
+                                        .then((response) => {
+                                            if(response.data.status === 'authenticated') {
+                                                next();
+                                            }
+                                            else{
+                                                next({ name: 'error404' });
+                                            }
+                                            
+                                        })
                                 },
                             },
                             {
@@ -455,6 +608,23 @@ export const routes = [
                         meta: {
                             requiresAuth: true
                         },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Add',
+                                type: 'task'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
                     },
                     {
                         path: 'vt/:us_id/:task_id',
@@ -462,6 +632,23 @@ export const routes = [
                         component: ViewUStask,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'View',
+                                type: 'task'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         },
                     },
                     {
