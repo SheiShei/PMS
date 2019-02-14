@@ -17,12 +17,27 @@ class BrandsController extends Controller
     public function getBrands(Request $request) {
         if($request->notArchive){
             if($request->filtercategory){
+                if(auth()->user()->role_id==1)
+                {
                 $query = Brand::with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                }
+                else
+                {
+                $query = Brand::with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+                }
             }
         }
         else { 
             if($request->filtercategory){
-            $query = Brand::onlyTrashed()->with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                if(auth()->user()->role_id==1)
+                {
+                  $query = Brand::onlyTrashed()->with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                }
+                else
+                {
+                $query = Brand::onlyTrashed()->with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+
+                }
             }
          }
         

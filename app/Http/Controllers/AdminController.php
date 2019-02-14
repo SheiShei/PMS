@@ -287,17 +287,24 @@ class AdminController extends Controller
     }
 
     public function onLoad() {
-        $brands = Brand::get();
+        if(auth()->user()->role_id==1)
+        {
+            $brands = Brand::get();
+        }
+        else
+        {
+        $brands = Brand::where('acma_id',auth()->user()->id)->get();
+        }
         return $brands;
     }
 
     public function getJoDetails(Request $request) {
         $type = JobOrder::where('id',$request->id)->select('type')->first()['type'];
         if($type === 1) {
-            return JobOrder::with('brand')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand.acma')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
         }
         else if($type === 2) {
-            return JobOrder::with('brand')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand.acma')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
         }
     }
 

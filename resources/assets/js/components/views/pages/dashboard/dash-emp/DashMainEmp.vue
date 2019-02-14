@@ -92,8 +92,8 @@
                                             <div class="taskremdue">
                                                 <p>
                                                     <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskrem.due}}</small> | 
-                                                    <!-- <span v-if="taskrem.card_id" class="fa fa-trello"></span> <small>{{ taskrem.card }}</small> -->
-                                                    <!-- <span v-if="taskrem.sprint_id" class="fa fa-trello"></span> <small>{{ taskrem.sprint }}</small> -->
+                                                    <!-- <span v-if="taskrem.card" class="fa fa-trello"></span> <small>{{ taskrem.card.board.name }}</small> -->
+                                                    <!-- <span v-if="taskrem.sprint" class="fa fa-trello"></span> <small>{{ taskrem.sprint.board.name }}</small> -->
                                                 </p>
                                             </div>
                                         </div>

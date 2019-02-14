@@ -28,7 +28,7 @@
                         <div v-if="details.brand" class="col-md-6">
                             <p><span class="txt-bold">Brand :</span> {{ details.brand.name }}</p>
                             <p><span class="txt-bold">Client :</span> {{details.brand.contact_person }}</p>
-                            <p><span class="txt-bold">Brand Owner :</span> {{ details.brand.tandem.name }}</p>
+                            <p><span class="txt-bold">Brand Owner :</span> {{ details.brand.acma.name }}</p>
                         </div>
                         <div class="col-md-6">
                             <!-- <label for="" class="align-right">JO No.</label> -->
