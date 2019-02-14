@@ -20,4 +20,8 @@ class Brand extends Model
     public function jos() {
         return $this->hasMany('App\JobOrder');
     }
+
+    public function workbooks(){
+        return $this->hasMany('App\Workbook');
+    }
 }

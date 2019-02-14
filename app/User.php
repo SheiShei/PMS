@@ -147,6 +147,10 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Board')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
     }
 
+    public function workbooks(){
+        return $this->hasMany('App\Workbook');
+    }
+
     public function getPictureAttribute($pic) {
         return '/images/'.$pic;
     }

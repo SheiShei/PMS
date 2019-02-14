@@ -131,5 +131,13 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/monitorUS', 'BoardController@monitorUS');
     Route::post('/monitorRemovedUS', 'BoardController@monitorRemovedUS');
     Route::post('/getBD', 'BoardController@getBD');
+    
+
+    // workbook
+    Route::post('/uploadWorkbookFiles', 'WorkbookController@uploadWorkbookFiles');
+    Route::post('/newWorkbook', 'WorkbookController@newWorkbook');
+    Route::post('/testPost', 'WorkbookController@testPost');
+    Route::get('/onCreateWorkbook', 'WorkbookController@onCreate');
+    Route::post('/getAllWorkbooks', 'WorkbookController@getAllWorkbooks');
 
 });
