@@ -50,7 +50,7 @@
                          <h3>Close Sprint?</h3>
                     </div>
                     <div class="modal-body" style="margin-top: 0px; padding-top: 0;">
-                        <h6 style="white-space: pre-wrap; overflow-wrap: break-word">All unfinished task will be move to backlog.</h6>
+                        <h6 style="white-space: pre-wrap; overflow-wrap: break-word">All unfinished task will be moved to backlog.</h6>
                     </div>
                     <div class="modal-footer text-center">
                         <button type="button" class="btn btn-simple" data-dismiss="modal">Go Back</button>

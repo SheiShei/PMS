@@ -22,8 +22,9 @@ import Welcome from './components/views/pages/messages/Welcome.vue';
 import Workload from './components/views/pages/Workload.vue';
 import Workbook from './components/views/pages/Workbook.vue';
 import AddWorkbook from './components/views/pages/workbook/AddWorkbook.vue';
-import ViewWorkbook from './components/views/pages/workbook/ViewWorkbook.vue';
-import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWorkbook.vue';
+import ViewWB from './components/views/pages/workbook/ViewWB.vue';
+// import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWorkbook.vue';
+import ReviewWB from './components/views/pages/workbook/ReviewWB.vue';
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
@@ -203,7 +204,7 @@ export const routes = [
             {
                 path: 'workbook/view',
                 name: 'view_workbook',
-                component: ViewWorkbook,
+                component: ViewWB,
                 meta: {
                     requiresAuth: true
                 }
@@ -211,7 +212,7 @@ export const routes = [
             {
                 path: 'workbook/review',
                 name: 'review_workbook',
-                component: ClientViewWorkbook,
+                component: ReviewWB,
                 meta: {
                     requiresAuth: true
                 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
-use App\Tandem;
+// use App\Tandem;
 use App\JobOrder;
 use App\User;
 use Hash;
@@ -17,12 +17,12 @@ class BrandsController extends Controller
     public function getBrands(Request $request) {
         if($request->notArchive){
             if($request->filtercategory){
-                $query = Brand::with('tandem:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                $query = Brand::with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
             }
         }
         else { 
             if($request->filtercategory){
-            $query = Brand::onlyTrashed()->with('tandem:id,name')->orderBy($request->filtercategory, $request->filterposition);
+            $query = Brand::onlyTrashed()->with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
             }
          }
         
@@ -36,11 +36,11 @@ class BrandsController extends Controller
          }
 
     public function addBrands(Request $request) {
-        dd($request);
+        
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
-           'tandem_id' => 'required',
+           'acma_id' => 'required',
 
         ]);
 
@@ -49,27 +49,38 @@ class BrandsController extends Controller
     
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('images/logo/', $name);
+            $file->move('storage/logo/', $name);
             // $file->copy('/images/logo/'.$name, '/images');
-            copy('images/logo/'.$name, 'images/'.$name);
+            copy('storage/logo/'.$name, 'storage/'.$name);
             $input['logo'] = $name;
         }
         if(!$request->hasFile('logo')){
             $input['logo'] = 'logooo2.png';
         }
 
-        $brand = Brand::create($input);
+        $brand = Brand::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'telephone' => $request->telephone,
+            'mobile' => $request->mobile,
+            'acma_id' => $request->acma_id,
+            'about' => $request->about,
+            'logo' => $input['logo'],
+            'contact_person' => $request->contact_person
+        ]);
 
-        User::create([
+        $user = User::create([
             'brand_id' => $brand->id,
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>bcrypt($request->password),
             'role_id'=>4,
-            'picture'=>$input['logo'] //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
+            'picture'=>$input['logo'],
+            'bg_image'=>'1549014873pug.jpg' //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
         ]);
 
-        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+        return Brand::with('acma:id,name')->where('id', $brand->id)->get();
 
     }
 
@@ -90,7 +101,7 @@ class BrandsController extends Controller
     }
 
     public function getTandemsList() {
-        $tandems = Tandem::all();
+        $tandems = User::where('role_id',2)->get();
         return $tandems;
     }
 
@@ -108,7 +119,7 @@ class BrandsController extends Controller
     }
     
     public function getOnebrand(Request $request) {
-        $query= Brand::with('tandem:id,name')->where('id', $request->id);
+        $query= Brand::with('acma:id,name')->where('id', $request->id);
        // $brand = Brand::with('tandem:id,name')->where('id', $request->id);
         $brand = $query->first();
         return $brand;
@@ -122,29 +133,34 @@ class BrandsController extends Controller
         //     'telephone' => 'required|string|max:15',
         //     'mobile' => 'required',
         //     'tandem_id' => 'required',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'password' => 'required|string|min:6',
         // ]);
         
         //$brand = Brand::findOrFail($request->file('id'));
         $brand = Brand::findOrFail($request->id);
         $user = User::where('brand_id', $request->id)->first();
         $input = $request->all();
-       
+        
         if($file = $request->file('logo')){
             $name = time() . $file->getClientOriginalName();
-            $file->move('./images/logo', $name);
+            $file->move('storage/', $name);
             $input['logo'] = $name;
         }
+        else{
+            $name1= $input['logo'];
+            $input['logo'] = str_replace('/storage/','',$name1);
+            echo($input['logo']);
+         }
         
-
-       // dd($request);
         $brand->update($input);
         $user->update([
-            'name' => $request->name,
+            'name' => $input['name'],
             'picture' => $input['logo']
         ]);
 
 
-        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+        return Brand::with('acma:id,name')->where('id', $brand->id)->get();
     }
 
     public function testFileUpload(Request $request) {

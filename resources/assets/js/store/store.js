@@ -6,6 +6,8 @@ import messages from "./modules/messages";
 import joborder from "./modules/joborder";
 import boards from "./modules/boards";
 import workbook from "./modules/workbook";
+import settings from "./modules/settings";
+import dashboard from "./modules/dashboard";
 
 
 const user = __initializeUser();
@@ -74,6 +76,8 @@ export default {
         messages,
         joborder,
         boards,
-        workbook
+        workbook,
+        settings,
+        dashboard
     }
 }

@@ -6,26 +6,29 @@
         <div class="container-fluid">
             <div class="main2">
                 <div class="row mt-4">
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy"></span> JOB ORDERS LIST</span></h6>
+                                    <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span>
+                                    | <span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                                 </div>
                                 <div class="col-md-8 text-right">
-                                    <select @change="searched" v-model="sort" class="my-input my-thin-select">
-                                        <option value="created_at.desc">Date (Descending)</option>
-                                        <option value="created_at.asc">Date (Ascending)</option>
+                                    <select @change="searched" v-model="data.sort" class="my-thin-select">
                                         <option value="name.asc">Name (Ascending)</option>
                                         <option value="name.desc">Name (Descending)</option>
+                                        <option v-if="data.notArchive" value="created_at.desc">Date (Descending)</option>
+                                        <option v-if="!data.notArchive" value="deleted_at.desc">Deleted (Descending)</option>
+                                        <option v-if="data.notArchive" value="created_at.asc">Date (Ascending)</option>
+                                        <option v-if="!data.notArchive" value="deleted_at.asc">Deleted (Ascending)</option>
                                     </select>
-                                    <input v-model="search" @input="searched" type="search" class="my-thin-input" placeholder="Search...">
+                                    <input v-model="data.search" @input="searched" type="search" class="my-thin-input" placeholder="Search...">
                                     &nbsp;&nbsp;<span class="fa fa-search text-gray"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="table-responsive mt-4" style="margin-top: 10px; max-height: 60vh; overflow:auto">
+                                    <div class="table-responsive" style="margin-top: 10px;">
                                         <table class="table table-bordered table-brands">
                                             <thead>
                                                 <tr>
@@ -37,7 +40,7 @@
                                                     <th class="text-right">Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody style="height: 10vh; overflow:auto" is="transition-group" name="list-complete">
+                                            <tbody name="list-complete" is="transition-group">
                                                 <tr v-for="jo in jos" :key="jo.id" class="list-complete-item">
                                                     <td>{{ jo.created_at }}</td>
                                                     <td>{{ jo.name }}</td>
@@ -50,11 +53,17 @@
                                                         <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
                                                     </td>
                                                     <td class="td-actions text-right">
-                                                        <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
+                                                        <button @click="view(jo.id, jo.type)" v-if="data.notArchive" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
-                                                        <button v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                        <!-- <button @click="update(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button> -->
+                                                        <button v-if="jo.created_by == cUser.id && data.notArchive" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                             <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                        <button v-if="!data.notArchive" type="button" rel="tooltip" @click="restoreJO(jo.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Restore">
+                                                            <i class="fa fa-refresh"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -64,22 +73,27 @@
                                 </div>
                             </div>
                         </div>
+                        <br/>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="taskchart shadow">
+                            <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
+                            <hr/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="no-margin txt-bold"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
-                                    <hr/>
                                     <p class="note">Select a JO type to create new Job Order form.</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <router-link :to="{name: 'new_jo_web'}" class="btn btn-sm btn-info btn-md full-btn">Web JO</router-link>
-                                </div>
-                                <div class="col-md-6">
-                                    <router-link :to="{name: 'new_jo_creative'}" class="btn btn-sm btn-info btn-md full-btn">Creatives JO</router-link>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-md btn-block">
+                                                Web JO
+                                            </router-link>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-md btn-block">
+                                                Creatives JO
+                                            </router-link>
+                                        </div>
+                                    </div>
                                 </div>
                             </div> 
                         </div>
@@ -110,11 +124,19 @@
 
 <script>
 import {mapGetters} from 'vuex';
+// import JOfilter from "./joborders/JOfilter.vue";
+
 export default {
+    // components:{
+    //     JOfilter: JOfilter
+    // },
     data() {
         return {
+        data:{
+            sort: 'created_at.desc',
             search: '',
-            sort: 'created_at.desc'
+            notArchive: true
+        }
         }
     },
     computed: {
@@ -124,10 +146,7 @@ export default {
             }),
     },
     created() {
-        const data = {
-            search: '',
-            sort: 'created_at.desc'
-        }
+        const data = this.data;
         this.$store.dispatch('getJobOrders', data);
     },
 
@@ -141,14 +160,6 @@ export default {
             }
         },
 
-        // update(id, type) {
-        //     if(type == 1) {
-        //         this.$router.push({name: 'updatecrea', params: {jo_id: id}});
-        //     }
-        //     else{
-        //         this.$router.push({name: 'updateweb', params: {jo_id: id}});
-        //     }
-        // },
 
         deleteJO(id) {
             let _this = this;
@@ -158,11 +169,32 @@ export default {
                 })
         },
 
+        archiveJO() {
+           // let _this = this;
+            this.data.notArchive = !this.data.notArchive;
+            if(this.data.notArchive==true){ this.data.sort = 'created_at.desc' }
+            else{ this.data.sort = 'deleted_at.desc'};
+            let data = this.data;
+            this.$store.dispatch('getJobOrders', data); 
+            console.log('archive');
+                   },
+
+        restoreJO(id) {
+            this.$store.dispatch('restoreJO', id)
+                .then(() => {
+                    this.$toaster.success('Job Order restored succesfully!.')
+                })
+                .catch(() => {
+                    alert('Something went wrong, try reloading the page');
+                })
+        },
         searched: _.debounce(function (e) {
-            this.$store.dispatch('getJobOrders', {search: this.search, sort: this.sort});
+            this.$store.dispatch('getJobOrders', {search: this.data.search, sort: this.data.sort, notArchive: this.data.notArchive});
             // console.log('shei');
             
         }, 500),
+
+       
     }
 }
 </script>

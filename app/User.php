@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture'
+        'name', 'slug', 'email', 'password', 'role_id', 'brand_id', 'department_id', 'picture', 'bg_image'
     ];
 
     /**
@@ -71,12 +71,8 @@ class User extends Authenticatable
         $this->hasOne('App\Brand');
     }
 
-    public function ga_tandem() {
-        return $this->hasOne('App\Tandem', 'ga_id');
-    }
-
-    public function acma_tandem() {
-        return $this->hasOne('App\Tandem', 'acma_id');
+    public function acma() {
+        return $this->hasMany('App\Brand', 'acma_id');
     }
 
     public function department() {
@@ -152,6 +148,10 @@ class User extends Authenticatable
     }
 
     public function getPictureAttribute($pic) {
-        return '/images/'.$pic;
+        return '/storage/'.$pic;
+    }
+
+    public function getBgImageAttribute($bg) {
+        return '/storage/'.$bg;
     }
 }

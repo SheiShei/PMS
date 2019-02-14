@@ -7,9 +7,11 @@
         <div class="menu-list"  v-if="cUser">
             <ul id="menu-content" class="menu-content collapse out">
 
-                <li class="profile-link">
-                    <a href="/profile"><img src="/images/default.png"/></a>
-                    <p>Samantha Millos<span>ADMIN</span></p>
+                <li class="profile-li" :style="{ 'background-image': 'url('+cUser.bg_image+')' }" style="padding: 0; background-size: cover; background-position: center;">
+                    <div class="profile-link" style="width: 100%; height: 100%; background-color: rgba(0,0,0,0.5)">
+                        <a href="/profile"><img :src="cUser.picture" alt="profile-picture"/></a>
+                        <p>{{ cUser.name }}<span>{{ cUser.role.name }}</span></p>
+                    </div>
                     <!-- <p><small>ACMA</small></p> -->
                 </li>
 
@@ -154,7 +156,7 @@ export default {
     data(){
         return{
             linkActiveClass: "active",
-            linkExactActiveClass: "exact-active"
+            linkExactActiveClass: "exact-active",
         }
     },
     methods: {
@@ -198,7 +200,7 @@ export default {
         text-transform: uppercase;
     }
 }
-.profile-link:hover{
+.profile-li:hover{
     background-color: unset;
     cursor:default;
 

@@ -3,18 +3,38 @@
         <div class="story-div" :style="i == 0? '' : 'margin-top: 0'">
             <div class="story-head"  v-if="i == 0">
                 <div class="story-title" title="Tasks List">
-                    <b>User Stories</b>
+                    <b><span class="fa fa-list-ul"></span> User Stories</b>
                 </div>
                 <!-- <div class="editListBtn pull-right">
                     <button @click="$router.push({name: 'addus_sprint'})" title="Add New User Story"><span class="fa fa-plus"></span></button>
                 </div> -->
             </div>
             <div class="story-body">
-                <div class="editListBtn pull-right">
-                    <button v-if="taskPermission.add" @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task"><span class="fa fa-plus"></span></button>
+
+                <!-- <div class="editListBtn pull-right">
+                    <button @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task"><span class="fa fa-plus"></span></button>
+                </div> -->
+                <!-- <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <h4 class="no-margin">{{ uStory.name }}</h4>
+                        <p class="no-margin"><small>{{ uStory.points }} pts</small></p>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right editListBtn">
+                        <button @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task" class="">
+                        <span class="fa fa-plus"></span></button>
+                    </div>
+                </div> -->
+                <div class="story-content">
+                    <div class="story-first">
+                        <h4 class="no-margin">{{ uStory.name }}</h4>
+                        <p class="no-margin"><small>{{ uStory.points }} pts</small></p>
+                    </div>
+                    <div class="story-sec editListBtn">
+                        <button v-if="taskPermission.add" @click="$router.push({name: 'addtask_sprint', params: {us_id: uStory.id}})" title="Add New Task" class="">
+                        <span class="fa fa-plus"></span></button>
+                    </div>
                 </div>
-                <h4>{{ uStory.name }}</h4>
-                <small>{{ uStory.points }} pts</small>
+                
                 
             </div>
         </div>
@@ -72,7 +92,20 @@ export default {
     .story-body {
         height: 40vh; 
         background-color: rgb(234,234,234);
-        padding: 10px;
+        // padding: 10px;
+        .story-content{
+            display: flex;
+            .story-first{
+                display: inline-block;
+                width: 70%;
+                padding: 10px 15px;
+            }
+            .story-sec{
+                display: inline-block;
+                width: 30%;
+                padding: 10px 15px;
+            }
+        }
     }
 
     .editListBtn{

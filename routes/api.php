@@ -65,7 +65,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getJoDetails', 'AdminController@getJoDetails');
     Route::post('/finishJOC', 'AdminController@finishJOC');
     Route::post('/finishJOW', 'AdminController@finishJOW');
-    Route::delete('/deletejo', 'AdminController@deletejo');
+    Route::delete('/deletejo', 'AdminController@deletejo'); 
+    Route::post('/restorejo', 'AdminController@restorejo'); 
 
     //Boards
     Route::post('/newBoard', 'BoardController@newBoard');
@@ -121,6 +122,11 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/testFunc', 'BoardController@testFunc');
     Route::post('/getUserNotifications', 'BoardController@getUserNotifications');
     
+    //settings
+    Route::get('/getuser_info', 'SettingsController@getuser_info');
+    Route::post('/updatemyself', 'SettingsController@updatemyself');
+
+
     //test Scrum
     Route::post('/newUS', 'BoardController@newUS');
     Route::post('/getUS', 'BoardController@getUS');
@@ -139,5 +145,19 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/testPost', 'WorkbookController@testPost');
     Route::get('/onCreateWorkbook', 'WorkbookController@onCreate');
     Route::post('/getAllWorkbooks', 'WorkbookController@getAllWorkbooks');
+
+    //dashboard
+    Route::get('/dashboard_admin', 'DashboardController@dashboard_admin');
+    Route::get('/date', 'DashboardController@date');
+    Route::get('/dashboard_acma', 'DashboardController@dashboard_acma');
+    Route::get('/display_joborders', 'DashboardController@display_joborders');
+    Route::get('/dashboard_emp', 'DashboardController@dashboard_emp');
+    Route::get('/dashboard_client', 'DashboardController@dashboard_client');
+    Route::get('/reminder_tasks', 'DashboardController@reminder_tasks');
+    Route::get('/overdued_tasks', 'DashboardController@overdued_tasks');
+    Route::get('/display_messages', 'DashboardController@display_messages');
+    Route::get('/display_notifs', 'DashboardController@display_notifs');
+
+
 
 });

@@ -88,7 +88,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders</p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
                             <hr/>
                             <div class="row" v-if="jos">
                                 <div class="col-md-12">
@@ -113,8 +113,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                                      
             </div>
+           
         </div>
     </section>
 </template>
@@ -146,7 +147,12 @@ export default {
                 notArchive: true
                 
             },
-            brandinfos: {}
+            brandinfos: {},
+            ndata: {
+            search: '',
+            sort: 'created_at.desc',
+            notArchive: true
+                    }
            // errors: [],
             
         }
@@ -179,7 +185,8 @@ export default {
         this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         const ndata = {
             search: '',
-            sort: 'created_at.desc'
+            sort: 'created_at.desc',
+            notArchive: true
         }
         this.$store.dispatch('getJobOrders', ndata);
     }, 
@@ -208,6 +215,8 @@ export default {
         },
         archiveBrands() {
             this.data.notArchive = !this.data.notArchive;
+            if(this.data.notArchive==true){ this.data.filter = {position: 'desc', category:'created_at'} }
+            else{ this.data.filter = {position: 'desc', category:'deleted_at'}};
             let data = this.data;
             this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
         },
@@ -220,14 +229,13 @@ export default {
                     alert('Something went wrong, try reloading the page');
                 })
         },
-        // getsData() {
-        //   let data = this.data
-        //     this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
-       
-        // },
-        search: _.debounce(function (e) {
-            this.getsData();
-        }, 500)
+         archiveJO() {
+           // let _this = this;
+            let ndata = this.ndata;
+            this.ndata.notArchive = !this.ndata.notArchive;
+            this.$store.dispatch('getJobOrders', ndata); 
+            console.log('archive');
+                   },
     }
 }
 </script>

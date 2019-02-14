@@ -12,7 +12,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <img class="text-center img-raised" style="max-width: 50%; margin: 10px auto" :alt="brandProfile.name+' logo'" :src="'/images/logo/'+brandProfile.logo">
+                                <img class="text-center img-raised" style="max-width: 50%; margin: 10px auto" :alt="brandProfile.name+' logo'" :src="brandProfile.logo">
                             </div>
                         </div>
                         <div class="row">
@@ -26,7 +26,7 @@
                                 <p><small><span class="fa fa-user-o"></span> Brand Owner: </small></p>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                <p>{{brandProfile.tandem.name}}</p>
+                                <p>{{brandProfile.acma.name}}</p>
                             </div>
                         </div>
                         <div class="row">

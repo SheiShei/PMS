@@ -1,8 +1,11 @@
 <template>
     <div class="list-div" @drag="checkListMove">
-        <div style="cursor: move;" class="list-head">
+        <div style="cursor: move;" class="list-head" :class="{ 'list-head-kanban-done' : list.isDone }">
             <div class="list-title" title="Tasks List">
-                <b><span v-if="!list.isDone" class="fa fa-align-left text-default"></span><span v-if="list.isDone" class="fa fa-circle text-success"></span>&nbsp;{{ list.name }}</b>
+                <b>
+                    <span v-if="!list.isDone" class="fa fa-align-left text-default"></span>
+                    <span v-if="list.isDone" class="fa fa-thumbs-o-up text-success"></span>&nbsp;
+                    {{ list.name }}</b>
             </div>
             <div class="editListBtn pull-right">
                 <!-- <small>{{ listPoints }} pts</small> -->
@@ -22,14 +25,13 @@
                 </div>
             </form>
         </div>
-        <div class="list-body">
+        <!-- <div class="list-body"> -->
                             
 
-            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, li, list.id)">
+            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks'}" :element="'div'" @change="taskListUpdate($event, li, list.id)" class="list-body">
                 <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index" :taskPerm="taskPerm"></card-task>
-                <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
-        </div>
+        <!-- </div> -->
         <router-link v-if="taskPerm.add" :to="{ name: 'kanboard_addtask', params: {list_id: list.id}}" @click.prevent class="text-center add-task-btn" href=""><span class="icon-sm icon-add"></span><span>+ Add Task</span></router-link>
     </div>
 </template>

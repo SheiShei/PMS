@@ -35,8 +35,8 @@
                 </div>
             </form>
         </div>
-        <div class="list-body">
-            <draggable v-model="sprint.us" :options="{animation:200, group:'status', disabled: !sprintPermission.modify}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
+        <!-- <div class="list-body"> -->
+            <draggable class="list-body" v-model="sprint.us" :options="{animation:200, group:'status', disabled: !sprintPermission.modify}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
                 <card-task 
                     v-for="(us, index) in sprint.us" 
                     :key="us.id" :us="us" :i="index" 
@@ -46,7 +46,7 @@
                     :taskPermission="taskPermission"></card-task>                
                 <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div>
             </draggable>
-        </div>
+        <!-- </div> -->
         <router-link v-if="sprint.type == 1 && usPermission.add" :to="{name: 'snt', params: {sprint_id: sprint.id}}" class="add-task-btn" href=""><span class="icon-sm icon-add"></span><span>Add User Story</span></router-link>
     </div>
 </template>

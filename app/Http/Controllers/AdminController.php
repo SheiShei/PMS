@@ -52,7 +52,9 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => $request->role,
-            'department_id' => $request->team
+            'department_id' => $request->team,
+            'picture'=> 'default.png',
+            'bg_image'=> '1549014873pug.jpg'
         ]);
 
         return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();
@@ -285,17 +287,17 @@ class AdminController extends Controller
     }
 
     public function onLoad() {
-        $brands = Brand::with('tandem')->select(['id','name', 'tandem_id'])->get();
+        $brands = Brand::get();
         return $brands;
     }
 
     public function getJoDetails(Request $request) {
         $type = JobOrder::where('id',$request->id)->select('type')->first()['type'];
         if($type === 1) {
-            return JobOrder::with('brand.tandem')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
         }
         else if($type === 2) {
-            return JobOrder::with('brand.tandem')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
         }
     }
 
@@ -344,7 +346,7 @@ class AdminController extends Controller
             'copy' => $joDetails['post_caption'],
             'revisions' => $joDetails['revisions'],
         ]);
-        return JobOrder::with('brand.tandem')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
+        return JobOrder::with('brand')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
     }
 
     public function updateJOWeb(Request $request) {
@@ -418,17 +420,43 @@ class AdminController extends Controller
             'date_ended' => $joDetails['date_ended'],
         ]);
         
-        return JobOrder::with('brand.tandem')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
+        return JobOrder::with('brand')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
     }
 
     public function getJobOrders(Request $request) {
         $sort_key = explode(".",$request->sort)[0];
         $sort_type = explode(".",$request->sort)[1];
-        $query = JobOrder::with('brand:id,name')->orderBy($sort_key, $sort_type);
+        if($request->notArchive=="true"){
+            if($sort_key){
+               if(auth()->user()->role_id==1) 
+               {
+                $query = JobOrder::with('brand:id,name')->orderBy($sort_key, $sort_type);         
+               }
+               else
+               {
+                $query = JobOrder::with('brand:id,name')->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
+               }
+               }
+        }
+        else { 
+           if($sort_key){
+               if(auth()->user()->role_id==1)
+               {
+                 $query = JobOrder::onlyTrashed()->with('brand:id,name')->orderBy($sort_key, $sort_type);
+                   
+               }
+               else{
+                $query = JobOrder::onlyTrashed()->with('brand:id,name')->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);
+
+               }
+           }
+         }
+
 
         if($request->search) {
             $query->where('name', 'like', $request->search.'%');
         }
+
 
         $jos = $query->get();
         return $jos;
@@ -438,6 +466,13 @@ class AdminController extends Controller
         $jo = JobOrder::findOrFail($request->id);
         $jo->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
+    }
+
+    public function restorejo(Request $request) {
+        
+        $jo= JobOrder::onlyTrashed()->where('id' , $request->data['id'])->restore();
+       
+        return response()->json(['status' => 'success', 'message' => 'restores succesfully'], 200);
     }
 
     public function finishJOC(Request $request) {

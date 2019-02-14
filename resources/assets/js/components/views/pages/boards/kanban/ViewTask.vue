@@ -181,6 +181,7 @@ export default {
         ...mapGetters({
                 board: 'getCBoard',
                 comments: 'getTCom',
+                board: 'getCBoard'
             }),
     },
 

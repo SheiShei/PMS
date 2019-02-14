@@ -3,25 +3,44 @@
             <transition name="fade">
                 <div class="overlay" v-if="usData">
                     <router-view :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
+                    <div class="close-mod-btn">
+                        <router-link :to="{ name: 'test'}" class="btn btn-simple btn-just-icon btn-default"><i class="fa fa-close"></i></router-link>
+                    </div>
+                    <!-- <div class="row"> -->
+                        <!-- <div class="col-md-12 text-right">
+                            <router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link>
+                        </div> -->
+                    <!-- </div> -->
                     <div class="taskView" style="">
+                        
                         <div class="row">
-                            <div class="col-md-10 col-sm-10 col-xs-10">
+                            <div class="col-md-9 col-sm-9 col-xs-9">
                                 <h4>
-                                    <span class="fa fa-tasks" @click="usPermission.modify ? editUSname = !editUSname : ''"></span> 
+                                    <!-- <span class="fa fa-tasks" @click="usPermission.modify ? editUSname = !editUSname : ''"></span> 
                                     <span v-if="!editUSname" @click="usPermission.modify ? editUSname = !editUSname : ''">{{ usData.name }}</span>
-                                    <span v-if="editUSname"><input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text"></span>
+                                    <span v-if="editUSname"><input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text"></span> -->
+                                    <span class="fa fa-list-ul"></span> 
+                                    <span>{{ usData.name }} <small class="text-gray">( {{ usData.points }} pts )</small></span>
+                                    <!-- <span v-if="editUSname"><input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text"></span> -->
                                 </h4>
+
+                                <p class="text-success no-margin" v-if="editUSDetails"><small>You're on EDIT MODE</small></p>
                             </div>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
+                            <div class="col-md-3 col-sm-3 col-xs-3 text-right">
                                 <h4 class="">
-                                    <span class="pull-right"><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span>
-                                    <span v-if="usPermission.delete" class="pull-right"><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span>
+                                    <!-- <span class="pull-right"><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span>
+                                    <span v-if="usPermission.delete" class="pull-right"><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span> -->
+                                    <span></span>
+                                    <!-- <span class=""><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span> -->
+                                    <span v-if="!editUSDetails"><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
+                                    <span v-else><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
+                                    <span class=""><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span>
                                 </h4>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!editUSDetails">
                             <div class="col-md-12">
-                                <h6><b>ABOUT</b></h6>
+                                <!-- <h6><b>ABOUT</b></h6>
                                 <hr />
                                 <div class="row">
                                     <div class="col-md-4">
@@ -47,24 +66,110 @@
                                     <div class="col-md-12">
                                         <p v-if="!editUSdesc" @click="usPermission.modify ? editUSdesc = !editUSdesc : ''" :style="usData.description ? '' : 'color: #6B808C'" >{{ usData.description ? usData.description : 'Empty space is boring... go on be descriptive...' }}</p>
                                         <p v-else><textarea @input="inpdebounce" @blur="editUSdesc = !editUSdesc" v-model="usData.description" class="my-text-area my-inp-blk" rows="4"></textarea></p>
-                                    </div>
+                                    </div> -->
+                                <p>{{ usData.description }}</p>
+                            </div>
+                        </div>
+                        <div class="row" v-if="editUSDetails">
+                            <div class="col-md-8">
+                                <div class="">
+                                    <label for="" class="control-label text-gray">User Story Name:</label>
+                                    <input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" type="text">
                                 </div>
-                                <h6><b>Sub-tasks</b>&nbsp;<small v-if="usData.tasks.length">({{ usData.tasks.length }})</small></h6>
-                                <hr />
+                            </div>
+                            <div class="col-md-4">
+                                <div class="">
+                                    <label for="" class="control-label">Points:</label>
+                                    <select @change="updateUS" required v-model="usData.points" class="my-input my-inp-blk">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+
+
+                                <!-- <input @input="inpdebounce" v-model="usData.name" class="my-input my-inp-blk" style="width: 75%" type="text">
+                                <textarea @input="inpdebounce" @blur="editUSdesc = !editUSdesc" v-model="usData.description" class="my-text-area my-inp-blk" rows="4"></textarea>
+                                <select @change="updateUS" required v-model="usData.points" class="my-input my-inp-blk" style="width: 30%">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="8">8</option>
+                                </select> -->
+                            </div>
+                        </div>
+                        <div class="row" v-if="editUSDetails">
+                            <div class="col-md-12">
+                                <div class="">
+                                    <label for="" class="control-label">Description:</label>
+                                    <textarea @input="inpdebounce" @blur="editUSdesc = !editUSdesc" v-model="usData.description" class="my-text-area my-inp-blk" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <hr/>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="txt-bold no-margin">Subtasks&nbsp;<small v-if="usData.tasks.length">({{ usData.tasks.length }})</small>
+                                    <span class=""></span>
+                                </h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <a style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></a>
+                            </div>
+                        </div> -->
+
+
+                        <br/> 
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <!-- <h6><b>Sub-tasks</b>&nbsp;<small v-if="usData.tasks.length">({{ usData.tasks.length }})</small>
+                                    <span class="pull-right"><a style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></a></span>
+                                </h6> -->
+                                <!-- <hr /> -->
+                                <div class="taskchart shadow brl-gray">
+                                    <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="nm-top txt-bold">Subtasks&nbsp;<small v-if="usData.tasks.length">({{ usData.tasks.length }})</small>
+                                    
+                                </h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+<!-- <span class="text-right"> -->
+                                        <a v-if="taskPermission.add" class="no-margin" style="cursor: pointer" title="Add Subtask"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn btn-success btn-xs no-margin">+ Add New</router-link></a>
+                                    <!-- </span>                            -->
+                                     </div>
+                        </div>
+
+
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p v-if="taskPermission.add" style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></p>
+                                        <!-- <p v-if="taskPermission.add" style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></p> -->
+                                        <!-- <p style="cursor: pointer"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add Sub-Task</router-link></p> -->
                                         <div>
                                             <div class="us-tasks-container">
                                                 <div class="us-tasks-wrapper" v-for="task in usData.tasks" :key="task.id">
                                                     <!-- <div class="us-task-name"> -->
-                                                        <ul>
+                                                        <!-- <ul>
                                                             <li class="us-task-name" style="padding-left: 0; ">
                                                                 <router-link v-if="taskPermission.view" :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" style="color: #27568e">{{ task.name | taskLength }}</router-link>
                                                                 <a v-if="!taskPermission.view" @click.prevent href="" style="color: #27568e">{{ task.name | taskLength }}</a>
                                                             </li>
                                                             
-                                                            <li v-if="taskPermission.delete" @click="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
+                                                            <li v-if="taskPermission.delete" @click="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li> -->
+                                                        <!-- <ul> -->
+                                                        <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" tag="ul">
+                                                            <li class="us-task-name" style="padding-left: 0; ">
+                                                                <!-- <span class="fa fa-circle-thin"></span> -->
+                                                                <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" ><span class="fa fa-circle"></span> {{ task.name | taskLength }}</router-link></li>
+                                                            
+                                                            <li @click.stop="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
                                                             <li class="us-task-assigned pull-right" :title="'Assigned to: ' + task.assigned_to.name">
                                                                 <div>
                                                                     <span>
@@ -74,15 +179,18 @@
                                                                 </div>
                                                             </li>
                                                             
-                                                        </ul>
+                                                        </router-link>
                                                     <!-- </div> -->
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                </div>
+                                <br/>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </transition>
@@ -97,6 +205,7 @@ export default {
             editUSname: false,
             editUSdesc: false,
             editUSpoints: false,
+            editUSDetails: false
         }
     },
     created() {
@@ -236,19 +345,30 @@ export default {
         width: inherit;
     }
     .us-tasks-wrapper > ul {
-        border-left: 2px solid #43A0B9;
-        border-bottom: 1px solid hsla(0,0%,90%,.6);
-        box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+        // border-left: 2px solid #43A0B9;
+        // border-bottom: 1px solid hsla(0,0%,90%,.6);
+        // box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
         // border: 1px dashed transparent;
-        border-radius: 5px;
+        // border-radius: 5px;
         background: #fff;
         margin-right: 2px;
         margin-bottom: 4px!important;
         width: inherit;
         padding: 0 20px;
+        transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        -webkit-transition: all 0.2s ease-in-out;
     }
     .us-tasks-wrapper > ul:hover {
-        box-shadow: 0 4px 10px 0 rgba(0,0,0,.1);
+        // box-shadow: 0 4px 10px 0 rgba(0,0,0,.1);
+        // border: 1px solid rgb(212, 212, 212);
+        //  border-left: 2px solid rgb(177, 177, 177);
+         background-color: rgb(247, 247, 247);
+         li > a{
+             color: rgb(57, 176, 255);
+         }
+//   border-right: 2px solid rgb(177, 177, 177);
+
     }
 
     .us-tasks-wrapper > ul > li {
@@ -257,10 +377,16 @@ export default {
         position: relative;
         line-height: 35px;
         height: 35px;
+        color: #4d4d4d;
         vertical-align: middle;
-        color: #6a6c6f;
         letter-spacing: .8px;
         list-style: none;
+        a{
+            color: #6a6c6f;
+            transition: all 0.2s ease-in-out;
+            -moz-transition: all 0.2s ease-in-out;
+            -webkit-transition: all 0.2s ease-in-out;
+        }
     }
 
     li.us-task-name {

@@ -64,7 +64,7 @@
                                                     <label for="" class="control-label">Brand Owner:</label>
                                                     <div class="">
                                                         <div class="btn-group bootstrap-select">
-                                                            <select  required name="brandowner" v-model="brand.tandem_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                                            <select  required name="brandowner" v-model="brand.acma_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                                                 <option disabled="" value="" selected="">--Select--</option>
                                                                 <option v-for="tandem in tandemList" :key="tandem.id" :value="tandem.id">{{tandem.name}}</option>
                                                             </select>
@@ -145,9 +145,11 @@ export default {
             brand:{
                 name: '',
                 contact_person: '',
+                email:'',
+                password: '',
                 telephone: '',
                 mobile: '',
-                tandem_id: '',
+                acma_id: '',
                 logo: '',
                 about: '',
                 email: '',
@@ -176,9 +178,11 @@ export default {
             form.append('logo', this.brand.logo[0]);
             form.append('name', this.brand.name);
             form.append('telephone', this.brand.telephone);
+            form.append('email', this.brand.email);
+            form.append('password', this.brand.password);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
-            form.append('tandem_id', this.brand.tandem_id);
+            form.append('acma_id', this.brand.acma_id);
             form.append('about', this.brand.about);
             form.append('email', this.brand.email);
             form.append('password', this.brand.password);
@@ -188,8 +192,10 @@ export default {
                         this.brand.name='';
                         this.brand.contact_person='';
                         this.brand.telephone='';
+                        this.brand.email='';
+                        this.brand.password='';
                         this.brand.mobile='';
-                        this.brand.tandem_id='';
+                        this.brand.acma_id='';
                         this.brand.about='';
                         this.brand.logo='';
                         this.brand.email='';
@@ -202,7 +208,7 @@ export default {
 
         onLogoChanged (event) {
             this.brand.logo = event.target.files
-            // console.log(this.brand.logo);
+             console.log(this.brand.logo[0]);
         },
 
         passwordType(){

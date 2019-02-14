@@ -1,15 +1,18 @@
 <template>
     <transition name="fade">            
         <div class="overlay">
+            <div class="close-mod-btn">
+                <router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-just-icon btn-default"><i class="fa fa-close"></i></router-link>
+            </div>
             <form action="" @submit.prevent="addTask">
             <div class="newTaskForm" style="">
                 <div class="row">
                     <div class="col-md-6">
                         <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
                     </div>
-                    <div class="col-md-6 text-right">
+                    <!-- <div class="col-md-6 text-right">
                         <router-link :to="{ name: 'kanboard'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
-                    </div>
+                    </div> -->
                 </div>
                 <br />
                 <div class="row">
@@ -49,7 +52,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="">Due: </label>
-                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
+                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                     </div>
                 </div>
                 <br/>
