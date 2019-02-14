@@ -235,7 +235,7 @@
 															</div>
 															<div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
 															<div class="fileinput-new thumbnail img-raised">
-																<img :src="user_info.bg_image" style="height: 200px; width: auto" alt="...">
+																<img :src="user_info.bg_image" style="max-height: 200px; width: auto" alt="...">
 															</div>
 														</div>
 													</div>
@@ -473,4 +473,7 @@ export default{
     margin-bottom: 2px;
 }
 
+.profile-page .page-header {
+    background-position: center;
+}
 </style>

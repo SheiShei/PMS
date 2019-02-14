@@ -50,6 +50,28 @@
                                     </router-link>
                                 </div>
                             </div>
+                            <!-- <div class="boardlist" style="max-height: 70vh; overflow-y:auto" is="transition-group" name="list-complete">
+                                <div v-for="board in userBoards" :key="board.id" class="list-complete-item">
+                                    <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="boarddiv">
+                                        <div class="boardname">{{ board.name }}</div>
+                                        <div class="boardoptions">
+                                            <p><span class="pull-right">
+                                                <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
+                                                <a href="" @click.stop="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                            </span></p>
+                                        </div>
+                                    </router-link>
+                                    <router-link v-if="board.type == 2" :to="{ name: 'test', params: {board_id: board.id} }" class="boarddiv">
+                                        <div class="boardname">{{ board.name }}</div>
+                                        <div class="boardoptions">
+                                            <p><span class="pull-right">
+                                                <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a>
+                                                <a href="" @click.stop.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                            </span></p>
+                                        </div>
+                                    </router-link>
+                                </div>
+                            </div> -->
                         </div>
                         <br/>
                     </div>

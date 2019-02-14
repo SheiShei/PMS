@@ -1,15 +1,18 @@
 <template>
     <transition name="fade">            
         <div class="overlay">
+            <div class="close-mod-btn">
+                <button @click="$router.go(-1)" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button>
+            </div>
             <form action="" @submit.prevent="addTask">
             <div class="newTaskForm" style="">
                 <div class="row">
                     <div class="col-md-6">
                         <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
                     </div>
-                    <div class="col-md-6 text-right">
+                    <!-- <div class="col-md-6 text-right">
                         <a href="" @click.prevent="$router.go(-1)" class="btn btn-simple btn-close"><i class="fa fa-close"></i></a> 
-                    </div>
+                    </div> -->
                 </div>
                 <br />
                 <div class="row">

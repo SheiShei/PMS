@@ -11783,8 +11783,8 @@ ul > li > span.page-of:hover {
     top: 10px;
     z-index: 10 !important;
     padding: 3px;
-    background-color: #ffffff;
-    color: #000;
+    background-color: #00161c;
+    color: #fff;
     width: 40px;
     text-align: center;
   }
@@ -12631,9 +12631,9 @@ hr {
 }
 
 .kanban-component .comment-input-wrap {
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
   vertical-align: middle;
   background-color: white;
@@ -12671,7 +12671,7 @@ hr {
 .kanban-component .newTaskForm {
   background-color: white;
   height: auto;
-  width: 500px;
+  width: 60%;
   padding: 10px 30px;
   margin: 5% auto;
   border-radius: 5px;
@@ -12851,11 +12851,19 @@ hr {
   .my-thin-select,
   .my-thin-input {
     margin-bottom: 5px;
-    float: left;
+    width: 100%;
   }
 
   .my-thin-input ~ span {
     display: none;
+  }
+
+  .torev2 .torevdiv2 .torev-left {
+    width: 20% !important;
+  }
+
+  .kanban-component .newTaskForm {
+    width: 75%;
   }
 }
 
@@ -12939,11 +12947,11 @@ hr {
 }
 
 .list-head {
-  background-color: #dcdcdc;
   position: relative;
+  background-color: #dcdcdc;
 }
 
-.list-title {
+.list-head .list-title {
   display: inline-block;
   padding: 5px 8px;
   color: #262626;
@@ -13020,6 +13028,34 @@ hr {
 
 .add-task-btn:hover {
   background-color: #DCDCDC;
+}
+
+.list-head-kanban-done {
+  background-color: #2f4f4f !important;
+}
+
+.list-head-kanban-done .list-title {
+  color: #fff;
+}
+
+.list-head-kanban-done .list-title span {
+  color: #a1f886;
+}
+
+.list-head-kanban-done .editListBtn {
+  color: #fff;
+}
+
+.list-head-kanban-done .editListBtn button {
+  background: transparent;
+  color: white;
+}
+
+.list-head-kanban-done .editListBtn button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .t-card-wrap {
@@ -13239,6 +13275,10 @@ hr {
   margin-top: 0;
 }
 
+.nm-bottom {
+  margin-bottom: 0;
+}
+
 .main2 {
   background: none;
 }
@@ -13367,6 +13407,7 @@ hr {
   display: inline-block;
   padding: 15px 10px;
   width: 10%;
+  text-align: center;
 }
 
 .torev2 .torevdiv2 .torev-left .torev-icon {
@@ -13642,14 +13683,25 @@ hr {
 }
 
 .aboutmod {
-  width: 90%;
+  width: 85%;
   height: 90%;
   max-height: 100%;
   overflow-y: auto;
   margin: auto;
   margin-top: 30px;
-  padding: 20px 25px;
+  padding: 20px 20px;
   background-color: whitesmoke;
+}
+
+.close-mod-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0 20px;
+}
+
+.brl-gray {
+  border-left: 3px dashed #b1b1b1;
 }
 
 .table > thead > tr > th,

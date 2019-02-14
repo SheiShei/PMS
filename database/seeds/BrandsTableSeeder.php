@@ -19,7 +19,7 @@ class BrandsTableSeeder extends Seeder
             'contact_person'=>'MJ',
             'about'=>'Spa',
             'telephone'=>'754-3010',
-            'mobile'=>'+639123456789',
+            'mobile'=>'09123456789',
             'logo'=>'luljetta_logo.png',
             'tandem_id'=>1
         ]);

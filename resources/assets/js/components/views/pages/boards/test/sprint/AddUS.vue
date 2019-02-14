@@ -1,15 +1,18 @@
 <template>
     <transition name="fade">            
         <div class="overlay">
+            <div class="close-mod-btn">
+                <router-link :to="{ name: 'test_sprint', params: {sprint_id: $route.params.sprint_id}}" class="btn btn-simple btn-just-icon btn-default"><i class="fa fa-close"></i></router-link>
+            </div>
             <form action="" @submit.prevent="addUS">
             <div class="newTaskForm" style="">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <h4><span class="fa fa-tasks"></span> NEW TASK: </h4>
                     </div>
-                    <div class="col-md-6 text-right">
+                    <!-- <div class="col-md-6 text-right">
                         <router-link :to="{ name: 'test_sprint', params: {sprint_id: $route.params.sprint_id}}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
-                    </div>
+                    </div> -->
                 </div>
                 <br />
                 <div class="row">
