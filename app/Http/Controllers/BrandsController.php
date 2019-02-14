@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Brand; //mga model na kailangan sa controller na to like include in CI
-use App\Tandem;
+// use App\Tandem;
 use App\JobOrder;
 use App\User;
 use Hash;
@@ -17,12 +17,27 @@ class BrandsController extends Controller
     public function getBrands(Request $request) {
         if($request->notArchive){
             if($request->filtercategory){
-                $query = Brand::with('tandem:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                if(auth()->user()->role_id==1)
+                {
+                $query = Brand::with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                }
+                else
+                {
+                $query = Brand::with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+                }
             }
         }
         else { 
             if($request->filtercategory){
-            $query = Brand::onlyTrashed()->with('tandem:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                if(auth()->user()->role_id==1)
+                {
+                  $query = Brand::onlyTrashed()->with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                }
+                else
+                {
+                $query = Brand::onlyTrashed()->with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+
+                }
             }
          }
         
@@ -36,11 +51,11 @@ class BrandsController extends Controller
          }
 
     public function addBrands(Request $request) {
-        dd($request);
+        
         $request->validate([
             'name' => 'required|string|max:255',
            'contact_person' => 'required|string|max:255',
-           'tandem_id' => 'required',
+           'acma_id' => 'required',
 
         ]);
 
@@ -64,22 +79,13 @@ class BrandsController extends Controller
             'password' => Hash::make($request->password),
             'telephone' => $request->telephone,
             'mobile' => $request->mobile,
-            'tandem_id' => $request->tandem_id,
+            'acma_id' => $request->acma_id,
             'about' => $request->about,
             'logo' => $input['logo'],
             'contact_person' => $request->contact_person
         ]);
 
         $user = User::create([
-            'name' => $brand->name,
-            'email' => $brand->email,
-            'password' => Hash::make($brand->password),
-            'role_id' => 4,
-            'brand_id' => $brand->id,
-            'picture' => $brand->logo
-        ]);
-
-        User::create([
             'brand_id' => $brand->id,
             'name'=>$request->name,
             'email'=>$request->email,
@@ -89,7 +95,7 @@ class BrandsController extends Controller
             'bg_image'=>'1549014873pug.jpg' //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
         ]);
 
-        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+        return Brand::with('acma:id,name')->where('id', $brand->id)->get();
 
     }
 
@@ -110,7 +116,7 @@ class BrandsController extends Controller
     }
 
     public function getTandemsList() {
-        $tandems = Tandem::all();
+        $tandems = User::where('role_id',2)->get();
         return $tandems;
     }
 
@@ -128,7 +134,7 @@ class BrandsController extends Controller
     }
     
     public function getOnebrand(Request $request) {
-        $query= Brand::with('tandem:id,name')->where('id', $request->id);
+        $query= Brand::with('acma:id,name')->where('id', $request->id);
        // $brand = Brand::with('tandem:id,name')->where('id', $request->id);
         $brand = $query->first();
         return $brand;
@@ -169,7 +175,7 @@ class BrandsController extends Controller
         ]);
 
 
-        return Brand::with('tandem:id,name')->where('id', $brand->id)->get();
+        return Brand::with('acma:id,name')->where('id', $brand->id)->get();
     }
 
     public function testFileUpload(Request $request) {

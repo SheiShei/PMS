@@ -120,7 +120,7 @@ const actions = {
             axios.post('/api/addbrands', databrand, config)
 
                 .then((response) => {
-                    // console.log(response);
+                    console.log(response);
                     commit('addBrand', response.data[0]);
                     resolve(response);
                 })

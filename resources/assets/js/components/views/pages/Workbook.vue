@@ -86,6 +86,34 @@
     </section>
 </template>
 
+<script>
+import {mapGetters} from 'vuex';
+
+export default {
+    data() {
+        return {
+            data: {
+                search: '',
+                brand: '',
+                status: '',
+                isArchive: false
+            }
+        }
+    },
+
+    created() {
+        this.$store.dispatch('getWorkbooks', this.data);
+    },
+
+    computed: {
+        ...mapGetters({
+                workbooks: 'getWorkbookList',
+            }),
+    }
+}
+</script>
+
+
 <style scoped lang="scss">
 .wb-list-div{
     display: inline-flex;

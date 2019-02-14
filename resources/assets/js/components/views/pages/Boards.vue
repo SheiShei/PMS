@@ -35,7 +35,7 @@
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
                                                 <!-- <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
-                                                <a href="" @click.stop="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                                <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
                                     </router-link>
@@ -44,7 +44,7 @@
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
                                                 <!-- <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
-                                                <a href="" @click.stop.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                                <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
                                     </router-link>
@@ -205,37 +205,14 @@ export default {
         listenBoardEvents() {
             Echo.private('boards')
                 .listen('CreateBoardEvent', (e) => {
-                    // console.log(e);
-                    var _this = this;
-                    let found = e.boards.board_users.find(function(element) {
-                        return element.id == _this.currentUser.id
-                    });
-                    if(found) {
-                        // console.log(e);
-                        this.$store.commit('addBoard', e.boards);
-                    }
+                    this.$store.commit('addBoard', e.boards);
                 })
                 .listen('UpdateBoardEvent', (e) => {
-                    // console.log(e);
-                    var _this = this;
-                    let found = e.boards.board_users.find(function(element) {
-                        return element.id == _this.currentUser.id
-                    });
-                    if(found) {
-                        // console.log(e);
-                        this.$store.commit('uBoard', e.boards);
-                    }
+                    this.$store.commit('uBoard', e.boards);
                 })
                 .listen('DeleteBoardEvent', (e) => {
                     // console.log(e);
-                    var _this = this;
-                    let found = e.boards.board_users.find(function(element) {
-                        return element.id == _this.currentUser.id
-                    });
-                    if(found) {
-                        // console.log(e);
-                        this.$store.commit('deleteBoard', e.boards.id);
-                    }
+                    this.$store.commit('deleteBoard', e.boards);
                 })
         },
 

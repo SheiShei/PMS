@@ -88,7 +88,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders</p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
                             <hr/>
                             <div class="row" v-if="jos">
                                 <div class="col-md-12">
@@ -115,6 +115,7 @@
                     </div>
                 </div>                                      
             </div>
+           
         </div>
     </section>
 </template>

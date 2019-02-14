@@ -23,9 +23,9 @@
                     <p>{{ us.points }} pts</p>
                 </div>
                 <div class="t-btns pull-right">
-                    <router-link :to="{ name: 'us_view', params: {us_id: us.id, sprint_id: us.sprint_id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
+                    <router-link v-if="usPermission.view" :to="{ name: 'us_view', params: {us_id: us.id, sprint_id: us.sprint_id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <router-link :to="{ name: 'd_conf', params: {us_id: us.id} }" class="mysm-btn"><span class="fa fa-trash-o"></span></router-link>
+                    <router-link v-if="usPermission.delete" :to="{ name: 'd_conf', params: {us_id: us.id} }" class="mysm-btn"><span class="fa fa-trash-o"></span></router-link>
                    
                 </div>
             </div>
@@ -35,7 +35,7 @@
 
 <script>
 export default {
-    props: ['us', 'i', 'sname'],
+    props: ['us', 'i', 'sname', 'usPermission', 'taskPermission', 'sprintPermission'],
     data() {
         return {
             openTaskOpt: false,

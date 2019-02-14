@@ -71,12 +71,8 @@ class User extends Authenticatable
         $this->hasOne('App\Brand');
     }
 
-    public function ga_tandem() {
-        return $this->hasOne('App\Tandem', 'ga_id');
-    }
-
-    public function acma_tandem() {
-        return $this->hasOne('App\Tandem', 'acma_id');
+    public function acma() {
+        return $this->hasMany('App\Brand', 'acma_id');
     }
 
     public function department() {
@@ -145,6 +141,10 @@ class User extends Authenticatable
 
     public function userBoards() {
         return $this->belongsToMany('App\Board')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
+    }
+
+    public function workbooks(){
+        return $this->hasMany('App\Workbook');
     }
 
     public function getPictureAttribute($pic) {

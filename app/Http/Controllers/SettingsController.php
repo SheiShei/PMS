@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Crypt;
 
 
 class SettingsController extends Controller
@@ -35,17 +36,42 @@ public function updatemyself(Request $request) {
         else{
            $name= $input['bg_image'];
            $input['bg_image'] = str_replace('/storage/', '', $name);
-           echo($input['bg_image']);
+        //    echo($input['bg_image']);
         }
-        
-        //   $userinfo->update($input);
+        // if($files = $request->file('picture')){
+        //     $name = time() . $files->getClientOriginalName();
+        //     $files->make($input['picture'])->resize(300, 300)->save(public_path('storage/' . $name));
+        //     // $files->move('storage/', $name);
+        //     $input['picture'] = $name;
+        //     echo($request->file('picture'));
+        // }
+        // else{
+        //    $name= $input['picture'];
+        //    $input['picture'] = str_replace('/storage/', '', $name);
+        // //    echo($input['bg_image']);
+        // }
+
+        if($input['password'])
+        {
             $userinfo->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => bcrypt($input['password']),
-                'bg_image' => $input['bg_image']
+                'bg_image' => $input['bg_image'],
+                // 'picture' => $input['picture'],
 
             ]);
+        }
+        else{
+            $userinfo->update([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                // 'picture' => $input['picture']
+
+            ]);
+        }
+        //   $userinfo->update($input);
+            
 
        return User::with('role:id,name')->with('department:id,name')->where('id', $request->id)->first();
 

@@ -29,7 +29,7 @@
                         <div v-if="details.brand" class="col-md-4">
                             <p><span class="txt-bold">Brand :</span> {{ details.brand.name }}</p>
                             <p><span class="txt-bold">Client :</span> Robert Fereno</p>
-                            <p><span class="txt-bold">ACMA/Brand Owner :</span> {{ details.brand.tandem.name }}</p>
+                            <p><span class="txt-bold">ACMA/Brand Owner :</span> {{ details.brand.acma.name }}</p>
                         </div>
                         <div  v-if="details.brand" class="col-md-5">
                             <p><span class="txt-bold">Date In :</span> {{ details.indate }}</p>

@@ -116,7 +116,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set as Thumbnail</span><span v-else>Remove Thumbnail</span><!-- (di ko alam tawag) --></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="taskPermission.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set as Thumbnail</span><span v-else>Remove Thumbnail</span><!-- (di ko alam tawag) --></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -129,8 +129,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p><span>{{ attachment.created_at | moment('calendar') }}</span></p>
-                                                </div>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="taskPermission.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span></a></p>                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -217,12 +216,12 @@
                 <!-- <div class="row">
                     <div class="col-md-10 col-sm-10 col-xs-10">
                         <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4>
-                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" contenteditable="true">{{ data.name }}</span></h4>
+                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="taskPermission.modify ? 'true' : 'false'">{{ data.name }}</span></h4>
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <h4 class="">
                             <span class="pull-right"><router-link :to="{name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
-                            <span class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                            <span v-if="taskPermission.delete" class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                         </h4>
                     </div>
                 </div> -->
@@ -232,7 +231,7 @@
                         <hr />
                         <div class="row">
                             <div class="col-md-6">
-                                <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
+                                <p><span @click="taskPermission.modify ? clickAssigned = !clickAssigned : ''" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="taskPermission.modify ? clickAssigned = !clickAssigned : ''" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateSprintTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
                                     <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
@@ -241,29 +240,24 @@
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <p><span @click="isDueClicked = !isDueClicked" class="fa fa-clock-o text-danger"></span> 
-                                    <span v-if="!isDueClicked" @click="isDueClicked = !isDueClicked">{{ data.due | moment("MMM D, YYYY") }}
+                                <p><span @click="taskPermission.modify ? isDueClicked = !isDueClicked : ''" class="fa fa-clock-o text-danger"></span> 
+                                    <span v-if="!isDueClicked" @click="taskPermission.modify ? isDueClicked = !isDueClicked : ''">{{ data.due | moment("MMM D, YYYY") }}
                                     </span>
                                     <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
                                 </p>
                             </div>
-                        </div> -->
-                        <!-- <div class="row"> -->
-                            <!-- <div class="col-md-12"> -->
-                                <!-- <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <div class="testcntnt" @input="debounceWait" :id="'desc_'+data.id" contenteditable="true" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div> -->
-                            <!-- </div> -->
-                        <!-- </div> -->
-                        <!-- <p class="txt-bold"><span class="fa fa-files-o"></span> Attachments</p> -->
-                        <!-- <hr /> -->
-                    <!-- </div><div class="col-md-6 text-right">
-                            <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
-                                <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
-                        </div> -->
-
-                        <!-- <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
-                        <p style="cursor: pointer"><a @click="openGallery" class="btn-default btn-simple btn-sm"><span class="fa fa-photo"></span> View attached images</a></p> -->
-                        <!-- <div class="row" v-if="data.files.length">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
+                                <div :class="taskPermission.modify ? 'testcntnt' : ''" @input="debounceWait" :id="'desc_'+data.id" :contenteditable="taskPermission.modify ? 'true' : 'false'" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
+                            </div>
+                        </div>
+                        <h6><b>ATTACHMENTS</b></h6>
+                        <hr />
+                        <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
+                        <p style="cursor: pointer"><a @click="openGallery" class="btn-default btn-simple btn-sm"><span class="fa fa-photo"></span> View attached images</a></p>
+                        <div class="row" v-if="data.files.length">
                             <div class="col-md-12">
                                 <div id="ataskment-wrapper">
                                     <div v-for="attachment in data.files" :key="attachment.id">
@@ -275,7 +269,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="taskPermission.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -295,8 +289,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
-                        <!-- <div class="row">
+                        </div>
+                        <div class="row" v-if="taskPermission.modify">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
                                 <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
@@ -325,7 +319,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap">
+                                    <div class="form-group is-empty comment-input-wrap" v-if="taskPermission.comment">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
                                         <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
                                             <i class="fa fa-paperclip"></i>
@@ -350,6 +344,7 @@ export default {
     components: {
         DatePicker 
     },
+    props: ['usPermission', 'taskPermission', 'sprintPermission'],
     data() {
         return {
             data: null,
@@ -376,7 +371,8 @@ export default {
     },
 
     mounted() {
-        this.listenUpdates()
+        this.stopEventListeners();
+        this.listenUpdates();
     },
 
     destroyed() {
@@ -406,7 +402,7 @@ export default {
 
         debounceWait: _.debounce(function (e) {
             this.updateSprintTask();
-        }, 500),
+        }, 1000),
 
         updateSprintTask() {
             
@@ -568,6 +564,10 @@ export default {
                     // console.log(e);
                     // this.$store.commit('updateTask', e.task);
                 })
+                .listen('DeleteListTaskEvent', (e) => {
+                    // console.log(e);
+                    this.$store.commit('deleteCusTask', e.task_id);
+                })
             Echo.private('task.'+this.$route.params.task_id)
                 .listen('AddTaskAttachmentEvent', (e) => {
                     // console.log(e);
@@ -583,7 +583,8 @@ export default {
         },
 
         stopEventListeners() {
-            Echo.leave();
+            Echo.leave('list.'+this.$route.params.board_id);
+            Echo.leave('task.'+this.$route.params.task_id);
         }
 
     }
