@@ -24,7 +24,7 @@
                                 <p><span @click="clickAssigned = !clickAssigned" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="clickAssigned = !clickAssigned" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
                                 <select @change="updateTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
                                     <option value="">Unassign</option>
-                                    <option v-for="user in boardMembers" :key="user.id" :value="user.id">{{ user.name }}</option>
+                                    <option v-for="user in board.bu" :key="user.id" :value="user.id">{{ user.name }}</option>
                                 </select>
                                 
                                 </p>
@@ -172,6 +172,7 @@ export default {
         ...mapGetters({
                 boardMembers: 'boardMembers',
                 comments: 'getTCom',
+                board: 'getCBoard'
             }),
     },
 

@@ -45,7 +45,7 @@ const actions = {
         //     password: data.password,
         // }
         //  console.log(data.values);
-        //  console.log(data.data);
+         console.log('updatemyself:',data);
         const config = { headers : {'Content-Type': 'multipart/form-data'} }
             return new Promise((resolve, reject) => {
                 axios.post('/api/updatemyself', data, config)

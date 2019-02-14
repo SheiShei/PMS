@@ -11,7 +11,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Total Active Tasks</p>
-                                       <p class="number">10832</p>
+                                       <p class="number">{{dashboard_emp.activetasks}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Total Tasks</p>
-                                       <p class="number">75</p>
+                                       <p class="number">{{dashboard_emp.totaltasks}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Total Boards</p>
-                                       <p class="number">40</p>
+                                       <p class="number">{{dashboard_emp.totalboards}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -44,74 +44,37 @@
                                     <p><span class="fa fa-bell-o"></span> Notifications</p>
                                     <hr>
                                     <div class="notifsss">
-                                        <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="notifdiv">
-                                        <div class="notif-left">
-                                            <div class="notif-icon bg-info">
-                                                <i class="fa fa-envelope-o medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="notif-right">
-                                            <p>You have new message received!</p>
-                                        </div>
-                                    </div>
-                                    <div class="notifdiv">
+                                        <p v-if="display_notifs.notifications==0" class="note">No notifications to show</p>
+                                    
+                                    <div v-for="notif in display_notifs.notifications" :key="notif.id" class="notifdiv">
                                         <div class="notif-left">
                                             <div class="notif-icon bg-success">
                                                 <i class="fa fa-trello medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="notif-right">
-                                            <p><span class="highlight">Sam</span> added you to board <span class="highlight">Board Name Here</span></p>
+                                            <p><span class="highlight">{{notif.data.creator.name}}</span> {{notif.data.data}}</p>
                                         </div>
                                     </div>
-                                    <div class="notifdiv">
-                                        <div class="notif-left">
-                                            <div class="notif-icon bg-warning">
-                                                <i class="fa fa-star medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="notif-right">
-                                            <p>The workbook <span class="highlight">_____</span> has been reviewed by <span class="highlight">Luljetta's</span></p>
-                                        </div>
-                                    </div>
-                                    <!--Please see DashboardNotifs.vue for other kinds of notifs-->
+                                                                        <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
                                 <br>
                                 <div class="taskdisp shadow">
                                     <p><span class="fa fa-commenting-o"></span> Recent Messages |
-                                    <a href="#" class=""><small class="text-right">Go to Messages</small></a>
+                                    <router-link :to="{name: 'messages'}"><a><small class="text-right">Go to Messages</small></a></router-link>
                                     </p>
                                     <hr>
-                                    <!-- <p class="note">No messages to show</p> -->
+                                    <p v-if="display_messages==0" class="note">No messages to show</p>
                                     <div class="mess">
-                                        <div class="msgdiv">
+                                        <div v-for="messages in display_messages" :key="messages.id" class="msgdiv">
                                             <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
+                                                <img :src="messages.sender.picture" class="medium-avatar" alt="">
                                             </div>
-                                            <div class="msg-right">
-                                                <p class="txt-bold text-default msgsender">Samantha Millos</p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
-                                        </div>
-                                        <div class="msgdiv">
-                                            <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
-                                            </div>
-                                            <div class="msg-right">
-                                                <p class="txt-bold text-default msgsender">Samantha Millos</p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
-                                        </div>
-                                        <div class="msgdiv">
-                                            <div class="msg-left">
-                                                <img src="/images/default.png" class="medium-avatar" alt="">
-                                            </div>
-                                            <div class="msg-right">
-                                                <p class="txt-bold text-default msgsender">Samantha Millos</p>
-                                                <p class="mainmsg">Sam moved the task Encode the data to Completed</p>
-                                            </div>
+                                            <router-link :to="{ name: 'convo-view', params: {convo_id: messages.sender.slug} }" class="msg-right">
+                                                <p class="txt-bold text-default msgsender">{{messages.sender.name}} {{messages.message_date}} {{messages.message_sent}}</p>
+                                                <p class="mainmsg">{{messages.text}}</p>
+                                            </router-link>
                                         </div>
                                     </div>
 
@@ -122,36 +85,20 @@
                                     <p><span class="fa fa-clock-o text-success"></span> Task Reminders!</p>
                                     <hr>
                                     <div class="taskrem">
-                                        <div class="taskremdiv">
+                                        <div v-if="reminder_tasks" v-for="taskrem in reminder_tasks" :key="taskrem.id" class="taskremdiv">
                                             <div class="taskremname">
-                                                <a href="">Encode the directors data</a>
+                                                <a>{{taskrem.name}}</a>
                                             </div>
                                             <div class="taskremdue">
                                                 <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Feb 27, 2019</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
+                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskrem.due}}</small> | 
+                                                    <!-- <span v-if="taskrem.card_id" class="fa fa-trello"></span> <small>{{ taskrem.card }}</small> -->
+                                                    <!-- <span v-if="taskrem.sprint_id" class="fa fa-trello"></span> <small>{{ taskrem.sprint }}</small> -->
+                                                </p>
                                             </div>
                                         </div>
-                                        <div class="taskremdiv">
-                                            <div class="taskremname">
-                                                <a href="">Change the banner into this</a>
-                                            </div>
-                                            <div class="taskremdue">
-                                                <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Mar 2, 2019</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
-                                            </div>
-                                        </div>
-                                        <div class="taskremdiv">
-                                            <div class="taskremname">
-                                                <a href="">Create background image for home page</a>
-                                            </div>
-                                            <div class="taskremdue">
-                                                <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Mar 5, 2019</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
-                                            </div>
-                                        </div>
+                                        <p class="note" v-if="reminder_tasks==0"> There still no tasks assigned </p>
+                                        
                                     </div>
                                 </div>
                                 <br/>
@@ -159,36 +106,19 @@
                                     <p><span class="fa fa-clock-o text-danger"></span> Overdued Task</p>
                                     <hr>
                                     <div class="taskrem">
-                                        <div class="taskremdiv">
+                                        <div v-if="overdued_tasks" v-for="taskdue in overdued_tasks" :key="taskdue.id" class="taskremdiv">
                                             <div class="taskremname">
-                                                <a href="" class="donetask">Encode the directors data</a>
+                                                <a class="donetask">{{taskdue.name}}</a>
                                             </div>
                                             <div class="taskremdue">
                                                 <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Feb 27, 2019</small> | 
+                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskdue.due}}</small> | 
                                                     <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
                                             </div>
                                         </div>
-                                        <div class="taskremdiv">
-                                            <div class="taskremname">
-                                                <a href="" class="donetask">Change the banner into this</a>
-                                            </div>
-                                            <div class="taskremdue">
-                                                <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Mar 2, 2019</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
-                                            </div>
-                                        </div>
-                                        <div class="taskremdiv">
-                                            <div class="taskremname">
-                                                <a href="" class="donetask">Create background image for home page</a>
-                                            </div>
-                                            <div class="taskremdue">
-                                                <p>
-                                                    <span class="fa fa-calendar text-danger"></span>&nbsp;<small>Mar 5, 2019</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
-                                            </div>
-                                        </div>
+                                        <p v-if="overdued_tasks==0" class="note"> There still no overdued tasks</p>
+                                          
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +169,29 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
+ created() {
+        // this.$store.dispatch('getuser_info')
+        this.$store.dispatch('dashboard_emp')
+        this.$store.dispatch('reminder_tasks')
+        this.$store.dispatch('overdued_tasks')
+        this.$store.dispatch('display_messages')
+        this.$store.dispatch('display_notifs')
+        
+
+	},
+    computed: {
+        ...mapGetters({
+            dashboard_emp: 'dashboard_emp',
+            reminder_tasks: 'reminder_tasks',
+            overdued_tasks: 'overdued_tasks',
+            display_messages: 'display_messages',
+            display_notifs: 'display_notifs',
+
+        })
+        
+    }
 
 }
 </script>
