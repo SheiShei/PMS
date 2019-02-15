@@ -14,8 +14,8 @@ class AddForeignKeyOnBrandsTable extends Migration
     public function up()
     {
         Schema::table('brands', function (Blueprint $table) {
-            $table->index('tandem_id');
-            $table->foreign('tandem_id')->references('id')->on('tandems')->onDelete('cascade');
+            $table->index('acma_id');
+            $table->foreign('acma_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -27,9 +27,9 @@ class AddForeignKeyOnBrandsTable extends Migration
     public function down()
     {
         Schema::table('brands', function (Blueprint $table) {
-            $table->dropForeign('brands_tandem_id_foreign');
-            $table->dropIndex('brands_tandem_id_index');
-            $table->dropColumn('tandem_id');
+            $table->dropForeign('brands_acma_id_foreign');
+            $table->dropIndex('brands_acma_id_index');
+            $table->dropColumn('acma_id');
         });
     }
 }

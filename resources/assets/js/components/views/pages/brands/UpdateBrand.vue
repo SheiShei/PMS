@@ -64,7 +64,7 @@
                                                     <label for="" class="control-label">Brand Owner:</label>
                                                     <div class="">
                                                         <div class="btn-group bootstrap-select">
-                                                            <select name="brandowner" v-model="brand.tandem_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                                            <select name="brandowner" v-model="brand.acma_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                                                 <option selected v-for="tandems in tandemList" :key="tandems.id">{{tandems.name}}</option>
                                                             </select>
                                                         </div>
@@ -129,7 +129,7 @@ export default {
                password: '',
                telephone: '',
                mobile: '',
-               tandem_id: '',
+               acma_id: '',
                logo: '',
                about: ''               
            },
@@ -149,10 +149,10 @@ export default {
                 this.brand.telephone = brandData.telephone;
                 this.brand.email = brandData.email;
                 this.brand.mobile = brandData.mobile;
-                this.brand.tandem_id = brandData.tandem_id;
+                this.brand.acma_id = brandData.acma_id;
                 this.brand.logo = brandData.logo;
                 this.brand.about = brandData.about;
-                $(this.$el).find('select[name=brandowner]').val(this.brand.tandem_id);
+                $(this.$el).find('select[name=brandowner]').val(this.brand.acma_id);
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
                 // console.log(this.brand.logo);
             })
@@ -185,7 +185,7 @@ export default {
             form.append('telephone', this.brand.telephone);
             form.append('contact_person', this.brand.contact_person);
             form.append('mobile', this.brand.mobile);
-            form.append('tandem_id', this.brand.tandem_id);
+            form.append('acma_id', this.brand.acma_id);
             form.append('about', this.brand.about);
             // console.log(form.append();
 

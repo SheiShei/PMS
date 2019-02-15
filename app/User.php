@@ -71,12 +71,8 @@ class User extends Authenticatable
         $this->hasOne('App\Brand');
     }
 
-    public function ga_tandem() {
-        return $this->hasOne('App\Tandem', 'ga_id');
-    }
-
-    public function acma_tandem() {
-        return $this->hasOne('App\Tandem', 'acma_id');
+    public function acma() {
+        return $this->hasMany('App\Brand', 'acma_id');
     }
 
     public function department() {
