@@ -9,7 +9,7 @@ use App\JobOrder;
 use App\Board;
 use App\BoardUser;
 use App\Task;
-use App\Tandem;
+// use App\Tandem;
 use App\Message;
 use App\JoCreative;
 use Illuminate\Notifications\Notification;
@@ -43,9 +43,9 @@ class DashboardController extends Controller
     }
      public function dashboard_acma()
     {
-        $query = Tandem::where('acma_id', auth()->user()->id);
-        $tandem = $query->first();
-        $no_brands = Brand::where('tandem_id', $tandem['id'])->count();
+        // $query = Tandem::where('acma_id', auth()->user()->id);
+        // $tandem = $query->first();
+        $no_brands = Brand::where('acma_id', auth()->user()->id)->count();
 
         $query2 = JobOrder::where('created_by', auth()->user()->id)->with('brand:id,name');
         $no_jo = $query2->count();
@@ -125,7 +125,7 @@ class DashboardController extends Controller
 
     public function reminder_tasks()
     {
-        $query= Task::with(['card:id,name','sprint:id,name'])->where('assigned_to', auth()->user()->id)->whereDate('due', '>=', Carbon::today()->toDateString());
+        $query= Task::with(['card.board','sprint.board'])->where('assigned_to', auth()->user()->id)->whereDate('due', '>=', Carbon::today()->toDateString());
         $taskreminder= $query->orderBy('due', 'asc')->get();
         return $taskreminder;
         // return $query;
