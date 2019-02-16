@@ -7,6 +7,9 @@ import VueRouter from "vue-router";
 import Vuex from "vuex";
 import VueMoment from "vue-moment";
 import VueChatScroll from 'vue-chat-scroll';
+// import VueAWN from "vue-awesome-notifications"
+    // AWN css
+    // require("vue-awesome-notifications/dist/styles/style.css")
 import Toaster from 'v-toaster'
     // toaster css
     import 'v-toaster/dist/v-toaster.css'
@@ -25,6 +28,9 @@ Vue.use(VueMoment);
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueChatScroll);
+// Vue.use(VueAWN, {
+//     position: 'top-right',
+// })
 
 // optional set default imeout, the default is 10000 (10 seconds).
 Vue.use(Toaster, {timeout: 5000})

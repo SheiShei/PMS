@@ -21,7 +21,10 @@ class CreateWorkbooksTable extends Migration
             $table->tinyInteger('status');
             $table->char('brand_id', 36)->index();
             $table->char('created_by', 36)->index();
+            $table->tinyInteger('overall_rating');
+            $table->datetime('reviewed_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
