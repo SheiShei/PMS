@@ -61,7 +61,7 @@ class BoardSetRole extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'text' => $this->cuser . ' set ' . $this->cuser . '\'s role' . ' to ' . $this->role,
+            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
             'action' => '',
             'color' => 'bg-info',
             'icon' => 'fa-user-o'

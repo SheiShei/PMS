@@ -149,7 +149,12 @@ class DashboardController extends Controller
     public function display_notifs()
     {
         
-        $notifs = User::with(['role:id,name', 'notifications'])->where('id',auth()->user()->id)->first();
+        $notification = User::with(['role:id,name', 'notifications'])->where('id',auth()->user()->id)->first();
+        $notifs = [];
+        foreach ($notification->notifications()->orderBy('created_at','asc')->get() as $key => $notif) {
+             array_push($notifs, $notif);
+        }
+
         return $notifs;
     }
 

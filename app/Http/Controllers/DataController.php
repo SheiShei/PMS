@@ -17,6 +17,9 @@ use App\Events\SendMessageArrayEvent;
 use App\Events\RemoveConvoMemberEvent;
 use App\Events\AddConvoMemberEvent;
 
+use App\Notifications\ReceiveMessage;
+
+
 class DataController extends Controller
 {
     // notes
@@ -302,6 +305,8 @@ class DataController extends Controller
         //     // event(new DirectMessageEvent($message, NULL, $convoData));
         //     broadcast(new DirectMessageEvent($message, NULL, $convoData))->toOthers();
         // }
+        $receivers = User::findOrFail($request->receiver);  
+        $receivers->notify(new ReceiveMessage($receivers->toArray()));        
 
         $newM = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
 
