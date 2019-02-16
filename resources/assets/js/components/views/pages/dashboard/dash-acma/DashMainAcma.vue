@@ -44,16 +44,16 @@
                                     <p><span class="fa fa-bell-o"></span> Notifications</p>
                                     <hr>
                                     <div class="notifsss">
-                                        <p v-if="display_notifs.notifications==0" class="note">No notifications to show</p>
+                                        <p v-if="display_notifs==0" class="note">No notifications to show</p>
                                     <!-- <a href="#"> -->
-                                    <div v-for="notif in display_notifs.notifications" :key="notif.id" class="notifdiv">
+                                    <div v-for="notif in display_notifs" :key="notif.id" class="notifdiv">
                                         <div class="notif-left">
-                                            <div class="notif-icon bg-success">
-                                                <i class="fa fa-trello medium-avatar" alt=""></i>
+                                            <div :class="notif.data.color">
+                                                <i :class="notif.data.icon" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="notif-right">
-                                            <p><span class="highlight">{{notif.data.creator.name}}</span> {{notif.data.data}}</p>
+                                            <router-link :to="{path: notif.data.action}"><span class="highlight"> {{notif.data.text}}</span> </router-link>
                                         </div>
                                     </div>
                                     <!-- </a> -->

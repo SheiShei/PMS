@@ -11,7 +11,7 @@ class BoardUserAdded extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $board, $to_user;
+    public $board, $user;
 
     /**
      * Create a new notification instance.
@@ -20,8 +20,8 @@ class BoardUserAdded extends Notification implements ShouldQueue
      */
     public function __construct($board, $user)
     {
-        $this->board = json_decode($board, true);
-        $this->to_user = json_decode($user, true);
+        $this->board = $board;
+        $this->user = $user;
     }
 
     /**
@@ -32,7 +32,7 @@ class BoardUserAdded extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'mail'];
+        return ['database'];
     }
 
     /**
@@ -67,10 +67,10 @@ class BoardUserAdded extends Notification implements ShouldQueue
         // var_dump($name);
         // $name = 'shei';
         return [
-            'data' => 'added '.$this->to_user['name'].' to '.$this->board['name'],
-            'action' => '/boards/kanban/'.$this->board['id'],
-            'creator' => $this->board['created_by'],
-            'to_user' => $this->to_user
+            'text' => $this->user.' added you to '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
         ];
     }
 }

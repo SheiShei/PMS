@@ -34,23 +34,46 @@
                             <label for="jo_name">Name </label>
                             <input required v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
                         </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-3">
                             <label for="brand">Brand:</label>
-                            <div class="btn-group bootstrap-select">
-                                <select required v-model="brand.brand_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                            <!-- <div class="btn-group bootstrap-select"> -->
+                                <select required v-model="brand.brand_id" class="my-thin-select my-inp-blk" type="text">
                                         <option value="">---</option>
                                         <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                                 </select>
-                            </div>
+                            <!-- </div> -->
                         </div>
-                        <div class="col-md-3 form-group" v-if="boards">
+                        <div class="col-md-3" v-if="boards">
                             <label for="brand">Board:</label>
-                            <div class="btn-group bootstrap-select">
-                                <select v-model="brand.board_id" name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                            <div v-if="justNewBoard==false">
+                                <select v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
                                     <option value="">---</option>
                                         <!-- <option value="new">New Board</option> -->
                                         <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
                                 </select>
+                                <a @click="justNewBoard=true" style="cursor:pointer"><small>or Add New Board</small></a>
+                            </div>
+                            <div v-if="justNewBoard==true">
+                            <div class="form-group is-empty">
+                                <input type="text" class="form-control" placeholder="New Board Name ">
+                            </div>
+                            <div class=" text-center">
+                                <div class="radio">
+                                    <span>
+                                        <label>
+									        <input value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        Kanban
+								        </label>
+                                    </span>
+                                    <span>
+                                        <label>
+									        <input value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        Scrum
+								        </label>                                
+                                    </span>
+						        </div>
+                            </div>
+                            <a @click="justNewBoard=false" style="cursor:pointer"><small>or just select from existing boards</small></a>
                             </div>
                         </div>
                         <!-- <div class="col-md-3 form-group">
@@ -265,26 +288,47 @@
 
                     <hr />
 
-                    <div class="jo-body" style="background-color: whitesmoke">
+                <!--if selected board is scrum-->
+                <div>
+                    <p class="no-margin"><span class="txt-bold">Tasks Section</span> . <small class="text-gray">Add tasks for this JO by adding User Story first.</small><p>
+                    <!-- <p class="note">Add tasks for this JO by adding User Story first.</p>     -->
+                    <button type="button" @click="addNewUS" class="btn btn-success btn-md">Add User Story</button>
+                    
+                    <div class="jo-body brl-gray" v-for="(userstory, index) in userstories" :key="index" style="background-color: whitesmoke; margin-bottom: 15px;">
                         <div class="row pb-10">
                             <div class="col-md-12">
-                                <h5>Add Task 
-                                <span><button type="button" @click="addNewTask" class="btn btn-success btn-fab btn-fab-mini"
-                                        rel="tooltip" data-original-title="Click to add new task form" data-placement="right">
-                                    <!-- <span class="fa fa-plus"></span> -->
-                                    +
-                                    </button></span>
-                                </h5>
+                                <h4><span class="fa fa-list-ul"></span> User Story #{{ index + 1 }} {{ userstory.name }}</h4>
                             </div>
-
-                        <div class="col-md-1"></div>
-                        <div class="col-md-10">
+                            <div class="col-md-8">
+                                <div class="form-inline">
+                                <label for="" class="control-label">User Story Name:</label>
+                                <input type="text" class="my-input my-inp-blk" v-model="userstory.name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-inline">
+                                <label for="" class="control-label">Points:</label>
+                                <select name="" id="" class="my-input my-inp-blk">
+                                    <option value="1">1</option>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" @click="addNewTask(index)" class="btn btn-success btn-sm">Add Task</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
                     
+                            <div class="">
+                            
                             <div class="row" id="addtaskdiv">
                                 <div class="col-md-12">
-                                    <div class="card taskcard" v-for="(task, index) in tasks" :key="index">
-                                        <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
-                                        <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{index+1}}</h5>
+                                    <div class="card taskcard" v-for="(task, i) in userstory.tasks" :key="i">
+                                        <span class="pull-right" @click="deleteTaskForm(index,i)" style="cursor:pointer"><i class="fa fa-times"></i></span>
+                                        <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{i+1}}</h5>
                                         <div class="form-row">
                                             <div class="col-md-7">
                                                 <label for="">Name </label>
@@ -306,11 +350,64 @@
                                     </div>
                                 </div>
                             </div>
+                            <br/>
+                            </div>
+                            </div>
 
                         </div>
-                        <div class="col-md-1"></div>
                     </div>
-                    </div>
+                    <!-- </div> -->
+                </div>
+
+                <!--if selected board is kanban-->
+                        <div class="jo-body" style="background-color: whitesmoke">
+                            <div class="row pb-10">
+                                <div class="col-md-12">
+                                    <h5>Add Task 
+                                    <span>
+                                        <button type="button" @click="addNewTaskK" class="btn btn-success btn-fab btn-fab-mini"
+                                            rel="tooltip" data-original-title="Click to add new task form" data-placement="right">
+                                        +
+                                        </button>
+                                    </span>
+                                    </h5>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="row" id="addtaskdiv">
+                                        <div class="col-md-12">
+                                            <div class="card taskcard" v-for="(task, index) in tasks" :key="index">
+                                                <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
+                                                <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{index+1}}</h5>
+                                                <div class="form-row">
+                                                    <div class="col-md-7">
+                                                        <label for="">Name </label>
+                                                        <input v-model="task.name" type="text" class="form-control">
+                                                        <label for="">Decription </label>
+                                                        <textarea type="text" v-model="task.desc" class="btn-block" placeholder="" ></textarea>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label for=""><span class="fa fa-user-o"></span> Assign to </label>
+                                                        <select class="btn-block" >
+                                                            <option value="">Shooky</option>
+                                                            <option value="">Chimmy</option>
+                                                            <option value="">RJ</option>
+                                                        </select>
+                                                        <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
+                                                        <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                            </div>
+                        </div>
+
+
 
                     <hr>
                      <div class="row">
@@ -453,8 +550,24 @@ import {mapGetters} from 'vuex';
 export default {
     data(){
         return{
-            tasks: [
-                {name: '',desc: '',files: []}
+            justNewBoard: false,
+            tasks:[{
+                name: '',
+                desc: '',
+                files: []
+            }],
+            userstories: [
+                {
+                    name: '',
+                    desc: '',
+                    points: 1,
+                    tasks:[{
+                        name: '',
+                        desc: '',
+                        files: []
+                    }]
+                }
+
             ],
             brand: {
                 name: '',
@@ -501,16 +614,38 @@ export default {
             }),        
     },
     methods: {
-        addNewTask(){
+        addNewTaskK(){
             this.tasks.push({
+                name: '',
+                desc: '',
+                files: []
+            })
+            this.scrollToEnd()
+        },
+        addNewTask(index){
+            console.log('asdasd');
+            
+            this.userstories[index].tasks.push({
                 name: '',
                 desc: '',
                 files: []
             });
             this.scrollToEnd()
         },
-        deleteTaskForm(index){
-            this.tasks.splice(index,1)
+        addNewUS(){
+            this.userstories.push({
+                name: '',
+                desc: '',
+                points: 0,
+                tasks: [{
+                    name: '',
+                    desc:'',
+                    files:[]
+                }]
+            })
+        },
+        deleteTaskForm(usind,taskind){
+            this.userstories[usind].tasks.splice(taskind,1)
         },
         scrollToEnd(){
             var taskdiv = document.querySelector("#addtaskdiv")
@@ -593,6 +728,9 @@ export default {
     }
     div.checkbox > label{
         font-weight: normal !important;
+    }
+    .peruserstory{
+        background-color: #efefef;
     }
 </style>
 
