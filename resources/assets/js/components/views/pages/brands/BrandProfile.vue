@@ -53,7 +53,13 @@
                                 <p>{{brandProfile.mobile}}</p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <router-link :to="{name: 'add_workbook'}" class="btn btn-success btn-md btn-block">Create New Workbook</router-link>
+                            </div>
+                        </div>
                     </div>
+                    <br/>
                 </div>
                 <div class="col-md-8">
                     <div class="taskchart shadow" v-if="brandJOs">
@@ -108,6 +114,74 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="taskchart shadow" v-if="brandJOs">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="nm-top"><strong><span class="fa fa-book"></span> Workbooks</strong>&nbsp;<span><small>| <a href="">Archive</a></small></span></h6>
+                                <hr/>
+                            </div>
+                            <div class="col-md-8 text-right">
+                                    <select class="my-input my-thin-select" name="" id="">
+                                        <option value="" selected>Reviewed & For Review</option>
+                                        <option value="">Reviewed</option>
+                                        <option value="">For Review</option>
+                                    </select>
+                                    <input type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    &nbsp;<span class="fa fa-search text-default"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="max-height: 30vh; overflow-y: auto">
+                                        <div class="torev2">
+                                        <a href="#parent" class="torev2">
+                                            <div class="torevdiv2">
+                                                <div class="torev-left">
+                                                    <div class="torev-icon">
+                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    </div>
+                                                </div>  
+                                                <div class="torev-right">
+                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a> <span title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
+                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
+                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                </div>
+                                                <div class="very-right hidden-sm hidden-xs text-right">
+                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                    <span class="fa fa-trash-o"></span> Archive
+                                                </a>
+                                            </div>
+                                            </div>
+                                        </a>
+                                        </div>
+                                        <div class="torev2">
+                                        <a href="#parent" class="torev2">
+                                            <div class="torevdiv2">
+                                                <div class="torev-left">
+                                                    <div class="torev-icon">
+                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    </div>
+                                                </div>  
+                                                <div class="torev-right">
+                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a></h6> 
+                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
+                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                </div>
+                                                <div class="very-right hidden-sm hidden-xs text-right">
+                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                    <span class="fa fa-trash-o"></span> Archive
+                                                </a>
+                                            </div>
+                                            </div>
+                                        </a>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
