@@ -7,24 +7,23 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BoardSetRole extends Notification implements ShouldQueue
+class UserRemovefromBoard extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $cuser;
+    public $board;
     public $user;
-    public $role;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($cuser, $user, $role)
+    public function __construct($cuser, $board, $user)
     {
         $this->cuser = $cuser;
+        $this->board = $board;
         $this->user = $user;
-        $this->role = $role;
     }
 
     /**
@@ -60,11 +59,21 @@ class BoardSetRole extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
+       if($this->user['role_id']==1){
         return [
-            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
+            'text' => $this->cuser.' removed you as an Admin from the board: '.$this->board['name'],
             'action' => '',
-            'color' => 'bg-info',
-            'icon' => 'fa-user-o'
+            'color' => 'notif-icon bg-danger',
+            'icon' => 'fa fa-trello medium-avatar'
         ];
+       }
+       else{
+        return [
+            'text' => $this->cuser.' removed you from the board: '.$this->board['name'],
+            'action' => '',
+            'color' => 'notif-icon bg-danger',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
+        }
     }
 }

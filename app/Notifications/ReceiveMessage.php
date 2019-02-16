@@ -7,24 +7,23 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BoardSetRole extends Notification implements ShouldQueue
+class ReceiveMessage extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $cuser;
-    public $user;
-    public $role;
+    public $receivers;
+    
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($cuser, $user, $role)
+    public function __construct($receivers)
     {
-        $this->cuser = $cuser;
-        $this->user = $user;
-        $this->role = $role;
+        //
+        $this->receivers = $receivers;
+
     }
 
     /**
@@ -60,11 +59,12 @@ class BoardSetRole extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
+        // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
         return [
-            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
-            'action' => '',
-            'color' => 'bg-info',
-            'icon' => 'fa-user-o'
+            'text' => 'You have new message received!',
+            'action' => '/messages/'.$this->receivers['slug'],
+            'color' => 'notif-icon bg-info',
+            'icon' => 'fa fa-envelope-o medium-avatar'
         ];
     }
 }

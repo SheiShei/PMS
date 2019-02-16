@@ -7,24 +7,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BoardSetRole extends Notification implements ShouldQueue
+class UserBoardDetailsUpdate extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $cuser;
+    public $board;
     public $user;
-    public $role;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($cuser, $user, $role)
+    public function __construct($board, $user)
     {
-        $this->cuser = $cuser;
+        $this->board = $board;
         $this->user = $user;
-        $this->role = $role;
     }
 
     /**
@@ -61,10 +59,10 @@ class BoardSetRole extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
-            'action' => '',
-            'color' => 'bg-info',
-            'icon' => 'fa-user-o'
+            'text' => 'Admin ' . $this->user . ' updated the settings of board: '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
         ];
     }
 }

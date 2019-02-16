@@ -4,264 +4,327 @@
             <h2><span class="fa fa-file-o"></span> Job Order Form</h2>
         </div>
 
-        <div class="first-column col-md-1">
-        </div>
-
-        <div class="col-md-10" v-if="!!details">
-            <div class="joform shadow">
-                <div class="jo-head">
-                    <h4 class="noprint"><span class="fa fa-file-o"></span> {{ details.name }}
-                    <span>
-                        <button type="button" class="btn btn-success btn-simple btn-xs" title="Edit">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                    </span>
-                    <span class="pull-right"><small>Status: </small>
-                        <span v-if="details.status == 1" class="label label-info">Active</span>
-                        <span v-if="details.status == 2" class="label label-success">Completed</span>
-                        <span v-if="details.status == 3" class="label label-danger">Blocked</span>
-                    </span>
-                    </h4>
-                </div>
-                <div class="jo-body">
-                    <div class="row">
-                        <div v-if="details.brand" class="col-md-6">
-                            <p><span class="txt-bold">Brand :</span> {{ details.brand.name }}</p>
-                            <p><span class="txt-bold">Client :</span> {{details.brand.contact_person }}</p>
-                            <p><span class="txt-bold">Brand Owner :</span> {{ details.brand.tandem.name }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <!-- <label for="" class="align-right">JO No.</label> -->
-                            <p><span class="txt-bold">JO No. : </span>{{ details.id }}</p>
-                            <!-- <img class="" style="height: 70px" src="/images/nightsky3.jpg" alt=""> -->
-                            <p><span class="txt-bold">Date In :</span> {{ details.indate }}</p>
-                            <p><span class="txt-bold">Date Due :</span> {{ details.duedate }}</p>
-                            
-                        </div>
-                    </div>
-
-                    <hr v-if="details.jocreatives">
-
-                    <div class="row" v-if="details.jocreatives">
-                        <div class="col-md-6">
-                            <p><span class="txt-bold">Usage Media :</span>
-                                <span v-for="(media, index) in details.jocreatives.media" :key="index" v-if="media">
-                                    <span v-if="media == 1">IG Post, </span> 
-                                    <span v-if="media == 2">FB Post, </span> 
-                                    <span v-if="media == 3">IG/Messenger Stories, </span> 
-                                    <span v-if="media == 4">Cover Photo, </span> 
-                                    <span v-if="media == 5">Branding (New Brand), </span> 
-                                    <span v-if="media == 6">Trademark Form, </span> 
-                                </span>
-                            </p>
-                            <p><span class="txt-bold">Ad Type :</span> 
-                                <span v-for="(ad, index) in details.jocreatives.ad_type" :key="index" v-if="ad">
-                                    <span v-if="ad == 1">Carousel, </span> 
-                                    <span v-if="ad == 2">Canvas, </span> 
-                                    <span v-if="ad == 3">Gallery, </span> 
-                                    <span v-if="ad == 4">Album Type, </span> 
-                                </span>
-                            </p>
-                            <p><span class="txt-bold">File Format :</span> 
-                                <span v-for="(file, index) in details.jocreatives.file_type" :key="index" v-if="file">
-                                    <span v-if="file == 1">PDF, </span> 
-                                    <span v-if="file == 2">JPG, </span> 
-                                    <span v-if="file == 3">GIF, </span> 
-                                    <span v-if="file == 4">PNG, </span> 
-                                    <span v-if="file == 5">MP4, </span> 
-                                    <span v-if="file == 6">Boosted, </span> 
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="txt-bold">Copy On Artwork:</p>
-                            <p>{{ details.jocreatives.copy }}</p>
-                        </div>
-                    </div>
-
-                    <hr>
-                    
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h5><span class="fa fa-tasks"></span> Tasks</h5>
-                        </div>
-                        <div class="col-md-12" v-if="details.tasks">
-                            <!-- random -->
-                            <div class="tasklist row" v-for="(task, index) in details.tasks" :key="task.id">
-                                <div class="col-md-12">
-                                    <div class="taskdesc">
-                                        <div class="taskno-cir">{{ index + 1 }}</div>
-                                        <div class="taskdesattach">
-                                            <p>&nbsp;{{ task.name }}</p>
-                                            <p>&nbsp;{{ task.description }}</p>
-                                            <!-- files here -->
-                                            <div class="" v-if="task.files">
-                                                <a v-for="(file, i) in task.files" :key="i" v-if="!(file.extension.includes('image'))" :href="file.new_filename" class="btn btn-info btn-sm" download>
-                                                    <span class="fa fa-file-text-o"></span>&nbsp;{{ file.original_filename }}
-                                                </a>
-                                            </div>
-                                            <div class="taskimgdiv" v-if="task.files">
-                                                <a v-for="(file, i) in task.files" :key="i" v-if="file.extension.includes('image')" :href="file.new_filename" target="_blank" title="Click to View">
-                                                    <img :src="file.new_filename" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+        <div class="container-fluid">
+            <div class="main2" v-if="!!details">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="taskchart shadow mt-4">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="no-margin "><span class="fa fa-copy"></span> {{ details.name }}&nbsp;
+                                        <span v-if="details.status == 1" class="txt-bold text-info" title="Job Order Status: Active"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 2" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 3" class="txt-bold text-danger" title="Job Order Status: Blocked"> <i class="fa fa-circle"></i></span>
+                                    </h4>
+                                    <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
+                                    <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <!-- <p class="no-margin"><small>Status: </small>
+                                        <span v-if="details.status == 1" class="txt-bold text-info"><span class="fa fa-circle"></span> Active</span>
+                                        <span v-if="details.status == 2" class="txt-bold text-success"><span class="fa fa-circle"></span> Completed</span>
+                                        <span v-if="details.status == 3" class="txt-bold text-danger"> <span class="fa fa-circle"></span> Blocked</span>
+                                    </p> -->
+                                    <!-- <p class="no-margin"><small class="text-gray">For Client: Robert Fereno ( {{ details.brand.name }} )</small></p> -->
+                                    <button class="btn btn-xs btn-default btn-simple" type="button">
+                                        <i class="fa fa-pencil"></i> Edit Mode
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- with files -->
-                            <!-- <div class="tasklist row">
-                                <div class="col-md-12">
-                                    <div class="taskdesc">
-                                        <div class="taskno-cir">1</div>
-                                        <div class="taskdesattach">
-                                            <p>&nbsp;New Page for Rewards Page Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo magni ullam quis quam deserunt culpa esse soluta eos aliquam 
-                                            hic quasi impedit sint asperiores id dolore, voluptatum iste officiis at.
+                            <hr/>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-5 col-sm-6 col-xs-6">
+                                            <p class="no-margin"><small><span class="fa fa-briefcase"></span> Brand: </small></p>
+                                        </div>
+                                        <div class="col-md-7 col-sm-6 col-xs-6 text-right">
+                                            <p class="no-margin">{{ details.brand.name }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5 col-sm-6 col-xs-6">
+                                            <p class="no-margin"><small><span class="fa fa-address-book-o"></span> Contact Person: </small></p>
+                                        </div>
+                                        <div class="col-md-7 col-sm-6 col-xs-6 text-right">
+                                            <p class="no-margin">{{ details.brand.contact_person }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5 col-sm-8 col-xs-6">
+                                            <p class="no-margin"><small><span class="fa fa-user-o"></span> Brand Owner: </small></p>
+                                        </div>
+                                        <div class="col-md-7 col-sm-6 col-xs-6 text-right">
+                                            <p class="no-margin">{{ details.brand.acma.name }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5 col-sm-8 col-xs-6">
+                                            <p class="no-margin"><small><span class="fa fa-clock-o text-success"></span> In Date: </small></p>
+                                        </div>
+                                        <div class="col-md-7 col-sm-6 col-xs-6 text-right">
+                                            <p class="no-margin">{{ details.indate }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5 col-sm-8 col-xs-6">
+                                            <p class="no-margin"><small><span class="fa fa-clock-o text-danger"></span> Due Date: </small></p>
+                                        </div>
+                                        <div class="col-md-7 col-sm-6 col-xs-6 text-right">
+                                            <p class="no-margin">{{ details.duedate }}</p>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                </div>
+
+                                <div class="col-md-4 pl-4" v-if="details.jocreatives">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="no-margin"><span class="txt-bold">Usage Media :</span></p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                             <p class="no-margin" v-for="(media, index) in details.jocreatives.media" :key="index" v-if="media">
+                                                <span v-if="media == 1">IG Post</span> 
+                                                <span v-else-if="media == 2">FB Post</span> 
+                                                <span v-else-if="media == 3">IG/Messenger Stories</span> 
+                                                <span v-else-if="media == 4">Cover Photo</span> 
+                                                <span v-else-if="media == 5">Branding (New Brand)</span> 
+                                                <span v-else-if="media == 6">Trademark Form</span>
+                                                <span v-else>-</span> 
                                             </p>
-                                            <div class="">
-                                                <a href="/images/sample.docx" class="btn btn-info btn-sm" download>
-                                                    <span class="fa fa-file-text-o"></span>&nbsp;filename.docx
-                                                </a>
-                                                <a href="/images/sample.docx" class="btn btn-info btn-sm" download>
-                                                    <span class="fa fa-file-text-o"></span>&nbsp;filename.docx
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div> -->
-                            
-                            <!-- with image -->
-                            <!-- <div class="tasklist row">
-                                <div class="col-md-12">
-                                    <div class="taskdesc">
-                                        <div class="taskno-cir">2</div>
-                                        <div class="taskdesattach">
-                                            <p>&nbsp;New Page for Rewards Page Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo magni ullam quis quam deserunt culpa esse soluta eos aliquam 
-                                                hic quasi impedit sint asperiores id dolore, voluptatum iste officiis at.
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="no-margin"><span class="txt-bold">Ad Type :</span></p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <p class="no-margin"><span v-for="(ad, index) in details.jocreatives.ad_type" :key="index" v-if="ad">
+                                                    <span v-if="ad == 1">Carousel</span> 
+                                                    <span v-else-if="ad == 2">Canvas</span> 
+                                                    <span v-else-if="ad == 3">Gallery</span> 
+                                                    <span v-else-if="ad == 4">Album Type</span>
+                                                    <span v-else>-</span> 
+                                                </span>
                                             </p>
-                                            <div class="taskimgdiv">
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/bg2.jpeg" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
-                            
-                            <!-- with images -->
-                            <!-- <div class="tasklist row">
-                                <div class="col-md-12">
-                                    <div class="taskdesc">
-                                        <div class="taskno-cir">3</div>
-                                        <div class="taskdesattach">
-                                            <p>&nbsp;New Page for Rewards Page Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo magni ullam quis quam deserunt culpa esse soluta eos aliquam 
-                                            hic quasi impedit sint asperiores id dolore, voluptatum iste officiis at.</p>
-                                            <div class="taskimgdiv">
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/bg2.jpeg" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/default.png" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                                <a href="/images/sample.jpg" target="_blank" title="Click to View">
-                                                    <img src="/images/sample.jpg" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/nightsky3.jpg" class="task-img" alt="bg2.jpg">
-                                                </a>
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/luljetta.png" class="task-img" alt="bgkhjn2.jpg">
-                                                </a>
-                                                <a href="/images/bg2.jpeg" target="_blank" title="Click to View">
-                                                    <img src="/images/logo.png" class="task-img" styls="task-img" alt="bg2.jpg">
-                                                </a>
-                                            </div>
+
+                                <div class="col-md-4 pl-4" v-if="details.jocreatives">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <p class="no-margin txt-bold"><span class="fa fa-file-o"></span> File Format:</p>
                                         </div>
-                                     </div>
-                                </div>
-                            </div> -->
-                                
-                            <!-- with file and image -->
-                            <!-- <div class="tasklist row">
-                                <div class="col-md-12">
-                                    <div class="taskdesc">
-                                        <div class="taskno-cir">4</div>
-                                        <div class="taskdesattach">
-                                            <p>&nbsp;New Page for Rewards Page Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo magni ullam quis quam deserunt culpa esse soluta eos aliquam 
-                                                hic quasi impedit sint asperiores id dolore, voluptatum iste officiis at.</p>
-                                            <a href="/images/sample.docx" class="btn btn-info btn-sm" download>
-                                                <span class="fa fa-file-text-o"></span>&nbsp;filename.docx
-                                            </a>
-                                            <div class="taskimgdiv">
-                                                <a href="/images/sample.jpg" target="_blank" title="Click to View">
-                                                    <img src="/images/sample.jpg" class="task-img" style="" alt="bg2.jpg">
-                                                </a>
-                                            </div>
+                                        <div class="col-md-7 text-right">
+                                            <p class="no-margin">
+                                                <span v-for="(file, index) in details.jocreatives.file_type" :key="index" v-if="file">
+                                                    <span v-if="file == 1">PDF</span> 
+                                                    <span v-else-if="file == 2">JPG</span> 
+                                                    <span v-else-if="file == 3">GIF</span> 
+                                                    <span v-else-if="file == 4">PNG</span> 
+                                                    <span v-else-if="file == 5">MP4</span> 
+                                                    <span v-else-if="file == 6">Boosted</span>
+                                                    <span v-else>-</span> 
+                                                </span>
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
-                            </div> -->
-                        </div>
-                    </div>
-                    <hr />            
-                    <div class="row" v-if="details.jocreatives">
-                        <div class="col-md-12" v-if="details.jocreatives.post_caption">
-                            <p class="txt-bold">Post Caption:</p>
-                            <p>{{ details.jocreatives.post_caption }}</p>
-                        </div>
-                    </div>
-                    <hr /> 
-                    <div class="row" v-if="details.jocreatives" >
-                        <div class="col-md-7">
-                            <!-- <p><span class="txt-bold">Status:</span></p>
-                            <ul>
-                                <li>No Revisions</li>
-                                <li>Copy Approved for Post</li>
-                                <li>ACMA/BO Approved for Posting</li>
-                            </ul> -->
-                            <!--If there's revision-->
-                            <p class="txt-bold">Revisions:</p>
-                            <p>{{ details.jocreatives.revisions }}</p>
-                        </div>
-                        <div class="col-md-5">
-                            <div v-if="details.jocreatives.signed_by">
-                                <p><span class="txt-bold">Final Sign Off by: </span>{{ details.jocreatives.signedby.name }}</p>
-                                <p><span class="txt-bold">Date:</span> {{ details.jocreatives.completed_at }}</p>
-                            </div>
-                            <!-- <p v-if="!details.jocreatives.signed_by">Not yet ready for sign off.</p> -->
-                            <div v-if="!details.jocreatives.signed_by">
-                                <!-- <p>Not yet ready for sign off.</p> -->
-                                <label for="">Final Sign Off:</label>
-                                <div class="checkbox mr-10">
-                                    <label>
-                                        <input v-model="sign_off.check" type="checkbox" name="final_sign_off"><span class="check"></span>
-                                        Checking this field means you are confirming the final sign off. (?)
-                                    </label>
-                                </div>
-                                <div v-if="sign_off.check">   
-                                    <form @submit.prevent="signOff" >
-                                        <p v-if="error" style="color: red">Unauthorize</p>
-                                        <p class="note">Enter email and password for verification.</p>
-                                        <input v-model="sign_off.email" type="email" class="form-control" placeholder="email" required>
-                                        <input v-model="sign_off.password" type="password" class="form-control" placeholder="password" required>
-                                        <button class="btn btn-success btn-md btn-block" type="submit">
-                                            DONE!
-                                        </button>   
-                                    </form> 
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Copy on Artwork:</p>
+                                            <p class="no-margin" v-if="details.jocreatives.copy == null ">
+                                                {{ details.jocreatives.copy }}
+                                            </p>
+                                            <p class="no-margin" v-else>-</p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                            
                 </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-5">
+                        <div class="taskchart shadow">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
+                                </div>
+                                <div class="col-md-7 text-right">
+                                    <p class="no-margin text-gray"><small>Sample Board Here</small></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">(15)</span></small></p>
+                                </div>
+                                <div class="col-md-5 text-right">
+                                    <p class="no-margin text-gray"><small>80%</small></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="progress progress-line-success">
+		                    	        <div class="progress-bar progress-bar-success" style="width: 35%">
+		                                    <span class="sr-only">35% Complete (success)</span>
+		                                </div>
+		                            </div>
+                                </div>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="torev3">
+                                        <div class="torevdiv3" v-for="(task, index) in details.tasks" :key="task.id">
+                                            
+                                            <!-- if currently active -->
+                                            <!-- <div class="torev-content divactive">
+                                                <h6 class="no-margin txt-bold text-info"><span class="fa fa-circle text-info"></span> {{ task.name }} </h6>
+                                                <p class="no-margin">
+                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small>2 days left</small>
+
+                                                </p>
+                                            </div> -->
+
+                                            <!-- if currently active 1 day before or on due-->
+                                            <!-- <div class="torev-content divwarning">
+                                                <h6 class="no-margin txt-bold text-warning"><span class="fa fa-circle text-warning"></span> {{ task.name }} </h6>
+                                                <p class="no-margin">
+                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small>2 days left</small>
+                                                </p>
+                                            </div> -->
+
+                                            <!-- if completed -->
+                                            <div class="torev-content divcompleted">
+                                                <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
+                                                <p class="no-margin">
+                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                </p>
+                                            </div>
+
+                                            <!-- if overdued & not yet completed -->
+                                            <!-- <div class="torev-content divoverdued">
+                                                <h6 class="no-margin txt-bold" text-danger><span class="fa fa-circle text-danger"></span> {{ task.name }} </h6>
+                                                <p class="no-margin">
+                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small>due 2 days ago</small>
+                                                </p>
+                                            </div> -->
+
+                                            <!-- if overdued but completed after due date-->
+                                            <!-- <div class="torev-content divoverdued">
+                                                <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
+                                                <p class="no-margin">
+                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small>due 2 days ago</small>
+                                                </p>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="taskchart shadow">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6" v-if="details.jocreatives.post_caption">
+                                            <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Post Caption</p>
+                                            <!-- <hr/> -->
+                                            <p  class="no-margin">{{ details.jocreatives.post_caption }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="no-margin txt-bold"><span class="fa fa-rotate-right"></span> Revisions:</p>
+                                            <p>{{ details.jocreatives.revisions }}</p>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                     <div class="row" v-if="details.jocreatives.signed_by">
+                                        <div class="col-md-12">
+                                            <p><span class="txt-bold">Final Signed Off by: </span>{{ details.jocreatives.signedby.name }}</p>
+                                            <p><span class="txt-bold">Date:</span> {{ details.jocreatives.completed_at }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row" v-if="!details.jocreatives.signed_by">
+                                        <div class="col-md-12">
+                                            <p class="no-margin txt-bold"><span class="fa fa-pencil"></span> Final Sign Off</p>
+                                            <button class="btn btn-success btn-md btn-block" v-if="!sign_off.check" @click="sign_off.check = !sign_off.check">Sign Off JO</button>
+                                            <div v-if="sign_off.check">   
+                                                <form @submit.prevent="signOff" >
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <p class="no-margin text-gray"><small>Enter email and password for verification.</small></p>
+                                                            <p v-if="error" class="text-danger"><small>Sorry. You're unauthorized to sign off.</small></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 form-group">
+                                                            <label class="">Email:</label>
+                                                            <input v-model="sign_off.email" type="email" class="form-control" required>
+                                                        </div>
+                                                        <div class="col-md-6 form-group">
+                                                            <label class="">Password:</label>
+                                                            <input v-model="sign_off.password" type="password" class="form-control" required>
+                                                        </div>
+                                                    </div>
+                                                                                                
+                                                    <div class="row" v-if="!details.jocreatives.signed_by">
+                                                        <div class="col-md-6">
+                                                            <button @click="sign_off.check = !sign_off.check" class="btn btn-default btn-md btn-block" type="reset">
+                                                            Cancel
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-success btn-md btn-block" type="submit">
+                                                            Confirm Sign Off
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> {{ details.name }}'s Workload</span></p>
+                            <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
+                                <gantt-header slot="header"></gantt-header>
+                            </gantt-elastic>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+
             </div>
         </div>
 
-        <div class="col-md-1">
-        </div>
+
 
         <div class="modal fade" id="SuccesCreativeSignOff" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-small ">
@@ -285,7 +348,17 @@
 
 <script>
 import {mapGetters} from 'vuex';
+import dayjs from "dayjs";
+import GanttElastic from 'gantt-elastic';
+import Header from './workload/Header.vue';
+import style from "gantt-elastic/src/style.js";
 export default {
+    components: {
+        'gantt-header': Header,
+        'gantt-elastic': GanttElastic,
+        'gantt-footer': { template: `` }
+    },
+    props: ['header', 'footer'],
     data(){
         return{
             details: {},
@@ -295,6 +368,79 @@ export default {
                 check: false,
             },
             error: false,
+            show: true,
+            tasks: [
+                {
+                    id: 1,
+                    label: 'Make some noise',
+                    user: '<a><span><img class="small-avatar" src="/images/default"></span> shei</a>',
+                    duration: 5 * 24 * 60 * 60,
+                    progress: 85,
+                    status: 'Completed',
+                    type: 'task',
+                },
+                {
+                    id: 2,
+                    label: 'Make some noise 22',
+                    user: '<a>shei</a>',
+                    parentId: 1,
+                    dependentOn: [1],
+                    duration: 5*24*60*60,
+                    progress: 85,
+                    status: 'Completed',
+                    type: 'task'
+                }
+            ],
+            options: {
+                title: {
+                    label: 'Team Workload',
+                    html: false,
+                    style:{
+                        'font-size' : '12px !important',
+                        'vertical-align': 'middle',
+                    }
+                },
+                taskList: {
+                    columns: [
+                        {
+                            id: 2,
+                            label: 'Member',
+                            value: 'user',
+                            width: 120,
+                            html: true,
+                            expander: true
+                        }, 
+                        {
+                            id: 3,
+                            label: 'Tasks',
+                            value: 'label',
+                            width: 170,
+                            expander: false
+                        }, 
+                        {
+                            id: 4,
+                            label: 'Due',
+                            value: (task) => task.endDate.format('YYYY-MM-DD'),
+                            width: 78
+                        }, 
+                        {
+                            id: 5,
+                            label: 'Status',
+                            value: 'status',
+                            width: 80
+                        } 
+                    ]
+                },
+                locale: {
+                    code: 'en',
+                    'Now': 'Now',
+                    'X-Scale': 'Zoom-X',
+                    'Y-Scale': 'Zoom-Y',
+                    'Task list width': 'Task list',
+                    'Before/After': 'Expand',
+                    'Display task list': 'Task list'
+                }
+            }
         }
     },
     created() {

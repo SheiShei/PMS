@@ -44,16 +44,16 @@
                                     <p><span class="fa fa-bell-o"></span> Notifications</p>
                                     <hr>
                                     <div class="notifsss">
-                                        <p v-if="display_notifs.notifications==0" class="note">No notifications to show</p>
+                                        <p v-if="display_notifs==0" class="note">No notifications to show</p>
                                     
-                                    <div v-for="notif in display_notifs.notifications" :key="notif.id" class="notifdiv">
+                                    <div v-for="notif in display_notifs" :key="notif.id" class="notifdiv">
                                         <div class="notif-left">
-                                            <div class="notif-icon bg-success">
-                                                <i class="fa fa-trello medium-avatar" alt=""></i>
+                                            <div :class="notif.data.color">
+                                                <i :class="notif.data.icon" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="notif-right">
-                                            <p><span class="highlight">{{notif.data.creator.name}}</span> {{notif.data.data}}</p>
+                                            <router-link :to="{path: notif.data.action}"><span class="highlight"> </span> {{notif.data.text}}</router-link>
                                         </div>
                                     </div>
                                                                         <!--Please see DashboardNotifs.vue for other kinds of notifs-->
@@ -92,8 +92,8 @@
                                             <div class="taskremdue">
                                                 <p>
                                                     <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskrem.due}}</small> | 
-                                                    <!-- <span v-if="taskrem.card_id" class="fa fa-trello"></span> <small>{{ taskrem.card }}</small> -->
-                                                    <!-- <span v-if="taskrem.sprint_id" class="fa fa-trello"></span> <small>{{ taskrem.sprint }}</small> -->
+                                                    <!-- <span v-if="taskrem.card" class="fa fa-trello"></span> <small>{{ taskrem.card.board.name }}</small> -->
+                                                    <!-- <span v-if="taskrem.sprint" class="fa fa-trello"></span> <small>{{ taskrem.sprint.board.name }}</small> -->
                                                 </p>
                                             </div>
                                         </div>

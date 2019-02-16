@@ -12,6 +12,8 @@ use App\JoCreative;
 use Hash;
 use Carbon\Carbon;
 
+use App\Notifications\JOCreativeCreated;
+
 class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
@@ -197,8 +199,10 @@ class AdminController extends Controller
             'revisions' => $joDetails['revisions']
         ]);
         
-        
-        
+        // $newjo2 = User::where('id',auth()->user()->id);
+
+        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+
         return JobOrder::with('jocreatives', 'tasks.files')->where('id', $newjo->id)->first();
     }
     
@@ -283,21 +287,30 @@ class AdminController extends Controller
             'date_ended' => $joDetails['date_ended'],
         ]);
 
+        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+
         return JobOrder::with('joweb', 'tasks.files')->where('id', $newjo->id)->first();
     }
 
     public function onLoad() {
-        $brands = Brand::get();
+        if(auth()->user()->role_id==1)
+        {
+            $brands = Brand::get();
+        }
+        else
+        {
+        $brands = Brand::where('acma_id',auth()->user()->id)->get();
+        }
         return $brands;
     }
 
     public function getJoDetails(Request $request) {
         $type = JobOrder::where('id',$request->id)->select('type')->first()['type'];
         if($type === 1) {
-            return JobOrder::with('brand')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand.acma')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
         }
         else if($type === 2) {
-            return JobOrder::with('brand')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
+            return JobOrder::with('brand.acma')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
         }
     }
 

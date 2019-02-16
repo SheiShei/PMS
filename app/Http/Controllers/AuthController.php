@@ -46,6 +46,7 @@ class AuthController extends Controller
             $loggedUser['bg_image'] = json_decode((string) $userResponse->getBody(), true)['user']['bg_image'];
             $loggedUser['slug'] = json_decode((string) $userResponse->getBody(), true)['user']['slug'];
             $loggedUser['role'] = json_decode((string) $userResponse->getBody(), true)['role'];
+            // $loggedUser['bg_image'] = json_decode((string) $userResponse->getBody(), true)['bg_image'];
 
             return response()->json(['access_token' => $accessToken, 'user' => $loggedUser],200);
             

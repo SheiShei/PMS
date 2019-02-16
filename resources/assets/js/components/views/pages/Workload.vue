@@ -11,6 +11,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+          
     <div class="workload-header">
 
       <div class="workload-name">
@@ -18,35 +19,75 @@
       </div>
 
       <div class="workload-info">
-        <p title="Select Board">Team:</p>
+        <p title="Select Board">Filter by:</p>
       </div>
 
       <div class="workload-info">
         <div class="btn-group bootstrap-select">
+          <select v-model="filterby" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option value="byteam" selected>Team</option>
+            <option value="bybrand">Brand</option>
+          </select>
+        </div>
+      </div>
+
+
+
+      <!-- <div class="workload-info">
+        <p title="Select Board">Team:</p>
+      </div> -->
+
+      <div class="workload-info" v-show="filterby === 'byteam'">
+        <div class="btn-group bootstrap-select">
           <select v-model="team" @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
-            <option value="">All </option>
+            <option value="">All Teams</option>
             <option value="1">Web</option>
             <option value="2">Creatives</option>
           </select>
         </div>
       </div>
 
-      <div class="workload-info">
-        <p title="Total Tasks on this Board"><span class="fa fa-tasks"></span>&nbsp;12</p>
+      <div class="workload-info" v-show="filterby != 'byteam'">
+        <div class="btn-group bootstrap-select">
+          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option value="">Potato Corner </option>
+            <option value="1">MFI</option>
+            <option value="2">Luljetta's</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="workload-info" v-show="filterby != 'byteam'">
+        <div class="btn-group bootstrap-select">
+          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option value="">All JO</option>
+            <option value="1">JO 2</option>
+            <option value="2">JO 3</option>
+          </select>
+        </div>
       </div>
 
       <div class="workload-info">
-        <p title="Persons involved"><span class="fa fa-user-o"></span>&nbsp;7</p>
+        <p title="Select Board">Task Status:</p>
       </div>
+
+      <div class="workload-info">
+        <div class="btn-group bootstrap-select">
+          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option value="">All</option>
+            <option value="1">Active</option>
+            <option value="1">Completed</option>
+            <option value="1">Overdued</option>
+          </select>
+        </div>
+      </div>
+
     </div>
+    <br/>
     </div>
 
        </div>    
 
-
-  <!-- <div style="margin: 10px 20px; border: 1px solid lightgray">                 -->
-  
-  <!-- <div style="margin: 10px 20px">                 -->
     <div class="row">
         <div class="col-md-12">
   <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
@@ -77,6 +118,7 @@ export default {
   data() {
     return{
       team: '',
+      filterby: 'byteam',
       show: true,
     tasks: [],
     options: {
@@ -213,4 +255,12 @@ export default {
 .title-head > select{
   display: inline-block;
 } 
+.gantt-elastic__header{
+  /* background: rgb(228, 233, 239) !important; */
+  background: #eaedf1 !important;
+}
+.gantt-elastic__header-label,
+.gantt-elastic__header-title--text{
+  color: white !important;
+}
 </style>

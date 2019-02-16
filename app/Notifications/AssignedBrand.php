@@ -7,24 +7,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BoardSetRole extends Notification implements ShouldQueue
+class AssignedBrand extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $cuser;
     public $user;
-    public $role;
-
+    public $brand;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($cuser, $user, $role)
+    public function __construct($user, $brand)
     {
-        $this->cuser = $cuser;
+        //
         $this->user = $user;
-        $this->role = $role;
+        $this->brand = $brand;
     }
 
     /**
@@ -60,11 +58,12 @@ class BoardSetRole extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
+        
         return [
-            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
-            'action' => '',
-            'color' => 'bg-info',
-            'icon' => 'fa-user-o'
+            'text' => $this->user.' assigned you to brand: '.$this->brand['name'],
+            'action' => '/brands/brand-profile-'.$this->brand['id'],
+            'color' => 'notif-icon bg-info',
+            'icon' => 'fa fa-suitcase medium-avatar'
         ];
     }
 }

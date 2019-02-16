@@ -7,24 +7,26 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class BoardSetRole extends Notification implements ShouldQueue
+class UserBoardSetRole extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $cuser;
     public $user;
     public $role;
+    public $board;
+
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($cuser, $user, $role)
+    public function __construct($user,$role,$board)
     {
-        $this->cuser = $cuser;
         $this->user = $user;
         $this->role = $role;
+        $this->board = $board;
+
     }
 
     /**
@@ -60,11 +62,22 @@ class BoardSetRole extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
+        if($this->role==null){
+            return [
+                'text' => $this->user . ' assigned you as an Admin in board: '.$this->board['name'],
+                'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+                'color' => 'notif-icon bg-success',
+                'icon' => 'fa fa-trello medium-avatar'
+            ];
+
+        }
+        else{
         return [
-            'text' => $this->cuser . ' set ' . $this->user . '\'s role' . ' to ' . $this->role,
-            'action' => '',
-            'color' => 'bg-info',
-            'icon' => 'fa-user-o'
+            'text' => $this->user . ' set your role to ' . $this->role.' in board: '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
         ];
+         }
     }
 }
