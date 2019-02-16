@@ -8,6 +8,8 @@ use App\Brand;
 use App\Workbook;
 use App\WorkbookFile;
 
+use Carbon\Carbon;
+
 class WorkbookController extends Controller
 {
     public function uploadWorkbookFiles(Request $request) {
@@ -38,27 +40,70 @@ class WorkbookController extends Controller
         ]);
 
         foreach ($files as $key => $file) {
-            $newWB->files()->create([
+            $newFile = $newWB->files()->create([
+                'isApproved' => false
+            ]);
+
+            $newFile->revisions()->create([
                 'original_filename' => $file['response']['original_filename'],
                 'new_filename' => $file['response']['new_filename'],
                 'caption' => $file['caption'],
             ]);
         }
 
-        return $newWB->load('files');
+        return $newWB->load(['brand', 'created_by', 'files.revisions']);
     }
 
     public function onCreate(Request $request) {
-        $brands = Brand::all();
+        $brands = Brand::where('acma_id', auth()->user()->id)->get();
 
         return response()->json(['brands' => $brands]);
     }
 
     public function getAllWorkbooks(Request $request) {
-        // $callback = function($q) {
-        //     $q->where
-        // };
-        $workbooks = Workbook::all();
-        return $workbooks->load('brand');
+        if(auth()->user()->role_id == 1) {
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->get();
+        }
+        if(auth()->user()->role_id == 2) {
+            $callback = function($q) {
+                $q->where('acma_id', auth()->user()->id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->whereHas('brand', $callback)->get();
+        }
+        if(auth()->user()->role_id == 4) {
+            $callback = function($q) {
+                $q->where('id', auth()->user()->brand_id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->whereHas('brand', $callback)->get();
+        }
+        return $workbooks;
+    }
+
+    public function getCWorkbook(Request $request) {
+        $workbook = Workbook::find($request->id);
+
+        return $workbook->load('files.revisions');
+    }
+
+    public function reviewWB(Request $request) {
+        $origWB = Workbook::find($request->id);
+
+        $origWB->update([
+            'reviewed_at' => Carbon::now()
+        ]);
+
+        foreach ($request->get('files') as $key => $rfiles) { 
+            foreach ($origWB->files as $key => $ofiles) {
+                if($ofiles->id == $rfiles['id']) {
+                    $upFile = $ofiles->revisions()->orderBy('created_at', 'desc')->first();
+                    $upFile->update([
+                        'comment' => $rfiles['revisions'][0]['comment'],
+                        'rating' => $rfiles['revisions'][0]['rating']
+                    ]);
+                }
+            }
+        }
+
+        return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
 }

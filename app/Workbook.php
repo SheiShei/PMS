@@ -3,14 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Workbook extends Model
 {
-    use Uuids;
+    use Uuids, SoftDeletes;
 
     public $incrementing = false;
     
-    protected $fillable = ['name', 'description', 'status', 'created_by', 'brand_id'];
+    protected $fillable = ['name', 'description', 'status', 'created_by', 'brand_id', 'overall_rating', 'reviewed_at'];
+
+    protected $dates = ['deleted_at'];
 
     public function created_by() {
         return $this->belongsTo('App\User', 'created_by');

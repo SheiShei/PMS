@@ -1,10 +1,14 @@
 const state = {
-    workbooks: []
+    workbooks: [],
+    cWorkbook: null
 };
 
 const getters = {
     getWorkbookList: state => {
         return state.workbooks;
+    },
+    getCWorkbook: state => {
+        return state.cWorkbook
     }
 };
 
@@ -14,6 +18,10 @@ const mutations = {
     },
     setWorkbooks(state, data) {
         state.workbooks = data;
+    },
+    setCWorkbook(state, id) {
+        var index = _.findIndex(state.workbooks, {id: id});
+        state.cWorkbook = state.workbooks[index]
     }
 };
 
@@ -49,15 +57,44 @@ const actions = {
     },
 
     getWorkbooks({commit}, data) {
-        axios.post('/api/getAllWorkbooks', data)
-            .then(response => {
-                // console.log(response);
-                commit('setWorkbooks', response.data)
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/getAllWorkbooks', data)
+                .then(response => {
+                    // console.log(response);
+                    commit('setWorkbooks', response.data)
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
+
+    getCWorkbook({commit}, data) {
+        axios.post('/api/getCWorkbook', data)
+            .then((response) => {
+                console.log(response);
+                
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 
             })
+    },
+
+    reviewWB({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.patch('/api/reviewWB', data)
+                .then(response => {
+                    console.log(response);
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
     }
 };
 

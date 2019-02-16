@@ -52,7 +52,7 @@
                                                 </template>
                                                 <template slot="clip-uploader-body" slot-scope="props">
                                                     <div>
-                                                        <div v-for="file in files" :key="file.index" class="uploader-files">
+                                                        <div v-for="(file, index) in files" :key="index" class="uploader-files">
                                                             <div class="file-avatar">
                                                                 <img v-bind:src="file.dataUrl" />
                                                             </div>
@@ -65,7 +65,7 @@
                                                                     <!-- <p class="text-right"><span class=""><a href="" class="btn btn-danger btn-simple btn-xs text-right">
                                                                         x
                                                                     </a></span></p> -->
-                                                                    <p>{{ file.name }} - <span><button class="btn btn-simple btn-danger btn-xs">Remove</button></span></p>
+                                                                    <p>{{ file.name }} - <span><button type="button" class="btn btn-simple btn-danger btn-xs" @click="removeFile(index)">Remove</button></span></p>
                                                                 </div>
                                                                 <div class="file-progress" v-if="file.status!=='error'&&file.status!=='success'">
                                                                     <span class="progress-indicator" style="color: green"
@@ -101,6 +101,23 @@
                                 </form>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="WorkbookAdded" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-small ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+                        <h3>Success!!</h3>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h5>Go to Workbook lists? </h5>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
+                        <button @click="success()" type="button" class="btn btn-success btn-simple">Go</button>
                     </div>
                 </div>
             </div>
@@ -164,12 +181,20 @@ export default {
                     this.workbook.name = ''
                     this.workbook.desc = ''
                     this.workbook.brand = ''
+                    $('#WorkbookAdded').modal('show');
                 })
         },
         complete (file, status, xhr) {
             file.response = JSON.parse(xhr.response)
             file.caption = ''
             this.files.push(file);
+        },
+        removeFile(index) {
+            this.files.splice(index, 1)
+        },
+        success() {
+            $('#WorkbookAdded').modal('hide');
+            this.$router.push({name: 'workbook'});
         }
     }
 }
