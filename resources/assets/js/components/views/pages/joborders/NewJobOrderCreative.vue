@@ -32,23 +32,30 @@
                                 <label for="jo_name">Name </label>
                                 <input required v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-3">
                                 <label for="brand">Brand:</label>
-                                <div class="btn-group bootstrap-select">
-                                    <select v-model="brand.brand_id" required class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                <!-- <div class="btn-group bootstrap-select"> -->
+                                    <select v-model="brand.brand_id" required class="my-thin-select my-inp-blk" type="text">
                                         <option value="">---</option>
                                         <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                                     </select>
-                                </div>
+                                <!-- </div> -->
                             </div>
-                            <div class="col-md-3 form-group" v-if="boards">
+                            <div class="col-md-3" v-if="boards">
                                 <label for="brand">Board:</label>
-                                <div class="btn-group bootstrap-select">
-                                    <select v-model="brand.board_id" name="board_id" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
+                                <div v-if="justNewBoard==false">
+                                    <select v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
                                         <option value="">---</option>
                                         <!-- <option value="new">New Board</option> -->
                                         <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
                                     </select>
+                                    <a @click="justNewBoard=true" style="cursor:pointer"><small>or Add New Board</small></a>
+                                </div>
+                                <div v-if="justNewBoard==true">
+                                    <div class="form-group is-empty">
+                                        <input type="text" class="form-control" placeholder="New Board Name ">
+                                        <a @click="justNewBoard=false" style="cursor:pointer"><small>or just select from existing boards</small></a>
+                                    </div>
                                 </div>
                             </div>
                             <!-- <div class="col-md-3 form-group">
@@ -374,6 +381,7 @@ import {mapGetters} from 'vuex';
 export default {
     data(){
         return{
+            justNewBoard: false,
             tasks: [
                 {name: '',desc: '',files: []}
             ],
@@ -466,7 +474,6 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
     @media print{
         .nav-side-menu, noprint{
             display: none;
@@ -480,12 +487,10 @@ export default {
         font-weight: 700 !important;
         font-size: 0.9em !important;
     }
-
     .btn-group, .btn-group-vertical {
         position: relative;
         margin: 2px 1px;
     }
-
     label > small{
         font-weight: normal;
     }
@@ -504,4 +509,3 @@ export default {
         font-weight: normal !important;
     }
 </style>
-
