@@ -12,6 +12,8 @@ use App\JoCreative;
 use Hash;
 use Carbon\Carbon;
 
+use App\Notifications\JOCreativeCreated;
+
 class AdminController extends Controller
 {
     public function getUsersList(Request $request) {
@@ -197,8 +199,10 @@ class AdminController extends Controller
             'revisions' => $joDetails['revisions']
         ]);
         
-        
-        
+        // $newjo2 = User::where('id',auth()->user()->id);
+
+        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+
         return JobOrder::with('jocreatives', 'tasks.files')->where('id', $newjo->id)->first();
     }
     
@@ -282,6 +286,8 @@ class AdminController extends Controller
             'date_commerced' => $joDetails['date_commerced'],
             'date_ended' => $joDetails['date_ended'],
         ]);
+
+        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
 
         return JobOrder::with('joweb', 'tasks.files')->where('id', $newjo->id)->first();
     }

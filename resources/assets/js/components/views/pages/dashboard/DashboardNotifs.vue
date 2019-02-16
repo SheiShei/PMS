@@ -1,6 +1,6 @@
 <template>
 <div>  
-<!--GENERAL (New Messaged Received)-->
+<!--GENERAL (New Messaged Received) check!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-info">
@@ -13,7 +13,7 @@
     </div>
 
 <!--ACMA (Board Notifs/Activities)-->
-    <!--When added as member of a board-->
+    <!--When added as member of a board check!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <!--When removed from a board-->
+    <!--When removed from a board check!!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <!--When set the role to 'Scrum Master' (Scrum Board Only)-->
+    <!--When set the role to 'Scrum Master' (Scrum Board Only) check!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <!--When set the role to 'Dev Team' (Scrum Board Only)-->
+    <!--When set the role to 'Dev Team' (Scrum Board Only) check!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <!--When set the role to 'Product Owner' (Scrum Board Only)-->
+    <!--When set the role to 'Product Owner' (Scrum Board Only) check!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <!--When assigned as admin-->
+    <!--When assigned as admin check!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <!--When another admin updated board's setting-->
+    <!--When another admin updated board's setting check!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -109,7 +109,7 @@
         </div>
     </div>
 
-    <!--When another admin updated board's setting-->
+    <!--When another admin updated board's setting check!!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
@@ -121,7 +121,7 @@
         </div>
     </div>
 
-    <!--When New Task was Assigned-->
+    <!--When New Task was Assigned Checked!!--> 
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-danger">
@@ -192,7 +192,7 @@
 
 
 <!--Client (Board)-->
-    <!--When set the role to 'Product Owner' (Scrum Board Only)-->
+    <!--When set the role to 'Product Owner' (Scrum Board Only) check!!-->
     <div class="notifdiv">
         <div class="notif-left">
             <div class="notif-icon bg-success">
