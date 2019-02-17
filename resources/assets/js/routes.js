@@ -80,6 +80,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdmin')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'brands',
@@ -88,6 +101,20 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdminAcma')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
+
             },
             {
                 path: 'brands/add',
@@ -96,6 +123,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdmin')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'brands/brand-profile-:brandId',
@@ -105,6 +145,21 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.brandId;
+                    axios.post('/api/verifybrandUsers', {
+                        brand: param
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'brands/update/:brand_Id',
@@ -113,6 +168,21 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.brand_Id;
+                    axios.post('/api/verifybrandUsers', {
+                        brand: param
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'jo',
@@ -129,6 +199,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdminAcma')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'sticky-notes',
@@ -145,6 +228,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdminAcma')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'jo/new-jo-creative',
@@ -153,6 +249,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdminAcma')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'jo/web/:jo_id',
@@ -161,6 +270,21 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.jo_id;
+                    axios.post('/api/verifyJOusers', {
+                        jo: param
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'jo/creative/:jo_id',
@@ -169,6 +293,21 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    let param = to.params.jo_id;
+                    axios.post('/api/verifyJOusers', {
+                        jo: param
+                    })
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'clients/add',
@@ -177,6 +316,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdmin')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'workload',
@@ -184,6 +336,19 @@ export const routes = [
                 component: Workload,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyworkloadusers')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 }
             },
             {
@@ -192,7 +357,21 @@ export const routes = [
                 component: Workbook,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyworkloadusers')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 }
+
             },
             {
                 path: 'workbook/add',
@@ -200,6 +379,19 @@ export const routes = [
                 component: AddWorkbook,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyAdminAcma')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 }
             },
             
@@ -208,6 +400,19 @@ export const routes = [
                 component: SingleWorkbook,
                 meta: {
                     requiresAuth: true
+                },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyworkloadusers')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
                 },
                 children: [
                     {
@@ -224,10 +429,26 @@ export const routes = [
                         component: ReviewWB,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            // let param = to.params.brandId;
+                            axios.get('/api/verifyworkbookclient')
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         }
                     },
                 ]
             },
+            
+               
+            
             {
                 path: 'messages',
                 component: Messages,

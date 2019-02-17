@@ -515,10 +515,10 @@
                         <h3>Success!!</h3>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Go to JO List? </h5>
+                        <h5>Do you want to view this Job Order? </h5>
                     </div>
                     <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
+                        <button @click="notsuccess()" type="button" class="btn btn-simple" >Cancel</button>
                         <button @click="success()" type="button" class="btn btn-success btn-simple">Yes</button>
                     </div>
                 </div>
@@ -591,7 +591,8 @@ export default {
                 date_commerced: null,
                 date_ended: null
             },
-            attachments: []
+            attachments: [],
+            joid: ''
         }
     },
     created() {
@@ -662,15 +663,22 @@ export default {
             for(let i=0; i<this.attachments.length;i++){
                 form.append('files[]',this.attachments[i]);
             }
-            this.$store.dispatch('newJOW', form)
+            this.$store.dispatch('newJOC', form)
                 .then ((response) => {
+                    const jodata = response.data;
+                    this.joid = jodata.id;
                     $('#SuccesNewJoWeb').modal('show');
-                })    
+                })  
         },
-
-        success() {
+        notsuccess() {
             $('#SuccesNewJoWeb').modal('hide');
             this.$router.push({name: 'all_jo_list'})
+
+        },
+        success() {
+            $('#SuccesNewJoWeb').modal('hide');
+            this.$router.push({name: 'viewjoweb', params: {jo_id: this.joid}})
+
         },
 
         onFileChange(e, index) {
