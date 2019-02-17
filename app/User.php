@@ -148,10 +148,16 @@ class User extends Authenticatable
     }
 
     public function getPictureAttribute($pic) {
-        return '/storage/'.$pic;
+        if($pic) {
+            return '/storage/'.$pic;
+        }
+        return null;
     }
 
     public function getBgImageAttribute($bg) {
-        return '/storage/'.$bg;
+        if($bg) {
+            return '/storage/'.$bg;
+        }
+        return null;
     }
 }
