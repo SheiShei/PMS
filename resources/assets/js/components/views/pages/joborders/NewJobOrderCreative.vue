@@ -360,14 +360,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-check-circle text-success"></span> Success!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5> Do you want to view this Job Order? </h5>
+                        <p>A new job order was created successfully.</p>
+                        <p class="txt-bold">Do you want to view this JO?</p>
                     </div>
                     <div class="modal-footer text-center">
-                        <button @click="notsuccess()" type="button" class="btn btn-simple" >Cancel</button>
-                        <button @click="success()" type="button" class="btn btn-success btn-simple">Yes</button>
+                        <button @click="notsuccess()" type="button" class="btn btn-sm btn-simple" >Just go to List</button>
+                        <button @click="success()" type="button" class="btn btn-sm btn-success btn-simple">Yes</button>
                     </div>
                 </div>
             </div>
@@ -516,5 +517,8 @@ export default {
     }
     div.checkbox > label{
         font-weight: normal !important;
+    }
+    .modal-small .modal-body{
+        margin-top: 0;
     }
 </style>

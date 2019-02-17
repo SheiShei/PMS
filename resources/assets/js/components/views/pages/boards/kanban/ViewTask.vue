@@ -2,51 +2,99 @@
     <!--VIEW TASK-->
     <transition name="fade">
         <div class="overlay" v-if="data">
+             <div class="close-mod-btn">
+                 <router-link :to="{ name: 'kanboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></router-link>
+                <!-- <button @click="$router.go(-1)" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button> -->
+            </div>
             <div class="taskView" style="">
-                <div class="row">
-                    <div class="col-md-10 col-sm-10 col-xs-10">
-                        <!-- <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4> -->
-                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="per.modify ? 'true' : 'false'">{{ data.name }}</span></h4>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-2">
-                        <h4 class="">
-                            <span class="pull-right"><router-link :to="{ name: 'kanboard', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span>
-                            <span v-if="per.delete" class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
-                        </h4>
-                    </div>
-                </div>
+
                 <div class="row">
                     <div class="col-md-6">
-                        <h6><b>ABOUT</b></h6>
-                        <hr />
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><span @click="per.modify ? clickAssigned = !clickAssigned : ''" title="click to edit" class="fa fa-user-o text-info"></span> <span @click="per.modify ? clickAssigned = !clickAssigned : ''" v-if="!clickAssigned">{{ data.assigned_to.name }}</span>
-                                <select @change="updateTask" style="width: 80%" v-if="clickAssigned" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
-                                    <option value="">Unassign</option>
-                                    <option v-for="user in board.bu" :key="user.id" :value="user.id">{{ user.name }}</option>
-                                </select>
-                                
-                                </p>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h4 class="nm-bottom"><span class="fa fa-tasks"></span><span> {{ data.name }}</span></h4>
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <h4 class="nm-bottom">
+                                        <span v-if="per.modify"><a href="" v-if="!editTaskDet" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
+                                        <span v-if="per.modify"><a href="" v-if="editTaskDet" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
+                                        <!-- <span class="pull-right"><router-link :to="{name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span> -->
+                                        <span v-if="per.delete" class=""><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                                    </h4>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p><span @click="per.modify ? isDueClicked = !isDueClicked : ''" class="fa fa-clock-o text-danger"></span> 
-                                    <span v-if="!isDueClicked" @click="per.modify ? isDueClicked = !isDueClicked : ''">{{ data.due | moment("MMM D, YYYY") }}</span>
-                                    <date-picker style="width:80%" v-if="isDueClicked" @change="changeDateFormat" v-model="updateData.due" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
-                                </p>
+
+                            <div class="row" v-if="editTaskDet">
+                                <div class="col-md-12">
+                                    <p class="text-success no-margin"><small>You're on EDIT MODE</small></p>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row" v-if="editTaskDet">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <label for="" class="control-label">Task Name:</label>
+                                        <input @input="debounceWait" v-model="data.name" type="text" class="my-input my-inp-blk">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" v-if="editTaskDet">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <label for="" class="control-label">Description:</label>
+                                        <textarea @input="debounceWait" v-model="data.description" class="my-text-area my-inp-blk"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" v-if="editTaskDet">
+                                <div class="col-md-6">
+                                    <label for="" class="control-label"><span class="fa fa-user-o"></span> Assign To:</label>
+                                    <select @change="updateTask" required v-model="updateData.assign_to" class="my-input my-inp-blk" >
+                                        <option value="">Unassign</option>
+                                        <option v-for="user in board.bu" :key="user.id" :value="user.id">{{ user.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6" v-if="editTaskDet">
+                                    <label for="" class="control-label"><span class="fa fa-clock-o"></span> Due:</label>
+                                    <date-picker class="my-inp-blk" @change="changeDateFormat" v-model="updateData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
+                                </div>
+                            </div>
+
+                            <hr/>
+                           <div class="row" v-if="!editTaskDet">
+                                <div class="col-md-12">
+                                    <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
+                                    <p class="text-gray"><small>{{ data.description }}</small></p>
+                                    
+                                </div>
+                            </div>
+                            
+
+                            <div class="row" v-if="!editTaskDet">
+                                <div class="col-md-6 text-center">
+                                    <p class="no-margin"><small><span title="click to edit" class="fa fa-user-o"></span>
+                                    Assigned to:</small></p>
+                                    <p>
+                                    <span>{{ data.assigned_to.name }}</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <p class="no-margin"><small><span class="fa fa-clock-o"></span>
+                                    Due Date:</small></p> 
+                                    <p><span>{{ data.due | moment("MMM D, YYYY") }}
+                                    </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <hr/>
+
+        
                         <div class="row">
                             <div class="col-md-12">
-                                <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
-                                <div :class="per.modify ? 'testcntnt' : ''" @input="debounceWait" :id="'desc_'+data.id" :contenteditable="per.modify ? 'true' : 'false'" placeholder="Empty space is boring... go on be descriptive...">{{ data.description }}</div>
+                                <p class="txt-bold"><span class="fa fa-files-o"></span> Attachments</p>
                             </div>
                         </div>
-                        <br>
-                        <h6><b>ATTACHMENTS</b></h6>
-                        <hr />
-                        <!-- <p><a class="btn-default btn-simple btn-sm" href="/images/sample.docx" download><span class="fa fa-file-o"></span> dsjdisdiasnd.txt</a></p>
-                        <p style="cursor: pointer"><a @click="openGallery" class="btn-default btn-simple btn-sm"><span class="fa fa-photo"></span> View attached images</a></p> -->
+
                         <div class="row" v-if="data.files.length">
                             <div class="col-md-12">
                                 <div id="ataskment-wrapper">
@@ -90,15 +138,24 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
-                                <p v-if="per.modify" style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
+                                <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <!--Second Column-->
+                    <div class="col-md-6" style="height: 100%">
+                        <br/>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <p class="txt-bold">
+                                     COMMENTS
+                                     <span class="fa fa-comments-o"></span>
+                                     </p>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h6 class="txt-bold">COMMENTS</h6>
-                                <hr />
                                 <div class="comments" v-if="comments">
                                     <div class="comment-box" style="" v-chat-scroll>
                                         <!-- simple -->
@@ -116,13 +173,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap" v-if="per.comment">
+                                    <div class="form-group is-empty comment-input-wrap">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
-                                        <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
+                                        <button @click="openCFile" type="button" class="btn btn-md btn-info btn-simple">
                                             <i class="fa fa-paperclip"></i>
                                         </button>
                                         <textarea @keyup.ctrl.enter="cTxtSend" v-model="cTxt" class="form-control" placeholder="Write some nice stuff or go home..." rows="2"></textarea><span class="material-input"></span>
-                                        <button @click="cTxtSend" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center"><i class="fa fa-send"></i></button>
+                                        <button @click="cTxtSend" class="btn btn-md btn-info btn-just-icon btn-simple text-center"><i class="fa fa-send"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +216,8 @@ export default {
             attachments: [],
             comFiles: [],
             cTxt: '',
-            isDueClicked: false
+            isDueClicked: false,
+            editTaskDet: false
         }
     },
 
@@ -213,11 +271,15 @@ export default {
             // var contenteditable = document.querySelector('#points_'+this.data.id).textContent;
             // if(contenteditable) {
                 // let contenteditablePoints = document.querySelector('#points_'+this.data.id).textContent;
-                let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
-                let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
-                this.updateData.name = contenteditableName;
+                // let contenteditableName = document.querySelector('#name_'+this.data.id).textContent;
+                // let contenteditableDesc = document.querySelector('#desc_'+this.data.id).textContent;
+                // this.updateData.name = contenteditableName;
                 // this.updateData.points = contenteditablePoints;
-                this.updateData.desc = contenteditableDesc;
+                // this.updateData.desc = contenteditableDesc;
+                // this.updateData.id = this.$route.params.task_id;
+                // this.updateData.board_id = this.$route.params.board_id;
+                this.updateData.name = this.data.name;
+                this.updateData.desc = this.data.description;
                 this.updateData.id = this.$route.params.task_id;
                 this.updateData.board_id = this.$route.params.board_id;
                 // console.log(this.updateData);
