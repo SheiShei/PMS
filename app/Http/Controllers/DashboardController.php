@@ -36,7 +36,7 @@ class DashboardController extends Controller
         $dash_admin= ([
             'users' => $no_users,
             'jos' => $no_jo,
-            'notif' => $users
+            // 'notif' => $users
 
         ]);        
         return $dash_admin;
@@ -51,19 +51,6 @@ class DashboardController extends Controller
         $no_jo = $query2->count();
         $no_activejo = $query2->where('status', 1)->count();
         
-
-        // $notif = Board::with(['notifications'])->where('created_by',auth()->user()->id)->first();
-
-        // foreach($notif in $messcount.notifications)
-        // foreach ($notif['notifications'] as $key => $notifs) {
-        //     foreach ($notifs['data'] as $key => $notif1) {
-               
-        //             $messcount[] = $notif1;
-              
-        //         // $messcount = $notif1['data'];
-        //     }
-           
-        // }
 
         $dash_acma= ([
             'handled_brands' => $no_brands,

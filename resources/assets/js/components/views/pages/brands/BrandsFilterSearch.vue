@@ -6,6 +6,7 @@
                     <th>Brand Name</th>
                     <th>Date Added</th>
                     <th>Total JO</th>
+                    <th>Total Workbook</th>
                     <th>Actions</th>
                 </tr>
             </thead>

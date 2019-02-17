@@ -382,7 +382,7 @@ class BoardController extends Controller
 
     public function addAttachment(Request $request) {
         // dd($request);
-        $task = Task::where('id',$request->task_id)->with(['sprint.board'])->first();
+        $task = Task::where('id',$request->task_id)->with(['sprint.board','card.board'])->first();
         $attachments = [];
         if($files = $request->file('files')) {
             foreach ($files as $key => $file) {
@@ -400,14 +400,31 @@ class BoardController extends Controller
             }
         }
 
+        // $user = User::find($task->assigned_to);
+        // $update = true;
+        // $board =  Board::find($task->sprint->board->id);
+
+        // $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         // dd($attachments);
+        
         event(new AddTaskAttachmentEvent($attachments, $request->task_id));
+        if($task->card_id)
+        {
+        $user = User::find($task->assigned_to);
+        $update = true;
+        $board =  Board::find($task->card->board->id);
+
+        $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
+        Board::find($task->card->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));   
+        }
+        else{
         $user = User::find($task->assigned_to);
         $update = true;
         $board =  Board::find($task->sprint->board->id);
 
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
+        }
         return response()->json($attachments);
     }
 
