@@ -1,31 +1,31 @@
 <template>
     <transition name="fade">            
         <div class="overlay">
+            <div class="close-mod-btn">
+                <router-link :to="{ name: 'test', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-just-icon btn-default"><i class="fa fa-close"></i></router-link>
+            </div>
             <form action="" @submit.prevent="newsprint">
             <div class="newTaskForm" style="">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4><span class="fa fa-tasks"></span> New Sprint: </h4>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <router-link :to="{ name: 'test', params: {board_id: $route.params.board_id}}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link> 
+                    <div class="col-md-12">
+                        <h4><span class="fa fa-refresh"></span> New Sprint</h4>
+                        <hr/>
                     </div>
                 </div>
-                <br />
                 <div class="row">
                     <!-- <div class="col-md-3">
                         <label for="">Sprint Name: </label>
                     </div> -->
                     <div class="col-md-12">
-                        <label for="sprntnm">Sprint Name</label>
-                        <input id="sprntnm" v-model="name" oninvalid="this.setCustomValidity('Sprint Name is required!')" oninput="this.setCustomValidity('')" pattern="^((?!Backlog).)*$" required type="text" class="form-control">
+                        <label for="sprntnm" class="control-label">Sprint Name:</label>
+                        <input id="sprntnm" v-model="name" oninvalid="this.setCustomValidity('Sprint Name is required!')" oninput="this.setCustomValidity('')" pattern="^((?!Backlog).)*$" required type="text" class="my-input my-inp-blk">
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="sprntgls">Sprint Goals (optional)</label>
-                        <textarea id="sprntgls" v-model="goals" class="form-control" placeholder="Describe what should be achieved at the end of this Sprint" rows="3"></textarea>
+                        <label for="sprntgls" class="control-label">Sprint Goals (optional):</label>
+                        <textarea id="sprntgls" v-model="goals" class="my-text-area my-inp-blk" placeholder="Describe what should be achieved at the end of this Sprint" rows="3"></textarea>
                     </div>
                 </div>
                 <br />
@@ -115,3 +115,8 @@ export default {
     }
 }
 </script>
+<style lang="scss" scoped>
+.mx-datepicker{
+    width: 100%;
+}
+</style>

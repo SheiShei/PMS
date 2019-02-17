@@ -235,13 +235,13 @@
                 <!-- <div class="row">
                     <div class="col-md-10 col-sm-10 col-xs-10">
                         <h4><span class="fa fa-tasks"></span> Make a new banner for the ganito & ganyan ang make it more beautiful</h4> -->
-                        <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="taskPermission.modify">{{ data.name }}</span></h4>
+                        <!-- <h4><span class="fa fa-tasks"></span> <span @input="debounceWait" :id="'name_'+data.id" :contenteditable="taskPermission.modify">{{ data.name }}</span></h4> -->
                     </div>
                     <div class="col-md-2 col-sm-2 col-xs-2">
-                        <h4 class="">
+                        <!-- <h4 class="">
                             <span class="pull-right"><button @click="$router.go(-1)" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></button></span>
                             <span v-if="taskPermission.modify" class="pull-right"><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
-                        </h4>
+                        </h4> -->
                     </div>
                 </div>
                 <!-- <div class="row">

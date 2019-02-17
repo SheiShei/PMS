@@ -512,13 +512,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-check-circle text-success"></span> Success!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Go to JO List? </h5>
+                        <p>A new job order was created successfully.</p>
+                        <p class="txt-bold">Do you want to view this JO?</p>
                     </div>
                     <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-simple" data-dismiss="modal">Go to List</button>
                         <button @click="success()" type="button" class="btn btn-success btn-simple">Yes</button>
                     </div>
                 </div>
@@ -530,14 +531,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                         <h3>Error!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-times-circle text-danger"></span> Error!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Network Error</h5>
+                        <p>A network error has occured.</p>
                     </div>
                     <div class="modal-footer text-center">
                         <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                        <button @click="this.$router.push({name: 'all_jo_list'})" type="button" class="btn btn-success btn-simple">Yes</button>
+                        <button @click="this.$router.push({name: 'all_jo_list'})" type="button" class="btn btn-success btn-simple">Retry</button>
                     </div>
                 </div>
             </div>
@@ -731,6 +732,9 @@ export default {
     }
     .peruserstory{
         background-color: #efefef;
+    }
+    .modal-small .modal-body{
+        margin-top: 0;
     }
 </style>
 
