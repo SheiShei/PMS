@@ -3,8 +3,8 @@
         <div class="list-head">
             <div class="list-title" >
                 <b>
-                    <span v-if="sprint.finished_at" class="fa fa-circle text-gray"></span>
-                    <span v-else-if="sprint.type != 1" class="fa fa-circle text-success"></span>
+                    <span v-if="sprint.finished_at" class="fa fa-refresh text-gray"></span>
+                    <span v-else-if="sprint.type != 1" class="fa fa-refresh text-success"></span>
 
                     <span v-if="sprintPermission.view && sprint.type == 2">
                         <router-link title="Click to open sprint backlog" v-if="sprint.type == 2 && sprint.finished_at" :to="{name: 'test_sprint', params: {board_id: $route.params.board_id, sprint_id: sprint.id}}" class="text-gray" style="">{{ sprint.name }}</router-link>

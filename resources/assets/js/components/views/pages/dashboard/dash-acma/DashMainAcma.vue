@@ -38,6 +38,116 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="taskchart shadow">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="no-margin txt-bold"><span class="fa fa-line-chart"></span> Job Order Progress Overview</p>
+                                            <a><small>Go to All Job Orders</small></a>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <select class="my-thin-select">
+                                                <option value="">Active</option>
+                                                <option value="">Due Tomorrow</option>
+                                                <option value="">Overdued</option>
+                                                <option value="">Completed</option>
+                                                <option value="">All</option>
+                                            </select>
+                                            <input type="search" class="my-thin-input" placeholder="Search...">
+                                            &nbsp;&nbsp;<span class="fa fa-search text-gray"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="col-md-12">
+                                            <div class="v2-table table-reponsive">
+                                                <table>
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Job Order</th>
+                                                        <th>Due Date</th>
+                                                        <th>Status</th>
+                                                        <th>Progress</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody name="list-complete" is="transition-group">
+                                                    <tr class="list-complete-item">
+                                                        <td><span class="fa fa-copy"></span>&nbsp;Mfi JO</td>
+                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
+                                                        <td><span class="label label-info">Active</span></td>
+                                                        <!-- <td><span class="label label-success">Completed</span></td> -->
+                                                        <!-- <td><span class="label label-warning">Due Tomorrow</span></td> -->
+                                                        <!-- <td><span class="label label-danger">Overdued</span></td> -->
+
+                                                        <td>
+                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
+                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            </div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a style="cursor: pointer"><small>VIEW</small></a>
+                                                        </td>
+                                        
+                                                    </tr>
+                                                    <tr class="list-complete-item">
+                                                        <td><span class="fa fa-copy"></span>&nbsp;Mowelfund JO</td>
+                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
+                                                        <td><span class="label label-success">Completed</span></td>
+                                                        <td>
+                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
+                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            </div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a style="cursor: pointer"><small>VIEW</small></a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="list-complete-item">
+                                                        <td><span class="fa fa-copy"></span>&nbsp;Luljettas JO</td>
+                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
+                                                        <td><span class="label label-warning">Due Tomorrow</span></td>
+                                                        <td>
+                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
+                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            </div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a style="cursor: pointer"><small>VIEW</small></a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="list-complete-item">
+                                                        <td><span class="fa fa-copy"></span>&nbsp;osaihfosdfdsa</td>
+                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
+                                                        <td><span class="label label-danger">Overdued</span></td>
+                                                        <td>
+                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
+                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            </div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a style="cursor: pointer"><small>VIEW</small></a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!--dont show if selected is active/warning; all active&warning should be all shown-->
+                                                <!--Due Tomorrow/warning is still an active status though -->
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <button class="btn btn-info btn-simple btn-sm">Load More</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <div class="taskchart shadow">
@@ -125,11 +235,10 @@
                                     </div>
                                 </div>
                                 <br/>
-                                <div class="taskchart shadow">
+                                <!-- <div class="taskchart shadow">
                                     <p><span class="fa fa-align-left"></span> All Created Workbooks</p>
                                     <hr>
                                     <div class="torev">
-                                        <!-- <p class="note">No notifications to show</p> -->
                                     <a href="#"><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
@@ -167,7 +276,7 @@
                                         </div>
                                     </div></a>
                                     </div>
-                                </div>
+                                </div> -->
                                 <br/>
                             </div>
                             <div class="col-md-4">
@@ -188,9 +297,8 @@
                                     </div>
                                 </div>
                                 <br/>
-                                <div class="taskdisp shadow">
+                                <!-- <div class="taskdisp shadow">
                                     <p><span class="fa fa-files-o"></span> Active Job Orders ( {{dashboard_acma.active_jo}} )
-                                    <!-- <span><a href="#" title="Create New JO" class="btn btn-just-icon btn-round btn-xs"><i class="fa fa-plus"></i></a></span> -->
                                     </p>
                                     <hr>
                                     <p v-if="dashboard_acma.active_jo==0" class="note">No created JO to show</p>
@@ -200,7 +308,7 @@
                                             <a @click="view(jo.id, jo.type)">{{jo.name}}</a></li>                            
                                     </ul>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -296,6 +404,36 @@ ul > li a{
 .taskchart, .taskdisp{
     background-color:#fff;
     padding: 15px 20px;
+}
+
+.completedjo{
+    // background-color: #4caf50;
+    border-left: 3px solid #4caf50;
+}
+.v2-table{
+    width: 100%;
+    // max-width:100%;
+    max-height: 400px;
+    // overflow-y: auto; 
+    table, td, th {  
+        border: 1px solid #f1f1f1;
+        text-align: left;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        padding: 10px 15px;
+    }
+    th{
+        font-size: 0.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    tr > th{
+        background-color: #f5f5f5;
+    }
 }
 </style>
 

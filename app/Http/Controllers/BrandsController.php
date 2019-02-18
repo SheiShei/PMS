@@ -21,11 +21,12 @@ class BrandsController extends Controller
             if($request->filtercategory){
                 if(auth()->user()->role_id==1)
                 {
-                $query = Brand::with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                $query = Brand::with('acma:id,name')->with(['jos','workbooks'])->orderBy($request->filtercategory, $request->filterposition);
+                
                 }
                 else
                 {
-                $query = Brand::with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+                $query = Brand::with('acma:id,name')->where('acma_id',auth()->user()->id)->with(['jos','workbooks'])->orderBy($request->filtercategory, $request->filterposition);
                 }
             }
         }
@@ -33,11 +34,11 @@ class BrandsController extends Controller
             if($request->filtercategory){
                 if(auth()->user()->role_id==1)
                 {
-                  $query = Brand::onlyTrashed()->with('acma:id,name')->orderBy($request->filtercategory, $request->filterposition);
+                  $query = Brand::onlyTrashed()->with('acma:id,name')->with(['jos','workbooks'])->orderBy($request->filtercategory, $request->filterposition);
                 }
                 else
                 {
-                $query = Brand::onlyTrashed()->with('acma:id,name')->where('acma_id',auth()->user()->id)->orderBy($request->filtercategory, $request->filterposition);
+                $query = Brand::onlyTrashed()->with('acma:id,name')->where('acma_id',auth()->user()->id)->with(['jos','workbooks'])->orderBy($request->filtercategory, $request->filterposition);
 
                 }
             }
@@ -186,6 +187,71 @@ class BrandsController extends Controller
     public function testFileUpload(Request $request) {
         dd($request);
         return $request;
+    }
+
+    public function verifybrandUsers(Request $request) {
+        $users = Brand::where('id', $request->brand)->where('acma_id', [auth()->user()->id])->first();;
+        $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
+       
+            
+            if($users||$user) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
+    }
+    
+    public function verifyAdmin() {
+        // $users = Brand::where('id', $request->brand)->where('acma_id', [auth()->user()->id])->first();;
+        $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
+       
+            // $verify2 = User:
+            if($user) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
+    }
+
+    public function verifyAdminAcma() {
+        $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
+        $user2 = User::where('id', auth()->user()->id)->where('role_id',2)->first();
+       
+            // $verify2 = User:
+            if($user||$user2) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
+    }
+    public function verifyJOusers(Request $request) {
+        $users =  JobOrder::where('id', $request->jo)->with('brand')->where('acma_id',auth()->user()->id);
+        $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
+       
+            
+            if($users||$user) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
+    }
+    public function verifyworkloadusers() {
+        $user = User::where('id', auth()->user()->id)->where('role_id','!=',4);
+       
+            if($user) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
+    }
+    public function verifyworkbookusers() {
+        $user = User::where('id', auth()->user()->id)->where('role_id',4);
+       
+            if($user) {
+                return response()->json(['status' => 'authenticated'], 200);
+            }
+            return response()->json(['status' => 'error'], 200);
+      
     }
 
 

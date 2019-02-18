@@ -27,7 +27,7 @@
                                                     <div class="btn-group bootstrap-select">
                                                         <select v-model="workbook.brand" required name="brandowner" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                                             <option disabled="" value="" selected="">--Select Brand--</option>
-                                                            <option :value="brand.id" v-for="brand in brands" :key="brand.id">{{ brand.name }}</option>
+                                                            <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                                                         </select>
                                                     </div>
                                                 </div>   
@@ -110,14 +110,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-check-circle text-success"></span> Success!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Go to Workbook lists? </h5>
+                        <p>A new workbook was created successfully.</p>
+                        <p class="txt-bold">Do you want to view this workbook? </p>
                     </div>
                     <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                        <button @click="success()" type="button" class="btn btn-success btn-simple">Go</button>
+                        <button type="button" class="btn btn-sm btn-simple" data-dismiss="modal">Just go to List</button>
+                        <button @click="success()" type="button" class="btn btn-sm btn-success btn-simple">Yes</button>
                     </div>
                 </div>
             </div>
@@ -154,6 +155,13 @@ export default {
             .then(() => {
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
+        const data = {
+            filter: {position: 'desc', category:'created_at'},
+            search: '',
+            notArchive: true
+        }
+        this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+
     },
     computed: {
         ...mapGetters({
@@ -296,4 +304,7 @@ export default {
       text-decoration: none;
     //   width: 100%;
 }
+.modal-small .modal-body{
+        margin-top: 0;
+    }
 </style>
