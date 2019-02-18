@@ -26,8 +26,9 @@
                                     <button v-if="!revMode" class="btn btn-default btn-sm">Close</button>
                                     <button v-if="revMode" @click="revMode=!revMode" class="btn btn-default btn-sm">Cancel</button>
                                     <button v-if="!revMode" @click="revMode=!revMode" class="btn btn-success btn-sm">Add Revision</button>
-                                    <button v-if="revMode" class="btn btn-success btn-sm">Submit Revision <span class="fa fa-check"></span></button>
+                                    <button v-if="revMode" @click="UpdateWorkbook(getCurrentImage.id)" class="btn btn-success btn-sm">Submit Revision <span class="fa fa-check"></span></button>
                                 </div>
+                            <br/>
                             </div>
                         </div>
                         <br/>
@@ -105,7 +106,7 @@
                         <div v-if="revMode" class="taskchart shadow" style="margin-bottom: 20px">
                             <p class="txt-bold">
                                 <span class="fa fa-rotate-left"></span> 
-                                Revision for File (2 of 4)
+                                Revision for File ({{ currentSlide+1 }} of {{ workbook.files.length }})
                             </p>
                             <div class="row">
                                 <div class="col-md-6">
@@ -124,13 +125,13 @@
 											<span class="btn btn-success btn-md btn-block btn-file">
 												<span class="fileinput-new"><span class="fa fa-camera"></span> Upload File</span>
 												<span class="fileinput-exists"><span class="fa fa-camera"></span> Change</span>
-												<input type="file" name="..."  format="jpeg" ><div class="ripple-container"></div></span>
+												<input type="file" @change="onChanged" name="..."  format="jpeg" ><div class="ripple-container"></div></span>
 											<a href="" class="btn btn-md btn-default btn-block fileinput-exists" data-dismiss="fileinput"> Remove</a>
                                             <p class="txt-bold">
                                         <span class="fa fa-edit"></span> 
                                         Caption
                                     </p>
-                                    <textarea rows="5" class="my-text-area my-inp-blk"></textarea>
+                                    <textarea v-model="change_workbook.desc" rows="5" class="my-text-area my-inp-blk"></textarea>
 										</div>
                                         <div class="col-md-6">
                                             <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
@@ -225,21 +226,15 @@ export default {
             thumbsUp: 'star',
             rating: 3,
             currentSlide: 0,
-            images:[
-                {
-                    name: 'nightsky3.jpg',
-                    src: '/images/nightsky3.jpg',
-                    acmaCaption: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique minus commodi animi i assumenda atque odio?',
-                    comment: 'comment 1'
-                },
-                {
-                    name: 'default.png',
-                    src: '/images/default.png',
-                    acmaCaption:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique minus commodi animi i assumenda atque odio?',
-                    comment: 'comment 2'
-                }
-
-            ]
+            
+            change_workbook: {
+                name: '',
+                desc: '',
+                brand: '',
+                files: '',
+            },
+            // id: this.$route.params.wb_id,
+            haschange: false,
         }
     },
     computed: {
@@ -258,9 +253,46 @@ export default {
             let current = this.currentSlide
             if(current >= min) this.currentSlide--
         },
+        onChanged (event) {
+                this.change_workbook.files = event.target.files
+                // console.log(this.brand.logo);
+                this.haschange=true;
+        },
+        UpdateWorkbook(id) {
+            let form = new FormData;
+            form.append('id', id);
+            if(this.haschange==true)
+            {
+                form.append('files', this.change_workbook.files[0]);
+                console.log('in if',this.change_workbook.files[0]);
+            }
+            form.append('name', this.change_workbook.name);
+            form.append('desc', this.change_workbook.desc);
+            // form.append('brand', this.change_workbook.brand);
+            // form.append('file_id', this.change_workbook.file_id);
+            
+            // console.log(form.append();
+
+            this.$store.dispatch('UpdateWorkbook', form)
+                .then(() => {
+                        this.$toaster.success('updated succesfully!.')
+                })
+                .catch((error) => {
+                    console.log(error)
+                    //   this.errors = error;
+                })
+        },
+
     },
     created(){
-        this.star = Star
-    }
+        this.star = Star;
+        this.$store.dispatch('getCWorkbook', this.id)
+            .then((response) => {
+                console.log('sa WB',response);
+                this.change_workbook.name=response.data.name;
+                this.change_workbook.brand=response.data.brand_id; 
+            })
+
+    },
 }
 </script>

@@ -106,4 +106,32 @@ class WorkbookController extends Controller
 
         return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
+
+    public function UpdateWorkbook(Request $request) {
+        $file = $request->file('files');
+
+        $origname = $file->getClientOriginalName();
+        $newname = time() . $origname;
+        $file->move('storage/workbook/', $newname);
+
+        $workbook = Workbook::with('files');
+        $file1= $workbook->files()->where('id',$request->id);
+        $rev=$file1->revisions()->create([
+            'original_filename' => $origname,
+            'new_filename' => $newname,
+            'caption' => $request->desc,
+        ]);
+        // $files = $request->get('files');
+        // $wName = $request->get('name');
+        // $wDesc = $request->get('desc');
+        // $wBID = $request->get('brand');
+
+       
+
+      
+        }
+
+
+    
+  
 }
