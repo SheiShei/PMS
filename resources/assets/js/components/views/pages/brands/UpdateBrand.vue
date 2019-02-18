@@ -58,7 +58,7 @@
                                             </div>
                                         </div>
                                         <br/>
-                                        <div class="row">
+                                        <div v-if="user_info.role == 1" class="row">
                                             <div class="col-md-7">
                                                 <div class="form-group">
                                                     <label for="" class="control-label">Brand Owner:</label>
@@ -163,7 +163,8 @@ export default {
     computed: {
          ...mapGetters({
                 tandemList: 'getTandemsList',
-                brandProfile: 'getOnebrand'
+                brandProfile: 'getOnebrand',
+                user_info: 'getuser_info'
             })  
     },
 
