@@ -155,6 +155,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getAllWorkbooks', 'WorkbookController@getAllWorkbooks');
     Route::post('/getCWorkbook', 'WorkbookController@getCWorkbook');
     Route::patch('/reviewWB', 'WorkbookController@reviewWB');
+    Route::post('/UpdateWorkbook', 'WorkbookController@UpdateWorkbook');
 
     //dashboard
     Route::get('/dashboard_admin', 'DashboardController@dashboard_admin');

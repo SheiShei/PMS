@@ -1,6 +1,6 @@
 const state = {
     workbooks: [],
-    cWorkbook: null
+    cWorkbook: ''
 };
 
 const getters = {
@@ -60,7 +60,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/getAllWorkbooks', data)
                 .then(response => {
-                    // console.log(response);
+                    console.log(response.data);
                     commit('setWorkbooks', response.data)
                     resolve()
                 })
@@ -72,15 +72,18 @@ const actions = {
     },
 
     getCWorkbook({commit}, data) {
-        axios.post('/api/getCWorkbook', data)
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/getCWorkbook',{
+                id: data})
             .then((response) => {
-                console.log(response);
-                
+                console.log('workbook.js',response);
+                resolve(response);
             })
             .catch((error) => {
                 console.error(error);
                 
             })
+        })
     },
 
     reviewWB({commit}, data) {
@@ -95,7 +98,22 @@ const actions = {
                     reject()
                 })
         })
-    }
+    },
+    UpdateWorkbook({commit}, data) {
+        const config = { headers : {'Content-Type': 'multipart/form-data'} }
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/UpdateWorkbook', data)
+                .then((response) => {
+                    console.log(response);
+                    // commit('newWorkbook', response.data);
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
 };
 
 export default {

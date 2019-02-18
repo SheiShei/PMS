@@ -458,13 +458,23 @@ class BoardController extends Controller
         }
 
         event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+        if($task->card_id)
+        {
+        $user = User::find($task->assigned_to);
+        $update = true;
+        $board =  Board::find($task->card->board->id);
+
+        $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
+        Board::find($task->card->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));   
+        }
+        else{
         $user = User::find($task->assigned_to);
         $update = true;
         $board =  Board::find($task->sprint->board->id);
 
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
-
+        }
         return $task->load('assigned_to'); 
     }
 
