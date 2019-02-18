@@ -42,6 +42,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getBrandJos', 'BrandsController@getBrandJos');
     Route::post('/getOnebrand', 'BrandsController@getOnebrand'); 
     Route::post('/UpdateBrand', 'BrandsController@updateBrand');
+    Route::post('/verifybrandUsers', 'BrandsController@verifybrandUsers');
+    Route::post('/verifyJOusers', 'BrandsController@verifyJOusers');
+    Route::get('/verifyAdmin', 'BrandsController@verifyAdmin');
+    Route::get('/verifyAdminAcma', 'BrandsController@verifyAdminAcma');
+    Route::get('/verifyworkloadusers', 'BrandsController@verifyworkloadusers');
+    Route::get('/verifyworkbookclient', 'BrandsController@verifyworkbookusers');
 
     //messages
     Route::post('/addconversation', 'DataController@addconvo');

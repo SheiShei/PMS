@@ -41,12 +41,12 @@
                         <span class="new-msg-dot fa fa-circle fa-xs text-warning"></span>
                     </router-link>
 
-                    <router-link :to="{ name: 'brands' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
+                    <router-link :to="{ name: 'brands' }" v-if="cUser.role.id !== 4 && cUser.role.id !== 3" tag="li" active-class="active">
                         <i class="fa fa-briefcase fa-lg"></i>&nbsp;&nbsp;&nbsp;Brands 
                         <!-- <span class="arrow"></span> -->
                     </router-link>
 
-                    <router-link :to="{ name: 'all_jo_list' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
+                    <router-link :to="{ name: 'all_jo_list' }" v-if="cUser.role.id !== 4 && cUser.role.id !== 3" tag="li" active-class="active">
                         <i class="fa fa-copy fa-lg"></i>&nbsp;&nbsp;&nbsp;Job Order 
                         <!-- <span class="arrow"></span> -->
                     </router-link>

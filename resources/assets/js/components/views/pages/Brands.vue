@@ -34,7 +34,8 @@
                                         <tr v-for="brand in brands" :key="brand.id" class="list-complete-item">
                                             <td>{{ brand.name }}</td>
                                             <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
-                                            <td>9</td>
+                                            <td>{{brand.jos.length}}</td>
+                                            <td>{{brand.workbooks.length}}</td>
                                             <td class="td-actions">
                                                 <router-link  v-if="data.notArchive" :to="{name: 'brand_profile', params: {brandId: brand.id},props:{brandinfos: brandinfos}}" type="button" @click="getData(brand)" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="View">
                                                     <i class="fa fa-eye"></i></router-link>
@@ -55,7 +56,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <div class="taskchart shadow">
+                        <div v-if="user_info.role_id==1" class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-success"></span> Add New Brand:</p>
@@ -161,7 +162,8 @@ export default {
     computed: {
          ...mapGetters({
                 brands: 'brandsList',
-                jos: 'getJOs'
+                jos: 'getJOs',
+                user_info: 'getuser_info',
             }),
 
         redirectJO() {
@@ -189,6 +191,8 @@ export default {
             notArchive: true
         }
         this.$store.dispatch('getJobOrders', ndata);
+        this.$store.dispatch('getuser_info');
+
     }, 
 
     methods: {

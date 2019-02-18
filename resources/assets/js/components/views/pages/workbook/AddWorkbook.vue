@@ -27,7 +27,7 @@
                                                     <div class="btn-group bootstrap-select">
                                                         <select v-model="workbook.brand" required name="brandowner" class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
                                                             <option disabled="" value="" selected="">--Select Brand--</option>
-                                                            <option :value="brand.id" v-for="brand in brands" :key="brand.id">{{ brand.name }}</option>
+                                                            <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                                                         </select>
                                                     </div>
                                                 </div>   
@@ -137,6 +137,13 @@ export default {
             .then(() => {
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
+        const data = {
+            filter: {position: 'desc', category:'created_at'},
+            search: '',
+            notArchive: true
+        }
+        this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
+
     },
     computed: {
         ...mapGetters({
@@ -164,6 +171,8 @@ export default {
                     this.workbook.name = ''
                     this.workbook.desc = ''
                     this.workbook.brand = ''
+                    
+                    this.$toaster.success('Workbook created succesfully!')
                 })
         },
         complete (file, status, xhr) {
