@@ -185,6 +185,14 @@ class AdminController extends Controller
                     'created_by' => auth()->user()->id,
                     'order' => 1,
                 ]);
+
+                Card::create([
+                    'name' => 'Done',
+                    'board_id' => $board->id,
+                    'created_by' => auth()->user()->id,
+                    'order' => 1,
+                    'isDone' => true
+                ]);
     
                 $po = $board->roles()->create([
                     'name' => 'Project Leader'
@@ -354,6 +362,14 @@ class AdminController extends Controller
                     'board_id' => $board->id,
                     'created_by' => auth()->user()->id,
                     'order' => 1,
+                ]);
+
+                Card::create([
+                    'name' => 'Done',
+                    'board_id' => $board->id,
+                    'created_by' => auth()->user()->id,
+                    'order' => 1,
+                    'isDone' => true
                 ]);
     
                 $po = $board->roles()->create([

@@ -114,7 +114,7 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <p><b>{{ attachment.original_filename }}</b></p>
-                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a v-if="per.modify" @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
+                                                    <p ><span>{{ attachment.created_at | moment('calendar') }}</span> - <a @click.prevent="setRemoveTaskPhoto(attachment.new_filename)" href=""><span v-if="data.task_cover != attachment.new_filename">Set</span><span v-else>Remove</span><!-- (di ko alam tawag) --></a></p>
                                                 </div>
                                             </div>
                                         </div>
