@@ -1,5 +1,8 @@
 <template>
     <section class="main-main-container" style="">
+    <add-member :notmember="boardNotMembers" :board_id="brand.board_id" @refreshBoardMembers="refreshBoardMembers" @addedIds="addMemberToNewBoard" v-if="viewMemmod" @close="toggleJustNewMember"></add-member>
+    <div class="jo-wrapper" style="max-height: 100vh; overflow-y: scroll;">
+        
         <div class="title-head">
             <h2><span class="fa fa-file-o"></span> Job Order Form - Creatives</h2>
         </div>
@@ -44,17 +47,17 @@
                             <div class="col-md-3" v-if="boards">
                                 <label for="brand">Board:</label>
                                 <div v-if="justNewBoard==false">
-                                    <select v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
+                                    <select required @change="getJOBoardUsers" v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
                                         <option value="">---</option>
                                         <!-- <option value="new">New Board</option> -->
                                         <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
                                     </select>
-                                    <a @click="justNewBoard=true" style="cursor:pointer"><small>or Add New Board</small></a>
+                                    <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
                                 </div>
                                 <div v-if="justNewBoard==true">
                                     <div class="form-group is-empty">
-                                        <input type="text" class="form-control" placeholder="New Board Name ">
-                                        <a @click="justNewBoard=false" style="cursor:pointer"><small>or just select from existing boards</small></a>
+                                        <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
+                                        <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +243,7 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
+                        <div class="row" v-if="false">
                             <div class="col-md-12">
                                 <label class="">Copy on Artwork:</label>
                                 <textarea  v-model="details.copy" class="my-text-area btn-block" rows="3" placeholder="Write here. Indicate if any..."></textarea>
@@ -276,11 +279,13 @@
                                                     </div>
                                                     <div class="col-md-5">
                                                         <label for=""><span class="fa fa-user-o"></span> Assign to </label>
-                                                        <select class="btn-block" >
-                                                            <option value="">Shooky</option>
-                                                            <option value="">Chimmy</option>
-                                                            <option value="">RJ</option>
+                                                        <select v-model="task.assign" class="btn-block" >
+                                                            <option value="">--</option>
+                                                            <option :value="member.id" v-for="member in boardMembers" :key="member.id">{{ member.name }}</option>
                                                         </select>
+                                                        <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
+                                                        <label for=""><span class="fa fa-clock-o"></span> Due </label>
+                                                        <date-picker @change="changeDateFormat(task.due)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                                                         <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
                                                         <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
                                                     </div>
@@ -294,14 +299,14 @@
                             </div>
                         </div>
                         <hr />
-                        <div class="row">
+                        <div class="row" v-if="false">
                             <div class="col-md-12">
                                 <label class="">Post Caption:</label>
                                 <textarea v-model="details.post_caption" class="my-text-area btn-block" rows="3" placeholder="Write here. Indicate if any..."></textarea>
                             </div>
                         </div>
                         <hr />
-                        <div class="row">
+                        <div class="row" v-if="false">
                             <!-- <div class="col-md-3">
                                 <label for="rqst_type">Status:</label> 
                                 <div class="checkbox mr-10">
@@ -372,23 +377,41 @@
                 </div>
             </div>
         </div>
+    </div>
     </section>
 </template>
 
 
 <script>
 import {mapGetters} from 'vuex';
+import AddMember from './AddBoardMember.vue';
+import DatePicker from 'vue2-datepicker'
 export default {
+    components: {
+        addMember: AddMember,
+        DatePicker
+    },
     data(){
         return{
             justNewBoard: false,
             tasks: [
-                {name: '',desc: '',files: []}
-            ],
+                {
+                    name: '', 
+                    desc: '', 
+                    assign: '', 
+                    files: [],
+                    due: ''
+                }
+            ],  
             brand: {
                 name: '',
                 brand_id: '',
                 board_id: '',
+                newBoard: {
+                    name: '',
+                    type: 1,
+                    ids: []
+                },
                 status: 1,
                 date_in: '',
                 date_due: ''
@@ -401,7 +424,10 @@ export default {
                 revisions: '',
                 post_caption: ''
             },
-            attachments: []
+            attachments: [],
+            viewMemmod: false,
+            boardMembers: [],
+            boardNotMembers: []
         }
     },
     created() {
@@ -426,7 +452,9 @@ export default {
             this.tasks.push({
                 name: '',
                 desc: '',
-                files: []
+                assign: '', 
+                files: [],
+                due: ''
             })
             this.scrollToEnd()
         },
@@ -439,6 +467,9 @@ export default {
             taskdiv.scrollTop = taskdiv.scrollHeight
         },
         newCreativeJO() {
+            if(!this.brand.board_id) {
+                this.brand.newBoard.ids = this.boardMembers;
+            }
             let form = new FormData;
             form.append('brand', JSON.stringify(this.brand));
             form.append('details', JSON.stringify(this.details));
@@ -457,7 +488,7 @@ export default {
         },
         onFileChange(e, index) {
             this.tasks[index].files = [];
-            this.attachments = [];
+            // this.attachments = [];
             let selectedFiles=e.target.files;
             if(!selectedFiles.length){
                 return false;
@@ -469,6 +500,51 @@ export default {
             }
             // document.getElementById('taskFiles').value=[];
             // console.log(this.tasks[index].files);
+        },
+        toggleJustNewBoard() {
+            this.justNewBoard = !this.justNewBoard;
+        },
+        toggleJustNewMember() {
+            this.viewMemmod = !this.viewMemmod;
+        },
+        getJOBoardUsers() {
+            if(this.justNewBoard == true) {
+                this.brand.board_id = '';
+                axios.post('/api/getJOBoardUsers', {board_id: null})
+                    .then(response => {
+                        // console.log(response);
+                        this.boardNotMembers = response.data;
+                        this.boardMembers = []
+                    })
+
+            }
+            else {
+                this.brand.newBoard.name = ''
+                axios.post('/api/getJOBoardUsers', {board_id: this.brand.board_id})
+                    .then(response => {
+                        // console.log(response);
+                        this.boardMembers = response.data.member;
+                        this.boardNotMembers = response.data.not
+                    })
+            }
+        },
+        addMemberToNewBoard(e) {
+            // console.log(e);
+            e.forEach(element => {
+                this.boardMembers.push(element);
+                let index = _.findIndex(this.boardNotMembers, {id: element.id});
+                this.boardNotMembers.splice(index, 1);
+            });
+        },
+        refreshBoardMembers(e) {
+            this.boardMembers =  e.member;
+            this.boardNotMembers = e.not
+        },
+        changeDateFormat(date) {
+            // this.taskData.due = new Date(this.taskData.due).toISOString().slice(0, 10).replace('T', ' ');
+            date = moment(date).format('YYYY-MM-DD')
+            console.log(date);
+            
         }
     }
 }

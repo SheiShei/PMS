@@ -3,12 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\User;
 use App\Brand;
 use App\JobOrder;
 use App\Board;
 use App\Task;
 use App\JoCreative;
+use App\BPermission;
+use App\Card;
+use App\Sprint;
+use App\UserStory;
+
+use App\Events\AddListTaskEvent;
+use App\Events\AddSprintEvent;
+use App\Events\NewUSEvent;
+
+use App\Notifications\BoardCreated;
+use App\Notifications\BoardUserAdded;
+use App\Notifications\AddBoardMember;
+use App\Notifications\BoardCreateListSprint;
+use App\Notifications\BoardCreateTask;
+use App\Notifications\BoardAddUS;
+
+
 use Hash;
 use Carbon\Carbon;
 
@@ -118,11 +136,82 @@ class AdminController extends Controller
         $joMain = json_decode($request->brand, true);
         $joDetails = json_decode($request->details, true);
         $joTasks = json_decode($request->tasks, true);
-        // return response()->json($joTasks);
+
+        if(!$joMain['board_id']) {
+            $board = auth()->user()->boards()->create([
+                'name' => $joMain['newBoard']['name'],
+                'description' => null,
+                'type' => $joMain['newBoard']['type'],
+            ]);
+
+            $joMain['board_id'] = $board->id;
+
+            if($board->type == 2) {
+                $permissionsId = BPermission::where('type', '!=' ,'list')->get()->pluck('id');
+                $sprint = $board->sprints()->create([
+                    'name' => 'Backlog',
+                    'created_by' => auth()->user()->id,
+                    'type' => 1
+                ]);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Product Owner'
+                ]);
+    
+                $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Scrum Master'
+                ]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Development Team'
+                ]);
+                $po->permissions()->attach($permissionsId);
+
+                foreach ($joMain['newBoard']['ids'] as $key => $uid) {
+                    $board->boardUsers()->attach($uid['id'], ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $po->id]);
+                }
+            }   
+    
+            else {
+                $permissionsId = BPermission::where('type','task')->orWhere('type', 'list')->get()->pluck('id');
+
+                $list = Card::create([
+                    'name' => 'Backlog',
+                    'board_id' => $board->id,
+                    'created_by' => auth()->user()->id,
+                    'order' => 1,
+                ]);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Project Leader'
+                ]);
+    
+                $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Member'
+                ]);
+                $po->permissions()->attach($permissionsId);
+
+                foreach ($joMain['newBoard']['ids'] as $key => $uid) {
+                    $board->boardUsers()->attach($uid['id'], ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $po->id]);
+                    $board->notify(new AddBoardMember($uid['name'], auth()->user()->name));
+                    User::find($uid['id'])->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
+                }
+            }
+    
+            $board->notify(new BoardCreated($board->load('created_by')->toJson()));
+        }
 
         $newjo = JobOrder::create([
             'name' => $joMain['name'],
             'brand_id' => $joMain['brand_id'],
+            'board_id' => $joMain['board_id'],
             'date_in' => $joMain['date_in'],
             'date_due' => $joMain['date_due'],
             'status' => $joMain['status'],
@@ -132,13 +221,16 @@ class AdminController extends Controller
 
         foreach ($joTasks as $key => $task) {
             if($task['name']) {
+                $card = Board::find($joMain['board_id'])->cards()->where('name', 'Backlog')->orderBy('created_at', 'asc')->first();
                 $newTask = $newjo->tasks()->create([
-                    'card_id' => 1,
+                    'card_id' => $card->id,
                     'name' => $task['name'],
+                    'due' => $task['due'],
                     'description' => $task['desc'],
                     'created_by' => auth()->user()->id,
-                    'assigned_to' => auth()->user()->id,
-                    'assigned_by' => auth()->user()->id
+                    'assigned_to' => $task['assign'],
+                    'assigned_by' => auth()->user()->id,
+                    'jo_id' => $newjo->id
                 ]);
                 
                 if ($files = $request->file('files')) {
@@ -156,6 +248,7 @@ class AdminController extends Controller
                                     ]);
                                 }
                             }
+                            // echo $file->getClientOriginalName();
                         }
                     }
                 }
@@ -207,13 +300,92 @@ class AdminController extends Controller
     }
     
     public function createJOWeb(Request $request) {
+        // return $request;
         $joMain = json_decode($request->brand, true);
         $joDetails = json_decode($request->details, true);
         $joTasks = json_decode($request->tasks, true);
-        // return $request;
+        
+        if(!$joMain['board_id']) {
+            $board = auth()->user()->boards()->create([
+                'name' => $joMain['newBoard']['name'],
+                'description' => null,
+                'type' => $joMain['newBoard']['type'],
+            ]);
+
+            $joMain['board_id'] = $board->id;
+
+            if($board->type == 2) {
+                $permissionsId = BPermission::where('type', '!=' ,'list')->get()->pluck('id');
+                $sprint = $board->sprints()->create([
+                    'name' => 'Backlog',
+                    'created_by' => auth()->user()->id,
+                    'type' => 1
+                ]);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Product Owner'
+                ]);
+    
+                $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Scrum Master'
+                ]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Development Team'
+                ]);
+                $po->permissions()->attach($permissionsId);
+
+                foreach ($joMain['newBoard']['ids'] as $key => $uid) {
+                    $board->boardUsers()->attach($uid['id'], ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $po->id]);
+                    $board->notify(new AddBoardMember($uid['name'], auth()->user()->name));
+                    User::find($uid['id'])->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
+                }
+            }   
+    
+            else {
+                $permissionsId = BPermission::where('type','task')->orWhere('type', 'list')->get()->pluck('id');
+
+                $list = Card::create([
+                    'name' => 'Backlog',
+                    'board_id' => $board->id,
+                    'created_by' => auth()->user()->id,
+                    'order' => 1,
+                ]);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Project Leader'
+                ]);
+    
+                $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
+                $po->permissions()->attach($permissionsId);
+    
+                $po = $board->roles()->create([
+                    'name' => 'Member'
+                ]);
+                $po->permissions()->attach($permissionsId);
+
+                foreach ($joMain['newBoard']['ids'] as $key => $uid) {
+                    $board->boardUsers()->attach($uid['id'], ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $po->id]);
+                    $board->notify(new AddBoardMember($uid['name'], auth()->user()->name));
+                    User::find($uid['id'])->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
+                }
+            }
+    
+            $board->notify(new BoardCreated($board->load('created_by')->toJson()));
+        }
+
+        else {
+            $board = Board::find($joMain['board_id']);
+        }
+
         $newjo = JobOrder::create([
             'name' => $joMain['name'],
             'brand_id' => $joMain['brand_id'],
+            'board_id' => $joMain['board_id'],
             'date_in' => $joMain['date_in'],
             'date_due' => $joMain['date_due'],
             'status' => $joMain['status'],
@@ -221,34 +393,108 @@ class AdminController extends Controller
             'type' => 2
         ]);
 
-        foreach ($joTasks as $key => $task) {
-            if($task['name']) {
-                $newTask = $newjo->tasks()->create([
-                    'card_id' => 1,
-                    'name' => $task['name'],
-                    'description' => $task['desc'],
-                    'created_by' => auth()->user()->id,
-                    'assigned_to' => auth()->user()->id,
-                    'assigned_by' => auth()->user()->id
-                ]);
-                
-                if ($files = $request->file('files')) {
-                    if($taskFiles = $task['files']) {
-                        foreach ($files as $key => $file) {
-                            foreach ($taskFiles as $key => $taskFile) {
-                                if($file->getClientOriginalName() == $taskFile['filename']){
-                                    // echo $taskFile['filename'];
-                                    $newName = time() . $taskFile['filename'];
-                                    $file->move('storage/task/', $newName);
-                                    $newTask->files()->create([
-                                        'original_filename' => $taskFile['filename'],
-                                        'new_filename' => $newName,
-                                        'extension' => $taskFile['type']
-                                    ]);
+        // if board is kanban
+        if($board->type == 1) {
+            foreach ($joTasks as $key => $task) {
+                if($task['name']) {
+                    $card = Board::find($joMain['board_id'])->cards()->where('name', 'Backlog')->orderBy('created_at', 'asc')->first();
+                    $newTask = $newjo->tasks()->create([
+                        'card_id' => $card->id,
+                        'name' => $task['name'],
+                        'due' => $task['due'],
+                        'description' => $task['desc'],
+                        'created_by' => auth()->user()->id,
+                        'assigned_to' => $task['assign'],
+                        'assigned_by' => auth()->user()->id,
+                        'jo_id' => $newjo->id
+                    ]);
+                    
+                    if ($files = $request->file('files')) {
+                        if($taskFiles = $task['files']) {
+                            foreach ($files as $key => $file) {
+                                foreach ($taskFiles as $key => $taskFile) {
+                                    if($file->getClientOriginalName() == $taskFile['filename']){
+                                        // echo $taskFile['filename'];
+                                        $newName = time() . $taskFile['filename'];
+                                        $file->move('storage/task/', $newName);
+                                        $newTask->files()->create([
+                                            'original_filename' => $taskFile['filename'],
+                                            'new_filename' => $newName,
+                                            'extension' => $taskFile['type']
+                                        ]);
+                                    }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // if board is scrum
+        else {
+            $sprint = $board->sprints()->create([
+                'name' => $joMain['name'],
+                'type' => 2,
+                'created_by' => auth()->user()->id,
+                'started_at' => $joMain['date_in'],
+                'due_date' => $joMain['date_due']
+            ]);
+
+            event(new AddSprintEvent($sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])));
+
+            $board->notify(new BoardCreateListSprint($sprint->load('created_by')->toJson(), 'sprint'));
+
+            foreach ($joTasks as $key => $us) {
+                $order = count($sprint->us()->get());
+                $newus = UserStory::create([
+                    'name' => $us['name'],
+                    'description' => $us['desc'],
+                    'created_by' => auth()->user()->id,
+                    'points' => $us['points'],
+                    'sprint_id' => $sprint->id,
+                    'order' => $order+1
+                ]);
+                event(new NewUSEvent($newus, $board->id));
+                $board->notify(new BoardAddUS(auth()->user()->name, $newus->name));
+
+                foreach ($us['tasks'] as $key => $task) {
+                    $torder = count($sprint->tasks()->get());
+                    $newtask = Task::create([
+                        'sprint_id' => $sprint->id,
+                        'us_id' => $newus->id,
+                        'name' => $task['name'],
+                        'description' => $task['desc'],
+                        'created_by' => auth()->user()->id,
+                        'assigned_to' => $task['assign'],
+                        'assigned_by' => auth()->user()->id,
+                        'order' => $torder+1,
+                        'status_order' => $torder+1,
+                        'status' => 1,
+                        'due' => $task['due'],
+                    ]);
+
+                    if ($files = $request->file('files')) {
+                        if($taskFiles = $task['files']) {
+                            foreach ($files as $key => $file) {
+                                foreach ($taskFiles as $key => $taskFile) {
+                                    if($file->getClientOriginalName() == $taskFile['filename']){
+                                        // echo $taskFile['filename'];
+                                        $newName = time() . $taskFile['filename'];
+                                        $file->move('storage/task/', $newName);
+                                        $newtask->files()->create([
+                                            'original_filename' => $taskFile['filename'],
+                                            'new_filename' => $newName,
+                                            'extension' => $taskFile['type']
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    event(new AddListTaskEvent($newtask->load('assigned_to'), $board->id));
+                    $board->notify(new BoardCreateTask($newtask->load('created_by', 'us')->toJson()));
                 }
             }
         }
@@ -299,7 +545,7 @@ class AdminController extends Controller
         }
         else
         {
-        $brands = Brand::where('acma_id',auth()->user()->id)->get();
+            $brands = Brand::where('acma_id',auth()->user()->id)->get();
         }
         return $brands;
     }
@@ -312,128 +558,6 @@ class AdminController extends Controller
         else if($type === 2) {
             return JobOrder::with('brand.acma')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
         }
-    }
-
-    public function updateJOCreative(Request $request) {
-        $jo = JobOrder::find($request->id);
-        $joMain = $request->brand;
-        $joDetails = $request->details;
-        $jo->update([
-            'name' => $joMain['name'],
-            'brand_id' => $joMain['brand_id'],
-            'date_in' => $joMain['date_in'],
-            'date_due' => $joMain['date_due'],
-            'status' => $joMain['status'],
-        ]);
-
-        $media = null;
-        $file_type = null;
-        $ad_type = null;
-
-        if($joDetails['media']) {
-            $media = '';
-            foreach ($joDetails['media'] as $key => $e) {
-                $media = $media . $e . '.';
-            }
-        }
-
-        if($joDetails['ad_type']) {
-            $ad_type = '';
-            foreach ($joDetails['ad_type'] as $key => $e) {
-                $ad_type = $ad_type . $e . '.';
-            }
-        }
-        
-        if($joDetails['file_type']) {
-            $file_type = '';
-            foreach ($joDetails['file_type'] as $key => $e) {
-                $file_type = $file_type . $e . '.';
-            }
-        }
-
-        $jo->jocreatives()->update([
-            'media' => $media,
-            'ad_type' => $ad_type,
-            'file_type' => $file_type,
-            'copy' => $joDetails['copy'],
-            'copy' => $joDetails['post_caption'],
-            'revisions' => $joDetails['revisions'],
-        ]);
-        return JobOrder::with('brand')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
-    }
-
-    public function updateJOWeb(Request $request) {
-        $jo = JobOrder::find($request->id);
-        if($request->approved['check']) {
-            $user = User::where('email', $request->approved['email'])->whereIn('role_id', [1,2])->first();
-            if($user) {
-                if(Hash::check($request->approved['password'], $user->password)) {
-                    $jo->joweb()->update([
-                        'acma_proofed_at' => Carbon::now(),
-                        'acma_proofed_by' => $user->id
-                    ]);
-                    // return response()->json(['status' => 'success', 'message' => 'Success', 'type' => 'acma'], 200);
-                }
-                else {
-                    return response()->json(['status' => 'error', 'message' => 'Unauthorize', 'type' => 'acma'], 401);
-                }
-            }
-            else {
-                return response()->json(['status' => 'error', 'message' => 'Unauthorize', 'type' => 'acma'], 401);
-            }
-        }
-        $joMain = $request->brand;
-        $joDetails = $request->details;
-        $jo->update([
-            'name' => $joMain['name'],
-            'brand_id' => $joMain['brand_id'],
-            'date_in' => $joMain['date_in'],
-            'date_due' => $joMain['date_due'],
-            'status' => $joMain['status'],
-        ]);
-
-        $target_list = null;
-        $request_type = null;
-
-        if($joDetails['target_list']) {
-            $target_list = '';
-            foreach ($joDetails['target_list'] as $key => $e) {
-                $target_list = $target_list . $e . '.';
-            }
-        }
-
-        if($joDetails['request_type']) {
-            $request_type = '';
-            foreach ($joDetails['request_type'] as $key => $e) {
-                $request_type = $request_type . $e . '.';
-            }
-        }
-
-        $joweb = $jo->joweb()->first();
-        $acmaproofed = $joweb->acma_proofed_at;
-        $webproofed = $joweb->web_proofed_at;
-        if($webproofed != null && $acmaproofed != null) {
-            $jo->update([
-                'status' => 2
-            ]);
-        }
-
-        $jo->joweb()->update([
-            'request_type' => $request_type,
-            'target_list' => $target_list,
-            'action_points' => $joDetails['action_points'],
-            'tech' => $joDetails['tech'],
-            'domain_transfer' => $joDetails['domain_transfer'],
-            'domain_renewal' => $joDetails['domain_renewal'],
-            'old_cpanel_uname' => $joDetails['old_cpanel_uname'],
-            'old_cpanel_password' => $joDetails['old_cpanel_password'],
-            'new_cpanel_uname' => $joDetails['new_cpanel_uname'],
-            'new_cpanel_password' => $joDetails['new_cpanel_password'],
-            'date_commerced' => $joDetails['date_commerced'],
-            'date_ended' => $joDetails['date_ended'],
-        ]);
-        
-        return JobOrder::with('brand')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
     }
 
     public function getJobOrders(Request $request) {
@@ -561,5 +685,37 @@ class AdminController extends Controller
         }
 
         return response()->json(['status' => 'success', 'message' => 'Success', 'type' => 'acma'], 200); 
+    }
+
+    public function getJOBoardUsers(Request $request) {
+        if($request->board_id) {
+            $member =  Board::find($request->board_id)->boardUsers()->get();
+            $not = User::whereNotIn('id', $member->pluck('id'))->where('brand_id', null)->get();
+            return response()->json(['member' => $member, 'not' => $not]);
+        }
+        else {
+            return User::where('brand_id', null)->get();
+        }
+    }
+
+    public function addBoardMember(Request $request) {
+        $board = Board::find($request->board_id);
+        if($board->type == 1) {
+            $role = $board->roles()->where('name', 'Member')->first();
+        }
+        else {
+            $role = $board->roles()->where('name', 'Development Team')->first();
+        }
+        $board->boardUsers()->attach($request->ids, ['added_by' => auth()->user()->id, 'isAdmin' => false, 'bRole_id' => $role->id]);
+
+        foreach ($request->ids as $key => $uid) {
+            $user = User::find($uid);
+            $board->notify(new AddBoardMember($user->name, auth()->user()->name));
+            $user->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
+        }
+
+        $member =  Board::find($request->board_id)->boardUsers()->get();
+        $not = User::whereNotIn('id', $member->pluck('id'))->where('brand_id', null)->get();
+        return response()->json(['member' => $member, 'not' => $not]);
     }
 }

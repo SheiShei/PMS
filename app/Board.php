@@ -25,6 +25,10 @@ class Board extends Model
         return $this->hasMany('App\Card');
     }
 
+    public function jo() {
+        return $this->hasMany('App\JobOrder');
+    }
+
     public function boardUsers() {
         return $this->belongsToMany('App\User')->withPivot('added_by', 'bRole_id', 'isAdmin')->withTimestamps();
     }

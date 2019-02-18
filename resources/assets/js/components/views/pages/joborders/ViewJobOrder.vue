@@ -18,16 +18,19 @@
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
                                 </div>
-                                <div class="col-md-4 text-right">
-                                    <!-- <p class="no-margin"><small>Status: </small>
-                                        <span v-if="details.status == 1" class="txt-bold text-info"><span class="fa fa-circle"></span> Active</span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success"><span class="fa fa-circle"></span> Completed</span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger"> <span class="fa fa-circle"></span> Blocked</span>
-                                    </p> -->
-                                    <!-- <p class="no-margin"><small class="text-gray">For Client: Robert Fereno ( {{ details.brand.name }} )</small></p> -->
-                                    <button class="btn btn-xs btn-default btn-simple" type="button">
-                                        <i class="fa fa-pencil"></i> Edit Mode
-                                    </button>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <p class="text-gray" style="margin-top:10px"><small>Job Order Progress: <b>35%</b></small></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-v-8b3961f4="" class="progress progress-line-info"><div data-v-8b3961f4="" class="progress-bar progress-bar-info" style="width: 35%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -353,7 +356,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="torev3">
-                                        <div class="torevdiv3" v-for="(task, index) in details.tasks" :key="task.id">
+                                        <div class="torevdiv3" v-for="(task) in details.tasks" :key="task.id">
                                             
                                             <!-- if currently active -->
                                             <!-- <div class="torev-content divactive">
