@@ -140,7 +140,7 @@ class BrandsController extends Controller
     }
     
     public function getOnebrand(Request $request) {
-        $query= Brand::with('acma:id,name')->where('id', $request->id);
+        $query= Brand::with('acma:id,name')->with(['workbooks.created_by', 'workbooks.brand'])->where('id', $request->id);
        // $brand = Brand::with('tandem:id,name')->where('id', $request->id);
         $brand = $query->first();
         return $brand;

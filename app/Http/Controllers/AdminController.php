@@ -238,13 +238,14 @@ class AdminController extends Controller
                         foreach ($files as $key => $file) {
                             foreach ($taskFiles as $key => $taskFile) {
                                 if($file->getClientOriginalName() == $taskFile['filename']){
+                                    $extension = $file->getClientOriginalExtension();
                                     // echo $taskFile['filename'];
                                     $newName = time() . $taskFile['filename'];
                                     $file->move('storage/task/', $newName);
                                     $newTask->files()->create([
                                         'original_filename' => $taskFile['filename'],
                                         'new_filename' => $newName,
-                                        'extension' => $taskFile['type']
+                                        'extension' => $extension
                                     ]);
                                 }
                             }
@@ -414,13 +415,14 @@ class AdminController extends Controller
                             foreach ($files as $key => $file) {
                                 foreach ($taskFiles as $key => $taskFile) {
                                     if($file->getClientOriginalName() == $taskFile['filename']){
+                                        $extension = $file->getClientOriginalExtension();
                                         // echo $taskFile['filename'];
                                         $newName = time() . $taskFile['filename'];
                                         $file->move('storage/task/', $newName);
                                         $newTask->files()->create([
                                             'original_filename' => $taskFile['filename'],
                                             'new_filename' => $newName,
-                                            'extension' => $taskFile['type']
+                                            'extension' => $extension
                                         ]);
                                     }
                                 }
@@ -472,6 +474,7 @@ class AdminController extends Controller
                         'status_order' => $torder+1,
                         'status' => 1,
                         'due' => $task['due'],
+                        'jo_id' => $newjo->id
                     ]);
 
                     if ($files = $request->file('files')) {
@@ -479,13 +482,14 @@ class AdminController extends Controller
                             foreach ($files as $key => $file) {
                                 foreach ($taskFiles as $key => $taskFile) {
                                     if($file->getClientOriginalName() == $taskFile['filename']){
+                                        $extension = $file->getClientOriginalExtension();
                                         // echo $taskFile['filename'];
                                         $newName = time() . $taskFile['filename'];
                                         $file->move('storage/task/', $newName);
                                         $newtask->files()->create([
                                             'original_filename' => $taskFile['filename'],
                                             'new_filename' => $newName,
-                                            'extension' => $taskFile['type']
+                                            'extension' => $extension
                                         ]);
                                     }
                                 }
@@ -551,12 +555,86 @@ class AdminController extends Controller
     }
 
     public function getJoDetails(Request $request) {
-        $type = JobOrder::where('id',$request->id)->select('type')->first()['type'];
+        $jo = JobOrder::find($request->id);
+        $type = $jo->type;
+        $dateNow = Carbon::now()->toDateString();
+        $users = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo) {
+            $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
+        }])->get();
+
+        // return $users;
+        $tasks = [];
+
+        foreach ($users as $key => $user) {
+            $dependentOn = null;
+            foreach ($user->task_assigned_to as $key => $task) {
+
+                $date1 = new \DateTime(Carbon::now()->toDateString());
+                $date2 = new \DateTime($task['created_at']->toDateString());
+                $progressDays  = $date1->diff($date2)->format('%a');
+
+                $start = new \DateTime($task['created_at']->toDateString());
+                $end = new \DateTime($task['due']);
+                $durationDays  = $end->diff($start)->format('%a');
+
+
+                
+                if($progressDays <= 0) {
+                    $progressDays = 0;
+                }
+                else {
+                    $progressDays ++;
+                }
+                $durationDays ++;
+
+                $pPer = ($progressDays/$durationDays) * 100;
+                
+                if($key == 0) {
+                    $parentId = $task['id'];
+                    $mT = array(
+                        'id' => $task['id'], 
+                        'label' => $task['name'],
+                        'user' => '<img src="'.$user['picture'].'" class="workload-user-pic" />&nbsp;&nbsp;<a target="_blank" style="color:#0077c0;">'.$user['name'].'</a>',
+                        'start' => $task['created_at']->toDateString(),
+                        'end' => $task['due'],
+                        'duration' => $durationDays * 24 * 60 * 60,
+                        'progress' => round($pPer, 0),
+                        'key' => $key,
+                        'type' => 'task',
+                    );
+                }
+                else {
+                    $mT = array(
+                        'id' => $task['id'], 
+                        'label' => $task['name'],
+                        'user' => '',
+                        'start' => $task['created_at']->toDateString(),
+                        'end' => $task['due'],
+                        'duration' => $durationDays * 24 * 60 * 60,
+                        'progress' => round($pPer, 0),
+                        'key' => $key,
+                        'parentId' => $parentId,
+                        'dependentOn' => $dependentOn,
+                        'type' => 'task',
+                    );
+                }
+
+                $dependentOn = [$task['id']];
+                
+                
+                array_push($tasks, $mT);
+            }
+        }
+
+        // return $tasks;
+
         if($type === 1) {
-            return JobOrder::with('brand.acma')->with('jocreatives.signedby', 'tasks.files')->where('id', $request->id)->first();
+            $jobor = JobOrder::with(['brand.acma', 'board'])->with(['jocreatives.signedby', 'tasks.files', 'tasks.card', 'tasks.assigned_to'])->where('id', $request->id)->first();
+            return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
         }
         else if($type === 2) {
-            return JobOrder::with('brand.acma')->with('joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files')->where('id', $request->id)->first();
+            $jobor = JobOrder::with(['brand.acma', 'board'])->with(['joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files', 'tasks.assigned_to'])->where('id', $request->id)->first();
+            return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
         }
     }
 
