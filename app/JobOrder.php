@@ -12,12 +12,16 @@ class JobOrder extends Model
     
     public $incrementing = false;
 
-    protected $fillable = ['name', 'brand_id', 'client_id', 'tandem_id', 'date_in', 'date_due', 'status', 'created_by', 'type'];
+    protected $fillable = ['name', 'brand_id', 'board_id', 'client_id', 'tandem_id', 'date_in', 'date_due', 'status', 'created_by', 'type'];
 
     protected $appends = array('indate', 'duedate');
 
     public function brand() {
         return $this->belongsTo('App\Brand');
+    }
+
+    public function board() {
+        return $this->belongsTo('App\Board');
     }
 
     public function created_by() {

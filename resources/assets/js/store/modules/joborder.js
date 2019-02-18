@@ -53,8 +53,9 @@ const actions = {
         }) 
     },
     newJOC ({commit}, data) {
+        const config = { headers : {'Content-Type': 'multipart/form-data'} }
         return new Promise ((resolve, reject) => {
-            axios.post('/api/newJobOrderCreative', data)
+            axios.post('/api/newJobOrderCreative', data, config)
             .then ((response) => {
                 // console.log(response);
                 resolve(response)
@@ -96,7 +97,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/updateJobOrderCreative', data)
                 .then ((response) => {
-                    console.log(response);
+                    // console.log(response);
                     resolve(response);
                 })
                 .catch ((error) => {
@@ -111,7 +112,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/updateJobOrderWeb', data)
                 .then ((response) => {
-                    console.log(response);
+                    // console.log(response);
                     resolve(response)
                 })
                 .catch ((error) => {
@@ -123,14 +124,14 @@ const actions = {
         })
     },
     getJobOrders ({commit}, data) {
-        console.log(data)
+        // console.log(data)
         axios.get('/api/getJobOrders', {params: {
             search: data.search,
             sort: data.sort,
             notArchive: data.notArchive,
         }})
             .then ((response) => {
-                 console.log(response.data);
+                //  console.log(response.data);
                 commit('setJOs', response.data);
             })
             .catch ((error) => {
@@ -145,7 +146,7 @@ const actions = {
                 data: { id: id}
             })
                 .then((response) => {
-                    console.log(response.data);
+                    // console.log(response.data);
                      commit('deletejo', id);
                      resolve(response);
                 })
@@ -163,7 +164,7 @@ const actions = {
                 data: { id: id}
             })
                 .then((response) => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     commit('deletejo',id);
                     resolve(response);
                 })
@@ -199,7 +200,7 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/finishJOW', data)
                 .then ((response) => {
-                    console.log(response);
+                    // console.log(response);
                     resolve(response)
                 })
                 .catch(error => {
