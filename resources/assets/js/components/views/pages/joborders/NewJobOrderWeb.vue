@@ -714,7 +714,7 @@ export default {
             for(let i=0; i<this.attachments.length;i++){
                 form.append('files[]',this.attachments[i]);
             }
-            this.$store.dispatch('newJOC', form)
+            this.$store.dispatch('newJOW', form)
                 .then ((response) => {
                     const jodata = response.data;
                     this.joid = jodata.id;

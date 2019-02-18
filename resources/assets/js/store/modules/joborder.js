@@ -84,7 +84,7 @@ const actions = {
             axios.post('/api/getJoDetails', {id: id})
                 .then ((response) => {
                     // console.log(response);
-                    commit('setCurrentJO', response.data);
+                    commit('setCurrentJO', response.data.jobor);
                     resolve(response.data)
                 })
                 .catch((error) => {
