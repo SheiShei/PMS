@@ -235,7 +235,7 @@
 															</div>
 															<div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
 															<div class="fileinput-new thumbnail img-raised">
-																<img :src="user_info.bg_image" style="max-height: 200px; width: auto" alt="...">
+																<img v-if="user_info.bg_image" :src="user_info.bg_image" style="max-height: 200px; width: auto" alt="...">
 															</div>
 														</div>
 													</div>

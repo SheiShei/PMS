@@ -10,74 +10,72 @@
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <h6 class="nm-top"><strong><span class="fa fa-book"></span> WORKBOOKS LIST</strong>&nbsp;<span><small>| <a href="">Archive</a></small></span></h6>
+                                    <h6 class="nm-top"><strong><span class="fa fa-book"></span> WORKBOOKS LIST</strong>&nbsp;<span><small>| <a @click.prevent="changeArchive" href="">Archive</a></small></span></h6>
                                 </div>
                                 <div class="col-md-8 text-right">
-                                    <select class="my-input my-thin-select" name="" id="">
+                                    <select @change="getAllWorkbooks" v-model="data.status" class="my-input my-thin-select" name="" id="">
                                         <option value="" selected>Reviewed & For Review</option>
-                                        <option value="">Reviewed</option>
-                                        <option value="">For Review</option>
+                                        <option value="reviewed">Reviewed</option>
+                                        <option value="for_reviewed">For Review</option>
                                     </select>
-                                    <input type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    <input @input="searchDeb" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
                                     &nbsp;<span class="fa fa-search text-default"></span>
                                 </div>
                             </div>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div style="max-height: 75vh; overflow-y: auto">
-                                        <div class="torev2">
-                                        <a href="#parent" class="torev2">
-                                            <div class="torevdiv2">
-                                                <div class="torev-left">
-                                                    <div class="torev-icon">
-                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                    <div style="max-height: 75vh; overflow-y: auto" v-if="workbooks">
+                                        <div class="torev2" v-for="workbook in workbooks" :key="workbook.id">
+                                            <a v-if="cuser.role.id == 4" href="" @click.prevent="$router.push({name:'review_workbook', params: {wb_id: workbook.id}})" class="torev2">
+                                                <div class="torevdiv2">
+                                                    <div class="torev-left">
+                                                        <div class="torev-icon">
+                                                            <i alt="" class="fa fa-book medium-avatar"></i>
+                                                        </div>
+                                                    </div>  
+                                                    <div class="torev-right">
+                                                        <h6 class="wb-title txt-bold"><a>{{ workbook.name }}</a> <span v-if="workbook.reviewed_at" title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
+                                                        <p><small>by: {{ workbook.created_by.name }} . {{ workbook.created_at | moment('ll') }} . {{ workbook.brand.name }}</small></p>
+                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                     </div>
-                                                </div>  
-                                                <div class="torev-right">
-                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a> <span title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
-                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
-                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
-                                                </div>
-                                                <div class="very-right hidden-sm hidden-xs text-right">
-                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
-                                                    <span class="fa fa-trash-o"></span> Archive
-                                                </a>
-                                            </div>
-                                            </div>
-                                        </a>
-                                        </div>
-                                        <div class="torev2">
-                                        <a href="#parent" class="torev2">
-                                            <div class="torevdiv2">
-                                                <div class="torev-left">
-                                                    <div class="torev-icon">
-                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    <div class="very-right hidden-sm hidden-xs text-right">
+                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                            <span class="fa fa-trash-o"></span> Archive
+                                                        </a>
                                                     </div>
-                                                </div>  
-                                                <div class="torev-right">
-                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a></h6> 
-                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
-                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                 </div>
-                                                <div class="very-right hidden-sm hidden-xs text-right">
-                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
-                                                    <span class="fa fa-trash-o"></span> Archive
-                                                </a>
-                                            </div>
-                                            </div>
-                                        </a>
+                                            </a>
+                                            <a v-else href="" @click.prevent="$router.push({name:'view_workbook', params: {wb_id: workbook.id}})" class="torev2">
+                                                <div class="torevdiv2">
+                                                    <div class="torev-left">
+                                                        <div class="torev-icon">
+                                                            <i alt="" class="fa fa-book medium-avatar"></i>
+                                                        </div>
+                                                    </div>  
+                                                    <div class="torev-right">
+                                                        <h6 class="wb-title txt-bold"><a>{{ workbook.name }}</a> <span v-if="workbook.reviewed_at" title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
+                                                        <p><small>by: {{ workbook.created_by.name }} . {{ workbook.created_at | moment('ll') }} . {{ workbook.brand.name }}</small></p>
+                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                    </div>
+                                                    <div class="very-right hidden-sm hidden-xs text-right">
+                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                            <span class="fa fa-trash-o"></span> Archive
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" v-if="cuser.role.id == 2">
                         <div class="taskchart shadow">
                             <p class="txt-bold"><span class="fa fa-plus-square-o text-success"></span> Create New</p>
                             <hr>
-                            <a class="btn btn-success btn-md btn-block">Create Workbook</a>
+                            <router-link :to="{name: 'add_workbook'}" class="btn btn-success btn-md btn-block">Create Workbook</router-link>
                         </div>        
                     </div>
                 </div>
@@ -102,13 +100,35 @@ export default {
     },
 
     created() {
-        this.$store.dispatch('getWorkbooks', this.data);
+        this.getAllWorkbooks()
+    },
+
+    mounted() {
+        // let oldSuccessLabel = this.$awn.options // Save original option
+        // this.$awn.options.labels.confirm = 'Tell us what you think!' // Set my specific, one-time option
+        // this.$awn.options.icons.confirm = 'star' // Set my specific, one-time option
+        // this.$awn.confirm("To ensure that we are doing everything that we can to exceed your expectations, please take a moment to RATE and COMMENT any suggestions you have.", this.onOk())
+        // this.$awn.options = oldSuccessLabel // Restore the original option
+        
     },
 
     computed: {
         ...mapGetters({
                 workbooks: 'getWorkbookList',
+                cuser: 'currentUser'
             }),
+    },
+    methods: {
+        getAllWorkbooks() {
+            this.$store.dispatch('getWorkbooks', this.data);
+        },
+        searchDeb: _.debounce(function() {
+            this.getAllWorkbooks();
+        }, 500),
+        changeArchive() {
+            this.data.isArchive = !this.data.isArchive;
+            this.getAllWorkbooks();
+        },
     }
 }
 </script>

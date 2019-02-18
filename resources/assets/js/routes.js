@@ -25,6 +25,7 @@ import AddWorkbook from './components/views/pages/workbook/AddWorkbook.vue';
 import ViewWB from './components/views/pages/workbook/ViewWB.vue';
 // import ClientViewWorkbook from './components/views/pages/workbook/ClientViewWorkbook.vue';
 import ReviewWB from './components/views/pages/workbook/ReviewWB.vue';
+import SingleWorkbook from './components/views/pages/workbook/Workbook.vue';
 import KanbanAddTask from './components/views/pages/boards/kanban/AddTask.vue';
 import KanbanViewTask from './components/views/pages/boards/kanban/ViewTask.vue';
 import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
@@ -393,10 +394,10 @@ export const routes = [
                         })
                 }
             },
+            
             {
-                path: 'workbook/view',
-                name: 'view_workbook',
-                component: ViewWB,
+                path: 'workbook/:wb_id',
+                component: SingleWorkbook,
                 meta: {
                     requiresAuth: true
                 },
@@ -412,29 +413,42 @@ export const routes = [
                             }
                             
                         })
-                }
-            },
-            {
-                path: 'workbook/review',
-                name: 'review_workbook',
-                component: ReviewWB,
-                meta: {
-                    requiresAuth: true
                 },
-                beforeEnter: (to, from, next) => {
-                    // let param = to.params.brandId;
-                    axios.get('/api/verifyworkbookclient')
-                        .then((response) => {
-                            if(response.data.status === 'authenticated') {
-                                next();
-                            }
-                            else{
-                                next({ name: 'error404' });
-                            }
-                            
-                        })
-                }
+                children: [
+                    {
+                        path: '',
+                        name: 'view_workbook',
+                        component: ViewWB,
+                        meta: {
+                            requiresAuth: true
+                        }
+                    },
+                    {
+                        path: 'review',
+                        name: 'review_workbook',
+                        component: ReviewWB,
+                        meta: {
+                            requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            // let param = to.params.brandId;
+                            axios.get('/api/verifyworkbookclient')
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        }
+                    },
+                ]
             },
+            
+               
+            
             {
                 path: 'messages',
                 component: Messages,

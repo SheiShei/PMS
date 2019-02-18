@@ -16,9 +16,7 @@ class CreateWorkbookFilesTable extends Migration
         Schema::create('workbook_files', function (Blueprint $table) {
             $table->increments('id');
             $table->char('workbook_id', 36)->index();
-            $table->string('original_filename');
-            $table->string('new_filename');
-            $table->string('caption');
+            $table->boolean('isApproved')->default(false);
             $table->timestamps();
 
             $table->foreign('workbook_id')->references('id')->on('workbooks')->onDelete('cascade');

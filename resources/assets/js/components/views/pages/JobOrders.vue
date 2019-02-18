@@ -32,8 +32,9 @@
                                         <table class="table table-bordered table-brands">
                                             <thead>
                                                 <tr>
-                                                    <th class="">Date Created</th>
+                                                    <th class="">Created</th>
                                                     <th>Title</th>
+                                                    <th class="">Due</th>
                                                     <th>Team</th>
                                                     <th>Brand</th>
                                                     <th>Status</th>
@@ -44,6 +45,7 @@
                                                 <tr v-for="jo in jos" :key="jo.id" class="list-complete-item">
                                                     <td>{{ jo.created_at }}</td>
                                                     <td>{{ jo.name }}</td>
+                                                    <td>{{ jo.duedate }}</td>
                                                     <td v-if="jo.type == 1">Creatives</td>
                                                     <td v-if="jo.type == 2">Web</td>
                                                     <td>{{ jo.brand.name }}</td>
