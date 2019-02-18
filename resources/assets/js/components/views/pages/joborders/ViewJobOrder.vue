@@ -319,7 +319,7 @@
                                     <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
                                 </div>
                                 <div class="col-md-7 text-right">
-                                    <p class="no-margin text-gray"><small>Sample Board Here</small></p>
+                                    <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
                             <div class="row">
@@ -694,9 +694,11 @@ export default {
     },
     methods: {
         getJoDetails() {
+            this.show = false;
             this.$store.dispatch('getJoDetails', this.$route.params.jo_id)
                 .then ((response) => {
-                    this.details = response;
+                    this.show = false;
+                    this.details = response.jobor;
 
                     if(response.joweb) {
                         let target_list = [], request_type = [];
@@ -707,7 +709,41 @@ export default {
                         this.details.joweb.request_type = request_type;
                     }
 
-                    console.log(this.details);
+                    // console.log(this.details);
+
+                    this.tasks = [];
+                    this.show = false;
+                    let colors = [
+                        '#fc5c65',
+                        '#fd9644',
+                        '#45aaf2',
+                        '#A3CB38',
+                        '#ffc048',
+                        '#D6A2E8',
+                        '#fd79a8',
+                    ];
+                    let tasks = response.workload;
+                    let style = {
+                    style : {
+                        base: {
+                        fill: '#D6A2E8',
+                        stroke: '#fff'
+                        }
+                    }
+                    }
+
+                    tasks.forEach(task => {
+                    task = Object.assign(task, {style : {
+                        base: {
+                        fill: colors[Math.floor(Math.random() * 7)],
+                        stroke: '#fff'
+                        }
+                    }});
+                    task.start = ''+task.start;
+                    this.tasks.push(task)
+                    });
+                    this.show = true;
+                    // console.log(this.tasks);
                 })
         },
         
