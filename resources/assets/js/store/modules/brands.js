@@ -76,6 +76,7 @@ const actions = {
             .then((response) => {
                  console.log(response.data.data);
                 commit('setBrands', response.data.data)
+                // resolve(response.data.data);
                 
             })
     },

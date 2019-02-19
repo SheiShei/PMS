@@ -9,6 +9,8 @@ const state = {
     overdued_tasks: [],
     display_messages: [],
     display_notifs: '',
+    display_urworkbooks: [],
+    display_rworkbooks: [],
 
 };
 
@@ -42,6 +44,12 @@ const getters = {
     },
     display_notifs: state => {
         return state.display_notifs;
+    },
+    display_urworkbooks: state => {
+        return state.display_urworkbooks;
+    },
+    display_rworkbooks: state => {
+        return state.display_rworkbooks;
     },
 
 
@@ -77,6 +85,12 @@ const mutations = {
     },
     display_notifs(state, data) {
         state.display_notifs = data;
+    },
+    display_urworkbooks(state, data) {
+        state.display_urworkbooks = data;
+    }, 
+    display_rworkbooks(state, data) {
+        state.display_rworkbooks = data;
     },
 
    
@@ -126,9 +140,12 @@ const actions = {
                 });
         })
     },
-    display_joborders ({commit}) {
+    display_joborders ({commit},data) {
+        console.log(data)
         return new Promise ((resolve, reject) => {
-            axios.get('/api/display_joborders')
+            axios.post('/api/display_joborders',{
+                status: data.jo_status,
+                search: data.search})
                 .then((response) => {
                     console.log('display_joborders',response.data);
                     commit('display_joborders', response.data);
@@ -224,7 +241,34 @@ const actions = {
                 });
         })
     },
-    
+    display_urworkbooks ({commit}) {
+        return new Promise ((resolve, reject) => {
+            axios.get('/api/display_urworkbooks')
+                .then((response) => {
+                    console.log('ur',response.data);
+                    commit('display_urworkbooks', response.data);
+                    resolve(response.data)
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                });
+        })
+    },
+    display_rworkbooks ({commit}) {
+        return new Promise ((resolve, reject) => {
+            axios.get('/api/display_rworkbooks')
+                .then((response) => {
+                    console.log('r',response.data);
+                    commit('display_rworkbooks', response.data);
+                    resolve(response.data)
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                });
+        })
+    },
   
 
    

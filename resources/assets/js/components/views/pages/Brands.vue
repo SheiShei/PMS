@@ -12,7 +12,7 @@
                                 <div class="col-md-4">
                                     <h6 class="nm-top"><span class="txt-bold">
                                         <span class="fa fa-briefcase"></span> BRANDS LIST 
-                                        <small>| <a @click.prevent="archiveBrands" href="">View Archive</a></small></span>
+                                        <small v-if="user_info.role_id==1">| <a @click.prevent="archiveBrands" href="">View Archive</a></small></span>
                                     </h6>
                                 </div>
                                 <div class="col-md-8 text-right">
@@ -42,10 +42,10 @@
                                                 <router-link v-if="data.notArchive" :to="{name: 'update_brand', params: {brand_Id: brand.id }}" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </router-link>
-                                                <button v-if="data.notArchive" type="button" rel="tooltip"  @click="deleteBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                <button v-if="data.notArchive && user_info.role_id==1" type="button" rel="tooltip"  @click="deleteBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                     <i class="fa fa-trash-o"></i>
                                                 </button>
-                                                <button v-if="!data.notArchive" type="button" rel="tooltip" @click="restoreBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Restore">
+                                                <button v-if="!data.notArchive && user_info.role_id==1" type="button" rel="tooltip" @click="restoreBrand(brand.id)" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Restore">
                                                     <i class="fa fa-refresh"></i>
                                                 </button>
                                             </td>
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <div v-if="user_info.role_id==1" class="taskchart shadow">
+                        <div v-if="user_info.role_id==1" class="taskchart shadow mb-4">
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-success"></span> Add New Brand:</p>
@@ -65,7 +65,6 @@
                                 </div>
                             </div>
                         </div>
-                        <br/>
                         <div class="taskchart shadow">
                             <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
                             <hr/>

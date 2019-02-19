@@ -12,7 +12,8 @@
         <transition name="fade">
             <div class="t-options" v-show="openTaskOpt" style="" @mouseover="openTaskOpt = true" @mouseout="openTaskOpt = false">
                 <div class="t-points">
-                    <p>{{ task.points }} pts</p>
+                    <p class=""><small><span class="fa fa-clock-o text-danger"></span> {{ task.due }}</small></p>
+                    <!-- <p>{{ task.points }} pts</p> -->
                 </div>
                 <div class="t-btns pull-right">
                     <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
@@ -40,7 +41,8 @@
         <transition name="fade">
             <div class="t-options" v-show="openTaskOpt" style="" @mouseover="openTaskOpt = true" @mouseout="openTaskOpt = false">
                 <div class="t-points">
-                    <p>{{ task.points }} pts</p>
+                    <!-- <p>{{ task.points }} pts</p> -->
+                    <p class=""><small><span class="fa fa-clock-o text-danger"></span> {{ task.due }}</small></p>
                 </div>
                 <div class="t-btns pull-right">
                     <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id}, props: {per: taskPerm} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>

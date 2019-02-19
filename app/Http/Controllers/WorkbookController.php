@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Brand;
 use App\Workbook;
 use App\WorkbookFile;
+use App\Notifications\ReviewedWorkbook;
+use App\Notifications\SendforRevision;
+
 
 use Carbon\Carbon;
 
@@ -62,19 +65,19 @@ class WorkbookController extends Controller
 
     public function getAllWorkbooks(Request $request) {
         if(auth()->user()->role_id == 1) {
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->get();
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->get();
         }
         if(auth()->user()->role_id == 2) {
             $callback = function($q) {
                 $q->where('acma_id', auth()->user()->id);
             };
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->whereHas('brand', $callback)->get();
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
         }
         if(auth()->user()->role_id == 4) {
             $callback = function($q) {
                 $q->where('id', auth()->user()->brand_id);
             };
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'])->whereHas('brand', $callback)->get();
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
         }
         return $workbooks;
     }
@@ -82,11 +85,11 @@ class WorkbookController extends Controller
     public function getCWorkbook(Request $request) {
         $workbook = Workbook::find($request->id);
 
-        return $workbook->load('files.revisions');
+        return $workbook->load(['files.revisions'=> function($q){$q->orderBy('created_at','desc'); }]);
     }
 
     public function reviewWB(Request $request) {
-        $origWB = Workbook::find($request->id);
+        $origWB = Workbook::with(['brand:id,name'])->find($request->id);
 
         $origWB->update([
             'reviewed_at' => Carbon::now()
@@ -104,6 +107,52 @@ class WorkbookController extends Controller
             }
         }
 
+        $user= User::find($origWB->created_by);
+        $user->notify(new ReviewedWorkbook($origWB->toArray()));
         return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
+
+    public function UpdateWorkbook(Request $request) {
+        $file = $request->file('files');
+
+        $origname = $file->getClientOriginalName();
+        $newname = time() . $origname;
+        $file->move('storage/workbook/', $newname);
+
+        $nfile = WorkbookFile::with('workbook.brand')->find($request->id);
+        $rev=$nfile->revisions()->create([
+            'original_filename' => $origname,
+            'new_filename' => $newname,
+            'caption' => $request->caption,
+        ]);
+      
+
+        // return $rev;
+        if(auth()->user()->role_id == 1) {
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->get();
+        }
+        if(auth()->user()->role_id == 2) {
+            $callback = function($q) {
+                $q->where('acma_id', auth()->user()->id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        }
+        if(auth()->user()->role_id == 4) {
+            $callback = function($q) {
+                $q->where('id', auth()->user()->brand_id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        }
+        // $workbook=$nfile->workbook()->
+        // return $user= User::with('workbooks');
+        // find($nfile->workbook()->brand_id);
+        // $user->notify(new SendforRevision($origname->toArray()));
+
+        return $workbooks;
+      
+        }
+
+
+    
+  
 }

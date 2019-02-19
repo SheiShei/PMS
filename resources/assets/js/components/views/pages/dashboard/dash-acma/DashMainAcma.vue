@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Total Workbooks Created</p>
-                                       <p class="number">75</p>
+                                       <p class="number">{{dashboard_acma.workbookss}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -45,23 +45,22 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <p class="no-margin txt-bold"><span class="fa fa-line-chart"></span> Job Order Progress Overview</p>
-                                            <a><small>Go to All Job Orders</small></a>
+                                             <router-link :to="{name: 'all_jo_list'}"><a><small>Go to All Job Orders</small></a></router-link>
                                         </div>
                                         <div class="col-md-6 text-right">
-                                            <select class="my-thin-select">
-                                                <option value="">Active</option>
-                                                <option value="">Due Tomorrow</option>
-                                                <option value="">Overdued</option>
-                                                <option value="">Completed</option>
+                                            <select v-model="data.jo_status" @change="filterjo()" class="my-thin-select">
                                                 <option value="">All</option>
+                                                <option value="1">Active</option>
+                                                <option value="2">Completed</option>
+                                                <option value="3">Blocked</option>
                                             </select>
-                                            <input type="search" class="my-thin-input" placeholder="Search...">
+                                            <input @input="search()" v-model="data.search" type="search" class="my-thin-input" placeholder="Search...">
                                             &nbsp;&nbsp;<span class="fa fa-search text-gray"></span>
                                         </div>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="col-md-12">
-                                            <div class="v2-table table-reponsive">
+                                            <div v-if="display_joborders!=0" class="v2-table table-reponsive">
                                                 <table>
                                                     <thead>
                                                     <tr>
@@ -73,13 +72,13 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody name="list-complete" is="transition-group">
-                                                    <tr class="list-complete-item">
-                                                        <td><span class="fa fa-copy"></span>&nbsp;Mfi JO</td>
-                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
-                                                        <td><span class="label label-info">Active</span></td>
-                                                        <!-- <td><span class="label label-success">Completed</span></td> -->
-                                                        <!-- <td><span class="label label-warning">Due Tomorrow</span></td> -->
-                                                        <!-- <td><span class="label label-danger">Overdued</span></td> -->
+                                                    <tr v-for="jo in display_joborders" :key="jo.id" class="list-complete-item">
+                                                           <td><span class="fa fa-copy"></span>&nbsp;{{jo.name}}</td>
+                                                        <td><span class="fa fa-clock-o"></span>&nbsp;{{jo.date_due | moment("MMM D, YYYY")}}</td>
+                                                        <td v-if="jo.status==1"><span class="label label-info">Active</span></td>
+                                                        <td v-if="jo.status==2"><span class="label label-success">Completed</span></td>
+                                                        <td v-if="jo.status==3" ><span class="label label-warning">Undone</span></td>
+                                                        <td v-if="jo.status==4"><span class="label label-danger">Overdued</span></td>
 
                                                         <td>
                                                             <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
@@ -87,49 +86,10 @@
                                                             </div></div>
                                                         </td>
                                                         <td>
-                                                            <a style="cursor: pointer"><small>VIEW</small></a>
-                                                        </td>
-                                        
-                                                    </tr>
-                                                    <tr class="list-complete-item">
-                                                        <td><span class="fa fa-copy"></span>&nbsp;Mowelfund JO</td>
-                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
-                                                        <td><span class="label label-success">Completed</span></td>
-                                                        <td>
-                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
-                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
-                                                            </div></div>
-                                                        </td>
-                                                        <td>
-                                                            <a style="cursor: pointer"><small>VIEW</small></a>
+                                                            <a style="cursor: pointer"><small  @click="view(jo.id, jo.type)">VIEW</small></a>
                                                         </td>
                                                     </tr>
-                                                    <tr class="list-complete-item">
-                                                        <td><span class="fa fa-copy"></span>&nbsp;Luljettas JO</td>
-                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
-                                                        <td><span class="label label-warning">Due Tomorrow</span></td>
-                                                        <td>
-                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
-                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
-                                                            </div></div>
-                                                        </td>
-                                                        <td>
-                                                            <a style="cursor: pointer"><small>VIEW</small></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="list-complete-item">
-                                                        <td><span class="fa fa-copy"></span>&nbsp;osaihfosdfdsa</td>
-                                                        <td><span class="fa fa-clock-o"></span>&nbsp;Feb 16, 2019</td>
-                                                        <td><span class="label label-danger">Overdued</span></td>
-                                                        <td>
-                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
-                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
-                                                            </div></div>
-                                                        </td>
-                                                        <td>
-                                                            <a style="cursor: pointer"><small>VIEW</small></a>
-                                                        </td>
-                                                    </tr>
+    
                                                     </tbody>
                                                 </table>
 
@@ -141,6 +101,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                                <p v-if="display_joborders==0" class="note"> No Joborder yet </p>
+                                             
                                         </div>
 
                                     </div>
@@ -196,20 +159,20 @@
                                 <div class="taskchart shadow">
                                     <p><span class="fa fa-star text-warning"></span> Recently Reviewed Workbook</p>
                                     <hr>
-                                    <div class="torev">
+                                    <div v-for="(rwb, index) in display_rworkbooks" :key="rwb.id" class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <a href="#"><div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: rwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="torev-right">
-                                            <h6>Potato Corner New Images <span class="fa fa-check-circle text-success" title="Reviewed by Client"></span></h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
-                                            <p><small>Potato Corner</small></p>
+                                            <h6>{{rwb.name}} <span class="fa fa-check-circle text-success" title="Reviewed by Client"></span></h6>
+                                            <p><small>by: {{rwb.brand.acma.name}} on {{rwb.created_at |  moment("MMM D, YYYY")}}</small></p>
+                                            <p><small>{{rwb.brand.name}}</small></p>
                                         </div>
-                                    </div></a>
+                                    </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -217,66 +180,25 @@
                                 <div class="taskchart shadow">
                                     <p><span class="fa fa-star-o"></span> Waiting Client's Review</p>
                                     <hr>
-                                    <div class="torev">
+                                    <div v-for="(urwb, index) in display_urworkbooks" :key="urwb.id"  class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <a href="#"><div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: urwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="torev-right">
-                                            <h6>Potato Corner New Images</h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
-                                            <p><small>Potato Corner</small></p>
+                                            <h6>{{urwb.name}}</h6>
+                                            <p><small>by: {{urwb.brand.acma.name}} on {{urwb.created_at |  moment("MMM D, YYYY")}}</small></p>
+                                            <p><small>{{urwb.brand.name}}</small></p>
                                         </div>
-                                    </div></a>
+                                    </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
                                 <br/>
-                                <!-- <div class="taskchart shadow">
-                                    <p><span class="fa fa-align-left"></span> All Created Workbooks</p>
-                                    <hr>
-                                    <div class="torev">
-                                    <a href="#"><div class="torevdiv">
-                                        <div class="torev-left">
-                                            <div class="torev-icon">
-                                                <i class="fa fa-book medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="torev-right">
-                                            <h6>Potato Corner New Images <span class="fa fa-check-circle text-success" title="Reviewed by Client"></span></h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
-                                            <p><small>Potato Corner</small></p>
-                                        </div>
-                                    </div></a>
-                                    <a href="#"><div class="torevdiv">
-                                        <div class="torev-left">
-                                            <div class="torev-icon">
-                                                <i class="fa fa-book medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="torev-right">
-                                            <h6>Potato Corner New Images</h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
-                                            <p><small>Potato Corner</small></p>
-                                        </div>
-                                    </div></a>
-                                    <a href="#"><div class="torevdiv">
-                                        <div class="torev-left">
-                                            <div class="torev-icon">
-                                                <i class="fa fa-book medium-avatar" alt=""></i>
-                                            </div>
-                                        </div>
-                                        <div class="torev-right">
-                                            <h6>Potato Corner New Images <span class="fa fa-check-circle text-success" title="Reviewed by Client"></span></h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
-                                            <p><small>Potato Corner</small></p>
-                                        </div>
-                                    </div></a>
-                                    </div>
-                                </div> -->
+                               
                                 <br/>
                             </div>
                             <div class="col-md-4">
@@ -297,18 +219,7 @@
                                     </div>
                                 </div>
                                 <br/>
-                                <!-- <div class="taskdisp shadow">
-                                    <p><span class="fa fa-files-o"></span> Active Job Orders ( {{dashboard_acma.active_jo}} )
-                                    </p>
-                                    <hr>
-                                    <p v-if="dashboard_acma.active_jo==0" class="note">No created JO to show</p>
-                                    <div class="mess">
-                                    <ul v-for="jo in display_joborders" :key="jo.id" class="list-unstyled">
-                                        <li><span class="fa fa-circle text-info"></span>
-                                            <a @click="view(jo.id, jo.type)">{{jo.name}}</a></li>                            
-                                    </ul>
-                                    </div>
-                                </div> -->
+                              
                             </div>
                         </div>
                     </div>
@@ -324,13 +235,23 @@ export default {
     // components:{
     //     apexchart: VueApexCharts
     // },
-
+    data() {
+        return {
+        data: {
+            jo_status: '',
+            search: ''
+        }
+       
+        }
+    },
     created() {
         // this.$store.dispatch('getuser_info')
         this.$store.dispatch('dashboard_acma')
-        this.$store.dispatch('display_joborders')
+        this.$store.dispatch('display_joborders',this.data)
         this.$store.dispatch('display_messages')
         this.$store.dispatch('display_notifs')
+        this.$store.dispatch('display_urworkbooks')
+        this.$store.dispatch('display_rworkbooks')
 
         
 
@@ -342,6 +263,8 @@ export default {
                 display_joborders: 'display_joborders',
                 display_messages: 'display_messages',
                 display_notifs: 'display_notifs',
+                display_urworkbooks: 'display_urworkbooks',
+                display_rworkbooks: 'display_rworkbooks',
                             }),
     },
     methods:{
@@ -353,7 +276,13 @@ export default {
                 this.$router.push({name: 'viewjoweb', params: {jo_id: id}});
             }
         },
-    }
+    filterjo(){
+        this.$store.dispatch('display_joborders',this.data)
+    },
+    // search:_.debounce(function (e) {
+    //         this.filterjo();
+    //     }, 500)
+     }
 }
 </script>
 
@@ -410,31 +339,7 @@ ul > li a{
     // background-color: #4caf50;
     border-left: 3px solid #4caf50;
 }
-.v2-table{
-    width: 100%;
-    // max-width:100%;
-    max-height: 400px;
-    // overflow-y: auto; 
-    table, td, th {  
-        border: 1px solid #f1f1f1;
-        text-align: left;
-    }
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        padding: 10px 15px;
-    }
-    th{
-        font-size: 0.8em;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    tr > th{
-        background-color: #f5f5f5;
-    }
-}
+
 </style>
 
 

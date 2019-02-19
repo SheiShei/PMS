@@ -109,6 +109,13 @@ class BoardController extends Controller
                 'created_by' => auth()->user()->id,
                 'order' => 1,
             ]);
+            Card::create([
+                'name' => 'Done',
+                'board_id' => $board->id,
+                'created_by' => auth()->user()->id,
+                'order' => 1,
+                'isDone' => true
+            ]);
 
             $po = $board->roles()->create([
                 'name' => 'Project Leader',
@@ -451,13 +458,23 @@ class BoardController extends Controller
         }
 
         event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+        if($task->card_id)
+        {
+        $user = User::find($task->assigned_to);
+        $update = true;
+        $board =  Board::find($task->card->board->id);
+
+        $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
+        Board::find($task->card->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));   
+        }
+        else{
         $user = User::find($task->assigned_to);
         $update = true;
         $board =  Board::find($task->sprint->board->id);
 
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
-
+        }
         return $task->load('assigned_to'); 
     }
 
@@ -834,13 +851,31 @@ class BoardController extends Controller
 
         $query = User::with(['task_assigned_to' => function($q) use ($dateNow) {
             $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc');
-        }]);
+        },'tasks']);
 
         if($request->team) {
-            $query->where('department_id', $request->team);
+
+            $query1= $query->where('department_id', $request->team);
+
+            if($request->team==1)
+            {
+                $query1->tasks()->whereHas('sprint', function($q){
+                    $q->where('status', $request->task_status);});
+            }
+            else if($request->team==2){
+               $query1->tasks()->whereHas('card', function($q){
+                    $q->where('isDone', $request->task_status);});
+             
+            }
+           
+            $users = $query1->get();
+        }
+        else{
+            $users = $query->get();
         }
 
-        $users = $query->get();
+
+      
 
         // return $users;
 

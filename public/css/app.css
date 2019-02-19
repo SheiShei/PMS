@@ -13270,6 +13270,10 @@ hr {
   margin-top: 1.5rem;
 }
 
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
 .no-margin {
   margin: 0;
 }
@@ -13569,7 +13573,8 @@ hr {
 .notifsss::-webkit-scrollbar-track,
 .mess::-webkit-scrollbar-track,
 .torev::-webkit-scrollbar-track,
-.torev3::-webkit-scrollbar-track {
+.torev3::-webkit-scrollbar-track,
+.v2-table::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: #f1f1f1;
 }
@@ -13577,7 +13582,8 @@ hr {
 .notifsss:hover::-webkit-scrollbar-thumb,
 .mess:hover::-webkit-scrollbar-thumb,
 .torev:hover::-webkit-scrollbar-thumb,
-.torev3:hover::-webkit-scrollbar-thumb {
+.torev3:hover::-webkit-scrollbar-thumb,
+.v2-table::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #cacaca;
 }
@@ -13585,13 +13591,16 @@ hr {
 .notifsss::-webkit-scrollbar,
 .mess::-webkit-scrollbar,
 .torev::-webkit-scrollbar,
-.torev3::-webkit-scrollbar {
+.torev3::-webkit-scrollbar,
+.v2-table::-webkit-scrollbar {
   width: 7px;
+  height: 9px;
 }
 
 .notifsss::-webkit-scrollbar-thumb,
 .mess::-webkit-scrollbar-thumb,
-.torev::-webkit-scrollbar-thumb .torev3::-webkit-scrollbar-thumb {
+.torev::-webkit-scrollbar-thumb .torev3::-webkit-scrollbar-thumb,
+.v2-table::-webkit-scrollbar {
   border-radius: 10px;
   background-color: #e7e7e7;
 }
@@ -13833,6 +13842,39 @@ foreignObject > * {
   height: 20px;
   width: 20px;
   border-radius: 50%;
+}
+
+.v2-table {
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.v2-table table,
+.v2-table td,
+.v2-table th {
+  border: 1px solid #f1f1f1;
+  text-align: left;
+}
+
+.v2-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.v2-table th,
+.v2-table td {
+  padding: 10px 15px;
+}
+
+.v2-table th {
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.v2-table tr > th {
+  background-color: #f5f5f5;
 }
 
 .table > thead > tr > th,

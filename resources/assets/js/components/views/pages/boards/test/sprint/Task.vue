@@ -2,7 +2,7 @@
     <div class="t-card" @mouseout="openTaskOpt=false">
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
-                <span class="text-danger">Task #1</span> <span v-if="task.jo_id"> MFI Revisionsjkddfsdfd</span>
+                <span class="text-success">Task #1</span> <span v-if="task.jo_id"> MFI Revisionsjkddfsdfd</span>
             </div>
             <div class="t-name">
                 <b>{{ task.name }}</b>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="t-points">
-                    <p>warn</p>
+                    <p class=""><small><span class="fa fa-clock-o text-danger"></span> {{ task.due }}</small></p>
                 </div>
                 <div class="t-btns pull-right">
                     <button v-if="taskPermission.view" @click="$router.push({name: 'viewtask_sprint', params: {task_id: task.id, us_id: task.us_id}})" class="mysm-btn"><span class="fa fa-eye"></span></button>

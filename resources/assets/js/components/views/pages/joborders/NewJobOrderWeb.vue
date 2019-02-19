@@ -429,8 +429,11 @@
                         <!-- <div class="col-md-12">
                                 <label for="rqst_type">Status:</label> 
                                 </div> -->
-                                <div class="col-md-4">
-                                    <label for="rqst_type">Accomplish list below before going live:</label> 
+                                <div class="col-md-12">
+                                     <label for="rqst_type">Accomplish list below before going live:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    
                                     <div class="checkbox mr-10">
                                         <label>
                                             <input v-model="details.target_list" value="1" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -449,6 +452,8 @@
                                             ACMA/BO approved for posting
                                         </label>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="checkbox mr-10">
                                         <label>
                                             <input v-model="details.target_list" value="4" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -468,7 +473,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="false">
                                     <!-- <div class="checkbox mr-10">
                                         <label>
                                             <input type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -487,7 +492,7 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="false">
                                     <label for="">Changes Approved by: (ACMA+BO)</label>
                                     <div class="checkbox mr-10">
                                         <label>

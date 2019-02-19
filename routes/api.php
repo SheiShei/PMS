@@ -155,18 +155,21 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getAllWorkbooks', 'WorkbookController@getAllWorkbooks');
     Route::post('/getCWorkbook', 'WorkbookController@getCWorkbook');
     Route::patch('/reviewWB', 'WorkbookController@reviewWB');
+    Route::post('/UpdateWorkbook', 'WorkbookController@UpdateWorkbook');
 
     //dashboard
     Route::get('/dashboard_admin', 'DashboardController@dashboard_admin');
     Route::get('/date', 'DashboardController@date');
     Route::get('/dashboard_acma', 'DashboardController@dashboard_acma');
-    Route::get('/display_joborders', 'DashboardController@display_joborders');
+    Route::post('/display_joborders', 'DashboardController@display_joborders');
     Route::get('/dashboard_emp', 'DashboardController@dashboard_emp');
     Route::get('/dashboard_client', 'DashboardController@dashboard_client');
     Route::get('/reminder_tasks', 'DashboardController@reminder_tasks');
     Route::get('/overdued_tasks', 'DashboardController@overdued_tasks');
     Route::get('/display_messages', 'DashboardController@display_messages');
     Route::get('/display_notifs', 'DashboardController@display_notifs');
+    Route::get('/display_urworkbooks', 'DashboardController@display_urworkbooks');
+    Route::get('/display_rworkbooks', 'DashboardController@display_rworkbooks');
 
 
 
