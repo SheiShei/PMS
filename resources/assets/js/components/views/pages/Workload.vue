@@ -31,12 +31,6 @@
         </div>
       </div>
 
-
-
-      <!-- <div class="workload-info">
-        <p title="Select Board">Team:</p>
-      </div> -->
-
       <div class="workload-info" v-show="filterby === 'byteam'">
         <div class="btn-group bootstrap-select">
           <select v-model="team" @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
@@ -49,17 +43,16 @@
 
       <div class="workload-info" v-show="filterby != 'byteam'">
         <div class="btn-group bootstrap-select">
-          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
-            <option value="">Potato Corner </option>
-            <option value="1">MFI</option>
-            <option value="2">Luljetta's</option>
+          <select v-model="byteam"  @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+            <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
           </select>
         </div>
       </div>
 
       <div class="workload-info" v-show="filterby != 'byteam'">
         <div class="btn-group bootstrap-select">
-          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+          <select v-model="jo" class="selectpicker"  @change="initializeTask" data-style="btn btn-sm btn-info" type="text">
+            <option v-for="jos in brands" :key="jos.id" :value="jos.id">{{ jos.name }}</option>            
             <option value="">All JO</option>
             <option value="1">JO 2</option>
             <option value="2">JO 3</option>
@@ -71,13 +64,25 @@
         <p title="Select Board">Task Status:</p>
       </div>
 
-      <div class="workload-info">
+      <div class="workload-info" v-show="team!=1">
         <div class="btn-group bootstrap-select">
-          <select class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+          <select v-model="task_status"  @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
             <option value="">All</option>
-            <option value="1">Active</option>
-            <option value="1">Completed</option>
-            <option value="1">Overdued</option>
+            <option value="false">Active</option>
+            <option value="true">Completed</option>
+        
+          </select>
+        </div>
+      </div>
+      <div class="workload-info" v-show="team==1">
+        <div class="btn-group bootstrap-select">
+          <select v-model="task_status"  class="selectpicker"  @change="initializeTask" data-style="btn btn-sm btn-info" type="text">
+            <option value="">All</option>
+            <option value="1">To do</option>
+            <option value="2">In Progress</option>
+            <option value="3">Ready for Test</option>
+            <option value="4">Closed</option>
+        
           </select>
         </div>
       </div>
@@ -120,6 +125,14 @@ export default {
       team: '',
       filterby: 'byteam',
       show: true,
+      byteam: '',
+      jo: '',
+      task_status: '',
+      data:  {
+       filter: {position: 'desc', category:'created_at'},
+        search: '',
+        notArchive: true
+        },
     tasks: [],
     options: {
       title: {
@@ -128,12 +141,6 @@ export default {
       },
       taskList: {
         columns: [
-          // {
-          //   id: 1,
-          //   label: 'ID',
-          //   value: 'id',
-          //   width: 40
-          // }, 
           {
             id: 2,
             label: 'Member',
@@ -149,40 +156,12 @@ export default {
             width: 170,
             expander: false
           }, 
-          // {
-          //   id: 3,
-          //   label: 'Start',
-          //   value: (task) => task.startDate.format('YYYY-MM-DD'),
-          //   width: 78
-          // },
           {
             id: 4,
             label: 'Due',
             value: (task) => task.endDate.format('YYYY-MM-DD'),
             width: 78
           }, 
-          // {
-          //   id: 4,
-          //   label: 'Type',
-          //   value: 'type',
-          //   width: 68
-          // }, 
-          // {
-          //   id: 5,
-          //   label: '%',
-          //   value: 'progress',
-          //   width: 35,
-          //   style: {
-          //     "task-list-header-label": {
-          //       'text-align': 'center',
-          //       'width': '100%'
-          //     },
-          //     "task-list-item-value": {
-          //       'text-align': 'center',
-          //       'width': '100%'
-          //     }
-          //   }
-          // }
         ]
       },
       locale: {
@@ -199,13 +178,27 @@ export default {
   },
   created() {
     this.initializeTask();
-  },
+    const data = this.data;
+   
+    this.$store.dispatch('setBrands', {url : '/api/getbrands', data})
+    $(this.$el).find('.selectpicker').selectpicker('refresh');
+             },
   computed: {
+      ...mapGetters({
+                brands: 'brandsList',
+               
+            }),
   },
   methods:{
     initializeTask() {
       this.show = false;
-      axios.post('/api/testFunc', {team: this.team}) 
+      console.log('team:',this.team,'byteam:',this.byteam,'jo:',this.jo,'task_status:',this.task_status);
+      axios.post('/api/testFunc',
+       { team: this.team,
+        byteam: this.byteam,
+        jo: this.jo,
+        task_status: this.task_status,  
+      }) 
       .then(response => {
         
         this.tasks = [];

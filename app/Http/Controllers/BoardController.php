@@ -851,13 +851,31 @@ class BoardController extends Controller
 
         $query = User::with(['task_assigned_to' => function($q) use ($dateNow) {
             $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc');
-        }]);
+        },'tasks']);
 
         if($request->team) {
-            $query->where('department_id', $request->team);
+
+            $query1= $query->where('department_id', $request->team);
+
+            if($request->team==1)
+            {
+                $query1->tasks()->whereHas('sprint', function($q){
+                    $q->where('status', $request->task_status);});
+            }
+            else if($request->team==2){
+               $query1->tasks()->whereHas('card', function($q){
+                    $q->where('isDone', $request->task_status);});
+             
+            }
+           
+            $users = $query1->get();
+        }
+        else{
+            $users = $query->get();
         }
 
-        $users = $query->get();
+
+      
 
         // return $users;
 

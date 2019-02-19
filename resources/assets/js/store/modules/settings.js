@@ -51,7 +51,7 @@ const actions = {
                 axios.post('/api/updatemyself', data, config)
                     .then((response) => {
                          console.log(response.data);
-                        commit('updatemyself', response.data);
+                        commit('getuser_info', response.data);
                         resolve(response);
                     })
 
