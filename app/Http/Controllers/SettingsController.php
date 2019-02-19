@@ -66,6 +66,7 @@ public function updatemyself(Request $request) {
             $userinfo->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'bg_image' => $input['bg_image'],
                 // 'picture' => $input['picture']
 
             ]);

@@ -397,6 +397,7 @@ export const routes = [
             
             {
                 path: 'workbook/:wb_id',
+                // name: 'cworkbook',
                 component: SingleWorkbook,
                 meta: {
                     requiresAuth: true

@@ -62,7 +62,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>1439</p>
+                                            <p>{{dashboard_acma.workbookss}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>4</p>
+                                            <p>{{dashboard_client.total}}</p>
                                         </div>
                                     </div>
                                     <div class="ws-wrapper">
@@ -128,7 +128,7 @@
                                             </div>
                                         </div>
                                         <div class="ws-number text-info">
-                                            <p>14</p>
+                                            <p>{{dashboard_client.reviewed}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -325,7 +325,7 @@ export default {
                 this.data.name = user_data.name;
 				this.data.email = user_data.email;
 				this.data.bg_image= user_data.bg_image;
-				this.data.picture= user_data.picture;
+				// this.data.picture= user_data.picture;
             })
         this.$store.dispatch('dashboard_admin')
         this.$store.dispatch('dashboard_acma')
@@ -350,10 +350,13 @@ export default {
             form.append('id', this.data.id);
             if(this.hasBG==true)
             {
-                form.append('bg_image', this.data.bg_image[0]);
+				form.append('bg_image', this.data.bg_image[0]);
+				console.log(this.data.bg_image[0]);
             }
             else{
-                form.append('bg_image', this.data.bg_image);
+				form.append('bg_image', this.data.bg_image);
+				console.log(this.data.bg_image);
+				
                 }
             form.append('name', this.data.name);
             // form.append('picture', this.data.picture);
@@ -375,8 +378,8 @@ export default {
 		},
 		bg_image(event){
 			  this.data.bg_image = event.target.files
-                console.log(this.data.bg_image[0]);
-                console.log(this.data.bg_image);
+                // console.log(this.data.bg_image[0]);
+                // console.log(this.data.bg_image);
                 this.hasBG=true;
 
 		},
