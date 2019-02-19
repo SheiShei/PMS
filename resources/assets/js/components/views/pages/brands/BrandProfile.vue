@@ -139,47 +139,26 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div style="max-height: 30vh; overflow-y: auto">
-                                        <div class="torev2">
-                                        <a href="#parent" class="torev2">
-                                            <div class="torevdiv2">
-                                                <div class="torev-left">
-                                                    <div class="torev-icon">
-                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                        <div class="torev2" v-for="workbook in brandProfile.workbooks" :key="workbook.id">
+                                            <a href="" @click.prevent="$router.push({name:'review_workbook', params: {wb_id: workbook.id}})" class="torev2">
+                                                <div class="torevdiv2">
+                                                    <div class="torev-left">
+                                                        <div class="torev-icon">
+                                                            <i alt="" class="fa fa-book medium-avatar"></i>
+                                                        </div>
+                                                    </div>  
+                                                    <div class="torev-right">
+                                                        <h6 class="wb-title txt-bold"><a>{{ workbook.name }}</a> <span v-if="workbook.reviewed_at" title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
+                                                        <p><small>by: {{ workbook.created_by.name }} . {{ workbook.created_at | moment('ll') }} . {{ workbook.brand.name }}</small></p>
+                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                     </div>
-                                                </div>  
-                                                <div class="torev-right">
-                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a> <span title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
-                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
-                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
-                                                </div>
-                                                <div class="very-right hidden-sm hidden-xs text-right">
-                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
-                                                    <span class="fa fa-trash-o"></span> Archive
-                                                </a>
-                                            </div>
-                                            </div>
-                                        </a>
-                                        </div>
-                                        <div class="torev2">
-                                        <a href="#parent" class="torev2">
-                                            <div class="torevdiv2">
-                                                <div class="torev-left">
-                                                    <div class="torev-icon">
-                                                        <i alt="" class="fa fa-book medium-avatar"></i>
+                                                    <div class="very-right hidden-sm hidden-xs text-right">
+                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                            <span class="fa fa-trash-o"></span> Archive
+                                                        </a>
                                                     </div>
-                                                </div>  
-                                                <div class="torev-right">
-                                                    <h6 class="wb-title txt-bold"><a>Potato Corner New Images</a></h6> 
-                                                    <p><small>by: Aya . Sept. 13, 2019 . Potato Corner</small></p>
-                                                    <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                 </div>
-                                                <div class="very-right hidden-sm hidden-xs text-right">
-                                                <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
-                                                    <span class="fa fa-trash-o"></span> Archive
-                                                </a>
-                                            </div>
-                                            </div>
-                                        </a>
+                                            </a>
                                         </div>
                                     </div>
                             </div>

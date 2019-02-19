@@ -9,10 +9,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-check-circle text-success"></span> Success!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Thank you for your feedback! </h5>
+                        <p>Your review has been successfully submitted. Thank you for your feedback!</p>
+                        <!-- <p class="txt-bold">Do you want to view this workbook?</p> -->
                     </div>
                     <div class="modal-footer text-center">
                         <!-- <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button> -->
@@ -57,3 +58,9 @@ export default {
     }
 }
 </script>
+<style lang="scss" scoped>
+.modal-small .modal-body{
+        margin-top: 0;
+    }
+</style>
+

@@ -339,31 +339,7 @@ ul > li a{
     // background-color: #4caf50;
     border-left: 3px solid #4caf50;
 }
-.v2-table{
-    width: 100%;
-    // max-width:100%;
-    max-height: 400px;
-    // overflow-y: auto; 
-    table, td, th {  
-        border: 1px solid #f1f1f1;
-        text-align: left;
-    }
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        padding: 10px 15px;
-    }
-    th{
-        font-size: 0.8em;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    tr > th{
-        background-color: #f5f5f5;
-    }
-}
+
 </style>
 
 

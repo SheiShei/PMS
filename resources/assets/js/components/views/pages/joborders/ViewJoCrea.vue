@@ -5,7 +5,7 @@
         </div>
 
         <div class="container-fluid">
-            <div class="main2" v-if="!!details">
+            <div class="main2" v-if="details">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="taskchart shadow mt-4">
@@ -36,7 +36,7 @@
 
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="row">
+                                    <div class="row" v-if="details.brand">
                                         <div class="col-md-5 col-sm-6 col-xs-6">
                                             <p class="no-margin"><small><span class="fa fa-briefcase"></span> Brand: </small></p>
                                         </div>
@@ -44,7 +44,7 @@
                                             <p class="no-margin">{{ details.brand.name }}</p>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" v-if="details.brand">
                                         <div class="col-md-5 col-sm-6 col-xs-6">
                                             <p class="no-margin"><small><span class="fa fa-address-book-o"></span> Contact Person: </small></p>
                                         </div>
@@ -52,7 +52,7 @@
                                             <p class="no-margin">{{ details.brand.contact_person }}</p>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" v-if="details.brand">
                                         <div class="col-md-5 col-sm-8 col-xs-6">
                                             <p class="no-margin"><small><span class="fa fa-user-o"></span> Brand Owner: </small></p>
                                         </div>
@@ -152,13 +152,13 @@
 
                 <div class="row mt-4">
                     <div class="col-md-5">
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="details.board">
                             <div class="row">
                                 <div class="col-md-5">
                                     <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
                                 </div>
                                 <div class="col-md-7 text-right">
-                                    <p class="no-margin text-gray"><small>Sample Board Here</small></p>
+                                    <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
                             <div class="row">
@@ -166,7 +166,7 @@
                                     <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">(15)</span></small></p>
                                 </div>
                                 <div class="col-md-5 text-right">
-                                    <p class="no-margin text-gray"><small>80%</small></p>
+                                    <p class="no-margin text-gray"><small>{{ taskPercent }}%</small></p>
                                 </div>
                             </div>
                             <div class="row">
@@ -181,10 +181,10 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="torev3">
-                                        <div class="torevdiv3" v-for="(task, index) in details.tasks" :key="task.id">
+                                        <div class="torevdiv3" v-for="(task) in details.tasks" :key="task.id">
                                             
                                             <!-- if currently active -->
-                                            <!-- <div class="torev-content divactive">
+                                            <!-- <div class="torev-content divactive" v-if="taskStatus(task)">
                                                 <h6 class="no-margin txt-bold text-info"><span class="fa fa-circle text-info"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> sam</small> . 
@@ -195,7 +195,7 @@
                                             </div> -->
 
                                             <!-- if currently active 1 day before or on due-->
-                                            <!-- <div class="torev-content divwarning">
+                                            <!-- <div class="torev-content divwarning" v-if="taskStatus(task)">
                                                 <h6 class="no-margin txt-bold text-warning"><span class="fa fa-circle text-warning"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> sam</small> . 
@@ -208,13 +208,13 @@
                                             <div class="torev-content divcompleted">
                                                 <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
                                                 </p>
                                             </div>
 
                                             <!-- if overdued & not yet completed -->
-                                            <!-- <div class="torev-content divoverdued">
+                                            <!-- <div class="torev-content divoverdued" v-if="taskStatus(task)">
                                                 <h6 class="no-margin txt-bold" text-danger><span class="fa fa-circle text-danger"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> sam</small> . 
@@ -224,7 +224,7 @@
                                             </div> -->
 
                                             <!-- if overdued but completed after due date-->
-                                            <!-- <div class="torev-content divoverdued">
+                                            <!-- <div class="torev-content divoverdued" v-if="taskStatus(task)">
                                                 <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> sam</small> . 
@@ -241,7 +241,7 @@
                     </div>
                     <div class="col-md-7">
                         <div class="taskchart shadow">
-                            <div class="row">
+                            <div class="row" v-if="details.jocreatives">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6" v-if="details.jocreatives.post_caption">
@@ -369,28 +369,7 @@ export default {
             },
             error: false,
             show: true,
-            tasks: [
-                {
-                    id: 1,
-                    label: 'Make some noise',
-                    user: '<a><span><img class="small-avatar" src="/images/default"></span> shei</a>',
-                    duration: 5 * 24 * 60 * 60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task',
-                },
-                {
-                    id: 2,
-                    label: 'Make some noise 22',
-                    user: '<a>shei</a>',
-                    parentId: 1,
-                    dependentOn: [1],
-                    duration: 5*24*60*60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task'
-                }
-            ],
+            tasks: [],
             options: {
                 title: {
                     label: 'Team Workload',
@@ -446,11 +425,28 @@ export default {
     created() {
         this.getJoDetails();
     },
+    computed: {
+        taskPercent() {
+            if(this.details) {
+                var done = 0;
+                var total = 0;
+                this.details.tasks.forEach(task => {
+                    total++;
+                    if(task.card.isDone) {
+                        done++;
+                    }
+                });
+                return (done/total) * 100;
+            }
+        }
+    },
     methods: {
         getJoDetails() {
+            this.show = false;
             this.$store.dispatch('getJoDetails', this.$route.params.jo_id)
                 .then ((response) => {
-                    this.details = response;
+                    this.show = false;
+                    this.details = response.jobor;
 
                     if(response.jocreatives) {
                         let media = [], ad_type = [], file_type = [];
@@ -463,7 +459,42 @@ export default {
                         this.details.jocreatives.file_type = file_type;
                     }
 
-                    console.log(this.details);
+                    // console.log(this.details);
+
+                    this.tasks = [];
+                    this.show = false;
+                    let colors = [
+                        '#fc5c65',
+                        '#fd9644',
+                        '#45aaf2',
+                        '#A3CB38',
+                        '#ffc048',
+                        '#D6A2E8',
+                        '#fd79a8',
+                    ];
+                    let tasks = response.workload;
+                    let style = {
+                    style : {
+                        base: {
+                        fill: '#D6A2E8',
+                        stroke: '#fff'
+                        }
+                    }
+                    }
+
+                    tasks.forEach(task => {
+                    task = Object.assign(task, {style : {
+                        base: {
+                        fill: colors[Math.floor(Math.random() * 7)],
+                        stroke: '#fff'
+                        }
+                    }});
+                    task.start = ''+task.start;
+                    this.tasks.push(task)
+                    });
+                    this.show = true;
+                    // console.log(this.tasks);
+                    
                 })
         },
 
@@ -481,6 +512,12 @@ export default {
             $('#SuccesCreativeSignOff').modal('hide');
             this.$router.push({name: 'all_jo_list'})
         },
+
+        taskStatus(task) {
+            if(task) {
+
+            }
+        }
     }
 }
 </script>

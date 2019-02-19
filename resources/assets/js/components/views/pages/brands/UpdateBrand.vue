@@ -165,8 +165,7 @@ export default {
          ...mapGetters({
                 tandemList: 'getTandemsList',
                 brandProfile: 'getOnebrand',
-                user_info: 'getuser_info',
-
+                user_info: 'getuser_info'
             })  
     },
 

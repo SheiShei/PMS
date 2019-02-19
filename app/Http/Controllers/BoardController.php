@@ -103,8 +103,23 @@ class BoardController extends Controller
         else {
             $permissionsId = BPermission::where('type','task')->orWhere('type', 'list')->get()->pluck('id');
 
+            $list = Card::create([
+                'name' => 'Backlog',
+                'board_id' => $board->id,
+                'created_by' => auth()->user()->id,
+                'order' => 1,
+            ]);
+            Card::create([
+                'name' => 'Done',
+                'board_id' => $board->id,
+                'created_by' => auth()->user()->id,
+                'order' => 1,
+                'isDone' => true
+            ]);
+
             $po = $board->roles()->create([
-                'name' => 'Project Leader'
+                'name' => 'Project Leader',
+                'created_by' => auth()->user()->id
             ]);
 
             $board->boardUsers()->attach(auth()->user()->id, ['added_by' => auth()->user()->id, 'isAdmin' => true, 'bRole_id' => $po->id]);
@@ -118,9 +133,9 @@ class BoardController extends Controller
 
         $board->notify(new BoardCreated($board->load('created_by')->toJson()));
 
-        foreach ($board->boardUsers()->get() as $key => $user) {
-            $user->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
-        }
+        // foreach ($board->boardUsers()->get() as $key => $user) {
+        //     $user->notify(new BoardUserAdded($board->load('created_by')->toArray(), auth()->user()->name));
+        // }
         // Notification::send($board, new BoardCreated($board->load('created_by')->toJson()));
         // Notification::send($board->boardUsers()->get(), new BoardCreated($board->load('created_by')->toJson()));
         

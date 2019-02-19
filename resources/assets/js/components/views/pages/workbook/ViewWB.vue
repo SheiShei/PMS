@@ -19,7 +19,21 @@
                                         {{ workbook.created_at | moment('calendar') }}
                                         </small>
                                     </p>
-                                    <p v-if="workbook.reviewed_at" class="no-margin text-gray"><i>Reviewed by {{ workbook.brand.name }} on {{ workbook.reviewed_at | moment('calendar') }}</i></p>
+                                    <p v-if="workbook.reviewed_at" class="no-margin"><small>
+                                        <fa-rating :glyph="star"
+                                            :read-only="true"
+                                            :item-size="12" 
+                                            :spacing="3" 
+                                            inactive-color="#e2e2e2" 
+                                            active-color="#ffc815"
+                                            :border-width=2
+                                            border-color="#fff"
+                                            :increment="1"
+                                            v-model="overallrating"
+                                            >
+                                        </fa-rating>
+                                    </small></p>
+                                    <p v-if="workbook.reviewed_at" class="no-margin text-gray"><i>Reviewed by {{ workbook.brand.name }} . {{ workbook.reviewed_at | moment('calendar') }}</i></p>
                                     <p v-else class="no-margin text-gray"><i>Waiting for review</i></p>
                                 </div>
                                 <div class="col-md-6 text-right">
@@ -224,6 +238,7 @@ export default {
             revMode: false,
             thumbsUp: 'star',
             rating: 3,
+            overallrating: 3, //samplelangto
             currentSlide: 0,
             
             change_workbook: {

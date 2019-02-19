@@ -11,7 +11,7 @@
                 <!-- <small>{{ listPoints }} pts</small> -->
                 <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
                 <button v-if="delList" @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
-                <button @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
+                <button  v-if="!list.isDone" @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
@@ -22,7 +22,7 @@
                 <div class="list-edit-save">
                     <button type="submit" class="btn-save">SAVE</button>
                     <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
-                    <button class="btn-close btn btn-simple btn-default btn-xs" @click="setAsDoneList(list.id)" title="Cancel"><span class="fa fa-times"></span></button>
+                    <!-- <button class="btn-close btn btn-simple btn-default btn-xs" @click="setAsDoneList(list.id)" title="Cancel"><span class="fa fa-times"></span></button> -->
                 </div>
             </form>
         </div>

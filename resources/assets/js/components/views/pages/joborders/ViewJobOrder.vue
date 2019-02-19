@@ -18,16 +18,19 @@
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
                                 </div>
-                                <div class="col-md-4 text-right">
-                                    <!-- <p class="no-margin"><small>Status: </small>
-                                        <span v-if="details.status == 1" class="txt-bold text-info"><span class="fa fa-circle"></span> Active</span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success"><span class="fa fa-circle"></span> Completed</span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger"> <span class="fa fa-circle"></span> Blocked</span>
-                                    </p> -->
-                                    <!-- <p class="no-margin"><small class="text-gray">For Client: Robert Fereno ( {{ details.brand.name }} )</small></p> -->
-                                    <button class="btn btn-xs btn-default btn-simple" type="button">
-                                        <i class="fa fa-pencil"></i> Edit Mode
-                                    </button>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <p class="text-gray" style="margin-top:10px"><small>Job Order Progress: <b>35%</b></small></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-v-8b3961f4="" class="progress progress-line-info"><div data-v-8b3961f4="" class="progress-bar progress-bar-info" style="width: 35%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -316,7 +319,7 @@
                                     <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
                                 </div>
                                 <div class="col-md-7 text-right">
-                                    <p class="no-margin text-gray"><small>Sample Board Here</small></p>
+                                    <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
                             <div class="row">
@@ -353,7 +356,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="torev3">
-                                        <div class="torevdiv3" v-for="(task, index) in details.tasks" :key="task.id">
+                                        <div class="torevdiv3" v-for="(task) in details.tasks" :key="task.id">
                                             
                                             <!-- if currently active -->
                                             <!-- <div class="torev-content divactive">
@@ -691,9 +694,11 @@ export default {
     },
     methods: {
         getJoDetails() {
+            this.show = false;
             this.$store.dispatch('getJoDetails', this.$route.params.jo_id)
                 .then ((response) => {
-                    this.details = response;
+                    this.show = false;
+                    this.details = response.jobor;
 
                     if(response.joweb) {
                         let target_list = [], request_type = [];
@@ -704,7 +709,41 @@ export default {
                         this.details.joweb.request_type = request_type;
                     }
 
-                    console.log(this.details);
+                    // console.log(this.details);
+
+                    this.tasks = [];
+                    this.show = false;
+                    let colors = [
+                        '#fc5c65',
+                        '#fd9644',
+                        '#45aaf2',
+                        '#A3CB38',
+                        '#ffc048',
+                        '#D6A2E8',
+                        '#fd79a8',
+                    ];
+                    let tasks = response.workload;
+                    let style = {
+                    style : {
+                        base: {
+                        fill: '#D6A2E8',
+                        stroke: '#fff'
+                        }
+                    }
+                    }
+
+                    tasks.forEach(task => {
+                    task = Object.assign(task, {style : {
+                        base: {
+                        fill: colors[Math.floor(Math.random() * 7)],
+                        stroke: '#fff'
+                        }
+                    }});
+                    task.start = ''+task.start;
+                    this.tasks.push(task)
+                    });
+                    this.show = true;
+                    // console.log(this.tasks);
                 })
         },
         

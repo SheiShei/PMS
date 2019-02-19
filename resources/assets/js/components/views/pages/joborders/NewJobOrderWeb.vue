@@ -1,5 +1,7 @@
 <template>
     <section class="main-main-container" style="">
+    <add-member :notmember="boardNotMembers" :board_id="brand.board_id" @refreshBoardMembers="refreshBoardMembers" @addedIds="addMemberToNewBoard" v-if="viewMemmod" @close="toggleJustNewMember"></add-member>
+    <div class="jo-wrapper" style="max-height: 100vh; overflow-y: scroll;">
         <div class="title-head">
             <h2><span class="fa fa-file-o"></span> Job Order Form - Web</h2>
         </div>
@@ -46,34 +48,34 @@
                         <div class="col-md-3" v-if="boards">
                             <label for="brand">Board:</label>
                             <div v-if="justNewBoard==false">
-                                <select v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
+                                <select required @change="getJOBoardUsers" v-model="board" name="board_id" class="my-thin-select my-inp-blk">
                                     <option value="">---</option>
                                         <!-- <option value="new">New Board</option> -->
-                                        <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
+                                        <option v-for="board in boards" :key="board.id" :value="board">{{ board.name }}  ({{ board.type == 1? 'kanban' : 'scrum' }})</option>
                                 </select>
-                                <a @click="justNewBoard=true" style="cursor:pointer"><small>or Add New Board</small></a>
+                                <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
                             </div>
                             <div v-if="justNewBoard==true">
                             <div class="form-group is-empty">
-                                <input type="text" class="form-control" placeholder="New Board Name ">
+                                <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
                             </div>
                             <div class=" text-center">
                                 <div class="radio">
                                     <span>
                                         <label>
-									        <input value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
 									        Kanban
 								        </label>
                                     </span>
                                     <span>
                                         <label>
-									        <input value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
 									        Scrum
 								        </label>                                
                                     </span>
 						        </div>
                             </div>
-                            <a @click="justNewBoard=false" style="cursor:pointer"><small>or just select from existing boards</small></a>
+                            <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
                             </div>
                         </div>
                         <!-- <div class="col-md-3 form-group">
@@ -289,7 +291,7 @@
                     <hr />
 
                 <!--if selected board is scrum-->
-                <div>
+                <div v-if="isScrum" >
                     <p class="no-margin"><span class="txt-bold">Tasks Section</span> . <small class="text-gray">Add tasks for this JO by adding User Story first.</small><p>
                     <!-- <p class="note">Add tasks for this JO by adding User Story first.</p>     -->
                     <button type="button" @click="addNewUS" class="btn btn-success btn-md">Add User Story</button>
@@ -302,14 +304,23 @@
                             <div class="col-md-8">
                                 <div class="form-inline">
                                 <label for="" class="control-label">User Story Name:</label>
-                                <input type="text" class="my-input my-inp-blk" v-model="userstory.name">
+                                <input required type="text" class="my-input my-inp-blk" v-model="userstory.name">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-inline">
                                 <label for="" class="control-label">Points:</label>
-                                <select name="" id="" class="my-input my-inp-blk">
+                                <select required v-model="userstory.points" name="" id="" class="my-input my-inp-blk">
                                     <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="8">8</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="40">40</option>
                                 </select>
                                 </div>
                             </div>
@@ -332,19 +343,21 @@
                                         <div class="form-row">
                                             <div class="col-md-7">
                                                 <label for="">Name </label>
-                                                <input v-model="task.name" type="text" class="form-control">
+                                                <input required v-model="task.name" type="text" class="form-control">
                                                 <label for="">Decription </label>
                                                 <textarea type="text" v-model="task.desc" class="btn-block" placeholder="" ></textarea>
                                             </div>
                                             <div class="col-md-5">
                                                 <label for=""><span class="fa fa-user-o"></span> Assign to </label>
-                                                <select class="btn-block" >
-                                                    <option value="">Shooky</option>
-                                                    <option value="">Chimmy</option>
-                                                    <option value="">RJ</option>
+                                                <select required v-model="task.assign" class="btn-block" >
+                                                    <option value="">--</option>
+                                                    <option :value="member.id" v-for="member in boardMembers" :key="member.id">{{ member.name }}</option>
                                                 </select>
+                                                <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
+                                                <label for=""><span class="fa fa-clock-o"></span> Due </label>
+                                                <date-picker @change="changeDateFormat(task.due)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                                                 <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
-                                                <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
+                                                <input id="taskFiles" @change="usOnFileChange($event, i, userstory)" class="btn-block" type="file" multiple>
                                             </div>
                                         </div>
                                     </div>
@@ -360,7 +373,7 @@
                 </div>
 
                 <!--if selected board is kanban-->
-                        <div class="jo-body" style="background-color: whitesmoke">
+                        <div v-if="!isScrum" class="jo-body" style="background-color: whitesmoke">
                             <div class="row pb-10">
                                 <div class="col-md-12">
                                     <h5>Add Task 
@@ -383,17 +396,19 @@
                                                 <div class="form-row">
                                                     <div class="col-md-7">
                                                         <label for="">Name </label>
-                                                        <input v-model="task.name" type="text" class="form-control">
+                                                        <input required v-model="task.name" type="text" class="form-control">
                                                         <label for="">Decription </label>
                                                         <textarea type="text" v-model="task.desc" class="btn-block" placeholder="" ></textarea>
                                                     </div>
                                                     <div class="col-md-5">
                                                         <label for=""><span class="fa fa-user-o"></span> Assign to </label>
-                                                        <select class="btn-block" >
-                                                            <option value="">Shooky</option>
-                                                            <option value="">Chimmy</option>
-                                                            <option value="">RJ</option>
+                                                        <select required v-model="task.assign" class="btn-block" >
+                                                            <option value="">--</option>
+                                                            <option :value="member.id" v-for="member in boardMembers" :key="member.id">{{ member.name }}</option>
                                                         </select>
+                                                        <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
+                                                        <label for=""><span class="fa fa-clock-o"></span> Due </label>
+                                                        <date-picker @change="changeDateFormat(task.due)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                                                         <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
                                                         <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
                                                     </div>
@@ -414,8 +429,11 @@
                         <!-- <div class="col-md-12">
                                 <label for="rqst_type">Status:</label> 
                                 </div> -->
-                                <div class="col-md-4">
-                                    <label for="rqst_type">Accomplish list below before going live:</label> 
+                                <div class="col-md-12">
+                                     <label for="rqst_type">Accomplish list below before going live:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    
                                     <div class="checkbox mr-10">
                                         <label>
                                             <input v-model="details.target_list" value="1" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -434,6 +452,8 @@
                                             ACMA/BO approved for posting
                                         </label>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="checkbox mr-10">
                                         <label>
                                             <input v-model="details.target_list" value="4" type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -453,7 +473,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="false">
                                     <!-- <div class="checkbox mr-10">
                                         <label>
                                             <input type="checkbox" name="optionsCheckboxes"><span class="check"></span>
@@ -472,7 +492,7 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="false">
                                     <label for="">Changes Approved by: (ACMA+BO)</label>
                                     <div class="checkbox mr-10">
                                         <label>
@@ -512,14 +532,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h3>Success!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-check-circle text-success"></span> Success!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Do you want to view this Job Order? </h5>
+                        <p>A new job order was created successfully.</p>
+                        <p class="txt-bold">Do you want to view this JO?</p>
                     </div>
                     <div class="modal-footer text-center">
-                        <button @click="notsuccess()" type="button" class="btn btn-simple" >Cancel</button>
-                        <button @click="success()" type="button" class="btn btn-success btn-simple">Yes</button>
+                        <button @click="notsuccess()" type="button" class="btn btn-sm btn-simple" >Just Go To List</button>
+                        <button @click="success()" type="button" class="btn btn-sm btn-success btn-simple">Yes</button>
                     </div>
                 </div>
             </div>
@@ -530,42 +551,58 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                         <h3>Error!!</h3>
+                        <h4 class="no-margin"><span class="fa fa-times-circle text-danger"></span> Error!</h4>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Network Error</h5>
+                        <p>A network error has occured.</p>
                     </div>
                     <div class="modal-footer text-center">
                         <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
-                        <button @click="this.$router.push({name: 'all_jo_list'})" type="button" class="btn btn-success btn-simple">Yes</button>
+                        <button @click="this.$router.push({name: 'all_jo_list'})" type="button" class="btn btn-success btn-simple">Retry</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </section>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
+import DatePicker from 'vue2-datepicker'
+import AddMember from './AddBoardMember.vue';
+
 export default {
+    components: {
+        addMember: AddMember,
+        DatePicker
+    },
     data(){
         return{
             justNewBoard: false,
-            tasks:[{
-                name: '',
-                desc: '',
-                files: []
-            }],
+            tasks: [
+                {
+                    name: '', 
+                    desc: '', 
+                    assign: '', 
+                    files: [],
+                    due: ''
+                }
+            ], 
             userstories: [
                 {
                     name: '',
                     desc: '',
-                    points: 1,
-                    tasks:[{
-                        name: '',
-                        desc: '',
-                        files: []
-                    }]
+                    points: 0,
+                    tasks: [
+                        {
+                            name: '', 
+                            desc: '', 
+                            assign: '', 
+                            files: [],
+                            due: ''
+                        }
+                    ], 
                 }
 
             ],
@@ -573,6 +610,11 @@ export default {
                 name: '',
                 brand_id: '',
                 board_id: '',
+                newBoard: {
+                    name: '',
+                    type: 2,
+                    ids: []
+                },
                 status: 1,
                 date_in: '',
                 date_due: ''
@@ -592,6 +634,11 @@ export default {
                 date_ended: null
             },
             attachments: [],
+            viewMemmod: false,
+            boardMembers: [],
+            boardNotMembers: [], 
+            board: null,
+            isScrum: true,
             joid: ''
         }
     },
@@ -600,7 +647,7 @@ export default {
             .then(() => {
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
-        this.$store.dispatch('getUserBoards', {type: 2})
+        this.$store.dispatch('getUserBoards')
             .then(() => {
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
@@ -619,7 +666,9 @@ export default {
             this.tasks.push({
                 name: '',
                 desc: '',
-                files: []
+                assign: '', 
+                files: [],
+                due: ''
             })
             this.scrollToEnd()
         },
@@ -629,7 +678,9 @@ export default {
             this.userstories[index].tasks.push({
                 name: '',
                 desc: '',
-                files: []
+                assign: '', 
+                files: [],
+                due: ''
             });
             this.scrollToEnd()
         },
@@ -640,8 +691,10 @@ export default {
                 points: 0,
                 tasks: [{
                     name: '',
-                    desc:'',
-                    files:[]
+                    desc: '',
+                    assign: '', 
+                    files: [],
+                    due: ''
                 }]
             })
         },
@@ -656,14 +709,17 @@ export default {
         },
 
         newWebJO() {
+            if(!this.brand.board_id) {
+                this.brand.newBoard.ids = this.boardMembers;
+            }
             let form = new FormData;
             form.append('brand', JSON.stringify(this.brand));
             form.append('details', JSON.stringify(this.details));
-            form.append('tasks', JSON.stringify(this.tasks));
+            form.append('tasks', JSON.stringify(this.isScrum ? this.userstories : this.tasks));
             for(let i=0; i<this.attachments.length;i++){
                 form.append('files[]',this.attachments[i]);
             }
-            this.$store.dispatch('newJOC', form)
+            this.$store.dispatch('newJOW', form)
                 .then ((response) => {
                     const jodata = response.data;
                     this.joid = jodata.id;
@@ -683,7 +739,7 @@ export default {
 
         onFileChange(e, index) {
             this.tasks[index].files = [];
-            this.attachments = [];
+            // this.attachments = [];
             let selectedFiles=e.target.files;
             if(!selectedFiles.length){
                 return false;
@@ -695,6 +751,93 @@ export default {
             }
             // document.getElementById('taskFiles').value=[];
             // console.log(this.tasks[index].files);
+        },
+        usOnFileChange(e, index, us) {
+            us.tasks[index].files = [];
+            // this.attachments = [];
+            let selectedFiles=e.target.files;
+            if(!selectedFiles.length){
+                return false;
+            }
+            for(let i=0;i<selectedFiles.length;i++){
+                let file = {filename: selectedFiles[i].name, type: selectedFiles[i].type}
+                us.tasks[index].files.push(file);
+                this.attachments.push(selectedFiles[i]);
+            }
+            // document.getElementById('taskFiles').value=[];
+            // console.log(this.tasks[index].files);
+        },
+        toggleJustNewBoard() {
+            this.justNewBoard = !this.justNewBoard;
+            if(this.justNewBoard == true) {
+                this.brand.board_id = ''
+                this.board = null
+            }
+            else {
+                this.brand.newBoard.name = ''
+            }
+        },
+        toggleJustNewMember() {
+            this.viewMemmod = !this.viewMemmod;
+        },
+        getJOBoardUsers() {
+            if(this.board) {
+                console.log(this.board);
+                
+                if(this.board.type == 1) {
+                    this.isScrum = false
+                }
+                else {
+                    this.isScrum = true
+                }
+            }
+            else {
+                console.log(this.board);
+                if(this.brand.newBoard.type == 1) {
+                    this.isScrum = false
+                }
+                else {
+                    this.isScrum = true
+                }
+            }
+            if(this.justNewBoard == true) {
+                this.brand.board_id = '';
+                axios.post('/api/getJOBoardUsers', {board_id: null})
+                    .then(response => {
+                        // console.log(response);
+                        this.boardNotMembers = response.data;
+                        this.boardMembers = []
+                    })
+
+            }
+            else {
+                this.brand.newBoard.name = ''
+                this.brand.board_id = this.board.id
+                axios.post('/api/getJOBoardUsers', {board_id: this.brand.board_id})
+                    .then(response => {
+                        // console.log(response);
+                        this.boardMembers = response.data.member;
+                        this.boardNotMembers = response.data.not
+                    })
+            }
+        },
+        addMemberToNewBoard(e) {
+            // console.log(e);
+            e.forEach(element => {
+                this.boardMembers.push(element);
+                let index = _.findIndex(this.boardNotMembers, {id: element.id});
+                this.boardNotMembers.splice(index, 1);
+            });
+        },
+        refreshBoardMembers(e) {
+            this.boardMembers =  e.member;
+            this.boardNotMembers = e.not
+        },
+        changeDateFormat(date) {
+            // this.taskData.due = new Date(this.taskData.due).toISOString().slice(0, 10).replace('T', ' ');
+            date = moment(date).format('YYYY-MM-DD')
+            console.log(date);
+            
         }
     }
 }
@@ -739,6 +882,9 @@ export default {
     }
     .peruserstory{
         background-color: #efefef;
+    }
+    .modal-small .modal-body{
+        margin-top: 0;
     }
 </style>
 
