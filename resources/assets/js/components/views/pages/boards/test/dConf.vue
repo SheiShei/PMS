@@ -5,10 +5,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
-                        <h5>Are you sure you want to remove this?</h5>
+                        <h4 class="no-margin"><span class="fa fa-warning"></span> Warning</h4>
                     </div>
-                    <div class="modal-body">
-                        <p>All Sub-Tasks will also be deleted. </p>
+                    <div class="modal-body text-center">
+                        <p class="no-margin">Are you sure you want to delete this?</p>
+                        <p class="txt-bold">All of its subtasks will also be deleted.</p>
+                        <p class="">Do you still want to proceed?</p>
                     </div>
                     <div class="modal-footer text-center">
                         <button @click="$router.go(-1)" type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
@@ -38,3 +40,8 @@ export default {
     }
 }
 </script>
+<style lang="scss" scoped>
+.modal-small .modal-body{
+        margin-top: 0;
+    }
+</style>
