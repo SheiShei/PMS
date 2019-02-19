@@ -63,7 +63,7 @@
                 <br/>
                 <div class="row">
                     <div class="col-md-6">
-                        <button @click="$router.go(-1)" class="btn btn-danger btn-block">Cancel</button>
+                        <button @click="$router.go(-1)" class="btn btn-danger btn-block" type="button" >Cancel</button>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-success btn-block">Add to Board</button>

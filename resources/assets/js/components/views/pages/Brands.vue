@@ -90,7 +90,7 @@
                         <div class="taskchart shadow">
                             <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
                             <hr/>
-                            <div class="row" v-if="jos">
+                            <div class="row" v-if="jos!=0">
                                 <div class="col-md-12">
                                     <ul class="jo-list">
                                         <li v-for="jo in jos" :key="jo.id" v-if="jo.status == 1">
@@ -106,17 +106,20 @@
                                     </ul>
                                 </div>
                             </div> 
-                            <div class="row text-center">
+                            <div class="row text-center" v-if="jos!=0">
                                 <div class="col-md-12">
                                     <router-link :to="{name: 'all_jo_list'}" class="btn btn-sm btn-info btn-md btn-simple">See All Job Order Forms</router-link>
                                 </div>
                             </div>
+                            <p v-if="jos==0" class="note"> No active Job Orders yet</p>
+                            
                         </div>
                     </div>
                 </div>                                      
             </div>
            
         </div>
+        
     </section>
 </template>
 
@@ -152,7 +155,9 @@ export default {
             search: '',
             sort: 'created_at.desc',
             notArchive: true
-                    }
+                    },
+            // brand_id: '',
+
            // errors: [],
             
         }
@@ -206,8 +211,11 @@ export default {
             
 
         },
+      
 
         deleteBrand(id) {
+            // $('#DeleteModal').modal('hide');
+            // let _this = this;
             this.$store.dispatch('deleteBrand', id)
                 .then(() => {
                     this.$toaster.warning('Brand deleted succesfully, see Archive List to restore!!.')
@@ -216,6 +224,7 @@ export default {
                     alert('Something went wrong, try reloading the page');
                 })
         },
+
         archiveBrands() {
             this.data.notArchive = !this.data.notArchive;
             if(this.data.notArchive==true){ this.data.filter = {position: 'desc', category:'created_at'} }

@@ -7,7 +7,7 @@
         <div class="menu-list"  v-if="cUser">
             <ul id="menu-content" class="menu-content collapse out">
 
-                <li class="profile-li" style="background-image: url('/images/guitargirl.jpg');padding: 0; background-size: cover; background-position: center;">
+                <li class="profile-li" :style="{ 'background-image': 'url('+cUser.bg_image+')', padding: 0, backgroundSize: 'cover', backgroundPosition: 'center', }">
                     <div class="profile-link" style="width: 100%; height: 100%; background-color: rgba(0,0,0,0.5)">
                         <a href="/profile"><img :src="cUser.picture" alt="profile-picture"/></a>
                         <p>{{ cUser.name }}<span>{{ cUser.role.name }}</span></p>
@@ -172,6 +172,12 @@ export default {
         ...mapGetters({
                 cUser: 'currentUser'
             }),
+            styling(){
+
+            padding: 0;
+            backgroundsize: 'cover';
+            backgroundposition: 'center';
+            }
     }
 
 }
