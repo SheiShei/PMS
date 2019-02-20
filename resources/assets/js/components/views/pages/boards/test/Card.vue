@@ -31,7 +31,7 @@
                 </div>
                 <div class="list-edit-save">
                     <button type="submit" class="btn-save">SAVE</button>
-                    <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+                    <button class="btn-close btn btn-simple btn-default btn-xs" type="button" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
                 </div>
             </form>
         </div>

@@ -24,7 +24,8 @@
                 <div class="t-btns pull-right">
                     <button v-if="taskPermission.view" @click="$router.push({name: 'viewtask_sprint', params: {task_id: task.id, us_id: task.us_id}})" class="mysm-btn"><span class="fa fa-eye"></span></button>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button v-if="taskPermission.delete" @click="dTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <!-- <button v-if="taskPermission.delete" @click="dTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button> -->
+                    <router-link v-if="taskPermission.delete" :to="{ name: 'deletesprint', params: {cardid: task.id} }" class="mysm-btn" ><span class="fa fa-trash-o"></span></router-link>
                    
                 </div>
             </div>

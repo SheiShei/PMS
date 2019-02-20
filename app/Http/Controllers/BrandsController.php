@@ -111,6 +111,8 @@ class BrandsController extends Controller
         $brand->delete();
         $user = User::where('brand_id', $request->id)->first();
         $user->delete();
+        $jo = JobOrder::where('brand_id', $request->id)->first();
+        $jo->delete();
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
@@ -118,6 +120,7 @@ class BrandsController extends Controller
         
         $brand= Brand::onlyTrashed()->where('id' , $request->data['id'])->restore();
         $user= User::onlyTrashed()->where('brand_id' , $request->data['id'])->restore();
+        $jo= JobOrder::onlyTrashed()->where('brand_id' , $request->data['id'])->restore();
         return response()->json(['status' => 'success', 'message' => 'restores succesfully'], 200);
     }
 

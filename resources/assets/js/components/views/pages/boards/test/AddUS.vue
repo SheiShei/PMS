@@ -76,7 +76,7 @@
                 <br />
                 <div class="row">
                     <div class="col-md-6">
-                        <router-link :to="{ name: 'test'}" class="btn btn-danger btn-block">Cancel</router-link>
+                        <router-link :to="{ name: 'test'}" type="button" class="btn btn-danger btn-block">Cancel</router-link>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-success btn-block">Add to Board</button>
