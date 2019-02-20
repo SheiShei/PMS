@@ -21,12 +21,12 @@
                                 <div class="col-md-4">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <p class="text-gray" style="margin-top:10px"><small>Job Order Progress: <b>35%</b></small></p>
+                                            <p class="text-gray" style="margin-top:10px"><small>Job Order Progress: <b>{{ taskPercent }}%</b></small></p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div data-v-8b3961f4="" class="progress progress-line-info"><div data-v-8b3961f4="" class="progress-bar progress-bar-info" style="width: 35%;">
+                                            <div data-v-8b3961f4="" class="progress progress-line-info"><div data-v-8b3961f4="" class="progress-bar progress-bar-info" :style="'width:'+ taskPercent +'%'">
                                                 </div>
                                             </div>
                                         </div>
@@ -36,7 +36,7 @@
 
                             <hr/>
 
-                            <div class="row">
+                            <div class="row" v-if="details.brand">
                                 <div class="col-md-4">
                                     <!-- <div class="row">
                                         <div class="col-md-12">
@@ -198,7 +198,7 @@
                                 </div>
                                 <!-- <div class="col-md-1">
                                 </div> -->
-                                <div class="col-md-4 pl-4">
+                                <div class="col-md-4 pl-4" v-if="details.joweb">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <p class="no-margin"><span class="txt-bold"><span class="fa fa-hdd-o"></span> TECH</span></p>
@@ -252,7 +252,7 @@
 
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-4" v-if="details.joweb">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <p class="no-margin"><span class="txt-bold">Old Host cPanel</span>
@@ -272,7 +272,7 @@
                                             <p class="no-margin text-gray">&nbsp;&nbsp;<small><span class="fa fa-lock"></span> Password: </small></p>
                                         </div>
                                         <div class="col-md-7 text-right">
-                                            <p v-if="details.joweb.old_cpanel_password == NULL" class="no-margin"> -</p>
+                                            <p v-if="details.joweb.old_cpanel_password == null" class="no-margin"> -</p>
                                             <p v-else class="no-margin">{{ details.joweb.old_cpanel_password }}</p>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@
 
                 </div>
                 
-                <div class="row mt-4">
+                <div class="row mt-4" v-if="details.board">
                     <div class="col-md-5">
                         <div class="taskchart shadow">
                             <div class="row">
@@ -324,27 +324,21 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-7">
-                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">(15)</span></small></p>
+                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">({{ completedTasks }} / {{ details.tasks.length }})</span></small></p>
                                 </div>
-                                <div class="col-md-5 text-right">
-                                    <p class="no-margin text-gray"><small>80%</small></p>
-                                </div>
+                                <!-- <div class="col-md-5 text-right">
+                                    <p class="no-margin text-gray"><small>{{ taskPercent }}%</small></p>
+                                </div> -->
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-md-12">
                                     <div class="progress progress-line-success">
-		                    	        <div class="progress-bar progress-bar-success" style="width: 35%">
+		                    	        <div class="progress-bar progress-bar-success" :style="'width:'+ taskPercent +'%'">
 		                                    <span class="sr-only">35% Complete (success)</span>
 		                                </div>
-		                                <!-- <div class="progress-bar progress-bar-info" style="width: 20%">
-		                                    <span class="sr-only">20% Complete (warning)</span>
-		                                </div>
-		                                <div class="progress-bar progress-bar-info" style="width: 10%">
-		                                    <span class="sr-only">10% Complete (danger)</span>
-		                                </div> -->
 		                            </div>
                                 </div>                                
-                            </div>
+                            </div> -->
                             <!-- <div class="row">
                                 <div class="col-md-7">
                                     <p class="no-margin text-gray"><small>Board: The Potato Scrum Boards</small></p>
@@ -359,54 +353,54 @@
                                         <div class="torevdiv3" v-for="(task) in details.tasks" :key="task.id">
                                             
                                             <!-- if currently active -->
-                                            <!-- <div class="torev-content divactive">
+                                            <div class="torev-content divactive" v-if="taskStatus(task) == 'active'">
                                                 <h6 class="no-margin txt-bold text-info"><span class="fa fa-circle text-info"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
-                                                    <small>2 days left</small>
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
+                                                    <!-- <small>2 days left</small> -->
 
                                                 </p>
-                                            </div> -->
+                                            </div>
 
                                             <!-- if currently active 1 day before or on due-->
-                                            <!-- <div class="torev-content divwarning">
+                                            <div class="torev-content divwarning" v-if="taskStatus(task) == 'tomorrow'">
                                                 <h6 class="no-margin txt-bold text-warning"><span class="fa fa-circle text-warning"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
-                                                    <small>2 days left</small>
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
+                                                    <small>1 day left</small>
                                                 </p>
-                                            </div> -->
+                                            </div>
 
                                             <!-- if completed -->
-                                            <div class="torev-content divcompleted">
+                                            <div class="torev-content divcompleted" v-if="taskStatus(task) == 'completed'">
                                                 <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
                                                 </p>
                                             </div>
 
                                             <!-- if overdued & not yet completed -->
-                                            <!-- <div class="torev-content divoverdued">
+                                            <div class="torev-content divoverdued" v-if="taskStatus(task) == 'overdue'">
                                                 <h6 class="no-margin txt-bold" text-danger><span class="fa fa-circle text-danger"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
-                                                    <small>due 2 days ago</small>
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
+                                                    <small>due {{ taskStatus(task).day }} days ago</small>
                                                 </p>
-                                            </div> -->
+                                            </div>
 
                                             <!-- if overdued but completed after due date-->
-                                            <!-- <div class="torev-content divoverdued">
-                                                <h6 class="no-margin txt-bold text-success"><span class="fa fa-check text-success"></span> {{ task.name }} </h6>
+                                            <div class="torev-content divwarning" v-if="taskStatus(task) == 'today'">
+                                                <h6 class="no-margin txt-bold text-warning"><span class="fa fa-circle text-warning"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
-                                                    <small><span class="fa fa-user-o"></span> sam</small> . 
-                                                    <small><span class="fa fa-clock-o"></span> Feb 21, 2019</small> . 
-                                                    <small>due 2 days ago</small>
+                                                    <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
+                                                    <small><span class="fa fa-clock-o"></span> {{ task.due | moment('MMM DD, YYYY') }}</small> . 
+                                                    <small>Due today</small>
                                                 </p>
-                                            </div> -->
+                                            </div>
 
 
                                         </div>
@@ -416,7 +410,7 @@
                         </div>
                         <br/>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-7" v-if="details.joweb">
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-6">
@@ -451,7 +445,7 @@
                         </div>
                         <br/>
                         
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="details.joweb">
                             <div class="row">
                         
                                 <div class="col-md-6">
@@ -539,7 +533,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-4">
+                <div class="row mt-4" v-if="show">
                     <div class="col-md-12">
                         <div class="taskchart shadow">
                             <div class="row">
@@ -588,8 +582,8 @@
 <script>
 import {mapGetters} from 'vuex';
 import dayjs from "dayjs";
-import GanttElastic from 'gantt-elastic';
-import Header from './workload/Header.vue';
+import GanttElastic from './../workload/GanttElastic.vue';
+import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
 export default {
     components: {
@@ -692,6 +686,38 @@ export default {
     created() {
         this.getJoDetails();
     },
+    computed: {
+        taskPercent() {
+            if(this.details) {
+                var done = 0;
+                var total = 0;
+                this.details.tasks.forEach(task => {
+                    total++;
+                    if(task.status == 4) {
+                        done++;
+                    }
+                });
+                return Math.round((done/total) * 100);
+            }
+        },
+        completedTasks() {
+            var ctasks = 0
+            this.details.tasks.forEach(task => {
+                if(task.card_id) {
+                    if(task.card.isDone) {
+                        ctasks++;
+                    }
+                }
+                else {
+                    if(task.status == 4) {
+                        ctasks++;
+                    }
+                }
+            });
+
+            return ctasks;
+        }
+    },
     methods: {
         getJoDetails() {
             this.show = false;
@@ -733,12 +759,41 @@ export default {
                     }
 
                     tasks.forEach(task => {
-                    task = Object.assign(task, {style : {
-                        base: {
-                        fill: colors[Math.floor(Math.random() * 7)],
-                        stroke: '#fff'
+                        if(task.status == 'Completed') {
+                            task = Object.assign(task, {style : {
+                                base: {
+                                fill: '#A3CB38',
+                                stroke: '#fff'
+                                }
+                            }});
                         }
-                    }});
+
+                        else if(task.status == 'Overdue') {
+                            task = Object.assign(task, {style : {
+                                base: {
+                                fill: '#fc5c65',
+                                stroke: '#fff'
+                                }
+                            }});
+                        }
+                        
+                        else if(task.status == 'Due Today' || task.status == 'Due Tomorrow') {
+                            task = Object.assign(task, {style : {
+                                base: {
+                                fill: '#ffc048',
+                                stroke: '#fff'
+                                }
+                            }});
+                        }
+                        
+                        else if(task.status == 'Active') {
+                            task = Object.assign(task, {style : {
+                                base: {
+                                fill: '#45aaf2',
+                                stroke: '#fff'
+                                }
+                            }});
+                        }
                     task.start = ''+task.start;
                     this.tasks.push(task)
                     });
@@ -768,6 +823,88 @@ export default {
             $('#SuccesWebSignOff').modal('hide');
             this.$router.push({name: 'all_jo_list'})
         },
+
+        taskStatus(task) {
+            // console.log(task);
+            var today = new Date();
+            var due = moment(task.due).format('YYYY-MM-DD')
+            today = moment(today).format('YYYY-MM-DD')
+            // var diff = moment(today).diff(moment(task.due), 'days')
+            if(task.card_id) {
+                if(task.card.isDone) {
+                    // console.log('completed');
+                    return 'completed'
+                }
+                else {
+                    if(moment(today).isAfter(moment(task.due), 'days')) {
+                        // console.log('overdue');
+                        var diff = moment(today).diff(moment(task.due), 'days')
+                        return {
+                            message: 'overdue',
+                            day: diff
+                        }
+                    }
+
+                    else if(moment(today).isSame(moment(task.due), 'days')) {
+                        // console.log('due today');
+                        return 'today'
+                    }
+
+                    else if(moment(today).isBefore(moment(task.due), 'days')) {
+                        // console.log('before');
+                        var diff = moment(task.due).diff(moment(today), 'days')
+                        console.log(diff);
+                        
+                        if(diff == 1) {
+                            // console.log('due tomorrow');
+                            return 'tomorrow'
+                        }
+                        else {
+                            // console.log('active');
+                            return 'active'
+                        }
+                    }
+                }
+            }
+            else {
+                if(task.status == 4) {
+                    // console.log('completed');
+                    return 'completed'
+                }
+                else {
+                    if(moment(today).isAfter(moment(task.due), 'days')) {
+                        // console.log('overdue');
+                        var diff = moment(today).diff(moment(task.due), 'days')
+                        return {
+                            message: 'overdue',
+                            day: diff
+                        }
+                    }
+
+                    else if(moment(today).isSame(moment(task.due), 'days')) {
+                        // console.log('due today');
+                        return 'today'
+                    }
+
+                    else if(moment(today).isBefore(moment(task.due), 'days')) {
+                        // console.log('before');
+                        var diff = moment(task.due).diff(moment(today), 'days')
+                        console.log(diff);
+                        
+                        if(diff == 1) {
+                            // console.log('due tomorrow');
+                            return 'tomorrow'
+                        }
+                        else {
+                            // console.log('active');
+                            return 'active'
+                        }
+                    }
+                }
+            }
+            
+            
+        }
     }
 }
 </script>
