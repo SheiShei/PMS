@@ -137,7 +137,7 @@
                                         </div>
                                     </div>
                                     <br/>
-                                    <div class="row">
+                                    <div class="row" v-if="false">
                                         <div class="col-md-12">
                                             <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Copy on Artwork:</p>
                                             <p class="no-margin" v-if="details.jocreatives.copy == null ">
@@ -246,7 +246,7 @@
                         <div class="taskchart shadow">
                             <div class="row" v-if="details.jocreatives">
                                 <div class="col-md-12">
-                                    <div class="row">
+                                    <div class="row" v-if="false">
                                         <div class="col-md-6" v-if="details.jocreatives.post_caption">
                                             <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Post Caption</p>
                                             <!-- <hr/> -->
@@ -257,7 +257,7 @@
                                             <p>{{ details.jocreatives.revisions }}</p>
                                         </div>
                                     </div>
-                                    <br/>
+                                    <!-- <br/> -->
                                      <div class="row" v-if="details.jocreatives.signed_by">
                                         <div class="col-md-12">
                                             <p><span class="txt-bold">Final Signed Off by: </span>{{ details.jocreatives.signedby.name }}</p>

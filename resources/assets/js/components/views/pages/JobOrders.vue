@@ -172,10 +172,11 @@
 <script>
 import {mapGetters} from 'vuex';
 // import JOfilter from "./joborders/JOfilter.vue";
+// import Notifdiv from "./Notif.vue"
 
 export default {
     // components:{
-    //     JOfilter: JOfilter
+    //     notifDiv: Notifdiv
     // },
     data() {
         return {

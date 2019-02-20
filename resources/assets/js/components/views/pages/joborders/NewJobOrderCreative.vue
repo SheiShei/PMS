@@ -360,7 +360,7 @@
         <div class="col-md-1">
         </div>
 
-        <div class="modal fade" id="SuccesNewJoWeb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="SuccesNewJoC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-small ">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -483,16 +483,16 @@ export default {
                 .then ((response) => {
                     const jodata = response.data;
                     this.joid = jodata.id;
-                    $('#SuccesNewJoWeb').modal('show');
+                    $('#SuccesNewJoC').modal('show');
                 })  
         },
         notsuccess() {
-            $('#SuccesNewJoWeb').modal('hide');
+            $('#SuccesNewJoC').modal('hide');
             this.$router.push({name: 'all_jo_list'})
 
         },
         success() {
-            $('#SuccesNewJoWeb').modal('hide');
+            $('#SuccesNewJoC').modal('hide');
             this.$router.push({name: 'viewjocreative', params: {jo_id: this.joid}})
 
         },

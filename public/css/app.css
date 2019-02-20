@@ -11797,7 +11797,7 @@ ul > li > span.page-of:hover {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {
     display: block;
   }
@@ -12788,6 +12788,12 @@ hr {
   height: 30px;
   width: 30px;
   border-radius: 50%;
+}
+
+.large-avatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 0;
 }
 
 .board-background-image {
