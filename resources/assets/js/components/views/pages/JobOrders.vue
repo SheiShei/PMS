@@ -66,9 +66,9 @@
                                                         <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
                                                     </td>
                                                     <td>
-                                                        <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
+                                                        <p class="text-gray no-margin"><small>Completed: {{ completedTasks(jo) }}/{{ jo.tasks.length }}<span class="pull-right txt-bold">{{ joPercent(jo) }}%</span></small></p>
                                                         <div class="no-margin progress progress-line-info">
-                                                            <div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            <div class="progress-bar progress-bar-info" :style="'width: '+joPercent(jo)+'%;'">
                                                             </div
                                                         ></div>
                                                     </td>
@@ -241,7 +241,43 @@ export default {
             // console.log('shei');
             
         }, 500),
+        
+        joPercent(jo) {
+            var done = 0;
+            var total = 0;
+            jo.tasks.forEach(task => {
+                total++;
+                if(task.card_id) {
+                    if(task.card.isDone) {
+                        done++;
+                    }
+                }
+                else {
+                    if(task.status == 4) {
+                        done++;
+                    }
+                }
+            });
 
+            return Math.round((done/total) * 100);
+        },
+        completedTasks(jo) {
+            var ctasks = 0
+            jo.tasks.forEach(task => {
+                if(task.card_id) {
+                    if(task.card.isDone) {
+                        ctasks++;
+                    }
+                }
+                else {
+                    if(task.status == 4) {
+                        ctasks++;
+                    }
+                }
+            });
+
+            return ctasks;
+        }
        
     }
 }
