@@ -3,6 +3,7 @@
         <user-sidebar></user-sidebar>
         <!-- <user-topnav></user-topnav> -->
         <div>
+        <notif-div></notif-div>
             <router-view></router-view>
         </div>
     </div>
@@ -11,11 +12,12 @@
 <script>
 // import Topnav from './includes/Topnav.vue';
 import Sidebar from './includes/Sidebar.vue';
-
+import Notifdiv from './includes/Notif.vue'
 export default {
     components: {
         // userTopnav : Topnav,
-        userSidebar : Sidebar
+        userSidebar : Sidebar,
+        notifDiv : Notifdiv
     },
 
     updated () {

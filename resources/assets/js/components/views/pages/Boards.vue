@@ -35,7 +35,7 @@
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
                                                 <!-- <a href="" @click.stop="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
-                                                <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                                <a href="" @click.prevent="deletethis(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
                                     </router-link>
@@ -44,7 +44,7 @@
                                         <div class="boardoptions">
                                             <p><span class="pull-right">
                                                 <!-- <a href="" @click.stop.prevent="updateBoard(board)" class="text-success" title="Edit Board"><i class="fa fa-edit"></i></a> -->
-                                                <a href="" @click.prevent="deleteBoard(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
+                                                <a href="" @click.prevent="deletethis(board.id)" class="text-danger" title="Delete Board"><i class="fa fa-trash-o"></i></a>
                                             </span></p>
                                         </div>
                                     </router-link>
@@ -133,6 +133,25 @@
                     </div>        
                 </div>
             </div>
+            <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-small " style="margin: 5% auto">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+                        <h4 class="no-margin"><span class="fa fa-times-circle text-danger"></span> Warning!</h4>
+                    </div>
+                     <div class="modal-body text-center">
+                        <p class="no-margin">Are you sure you want to delete this?</p>
+                        <p class="txt-bold">This board and its tasks will be permanently deleted.</p>
+                        <p class="">Do you still want to proceed?</p>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-sm btn-simple" data-dismiss="modal" >Cancel</button>
+                        <button @click="deleteBoard()" type="button" class="btn btn-sm btn-success btn-simple">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div> 
     </section>
 </template>
@@ -152,6 +171,7 @@ export default {
                 privacy: '',
                 id: this.$store.state.loggedUser.id
             },
+            board_id: ''
         }
     },
 
@@ -194,10 +214,24 @@ export default {
                 })
         },
 
-        deleteBoard(id) {
-            this.$store.dispatch('deleteBoard', id)
+        deletethis(id) {
+            this.board_id=id;
+            console.log(this.board_id)
+            $('#DeleteModal').modal('show');
+            // this.$router.push({name: 'all_jo_list'})
+
+        },
+        // notsuccess() {
+        //     $('#SuccesNewJoWeb').modal('hide');
+        //     // this.$router.push({name: 'viewjocreative', params: {jo_id: this.joid}})
+
+        // },
+        deleteBoard() {
+            this.$store.dispatch('deleteBoard', this.board_id)
                 .then(() => {
                     this.$toaster.warning('Board deleted succesfully!.')
+                     $('#DeleteModal').modal('hide');
+
                 })
             
         },

@@ -52,13 +52,13 @@
                     </div>
                     <div class="col-md-6">
                         <label for="">Due: </label>
-                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
+                        <date-picker @change="changeDateFormat" v-model="taskData.due" required format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                     </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col-md-6">
-                        <router-link :to="{ name: 'kanboard'}" class="btn btn-danger btn-block">Cancel</router-link>
+                        <router-link :to="{ name: 'kanboard'}" type="button" class="btn btn-danger btn-block">Cancel</router-link>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-success btn-block">Add to Board</button>
@@ -120,7 +120,7 @@ export default {
 
             this.$store.dispatch('addTask', task)
                 .then(() => {
-                    this.$toaster.warning('Task Added succesfully!.')
+                    this.$toaster.success('Task Added succesfully!.')
                     this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}});
                     // let listDiv = document.querySelector('.list-body');
                     // listDiv.scrollTo(0, listDiv.scrollHeight);

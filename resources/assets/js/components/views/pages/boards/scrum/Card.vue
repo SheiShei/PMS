@@ -19,7 +19,7 @@
             <div class="editListBtn pull-right">
                 <small>{{ sprintPoints }} pts</small>
                 <button v-if="sprint.type == 2" class="" @click="revert" title="Edit Sprint"><span class="fa fa-edit"></span></button>
-                <button @click="deleteSprint(sprint.id)" v-if="sprint.type == 2" class="" title="Delete Sprint"><span class="fa fa-trash-o"></span></button>
+                <button @click="deleteSprint(sprint.id)"  v-if="sprint.type == 2" class="" title="Delete Sprint"><span class="fa fa-trash-o"></span></button>
                 <button @click="showFinishSprintModal" v-if="sprint.type == 2 && sprint.finished_at == null" class="" title="Close Sprint?"><span class="fa fa-compress"></span></button>
             </div>
         </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="list-edit-save">
                 <button @click="updateSprint(sprint.id)" class="btn-save">SAVE</button>
-                <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+                <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" type="button" title="Cancel"><span class="fa fa-times"></span></button>
             </div>
             </form>
         </div>

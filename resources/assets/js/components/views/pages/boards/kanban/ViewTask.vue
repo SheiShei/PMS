@@ -404,11 +404,14 @@ export default {
         },
 
         dT() {
-            this.$store.dispatch('deleteTask', {id:this.data.id, board_id: this.$route.params.board_id})
-                .then(() => {
-                    this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}})
-                    this.$toaster.warning('Task deleted succesfully!.')
-                })
+            // this.$store.dispatch('deleteTask', {id:this.data.id, board_id: this.$route.params.board_id})
+            //     .then(() => {
+            //         this.$router.push({name: 'kanboard', params: {board_id: this.$route.params.board_id}})
+            //       
+            //   this.$toaster.warning('Task deleted succesfully!.')
+            //     })
+            this.$router.push({ name: 'delete', params: {taskid: this.data.id} });
+
         },
 
         listenTask() {

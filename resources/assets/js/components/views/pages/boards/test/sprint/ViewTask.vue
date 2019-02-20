@@ -19,7 +19,7 @@
                                         <span v-if="!editTaskDet"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
                                         <span v-else><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
                                         <!-- <span class="pull-right"><router-link :to="{name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span> -->
-                                        <span class=""><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                                        <span class=""><button @click="dT()" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></button></span>
                                     </h4>
                                 </div>
                             </div>
@@ -563,17 +563,18 @@ export default {
         },
 
         dT() {
-            this.$store.dispatch('deleteSprintTask', {id:this.data.id, board_id: this.$route.params.board_id})
-                .then((response) => {
-                    this.$store.commit('deleteSprintTask', response)
-                    // if(this.$route.params.sprint_id) {
+            // this.$store.dispatch('deleteSprintTask', {id:this.data.id, board_id: this.$route.params.board_id})
+            //     .then((response) => {
+            //         this.$store.commit('deleteSprintTask', response)
+            //         // if(this.$route.params.sprint_id) {
                     //     this.$router.push({name: 'sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
                     // }
                     // else {
-                        this.$router.push({name: 'test_sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
+                        // this.$router.push({name: 'test_sprint', params: {board_id: this.$route.params.board_id, sprint_id: this.$route.params.sprint_id}})
+                        this.$router.push({ name: 'deletesprint', params: {cardid: this.data.id}});
                     // }
-                    this.$toaster.warning('Task deleted succesfully!.')
-                })
+                    // this.$toaster.warning('Task deleted succesfully!.')
+                // })
         },
 
         changeDateFormat() {
