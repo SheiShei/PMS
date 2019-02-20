@@ -22,6 +22,10 @@ const mutations = {
     setCWorkbook(state, id) {
         var index = _.findIndex(state.workbooks, {id: id});
         state.cWorkbook = state.workbooks[index]
+    },
+    deleteWB(state, id) {
+        var index = _.findIndex(state.workbooks, {id: id})
+        state.workbooks.splice(index, 1);
     }
 };
 
@@ -62,7 +66,7 @@ const actions = {
                 .then(response => {
                     // console.log(response.data);
                     commit('setWorkbooks', response.data)
-                    resolve()
+                    resolve(response.data)
                 })
                 .catch(error => {
                     console.error(error);
@@ -102,13 +106,39 @@ const actions = {
     },
     UpdateWorkbook({commit}, data) {
         const config = { headers : {'Content-Type': 'multipart/form-data'} }
-        console.log(data);
         return new Promise ((resolve, reject) => {
             axios.post('/api/UpdateWorkbook', data, config)
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     commit('setWorkbooks', response.data);
                     resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
+    deleteWB({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.delete('/api/deleteWB', {data: data})
+                .then((response) => {
+                    // console.log(response);
+                    resolve()
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject()
+                })
+        })
+    },
+    restoreWB({commit}, data) {
+        return new Promise ((resolve, reject) => {
+            axios.post('/api/restoreWB', data)
+                .then((response) => {
+                    // console.log(response);
+                    commit('setWorkbooks', response.data)
+                    resolve(response.data)
                 })
                 .catch(error => {
                     console.error(error);

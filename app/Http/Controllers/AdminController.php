@@ -584,7 +584,7 @@ class AdminController extends Controller
         $type = $jo->type;
         $dateNow = Carbon::now()->toDateString();
         $users = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo) {
-            $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
+            $q->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
         }])->get();
 
         // return $users;
@@ -735,11 +735,11 @@ class AdminController extends Controller
             if($sort_key){
                if(auth()->user()->role_id==1) 
                {
-                $query = JobOrder::with('brand:id,name')->orderBy($sort_key, $sort_type);         
+                $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->orderBy($sort_key, $sort_type);         
                }
                else
                {
-                $query = JobOrder::with('brand:id,name')->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
+                $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
                }
                }
         }

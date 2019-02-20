@@ -123,16 +123,16 @@
                     <div class="taskchart shadow" v-if="brandJOs">
                         <div class="row">
                             <div class="col-md-4">
-                                <h6 class="nm-top"><strong><span class="fa fa-book"></span> Workbooks</strong>&nbsp;<span><small>| <a href="">Archive</a></small></span></h6>
+                                <h6 class="nm-top"><strong><span class="fa fa-book"></span> Workbooks</strong>&nbsp;<span><small>| <a @click.prevent="changeArchive" href="">Archive</a></small></span></h6>
                                 <hr/>
                             </div>
                             <div class="col-md-8 text-right">
-                                    <select class="my-input my-thin-select" name="" id="">
+                                    <select @change="getAllWorkbooks" v-model="data.status" class="my-input my-thin-select" name="" id="">
                                         <option value="" selected>Reviewed & For Review</option>
-                                        <option value="">Reviewed</option>
-                                        <option value="">For Review</option>
+                                        <option value="reviewed">Reviewed</option>
+                                        <option value="for_reviewed">For Review</option>
                                     </select>
-                                    <input type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    <input @input="searchDeb" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
                                     &nbsp;<span class="fa fa-search text-default"></span>
                             </div>
                         </div>
@@ -150,10 +150,28 @@
                                                     <div class="torev-right">
                                                         <h6 class="wb-title txt-bold"><a>{{ workbook.name }}</a> <span v-if="workbook.reviewed_at" title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
                                                         <p><small>by: {{ workbook.created_by.name }} . {{ workbook.created_at | moment('ll') }} . {{ workbook.brand.name }}</small></p>
-                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                        <p v-if="workbook.reviewed_at" class="no-margin"><small>
+                                                            <fa-rating :glyph="star"
+                                                                :read-only="true"
+                                                                :item-size="12" 
+                                                                :spacing="3"  
+                                                                inactive-color="#e2e2e2" 
+                                                                active-color="#ffc815"
+                                                                :border-width=2
+                                                                border-color="#fff"
+                                                                :increment="0.01"
+                                                                v-model="workbook.overall_rating"
+                                                                >
+                                                            </fa-rating>
+                                                        </small></p>
+                                                        <p v-if="data.isArchive" class="hidden-lg hidden-md"><span><a @click.stop="rWB(workbook.id)" href="#child" class="btn btn-info btn-simple btn-xs">Restore</a></span></p>
+                                                        <p v-else class="hidden-lg hidden-md"><span><a @click.stop="dWB(workbook.id)" href="#child" class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                     </div>
                                                     <div class="very-right hidden-sm hidden-xs text-right">
-                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                        <a v-if="data.isArchive" @click.stop="rWB(workbook.id)" href="#child" title="Archive" class="btn btn-info btn-simple btn-xs">
+                                                            <span class="fa fa-undo"></span> Restore
+                                                        </a>
+                                                        <a v-else @click.stop="dWB(workbook.id)" href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
                                                             <span class="fa fa-trash-o"></span> Archive
                                                         </a>
                                                     </div>
@@ -194,18 +212,34 @@
 
 <script>
 import {mapGetters} from 'vuex';
-
+import {StarRating} from 'vue-rate-it';
+import {HeartRating} from 'vue-rate-it';
+import {FaRating} from 'vue-rate-it';
+import {ImageRating} from 'vue-rate-it';
+import Star from 'vue-rate-it/glyphs/star';
 export default {
+    components:{
+        StarRating,
+        HeartRating,
+        FaRating
+    },
     data () {
         return {
             id: this.$route.params.brandId,
             josearch: '',
             jofilter: 'created_at.desc',
-            brandJOs: null
+            brandJOs: null,
+            data: {
+                search: '',
+                brand: this.$route.params.brandId,
+                status: '',
+                isArchive: false
+            },
         }
     },
     created() {
         // this.data.id = this.$route.params.brandId;
+        this.star = Star
         let data = this.data;
         this.$store.dispatch('getOnebrand',this.id)
             .then (() => {
@@ -251,6 +285,35 @@ export default {
                     _this.$toaster.warning('JO Deleted!.')
                 })
         },
+
+        getAllWorkbooks() {
+            this.$store.dispatch('getWorkbooks', this.data)
+                .then((response) => {
+                    this.brandProfile.workbooks = response;
+                })
+        },
+        searchDeb: _.debounce(function() {
+            this.getAllWorkbooks();
+        }, 500),
+        changeArchive() {
+            this.data.isArchive = !this.data.isArchive;
+            this.getAllWorkbooks();
+        },
+        dWB(wid) {
+            this.$store.dispatch('deleteWB', {id: wid})
+                .then(() => {
+                    var index = _.findIndex(this.brandProfile.workbooks, {id: wid})
+                    this.brandProfile.workbooks.splice(index, 1);
+                    this.$toaster.warning('Workbook Deleted!.')
+                })
+        },
+        rWB(wid) {
+            this.$store.dispatch('restoreWB', {id: wid, data: this.data})
+                .then((response) => {
+                    this.brandProfile.workbooks = response;
+                    this.$toaster.info('Workbook Restored.')
+                })
+        }
     }
 
     
