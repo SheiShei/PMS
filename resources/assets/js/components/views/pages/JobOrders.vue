@@ -124,6 +124,24 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-small ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+                        <h4 class="no-margin"><span class="fa fa-times-circle text-danger"></span>Request to Delete!</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <!-- <p>A job order was deleted successfully.</p> -->
+                        <p class="txt-bold">Do you really want to delete this JO?</p>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button @click="notsuccess()" type="button" class="btn btn-sm btn-simple" >Cancel</button>
+                        <button @click="deleteJO()" type="button" class="btn btn-sm btn-success btn-simple">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- </div> -->
     </section>
 </template>
@@ -166,7 +184,7 @@ export default {
             sort: 'created_at.desc',
             search: '',
             notArchive: true
-        }
+        },
         }
     },
     computed: {
@@ -190,8 +208,8 @@ export default {
             }
         },
 
-
         deleteJO(id) {
+            // $('#DeleteModal').modal('hide');
             let _this = this;
             this.$store.dispatch('deleteJO', id)
                 .then ((response) => {

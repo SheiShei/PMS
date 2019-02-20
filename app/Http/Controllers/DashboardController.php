@@ -9,9 +9,10 @@ use App\JobOrder;
 use App\Board;
 use App\BoardUser;
 use App\Task;
-// use App\Tandem;
+use App\Workbook;
 use App\Message;
 use App\JoCreative;
+use App\WorkbookFile;
 use Illuminate\Notifications\Notification;
 use Hash;
 use Carbon\Carbon;
@@ -50,31 +51,42 @@ class DashboardController extends Controller
         $query2 = JobOrder::where('created_by', auth()->user()->id)->with('brand:id,name');
         $no_jo = $query2->count();
         $no_activejo = $query2->where('status', 1)->count();
+
+        $wb = Workbook::where('created_by', auth()->user()->id)->count();
         
 
         $dash_acma= ([
             'handled_brands' => $no_brands,
             'jo_created' => $no_jo,
             'active_jo' => $no_activejo,
-            // 'messco' => $messcount['data']
-
+            'workbookss' => $wb,
         ]);        
         return $dash_acma;
     }
-    public function display_joborders()
+    public function display_joborders(Request $request)
     {
         $user = User::where('id', auth()->user()->id)->first();
 
         if($user['role_id']==2)
         {
-            $display_jo = JobOrder::where('created_by', auth()->user()->id)->with('brand:id,name')->get();
+           if($request->status) {
+            $display_jo = JobOrder::where('created_by', auth()->user()->id)->where('status',$request->status)->with(['brand:id,name','tasks']);
+            
+           }
+           else{
+            $display_jo = JobOrder::where('created_by', auth()->user()->id)->with(['brand:id,name','tasks']);
+           }
         }
         if($user['role_id']==4)
         {
-            $display_jo = JobOrder::where('brand_id', $user['brand_id'])->get();
+            
+            $display_jo = JobOrder::where('brand_id', $user['brand_id']);
         }
 
-        return $display_jo;
+        if($request->search) {
+            $display_jo->where('name', 'like', $request->search . '%');
+        }
+        return $display_jo->get();
 
     }
     public function dashboard_emp()
@@ -149,17 +161,68 @@ class DashboardController extends Controller
     {   $user = User::where('id', auth()->user()->id)->first();
         $jocount = JobOrder::where('brand_id', $user['brand_id'])->count();
         $date =  Carbon::today()->toDateString();
+        $callback = function($q) {
+            $q->where('id', auth()->user()->brand_id);
+        };
+        $urworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at',null)->orderBy('created_at','asc')->count();
+        $rworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at','!=',null)->orderBy('reviewed_at','asc')->count();
+        $total = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->count();
         $client_dash = [];
         $client_dash=([
             'jocount' => $jocount,
             'today' => $date,
-            // 'totalboards' => $boards, 
-            // 'duetaskcount' => $duetaskcount,
-            // 'messcount' => $messcount
+            'reviewed' => $rworkbooks, 
+            'unreviewed' => $urworkbooks,
+             'total' => $total
         ]);
         return $client_dash;
     }
+
+    public function display_urworkbooks()
+    {  
+        // if(auth()->user()->role_id == 1) {
+        //     $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+        // }
+        if(auth()->user()->role_id == 2) {
+            $callback = function($q) {
+                $q->where('acma_id', auth()->user()->id);
+            };
+            $urworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at',null)->orderBy('created_at','asc');
+        }
+        if(auth()->user()->role_id == 4) {
+            $callback = function($q) {
+                $q->where('id', auth()->user()->brand_id);
+            };
+            $urworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at',null)->orderBy('created_at','asc');
+            // $urworkbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+        }
+        return $urworkbooks->get();
+
+     }
+
+     public function display_rworkbooks()
+     {  
+         // if(auth()->user()->role_id == 1) {
+         //     $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+         // }
+         if(auth()->user()->role_id == 2) {
+             $callback = function($q) {
+                 $q->where('acma_id', auth()->user()->id);
+             };
+             $urworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at','!=',null)->orderBy('reviewed_at','asc');
+         }
+         if(auth()->user()->role_id == 4) {
+             $callback = function($q) {
+                 $q->where('id', auth()->user()->brand_id);
+             };
+             $urworkbooks = Workbook::with(['brand.acma', 'created_by'])->whereHas('brand', $callback)->where('reviewed_at','!=',null)->orderBy('reviewed_at','asc');
+         }
+         return $urworkbooks->get();
+ 
+      }
     
+    
+   
 
 
 

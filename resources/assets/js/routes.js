@@ -45,6 +45,10 @@ import BurndownChart from './components/views/pages/boards/test/sprint/BurndownC
 import Statistics from './components/views/pages/boards/test/sprint/Statistics.vue';
 import KanbanStatistics from './components/views/pages/boards/kanban/Statistics.vue';
 import CumulativeChart from './components/views/pages/boards/test/sprint/CumulativeChart.vue';
+import deletekanbantask from './components/views/pages/boards/kanban/deletemodal.vue';
+import deletekanbancard from './components/views/pages/boards/kanban/deletemodalcard.vue';
+// C:\laragon\www\Captivate\resources\assets\js\components\views\pages\boards\scrum\deletemodalsprintcard.vue
+import deletemodalsprintcard from './components/views/pages/boards/test/sprint/deletemodalsprintcard.vue'
 /* end of import vue components */
 
 export const routes = [
@@ -397,6 +401,7 @@ export const routes = [
             
             {
                 path: 'workbook/:wb_id',
+                // name: 'cworkbook',
                 component: SingleWorkbook,
                 meta: {
                     requiresAuth: true
@@ -578,6 +583,22 @@ export const routes = [
                         path: 'gallery/:task_id',
                         name: 'kanboard_gallery',
                         component: KanbanGallery,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'delete/:taskid',
+                        name: 'delete',
+                        component: deletekanbantask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'delete/:cardid',
+                        name: 'deletecard',
+                        component: deletekanbancard,
                         meta: {
                             requiresAuth: true
                         },
@@ -895,6 +916,14 @@ export const routes = [
                         path: 'statistics',
                         name: 'sprint_stats',
                         component: Statistics,
+                        meta: {
+                            requiresAuth: true
+                        },
+                    },
+                    {
+                        path: 'deletesprintcard/:cardid',
+                        name: 'deletesprint',
+                        component: deletemodalsprintcard,
                         meta: {
                             requiresAuth: true
                         },

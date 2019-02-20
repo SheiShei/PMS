@@ -87,23 +87,32 @@ class AdminController extends Controller
             'password' => 'string|min:6|nullable',
         ]);
         $user = User::findOrFail($request->id);
-        // if(!$request->password) {
+        
+        if($request->password) {
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role_id' => $request->role,
                 'department_id' => $request->team
+           ]);        
+        }
+        else{
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                // 'password' => Hash::make($request->password),
+                'role_id' => $request->role,
+                'department_id' => $request->team
             ]);
-            if($user->role_id==4)
-            {
-                $brand = Brand::where('id', $user->brand_id)->first();
-                $brand->update([
-                    'name' => $request->name,
-                ]);
-            }
-        // }
-
+        }
+        if($user->role_id==4)
+        {
+            $brand = Brand::where('id', $user->brand_id)->first();
+            $brand->update([
+                'name' => $request->name,
+            ]);
+        }
         return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();
     }
 
@@ -604,6 +613,69 @@ class AdminController extends Controller
                 $durationDays ++;
 
                 $pPer = ($progressDays/$durationDays) * 100;
+
+                if($task['card_id']) {
+                    if($task['card']['isDone']) {
+                        $status = 'Completed';
+                    }
+                    else {
+                        $due = new Carbon($task['due']);
+                        $dueDate = $due->toDatestring();
+
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+
+                        if($dueDate < $todayDate) {
+                            $status = 'Overdue';
+                        }
+
+                        else {
+                            if($dueDate == $todayDate) {
+                                $status = 'Due Today';
+                            }
+                            else {
+                                $diff = $today->diffInDays($due) + 1;
+                                if($diff == 1) {
+                                   $status = 'Due Tomorrow';
+                                }
+                                if($diff > 1) {
+                                   $status = 'Active';
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    if($task['status'] == 4) {
+                        $status = 'Completed';
+                    }
+                    else {
+                        $due = new Carbon($task['due']);
+                        $dueDate = $due->toDatestring();
+
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+
+                        if($dueDate < $todayDate) {
+                            $status = 'Overdue';
+                        }
+
+                        else {
+                            if($dueDate == $todayDate) {
+                                $status = 'Due Today';
+                            }
+                            else {
+                                $diff = $today->diffInDays($due) + 1;
+                                if($diff == 1) {
+                                    $status = 'Due Tomorrow';
+                                }
+                                if($diff > 1) {
+                                    $status = 'Active';
+                                }
+                            }
+                        }
+                    }
+                }
                 
                 if($key == 0) {
                     $parentId = $task['id'];
@@ -617,6 +689,7 @@ class AdminController extends Controller
                         'progress' => round($pPer, 0),
                         'key' => $key,
                         'type' => 'task',
+                        'status' => $status
                     );
                 }
                 else {
@@ -632,6 +705,7 @@ class AdminController extends Controller
                         'parentId' => $parentId,
                         'dependentOn' => $dependentOn,
                         'type' => 'task',
+                        'status' => $status
                     );
                 }
 
@@ -649,7 +723,7 @@ class AdminController extends Controller
             return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
         }
         else if($type === 2) {
-            $jobor = JobOrder::with(['brand.acma', 'board'])->with(['joweb.web_signed_by','joweb.acma_signed_by', 'tasks.files', 'tasks.assigned_to'])->where('id', $request->id)->first();
+            $jobor = JobOrder::with(['brand.acma', 'board'])->with(['joweb.web_signed_by','joweb.acma_signed_by', 'tasks.card', 'tasks.files', 'tasks.assigned_to'])->where('id', $request->id)->first();
             return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
         }
     }

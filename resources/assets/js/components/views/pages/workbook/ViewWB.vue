@@ -145,7 +145,7 @@
                                         <span class="fa fa-edit"></span> 
                                         Caption
                                     </p>
-                                    <textarea v-model="change_workbook.desc" rows="5" class="my-text-area my-inp-blk"></textarea>
+                                    <textarea v-model="change_workbook.caption" rows="5" class="my-text-area my-inp-blk"></textarea>
 										</div>
                                         <div class="col-md-6">
                                             <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
@@ -190,21 +190,20 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <p><span class="fa fa-circle text-gray"></span>
-                                    &nbsp;<span class="txt-bold">Revision 3</span>&nbsp;
-                                    <span class="fa fa-star text-warning"></span>
-                                    <span class="fa fa-star text-warning"></span>
-                                    <span class="fa fa-star text-warning"></span>
-                                    <span class="fa fa-star text-warning"></span>&nbsp;.
-                                    <small>Feb 9, 2019.&nbsp;<a style="cursor: pointer" v-if="!openDetails" @click="openDetails=!openDetails">View Details</a>
+                                    &nbsp;<span class="txt-bold">Revision {{getCurrentImage.revisions.length}}</span>&nbsp;
+                                    <span v-if="getCurrentImage.revisions[0].rating!=null" v-for="n in getCurrentImage.revisions[0].rating" :key="n.id" class="fa fa-star text-warning"></span>
+                                    <span v-if="getCurrentImage.revisions[0].rating==null" v-for="m in 5" :key="m.id" class="fa fa-star-o"></span>
+                                &nbsp;.
+                                    <small>{{getCurrentImage.revisions[0].created_at | moment("MMM D, YYYY")}}.&nbsp;<a style="cursor: pointer" v-if="!openDetails" @click="openDetails=!openDetails">View Details</a>
                                     <a v-if="openDetails" style="cursor: pointer" @click="openDetails=!openDetails">Close Details</a>
-                                    <span class="text-gray"><i>"Comment here"</i></span></small>
+                                    <span class="text-gray"><i>{{getCurrentImage.revisions[0].comment}}</i></span></small>
                                     </p>
                                 </div>
                             </div>
-                            <div class="row" v-if="openDetails">
-                                <div class="col-md-12">
-                                    <p class="text-gray">Caption <span class="fa fa-pencil"></span> . {{ getCurrentImage.revisions[0].caption }}</p>
-                                    <img :src="getCurrentImage.revisions[0].new_filename" :alt="getCurrentImage.revisions[0].original_filename"  :title="getCurrentImage.revisions[0].original_filename" class="img-rounded img-responsive img-raised" style="max-width: 50%; margin: 0 auto">
+                            <div class="row" v-for="(bago, ind) in getCurrentImage.revisions.length" :key="bago.id" v-if="openDetails">
+                                <div v-if="ind!=0" class="col-md-12">
+                                    <p class="text-gray">Caption <span class="fa fa-pencil"></span> . {{ getCurrentImage.revisions[ind].caption }}</p>
+                                    <img :src="getCurrentImage.revisions[ind].new_filename" :alt="getCurrentImage.revisions[ind].original_filename"  :title="getCurrentImage.revisions[ind].original_filename" class="img-rounded img-responsive img-raised" style="max-width: 50%; margin: 0 auto">
                                 </div>
                             </div>
                         </div>
@@ -244,7 +243,7 @@ export default {
             
             change_workbook: {
                 name: '',
-                desc: '',
+                caption: '',
                 brand: '',
                 files: '',
             },
@@ -282,7 +281,7 @@ export default {
                 console.log('in if',this.change_workbook.files[0]);
             }
             form.append('name', this.change_workbook.name);
-            form.append('desc', this.change_workbook.desc);
+            form.append('caption', this.change_workbook.caption);
             // form.append('brand', this.change_workbook.brand);
             // form.append('file_id', this.change_workbook.file_id);
             
@@ -290,7 +289,9 @@ export default {
 
             this.$store.dispatch('UpdateWorkbook', form)
                 .then(() => {
-                        this.$toaster.success('updated succesfully!.')
+                        this.revMode=false;
+                        this.$store.commit('setCWorkbook', this.$route.params.wb_id)
+                        this.$toaster.success('Revision added succesfully!.')
                 })
                 .catch((error) => {
                     console.log(error)
@@ -301,11 +302,10 @@ export default {
     },
     created(){
         this.star = Star;
-        this.$store.dispatch('getCWorkbook', this.id)
+        this.$store.dispatch('getCWorkbook',this.$route.params.wb_id)
             .then((response) => {
-                console.log('sa WB',response);
-                this.change_workbook.name=response.data.name;
-                this.change_workbook.brand=response.data.brand_id; 
+                // console.log(this.tandemList)
+                this.change_workbook.caption = response.data.caption;
             })
 
     },

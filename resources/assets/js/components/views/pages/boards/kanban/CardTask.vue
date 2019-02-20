@@ -18,7 +18,8 @@
                 <div class="t-btns pull-right">
                     <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button v-if="taskPerm.delete" @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <router-link v-if="taskPerm.delete" :to="{ name: 'delete', params: {taskid: task.id} }" class="mysm-btn"><span class="fa fa-trash-o"></span></router-link>
+                    <!-- <button v-if="taskPerm.delete" @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button> -->
                     <img class="task-member-avatar" :src="task.assigned_to.picture" :title="task.assigned_to.name">
                 </div>
             </div>
@@ -47,7 +48,7 @@
                 <div class="t-btns pull-right">
                     <router-link v-if="taskPerm.view" :to="{ name: 'kanboard_viewtask', params: {task_id: task.id}, props: {per: taskPerm} }" class="mysm-btn"><span class="fa fa-eye"></span></router-link>
                     <!-- <button class="mysm-btn"><span class="fa fa-edit"></span></button> -->
-                    <button v-if="taskPerm.delete" @click="deleteTask(task.id)" class="mysm-btn"><span class="fa fa-trash-o"></span></button>
+                    <router-link v-if="taskPerm.delete" :to="{ name: 'delete', params: {taskid: task.id} }" class="mysm-btn"><span class="fa fa-trash-o"></span></router-link>
                     <img class="task-member-avatar" :src="task.assigned_to.picture" :title="task.assigned_to.name">
                 </div>
             </div>
@@ -76,12 +77,13 @@ export default {
                 elmnt.scrollBy(-10, 0);
             }
         },
-        deleteTask(id) {
-            this.$store.dispatch('deleteTask', {id:id, board_id: this.$route.params.board_id})
-                .then(() => {
-                    this.$toaster.warning('Task deleted succesfully!.')
-                })
-        }
+        // deleteTask(id) {
+        //     this.$store.dispatch('deleteTask', {id:id, board_id: this.$route.params.board_id})
+        //         .then(() => {
+        //             this.$toaster.warning('Task deleted succesfully!.')
+        //         })
+        // },
+        
     }
 }
 </script>

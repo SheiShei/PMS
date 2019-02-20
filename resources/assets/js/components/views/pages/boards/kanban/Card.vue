@@ -10,7 +10,8 @@
             <div class="editListBtn pull-right">
                 <!-- <small>{{ listPoints }} pts</small> -->
                 <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
-                <button v-if="delList" @click="deleteList(list.id)"><span class="fa fa-trash-o"></span></button>
+                <router-link v-if="delList" :to="{ name: 'deletecard', params: {cardid: list.id} }"><span class="fa fa-trash-o"></span></router-link>
+
                 <button  v-if="!list.isDone" @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
         </div>
@@ -21,11 +22,12 @@
                 </div>
                 <div class="list-edit-save">
                     <button type="submit" class="btn-save">SAVE</button>
-                    <button class="btn-close btn btn-simple btn-default btn-xs" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
+                    <button class="btn-close btn btn-simple btn-default btn-xs" type="button" @click="revert" title="Cancel"><span class="fa fa-times"></span></button>
                     <!-- <button class="btn-close btn btn-simple btn-default btn-xs" @click="setAsDoneList(list.id)" title="Cancel"><span class="fa fa-times"></span></button> -->
                 </div>
             </form>
         </div>
+       
         <!-- <div class="list-body"> -->
                             
 
@@ -54,6 +56,7 @@ export default {
             openTaskForm: false,
             openTaskOpt: false,
             openTaskView: false,
+          
         }
     },
     created() {
@@ -103,12 +106,8 @@ export default {
                     this.showEditList = false
                 })
         },
-        deleteList(id) {
-            this.$store.dispatch('deleteList', id)
-                .then(() => {
-                    this.$toaster.warning('List deleted succesfully!.')
-                })
-        },
+       
+       
         taskListUpdate(e, list_index, list_id) {
             // console.log({event: e, list_id: list_id});
             // console.log(this.list)

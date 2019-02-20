@@ -58,7 +58,7 @@
                                             </div>
                                         </div>
                                         <br/>
-                                        <div v-if="user_info.role == 1" class="row">
+                                        <div v-if="user_info.role_id==1" class="row">
                                             <div class="col-md-7">
                                                 <div class="form-group">
                                                     <label for="" class="control-label">Brand Owner:</label>
@@ -141,6 +141,7 @@ export default {
    },
    created() {
        this.$store.dispatch('getTandemsList');  
+		this.$store.dispatch('getuser_info')
         this.$store.dispatch('getOnebrand',this.brand.id)
             .then((response) => {
                 const brandData = response;

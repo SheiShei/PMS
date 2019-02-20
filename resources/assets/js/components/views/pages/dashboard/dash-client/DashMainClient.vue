@@ -11,7 +11,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">To-be-Reviewed Workbooks</p>
-                                       <p class="number">10832</p>
+                                       <p class="number">{{dashboard_client.unreviewed}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Reviewed Workbooks</p>
-                                       <p class="number">75</p>
+                                       <p class="number">{{dashboard_client.reviewed}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">All Workbooks</p>
-                                       <p class="number">40</p>
+                                       <p class="number">{{dashboard_client.total}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -43,19 +43,20 @@
                                 <div class="taskchart shadow">
                                     <p><span class="fa fa-star text-warning"></span> To Review Workbooks</p>
                                     <hr>
-                                    <div class="torev">
+                                     <div v-for="(urwb, index) in display_urworkbooks" :key="urwb.id"  class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: urwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="torev-right">
-                                            <h6>Potato Corner New Images</h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
+                                            <h6>{{urwb.name}}</h6>
+                                            <p><small>by: {{urwb.brand.acma.name}} on {{urwb.created_at |  moment("MMM D, YYYY")}}</small></p>
+                                            <p><small>{{urwb.brand.name}}</small></p>
                                         </div>
-                                    </div>
+                                    </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -107,19 +108,20 @@
                                 <div class="taskchart shadow">
                                     <p><span class="fa fa-check-circle-o"></span> Reviewed Workbooks</p>
                                     <hr>
-                                    <div class="torev">
+                                   <div v-for="(rwb, index) in display_rworkbooks" :key="rwb.id" class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: rwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
                                             </div>
                                         </div>
                                         <div class="torev-right">
-                                            <h6>Potato Corner New Images</h6>
-                                            <p><small>by: Aya on Sept. 13, 2019</small></p>
+                                            <h6>{{rwb.name}} <span class="fa fa-check-circle text-success" title="Reviewed by Client"></span></h6>
+                                            <p><small>by: {{rwb.brand.acma.name}} on {{rwb.created_at |  moment("MMM D, YYYY")}}</small></p>
+                                            <p><small>{{rwb.brand.name}}</small></p>
                                         </div>
-                                    </div>
+                                    </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
                                 </div>
@@ -155,12 +157,24 @@ export default {
     // components:{
     //     apexchart: VueApexCharts
     // }
+    data() {
+        return {
+        data: {
+            jo_status: '',
+            search: ''
+        }
+       
+        }
+    },
      created() {
         // this.$store.dispatch('getuser_info')
-        this.$store.dispatch('display_joborders')
+        this.$store.dispatch('display_joborders',this.data)
+        // this.$store.dispatch('display_joborders')
         this.$store.dispatch('dashboard_client')
         this.$store.dispatch('display_messages')
         this.$store.dispatch('display_notifs')
+        this.$store.dispatch('display_urworkbooks')
+        this.$store.dispatch('display_rworkbooks')
         
 
 	},
@@ -171,6 +185,8 @@ export default {
                  dashboard_client: 'dashboard_client',
                   display_messages: 'display_messages',
                 display_notifs: 'display_notifs',
+                 display_urworkbooks: 'display_urworkbooks',
+                display_rworkbooks: 'display_rworkbooks',
                              }),
     },
      methods:{
