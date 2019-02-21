@@ -156,6 +156,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/getCWorkbook', 'WorkbookController@getCWorkbook');
     Route::patch('/reviewWB', 'WorkbookController@reviewWB');
     Route::post('/UpdateWorkbook', 'WorkbookController@UpdateWorkbook');
+    Route::delete('/deleteWB', 'WorkbookController@deleteWB');
+    Route::post('/restoreWB', 'WorkbookController@restoreWB');
 
     //dashboard
     Route::get('/dashboard_admin', 'DashboardController@dashboard_admin');

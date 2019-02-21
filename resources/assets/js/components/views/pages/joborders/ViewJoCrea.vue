@@ -444,12 +444,15 @@ export default {
             if(this.details) {
                 var done = 0;
                 var total = 0;
-                this.details.tasks.forEach(task => {
-                    total++;
-                    if(task.card.isDone) {
-                        done++;
-                    }
-                });
+                if(this.details.tasks) {
+                    this.details.tasks.forEach(task => {
+                        total++;
+                        if(task.card.isDone) {
+                            done++;
+                        }
+                    });
+                }
+                
                 return Math.round((done/total) * 100);
             }
         },
@@ -602,7 +605,7 @@ export default {
                 else if(moment(today).isBefore(moment(task.due), 'days')) {
                     // console.log('before');
                     var diff = moment(task.due).diff(moment(today), 'days')
-                    console.log(diff);
+                    // console.log(diff);
                     
                     if(diff == 1) {
                         // console.log('due tomorrow');
