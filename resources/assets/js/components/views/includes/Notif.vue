@@ -1,7 +1,7 @@
 <template>
     <div class="notifwrapper">
     <!-- <button class="" @click="showNotif=!showNotif">Show notif</button> -->
-    <button class="" @click="newNotif">New Notif</button>
+    <!-- <button class="" @click="newNotif">New Notif</button> -->
     <transition-group name="list-complete">
         <div v-for="(notif,index) in notifs" :key="index" class="list-complete-item">
             <router-link :to="{name: 'new_jo_web'}" tag="div" class="notif-indiv shadow list-complete-item">

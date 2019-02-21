@@ -609,28 +609,7 @@ export default {
             webProofedError: false,
             acmaAprovedError: false,
             show: true,
-            tasks: [
-                {
-                    id: 1,
-                    label: 'Make some noise',
-                    user: '<a><span><img class="small-avatar" src="/images/default"></span> shei</a>',
-                    duration: 5 * 24 * 60 * 60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task',
-                },
-                {
-                    id: 2,
-                    label: 'Make some noise 22',
-                    user: '<a>shei</a>',
-                    parentId: 1,
-                    dependentOn: [1],
-                    duration: 5*24*60*60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task'
-                }
-            ],
+            tasks: [],
             options: {
       title: {
         label: 'Team Workload',
