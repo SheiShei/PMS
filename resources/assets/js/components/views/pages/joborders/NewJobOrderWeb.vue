@@ -15,7 +15,7 @@
                         <div class="col-md-12">
                             <h4 class="noprint"><span class="fa fa-file-code-o"></span> Job Order Form <small>(Web)</small>
                             &nbsp;&nbsp;&nbsp;
-                                <span class="pull-right">
+                                <span class="pull-right" v-if="false">
                                     <small>
                                         <select v-model="brand.status" class="my-input">
                                             <option value="1">Active</option>
@@ -658,7 +658,8 @@ export default {
     computed: {
         ...mapGetters({
                 brands: 'getBrands',
-                boards: 'userBoards'
+                boards: 'userBoards',
+                cUser: 'currentUser',
             }),        
     },
     methods: {
@@ -782,7 +783,7 @@ export default {
         },
         getJOBoardUsers() {
             if(this.board) {
-                console.log(this.board);
+                // console.log(this.board);
                 
                 if(this.board.type == 1) {
                     this.isScrum = false
@@ -792,7 +793,7 @@ export default {
                 }
             }
             else {
-                console.log(this.board);
+                // console.log(this.board);
                 if(this.brand.newBoard.type == 1) {
                     this.isScrum = false
                 }
@@ -806,7 +807,10 @@ export default {
                     .then(response => {
                         // console.log(response);
                         this.boardNotMembers = response.data;
-                        this.boardMembers = []
+                        this.boardMembers = [];
+                        this.boardMembers.push(this.cUser);
+                        var index = _.findIndex(this.boardNotMembers, {id: this.cUser.id});
+                        this.boardNotMembers.splice(index, 1);
                     })
 
             }

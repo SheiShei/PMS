@@ -13,8 +13,9 @@
                                 <div class="col-md-8">
                                     <h4 class="no-margin "><span class="fa fa-copy"></span> {{ details.name }}&nbsp;
                                         <span v-if="details.status == 1" class="txt-bold text-info" title="Job Order Status: Active"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger" title="Job Order Status: Blocked"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 2" class="txt-bold text-danger" title="Job Order Status: Overdue"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 3" class="txt-bold text-warning" title="Job Order Status: Pending"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 4" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
                                     </h4>
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
@@ -552,13 +553,18 @@ export default {
         },
 
         signOff() {
-            this.$store.dispatch('creativeSignOff', {sign: this.sign_off, id: this.$route.params.jo_id})
-                .then ((response) => {
-                    $('#SuccesCreativeSignOff').modal('show');
-                })
-                .catch( error => {
-                    this.error = true;
-                })
+            if(this.taskPercent == 100) {
+                this.$store.dispatch('creativeSignOff', {sign: this.sign_off, id: this.$route.params.jo_id})
+                    .then ((response) => {
+                        $('#SuccesCreativeSignOff').modal('show');
+                    })
+                    .catch( error => {
+                        this.error = true;
+                    })
+            }
+            else {
+                alert('Di pa pwede, tapusin niyo task niyo, Gagu!')
+            }
         },
 
         success() {

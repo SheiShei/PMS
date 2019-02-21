@@ -15,7 +15,7 @@
                         <div class="col-md-12">
                             <h4 class="noprint"><span class="fa fa-file-photo-o"></span> Job Order Form <small>(Creatives)</small>
                             &nbsp;&nbsp;&nbsp;
-                                <span class="pull-right">
+                                <span class="pull-right" v-if="false">
                                     <small>
                                         <select v-model="brand.status" class="my-input">
                                             <option value="1">Active</option>
@@ -446,7 +446,8 @@ export default {
     computed: {
         ...mapGetters({
                 brands: 'getBrands',
-                boards: 'userBoards'
+                boards: 'userBoards',
+                cUser: 'currentUser',
             }),        
     },
     methods: {
@@ -524,7 +525,10 @@ export default {
                     .then(response => {
                         // console.log(response);
                         this.boardNotMembers = response.data;
-                        this.boardMembers = []
+                        this.boardMembers = [];
+                        this.boardMembers.push(this.cUser);
+                        var index = _.findIndex(this.boardNotMembers, {id: this.cUser.id});
+                        this.boardNotMembers.splice(index, 1);
                     })
 
             }

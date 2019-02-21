@@ -741,7 +741,7 @@ class AdminController extends Controller
                {
                 $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
                }
-               }
+            }
         }
         else { 
            if($sort_key){
@@ -764,6 +764,78 @@ class AdminController extends Controller
 
 
         $jos = $query->get();
+
+        if($request->notArchive=="true"){
+            foreach ($jos as $key => $jo) {
+                if($jo->date_due) {
+                    $nTD = 0;
+
+                    foreach ($jo->tasks as $key => $task) {
+                        if($task->card_id) {
+                            if($task->card->isDone) {
+                                $nTD++;
+                            }
+                        }
+                        else {
+                            if($task->status == 4) {
+                                $nTD++;
+                            }
+                        }
+                    }
+
+                    // echo $nTD;
+                    
+                    if($nTD == $jo->tasks()->count()) { #Check if all JO tasks is complete;
+                        if($jo->type == 1) { #if Job Order type is Creative
+                            if($jo->jocreatives()->first()->signed_by) {
+                                $jo->update([
+                                    'status' => 4 #if signed in, set JO status to 4; 4=Complete
+                                ]);
+                            }
+                            else {
+                                // echo '3';
+                                $jo->update([
+                                    'status' => 3 #if not, set JO status to 3; 3=task Completed (No signoff)
+                                ]);
+                            }
+                        }
+                        else { #if Job Order type is Web
+                            if($jo->joweb()->first()->web_proofed_at && $jo->joweb()->first()->acma_proofed_at) {
+                                $jo->update([
+                                    'status' => 4
+                                ]);
+                            }
+                            else {
+                                // echo '3';
+                                $jo->update([
+                                    'status' => 3
+                                ]);
+                            }
+                        }
+                    }
+                    else { #if all JO tasks is not yet Done; hence JO status is = 1; 1=Active
+                        $due = new Carbon($jo->date_due);
+                        $dueDate = $due->toDatestring();
+            
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+                        
+                        if($dueDate < $todayDate) { #check if Job Order is already Overdue
+                            $jo->update([
+                                'status' => 2 #set JO status to 2; 2=Overdue
+                            ]);
+                        }
+
+                        else {
+                            $jo->update([
+                                'status' => 1
+                            ]);
+                        }
+                    }
+                }
+            }  
+        }
+
         return $jos;
     }
 

@@ -12,8 +12,9 @@
                                 <div class="col-md-8">
                                     <h4 class="no-margin "><span class="fa fa-copy"></span> {{ details.name }}&nbsp;
                                         <span v-if="details.status == 1" class="txt-bold text-info" title="Job Order Status: Active"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger" title="Job Order Status: Blocked"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 2" class="txt-bold text-danger" title="Job Order Status: Overdue"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 3" class="txt-bold text-warning" title="Job Order Status: Pending"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 4" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
                                     </h4>
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
@@ -383,7 +384,7 @@
                                             </div>
 
                                             <!-- if overdued & not yet completed -->
-                                            <div class="torev-content divoverdued" v-if="taskStatus(task) == 'overdue'">
+                                            <div class="torev-content divoverdued" v-if="taskStatus(task).message == 'overdue'">
                                                 <h6 class="no-margin txt-bold" text-danger><span class="fa fa-circle text-danger"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
@@ -812,20 +813,25 @@ export default {
         },
         
         signed() {
-            this.$store.dispatch('webSignOff', {id: this.$route.params.jo_id, proofed: this.proofed, approved: this.approved})
-                .then (response => {
-                    $('#SuccesWebSignOff').modal('show');
-                })
-                .catch (error => {
-                    if(error == 'web') {
-                        this.webProofedError = true;
-                        this.acmaAprovedError = false;
-                    }
-                    else {
-                        this.acmaAprovedError = true;
-                        this.webProofedError = false;
-                    }
-                })
+            if(this.taskPercent == 100) {
+                this.$store.dispatch('webSignOff', {id: this.$route.params.jo_id, proofed: this.proofed, approved: this.approved})
+                    .then (response => {
+                        $('#SuccesWebSignOff').modal('show');
+                    })
+                    .catch (error => {
+                        if(error == 'web') {
+                            this.webProofedError = true;
+                            this.acmaAprovedError = false;
+                        }
+                        else {
+                            this.acmaAprovedError = true;
+                            this.webProofedError = false;
+                        }
+                    })
+            }
+            else {
+                alert('Di pa pwede, tapusin niyo task niyo, Gagu!');
+            }
         },
 
         success() {
