@@ -32,7 +32,7 @@ export default {
                 curve: 'straight'
             },
             title: {
-                text: 'Burndown Chart',
+                text: '',
                 align: 'left'
             },
             grid: {

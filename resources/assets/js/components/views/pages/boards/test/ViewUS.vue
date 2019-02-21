@@ -135,12 +135,12 @@
                                 <!-- <hr /> -->
                                 <div class="taskchart shadow brl-gray">
                                     <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-xs-6 col-sm-6">
                                 <h6 class="nm-top txt-bold">Subtasks&nbsp;<small v-if="usData.tasks.length">({{ usData.tasks.length }})</small>
                                     
                                 </h6>
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
 <!-- <span class="text-right"> -->
                                         <a v-if="taskPermission.add" class="no-margin" style="cursor: pointer" title="Add Subtask"><router-link :to="{name: 'us_addtask', params: {us_id: $route.params.us_id}}" class="btn btn-success btn-xs no-margin">+ Add New</router-link></a>
                                     <!-- </span>                            -->
@@ -307,29 +307,7 @@ export default {
 
 <style lang="scss" scoped>
 // TASK VIEW
-    .taskView{
-        background-color: white;
-        height: auto;
-        max-height: 80%; 
-        overflow-y: auto;
-        width: 60%;
-        padding: 10px 30px; 
-        margin: 5% auto; 
-        border-radius: 5px;
-        input, textarea, select {
-            padding: 8px 12px;
-            height: auto;
-            
-        }
-        label{
-            color: #4d4d4d;
-        }
-        .formfooter{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-    }
+   
     .us-tasks-container {
         position: relative;
         white-space: nowrap;

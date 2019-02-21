@@ -1,12 +1,15 @@
 <template>
     <transition name="fade">
         <div class="overlay">
+            <div class="close-mod-btn">
+                 <button type="button" @click="$emit('close')" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button>
+            </div>
             <div class="aboutmod">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="taskchart shadow bl-gray">
-                            <h4><span class="fa fa-trello"></span> Scrum Board {{ board.name }} - Details <span class="pull-right"><button @click.prevent="$emit('close')" class="btn btn-xs btn-danger btn-simple"><span class="fa fa-times"></span></button></span> </h4>
-                            <p class="note">{{ board.description }}</p>
+                            <h4 class="no-margin"><span class="fa fa-trello"></span> Scrum Board {{ board.name }} - Details</h4>
+                            <p class="no-margin text-gray">{{ board.description }}</p>
                         </div>
                     </div>
                 </div> 

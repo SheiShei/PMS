@@ -74,7 +74,7 @@ class AdminController extends Controller
             'role_id' => $request->role,
             'department_id' => $request->team,
             'picture'=> 'default.png',
-            'bg_image'=> '1549014873pug.jpg'
+            'bg_image'=> 'bg-default.jpeg'
         ]);
 
         return User::with('role:id,name')->with('department:id,name')->where('id', $user->id)->get();

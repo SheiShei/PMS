@@ -364,6 +364,12 @@ ul > li > span.page-of:hover{
       padding-left: 20px;
       line-height: 50px !important;
     }
+    .main-main-container{
+      max-height: calc(100vh - 50px);
+      max-height: -o-calc(100vh - 50px); /* opera */
+      max-height: -webkit-calc(100vh - 50px); /* google, safari */
+      max-height: -moz-calc(100vh - 50px);
+    }
   }
   @media (min-width: 767px) {
     .nav-side-menu .menu-list .menu-content {
@@ -1003,12 +1009,18 @@ margin: 0;
   width: 100%;
   height: 100%;
   position: absolute;
-  top:auto;
-  left: 0;
-  right: 0;
+  // top:auto;
+  // left: 0;
+  // right: 0;
   background-color: rgba(0,0,0,0.6);
   z-index: 200;
-  background-size:cover;
+  // background-size:cover;
+  // position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
 }
 
 
@@ -1030,6 +1042,7 @@ max-width: 100%;
 // overflow-x: auto;
 overflow-y: hidden;
 white-space: nowrap;
+padding-bottom: 20px;
 // padding-bottom: 20px;
 // display: flex;
 // position: relative;
@@ -1087,14 +1100,8 @@ padding: 0 20px;
   //end of Gallery style
 
   // TASK VIEW
-  .kanban-component .taskView{
-      background-color: white;
-      height: 80%; 
-      overflow-y: auto;
+  .taskView{
       width: 80%;
-      padding: 10px 30px; 
-      margin: 5% auto; 
-      border-radius: 5px;
       input, textarea, select {
           padding: 8px 12px;
           height: auto;
@@ -1302,10 +1309,10 @@ padding: 0 20px;
 .burndown{
     width: 90%;
     height: 90%;
-    margin: auto;
-    margin-top: 20px;
-    vertical-align: middle;
-    background-color: white;
+    // margin: auto;
+    // margin-top: 20px;
+    // vertical-align: middle;
+    // background-color: white;
     padding: 10px 20px;
     border-radius: 3px;
     h4{
@@ -1348,29 +1355,42 @@ padding: 0 20px;
   .kanban-component .newTaskForm{
     width: 75%;
   }
+  .membersmod{
+    width: 80%;
+  }
+}
+
+.boardsettings,
+.burndown,
+.aboutmod,
+.taskView,
+.membersmod{
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  margin-bottom: 2em;
+  height: auto;
+  background-color: white;
+  border-radius: 5px;
+  padding: 15px 30px !important;
 }
 .boardsettings{
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  // margin: auto;
-  // margin: 20px auto;
-  vertical-align: middle;
-  background-color: white;
-  padding: 20px 20px;
-  // border-radius: 2px;
+  width: 95%;
+  // background-color: white;
   h4{
       margin: 0px;
   }
 }
+.aboutmod{
+  width: 85%;
+  // background-color:rgb(245, 245, 245);
+}
 .membersmod{
   width: 40%;
-  // min-height: 50%;
-  max-height: 80%;
-  overflow: auto;
-  margin: 30px auto;
-  background: white;
-  padding: 10px 20px;
 }
 //end of Board style
 
@@ -2163,22 +2183,12 @@ border-radius: 10px;
   }
 }
 
-.aboutmod{
-    width: 85%;
-    height: 90%;
-    max-height: 100%;
-    overflow-y: auto;
-    margin: auto;
-    margin-top: 30px;
-    padding: 20px 20px;
-    background-color:rgb(245, 245, 245);
-}
-
 .close-mod-btn{
   position: absolute;
   top: 0;
   right: 0;
   margin: 0 20px;
+  height:50px;
 }
 
 .brl-gray{
@@ -2284,3 +2294,7 @@ foreignObject > *{
 //     background-color: green;
 //     z-index: 3000000;
 // }
+
+.mx-datepicker{
+  width: 100% !important;
+}
