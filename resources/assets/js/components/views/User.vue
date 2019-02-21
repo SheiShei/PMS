@@ -3,7 +3,7 @@
         <user-sidebar></user-sidebar>
         <!-- <user-topnav></user-topnav> -->
         <div>
-        <notif-div></notif-div>
+        <!-- <notif-div></notif-div> -->
             <router-view></router-view>
         </div>
     </div>

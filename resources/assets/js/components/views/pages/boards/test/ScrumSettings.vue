@@ -1,14 +1,14 @@
 <template>
     <transition name="fade">    
-        <div class="overlay">   
+        <div class="overlay">
+            <div class="close-mod-btn">
+                 <button type="button" @click="$emit('close')" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button>
+            </div>      
             <div class="boardsettings">
                 <form>
                     <div class="row">
-                        <div class="col-md-11">
-                            <h4><span class="fa fa-gears"></span> Settings - {{ boardData.name }}</h4>
-                        </div>
-                        <div class="col-md-1 text-right">
-                            <a href="" class="btn btn-danger btn-simple btn-round btn-xs btn-just-icon" @click.prevent="$emit('close')"><span class="fa fa-times-circle"></span></a>
+                        <div class="col-md-12">
+                            <h4 class="no-margin"><span class="fa fa-gear"></span> Settings - {{ boardData.name }}</h4>
                         </div>
                     </div>
                     <div class="row">
@@ -32,9 +32,9 @@
                                                 <div class="ripple-container"></div>
                                             </span>
                                         </div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail img-raised text-center" style="max-height: 100px; width: auto;"></div> 
+                                        <div class="fileinput-preview fileinput-exists thumbnail img-raised text-center" style="width 100%:"></div> 
                                         <div class="fileinput-new thumbnail img-raised text-center">
-                                            <img v-if="boardData.board_image" :src="boardData.board_image" alt="..." style="height: 100px; width: auto;">
+                                            <img v-if="boardData.board_image" :src="boardData.board_image" alt="..." style="width 100%:">
                                         </div>
                                     </div>
                                 </div>
@@ -125,9 +125,9 @@
 	                                    </tbody>
 	                                </table>
                                 </div>
-                                <div class="col-md-11">
+                                <div class="col-md-12">
                                     <hr/>
-                                    <div class="form-group text-right">
+                                    <div class="form-group text-center">
                                         <label class="control-label text-grey">
                                             <span class="fa fa-user-plus text-left"></span> New Member:</label>
                                         <input @input="onSearch" v-model="search" type="search" style="height: 28px; margin-top: 7px" placeholder="Search..." class="my-input">

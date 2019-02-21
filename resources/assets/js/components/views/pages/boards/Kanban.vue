@@ -17,14 +17,17 @@
                         </button>
                     </div>
                     <div class="board-info">
-                        <button @click="viewBSettings = true" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears"></span> Board Settings</button>
+                        <button @click="viewBSettings = true" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings">
+                            <span class="fa fa-gear"></span> 
+                            <span class="hidden-sm hidden-xs"> Board Settings</span>
+                        </button>
                     </div>
                     <div class="board-info">
-                        <a @click="$router.push({name: 'kanboard_stats'})" class="btn btn-white btn-simple btn-xs"><span class="fa fa-bar-chart"></span> View Stats</a>
+                        <a @click="$router.push({name: 'kanboard_stats'})" class="btn btn-white btn-simple btn-xs">
+                            <span class="fa fa-line-chart"></span> 
+                            <span class="hidden-sm hidden-xs"> Stats</span></a>
                     </div>
                 </div>
-
-
                 <div>
                     <button v-if="addList" class="btn btn-success btn-sm" @click="addNewList"> + Add New List</button>          
                     <div id="testTaskDiv" class="board-body">
@@ -218,11 +221,6 @@ export default {
     p, h6, h4{
         margin:0;
     }
-}
-.overlay{
-    position: absolute;
-    top:0;
-    left:0;
 }
 </style>
 

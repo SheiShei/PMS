@@ -18,7 +18,8 @@ class UsersTableSeeder extends Seeder
             'password'=>bcrypt('sheipass'),
             'role_id'=>1,
             'department_id'=>1,
-            'picture'=>'default.png'
+            'picture'=>'default.png',
+            'bg_image' => 'bg-default.jpeg'
         ]);
 
         User::create([
@@ -27,7 +28,8 @@ class UsersTableSeeder extends Seeder
             'password'=>bcrypt('jenpass'),
             'role_id'=>2,
             'department_id'=>2,
-            'picture'=>'default.png'
+            'picture'=>'default.png',
+            'bg_image' => 'bg-default.jpeg'
         ]);
 
         User::create([
@@ -36,7 +38,8 @@ class UsersTableSeeder extends Seeder
             'password'=>bcrypt('sampass'),
             'role_id'=>3,
             'department_id'=>2,
-            'picture'=>'default.png'
+            'picture'=>'default.png',
+            'bg_image' => 'bg-default.jpeg'
         ]);
 
         User::create([
@@ -44,7 +47,8 @@ class UsersTableSeeder extends Seeder
             'email'=>'test@test.com',
             'password'=>bcrypt('testpass'),
             'role_id'=>1,
-            'picture'=>'default.png'
+            'picture'=>'default.png',
+            'bg_image' => 'bg-default.jpeg'
         ]);
 
         User::create([
@@ -52,7 +56,8 @@ class UsersTableSeeder extends Seeder
             'email'=>'luljetta@test.com',
             'password'=>bcrypt('luljettapass'),
             'role_id'=>4,
-            'picture'=>'luljetta.png'
+            'picture'=>'luljetta.png',
+            'bg_image' => 'bg-default.jpeg'
         ]);
 
 

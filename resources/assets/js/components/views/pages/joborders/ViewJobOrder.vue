@@ -322,6 +322,7 @@
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
+                            <br/>
                             <div class="row">
                                 <div class="col-md-7">
                                     <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">({{ completedTasks }} / {{ details.tasks.length }})</span></small></p>
@@ -538,7 +539,7 @@
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> {{ details.name }}'s Workload</span></p>
+                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-align-right"></span> {{ details.name }}'s Workload</span></p>
                                     <hr/>
                                 </div>
                                 <!-- <div class="col-md-5 text-right">
@@ -552,10 +553,24 @@
                                     </gantt-elastic>
                                 </div>
                             </div>
+                            <br/>
                         </div>
                     </div>
                 </div>
-                <br/>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-bar-chart"></span> Burndown Chart</span></p>
+                            <bd-web-chart></bd-web-chart>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Cumulative Chart</span></p>
+                            <cum-web-chart></cum-web-chart>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -585,11 +600,16 @@ import dayjs from "dayjs";
 import GanttElastic from './../workload/GanttElastic.vue';
 import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
+import BurnWebChart from './BurnWebChart.vue';
+import CumuWebChart from './CumuWebChart.vue';
+
 export default {
     components: {
         'gantt-header': Header,
         'gantt-elastic': GanttElastic,
-        'gantt-footer': { template: `` }
+        'gantt-footer': { template: `` },
+        bdWebChart : BurnWebChart,
+        cumWebChart : CumuWebChart
     },
     props: ['header', 'footer'],
     data(){

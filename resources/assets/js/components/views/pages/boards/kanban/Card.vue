@@ -10,7 +10,7 @@
             <div class="editListBtn pull-right">
                 <!-- <small>{{ listPoints }} pts</small> -->
                 <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
-                <router-link v-if="delList" :to="{ name: 'deletecard', params: {cardid: list.id} }"><span class="fa fa-trash-o"></span></router-link>
+                <router-link tag="button" v-if="delList" :to="{ name: 'deletecard', params: {cardid: list.id} }"><span class="fa fa-trash-o"></span></router-link>
 
                 <button  v-if="!list.isDone" @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
