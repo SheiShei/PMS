@@ -62,8 +62,9 @@
                                                     <td>{{ jo.brand.name }}</td>
                                                     <td>
                                                         <span v-if="jo.status == 1" class="label label-info">Active</span>
-                                                        <span v-if="jo.status == 2" class="label label-success">Completed</span>
-                                                        <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
+                                                        <span v-if="jo.status == 2" class="label label-danger">Overdue</span>
+                                                        <span v-if="jo.status == 3" class="label label-warning">Pending</span>
+                                                        <span v-if="jo.status == 4" class="label label-success">Completed</span>
                                                     </td>
                                                     <td>
                                                         <p class="text-gray no-margin"><small>Completed: {{ completedTasks(jo) }}/{{ jo.tasks.length }}<span class="pull-right txt-bold">{{ joPercent(jo) }}%</span></small></p>
