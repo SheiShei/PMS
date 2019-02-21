@@ -165,6 +165,7 @@
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
+                            <br/>
                             <div class="row">
                                 <div class="col-md-7">
                                     <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">({{ completedTasks }} / {{ details.tasks.length }})</span></small></p>
@@ -315,7 +316,7 @@
                 <div class="row mt-4" v-if="show">
                     <div class="col-md-12">
                         <div class="taskchart shadow">
-                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> {{ details.name }}'s Workload</span></p>
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-align-right"></span> {{ details.name }}'s Workload</span></p>
                             <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
                                 <gantt-header slot="header"></gantt-header>
                             </gantt-elastic>
@@ -323,6 +324,14 @@
                     </div>
                 </div>
                 <br/>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Burndown Chart</span></p>
+                            <bd-crea-chart></bd-crea-chart>
+                        </div>
+                    </div>
+                </div>
 
 
             </div>
@@ -356,11 +365,13 @@ import dayjs from "dayjs";
 import GanttElastic from './../workload/GanttElastic.vue';
 import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
+import BurnCreaChart from './BurnCreaChart.vue';
 export default {
     components: {
         'gantt-header': Header,
         'gantt-elastic': GanttElastic,
-        'gantt-footer': { template: `` }
+        'gantt-footer': { template: `` },
+        bdCreaChart : BurnCreaChart
     },
     props: ['header', 'footer'],
     data(){

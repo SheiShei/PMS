@@ -16,14 +16,14 @@
                     <div class="board-info">
                         <button @click="viewBAbout = !viewBAbout" class="btn btn-white btn-simple btn-xs">
                             <span class="fa fa-info-circle fa-xs"></span> 
-                            About <span class="fa fa-angle-down"></span> 
+                            Details
                         </button>
                     </div>
                     <div class="board-info">
-                        <a @click.prevent="vFS = !vFS" class="btn btn-white btn-simple btn-xs"><span class="fa fa-"></span> {{ vFS ? 'Hide Closed Sprint' : 'Show Closed Sprint' }}</a>
+                        <a @click.prevent="viewBSettings = !viewBSettings" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears fa-xs"></span> Board Settings</a>
                     </div>
                     <div class="board-info">
-                        <a @click.prevent="viewBSettings = !viewBSettings" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears fa-xs"></span> Board Settings</a>
+                        <a @click.prevent="vFS = !vFS" class="btn btn-white btn-simple btn-xs"><span class="fa fa-"></span> {{ vFS ? 'Hide Closed Sprint' : 'Show Closed Sprint' }}</a>
                     </div>
                 </div>
 

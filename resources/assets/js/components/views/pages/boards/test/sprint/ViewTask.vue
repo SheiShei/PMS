@@ -11,10 +11,10 @@
                     <div class="col-md-6">
                         <!-- <div class="taskchart shadow"> -->
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-9 col-xs-9 col-sm-9">
                                     <h4 class="nm-bottom"><span class="fa fa-tasks"></span><span> {{ data.name }}</span></h4>
                                 </div>
-                                <div class="col-md-3 text-right">
+                                <div class="col-md-3 col-xs-3 col-sm-3 text-right">
                                     <h4 class="nm-bottom">
                                         <span v-if="!editTaskDet"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
                                         <span v-else><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
@@ -319,41 +319,7 @@
                     </div> -->
                     <div class="col-md-6">
                         <div class="row">
-                    <!-- <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h6 class="txt-bold">COMMENTS</h6>
-                                <hr />
-                                <div class="comments" v-if="comments">
-                                    <div class="comment-box" style="" v-chat-scroll>
-                                        simple
-                                        <div class="comment-msg" v-for="comment in comments" :key="comment.id">
-                                            <div class="comment-sender">
-                                                <h6 class="txt-bold">
-                                                    <span><img :src="comment.user.picture" class="comment-icon"></span>
-                                                    {{ comment.user.name }} <small>{{ comment.created_at | moment('calendar') }}</small>
-                                                </h6>
-                                            </div>
-                                            <div class="comment-comment">
-                                                <p v-if="comment.text">{{ comment.text }}</p>
-                                                <p v-if="comment.extension && !(comment.extension == 'jpg' || comment.extension == 'jpeg' || comment.extension == 'png' || comment.extension == 'gif')"><a class="btn btn-default btn-simple btn-xs" :href="'/storage/task/comment/'+comment.new_filename" download><span class="fa fa-file-o"></span> {{ comment.original_filename }}</a></p>
-                                                <img @click="openComG(comment.new_filename, comment.original_filename)" v-if="comment.extension && (comment.extension == 'jpg' || comment.extension == 'jpeg' || comment.extension == 'png' || comment.extension == 'gif')" :src="'/storage/task/comment/'+comment.new_filename" :title="comment.original_filename" style="max-height: 100px; max-width: 100%; cursor: pointer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div v-if="taskPermission.comment" class="form-group is-empty comment-input-wrap">
-                                        <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
-                                        <button @click="openCFile" type="button" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center">
-                                            <i class="fa fa-paperclip"></i>
-                                        </button>
-                                        <textarea @keyup.ctrl.enter="cTxtSend" v-model="cTxt" class="form-control" placeholder="Write some nice stuff or go home..." rows="2"></textarea><span class="material-input"></span>
-                                        <button @click="cTxtSend" class="btn btn-md btn-primary btn-fab btn-fab-mini btn-just-icon btn-simple text-center"><i class="fa fa-send"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-                <!-- </div> -->
+
             </div>
         </div>
     </transition>

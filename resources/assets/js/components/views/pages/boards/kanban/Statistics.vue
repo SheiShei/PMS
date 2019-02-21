@@ -1,48 +1,38 @@
 <template>
     <transition name="slide">    
-        <div class="overlay">   
+        <div class="overlay">
+            <div class="close-mod-btn">
+                 <button type="button" @click="$router.go(-1)" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button>
+                <!-- <button @click="$router.go(-1)" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button> -->
+            </div>     
             <div class="burndown">
                 <div class="row">
                     <div class="col-md-12">
-                        <h4><span class="fa fa-line-chart"></span> Statistics - Sprint 1
-                        <span class="pull-right">
-                            <a class="btn btn-danger btn-simple btn-xs" @click="$router.go(-1)"><span class="fa fa-times-circle"></span></a>
-                        </span>
-                        </h4>
+                        <h4 class="no-margin"><span class="fa fa-line-chart"></span> Statistics</h4>
+                        <hr/>
                     </div>
-                    <div class="col-md-2 text-right">
-                        <!-- <a class="btn btn-danger btn-simple btn-just-icon btn-round btn-xs" @click="viewBDChart = !viewBDChart"><span class="fa fa-times-circle"></span></a> -->
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="board-info" style="width: 100%">
+                            <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Board Progress</p>
+                            <p class="text-gray"><small>Task Completed: 1/30 Completed<span class="pull-right txt-bold">35%</span></small></p>
+                            <div class="no-margin progress progress-line-info">
+                                <div class="progress-bar progress-bar-info" style="width: 35%;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <br/>
-                <div class="card card-nav-tabs card-plain">
-					<div class="header header-info">
-						<div class="nav-tabs-navigation">
-							<div class="nav-tabs-wrapper">
-								<ul class="nav nav-tabs" data-tabs="tabs">
-									<li class="active"><a href="#burndownchart" data-toggle="tab" aria-expanded="false">
-                                        <!-- <span class="fa fa-bell"></span>&nbsp; -->
-                                        Burndown Chart</a></li>
-									<!-- <li class=""><a href="#cumulativechart" data-toggle="tab" aria-expanded="true"> -->
-                                        <!-- <span class="fa fa-gear"></span>&nbsp; -->
-                                        <!-- Cumulative Chart<div class="ripple-container"></div></a></li> -->
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="card-content">
-						<!-- <div class="tab-content text-center">
-							<div class="tab-pane active" id="burndownchart">
-                                <burndown-chart v-if="data" :chartData="data"></burndown-chart>
-							</div>
-							<div class="tab-pane" id="cumulativechart">
-								<cumu-chart v-if="data" :chartData="data"></cumu-chart>
-							</div>
-						</div> -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Burndown Chart
+                        </p>
                         <kanban-chart v-if="data" :data="data"></kanban-chart>
-					</div>
-				</div>
+                    </div>
+                </div>
             </div>
         </div>
     </transition>

@@ -10,10 +10,10 @@
                     <div class="col-md-6">
                         <!-- <div class="taskchart shadow"> -->
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-9 col-xs-9 col-sm-9">
                                     <h4 class="nm-bottom"><span class="fa fa-tasks"></span><span> {{ data.name }}</span></h4>
                                 </div>
-                                <div class="col-md-3 text-right">
+                                <div class="col-md-3 col-xs-3 col-sm-3 text-right">
                                     <h4 class="nm-bottom">
                                         <span v-if="!editTaskDet"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
                                         <span v-else><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
@@ -592,12 +592,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mx-datepicker{
-    width: 100%;
-}
-// .newtask{
-//     background-color: rgb(228, 228, 228);
-// }
+
 </style>
 
 

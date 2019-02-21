@@ -1,17 +1,26 @@
 <template>
     <transition name="slide">    
         <div class="overlay">   
+            <div class="close-mod-btn">
+                 <button type="button" @click="$router.go(-1)" class="btn btn-simple btn-just-icon btn-default" title="Close"><i class="fa fa-close"></i></button>
+            </div>
             <div class="burndown">
                 <div class="row">
                     <div class="col-md-12">
-                        <h4><span class="fa fa-line-chart"></span> Statistics - Sprint 1
-                        <span class="pull-right">
-                            <a class="btn btn-danger btn-simple btn-xs" @click="$router.go(-1)"><span class="fa fa-times-circle"></span></a>
-                        </span>
+                        <h4><span class="fa fa-line-chart"></span> Statistics
                         </h4>
                     </div>
-                    <div class="col-md-2 text-right">
-                        <!-- <a class="btn btn-danger btn-simple btn-just-icon btn-round btn-xs" @click="viewBDChart = !viewBDChart"><span class="fa fa-times-circle"></span></a> -->
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="board-info" style="width: 100%">
+                            <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Board Progress</p>
+                            <p class="text-gray"><small>Task Completed: 1/30 Completed<span class="pull-right txt-bold">35%</span></small></p>
+                            <div class="no-margin progress progress-line-info">
+                                <div class="progress-bar progress-bar-info" style="width: 35%;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 

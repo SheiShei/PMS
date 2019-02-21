@@ -32,11 +32,11 @@
                 <form @submit.prevent="newWebJO">
                     <!--BRAND CLIENT ACMA -->
                     <div class="row form-row">
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="jo_name">Name </label>
                             <input required v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label for="brand">Brand:</label>
                             <!-- <div class="btn-group bootstrap-select"> -->
                                 <select required v-model="brand.brand_id" class="my-thin-select my-inp-blk" type="text">
@@ -44,63 +44,6 @@
                                         <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                                 </select>
                             <!-- </div> -->
-                        </div>
-                        <div class="col-md-3" v-if="boards">
-                            <label for="brand">Board:</label>
-                            <div v-if="justNewBoard==false">
-                                <select required @change="getJOBoardUsers" v-model="board" name="board_id" class="my-thin-select my-inp-blk">
-                                    <option value="">---</option>
-                                        <!-- <option value="new">New Board</option> -->
-                                        <option v-for="board in boards" :key="board.id" :value="board">{{ board.name }}  ({{ board.type == 1? 'kanban' : 'scrum' }})</option>
-                                </select>
-                                <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
-                            </div>
-                            <div v-if="justNewBoard==true">
-                            <div class="form-group is-empty">
-                                <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
-                            </div>
-                            <div class=" text-center">
-                                <div class="radio">
-                                    <span>
-                                        <label>
-									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
-									        Kanban
-								        </label>
-                                    </span>
-                                    <span>
-                                        <label>
-									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
-									        Scrum
-								        </label>                                
-                                    </span>
-						        </div>
-                            </div>
-                            <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
-                            </div>
-                        </div>
-                        <!-- <div class="col-md-3 form-group">
-                            <label for="brand">Client:</label>
-                            <div class="btn-group bootstrap-select">
-                                <select class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                    <option value="">Aya</option>
-                                    <option value="">Marley</option>
-                                    <option value="">Kwini</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label for="">ACMA / Brand Owner:</label>
-                            <div class="btn-group bootstrap-select">
-                                <select multiple class="selectpicker" data-style="btn btn-sm btn-info btn-simple" type="text">
-                                    <option value="">Aya</option>
-                                    <option value="">Marley</option>
-                                    <option value="">Kwini</option>
-                                </select>
-                            </div>
-                        </div> -->
-                        <div class="col-md-3 form-group">
-                            <label for="" class="align-right">JO No.</label>
-                            <img class="pull-right" style="height: 70px" src="/images/above-art1.jpg" alt="">
                         </div>
                     </div>
                     <!--./end of BRAND CLIENT ACMA -->
@@ -289,12 +232,59 @@
                     </div>
 
                     <hr />
+                    <br/>
+                    <div class="row">
+                            <div class="col-md-6" v-if="boards">
+                                <label for="brand">Board:</label>
+                                <p class="text-gray no-margin"><small>Select a board to where all tasks here should be managed.</small></p>
+                            <div v-if="justNewBoard==false">
+                                <select required @change="getJOBoardUsers" v-model="board" name="board_id" class="my-thin-select my-inp-blk">
+                                    <option value="">---</option>
+                                        <!-- <option value="new">New Board</option> -->
+                                        <option v-for="board in boards" :key="board.id" :value="board">{{ board.name }}  ({{ board.type == 1? 'kanban' : 'scrum' }})</option>
+                                </select>
+                                <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
+                            </div>
+                            <div v-if="justNewBoard==true">
+                            <div class="form-group is-empty">
+                                <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
+                            </div>
+                            <div class=" text-center">
+                                <div class="radio">
+                                    <span>
+                                        <label>
+									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="1" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        Kanban
+								        </label>
+                                    </span>
+                                    <span>
+                                        <label>
+									        <input required @change="getJOBoardUsers" v-model="brand.newBoard.type" value="2" type="radio" name="optionsRadios"><span class="circle"></span><span class="check"></span>
+									        Scrum
+								        </label>                                
+                                    </span>
+						        </div>
+                            </div>
+                            <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
+                            </div>
+                                   
+                            </div>
+                            <div class="col-md-6"  v-if="isScrum">
+                                <label>New User Story: </label>
+                                <button type="button" @click="addNewUS" class="btn btn-success btn-md btn-block">Add User Story</button>
+                            </div>
+                            <div class="col-md-6"  v-if="!isScrum">
+                                <label>New Task: </label>
+                                <button type="button" @click="addNewTaskK" class="btn btn-success btn-md btn-block">Add New Task</button>
+                            </div>
+                        </div>
+                        <br/>
 
                 <!--if selected board is scrum-->
                 <div v-if="isScrum" >
-                    <p class="no-margin"><span class="txt-bold">Tasks Section</span> . <small class="text-gray">Add tasks for this JO by adding User Story first.</small><p>
+                    <!-- <p class="no-margin"><span class="txt-bold">Tasks Section</span> . <small class="text-gray">Add tasks for this JO by adding User Story first.</small><p> -->
                     <!-- <p class="note">Add tasks for this JO by adding User Story first.</p>     -->
-                    <button type="button" @click="addNewUS" class="btn btn-success btn-md">Add User Story</button>
+                    <!-- <button type="button" @click="addNewUS" class="btn btn-success btn-md">Add User Story</button> -->
                     
                     <div class="jo-body brl-gray" v-for="(userstory, index) in userstories" :key="index" style="background-color: whitesmoke; margin-bottom: 15px;">
                         <div class="row pb-10">
@@ -337,6 +327,7 @@
                             
                             <div class="row" id="addtaskdiv">
                                 <div class="col-md-12">
+                                    <br/>
                                     <div class="card taskcard" v-for="(task, i) in userstory.tasks" :key="i">
                                         <span class="pull-right" @click="deleteTaskForm(index,i)" style="cursor:pointer"><i class="fa fa-times"></i></span>
                                         <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{i+1}}</h5>
@@ -375,20 +366,11 @@
                 <!--if selected board is kanban-->
                         <div v-if="!isScrum" class="jo-body" style="background-color: whitesmoke">
                             <div class="row pb-10">
-                                <div class="col-md-12">
-                                    <h5>Add Task 
-                                    <span>
-                                        <button type="button" @click="addNewTaskK" class="btn btn-success btn-fab btn-fab-mini"
-                                            rel="tooltip" data-original-title="Click to add new task form" data-placement="right">
-                                        +
-                                        </button>
-                                    </span>
-                                    </h5>
-                                </div>
                                 <div class="col-md-1">
                                 </div>
                                 <div class="col-md-10">
                                     <div class="row" id="addtaskdiv">
+                                        <br/>
                                         <div class="col-md-12">
                                             <div class="card taskcard" v-for="(task, index) in tasks" :key="index">
                                                 <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
