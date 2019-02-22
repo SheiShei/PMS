@@ -65,7 +65,7 @@
                 </ul> -->
 
                 <!-- <li class="" v-if="cUser.role.id !== 4"> -->
-                    <router-link :to="{ name: 'boards' }" v-if="cUser.role.id !== 4" tag="li" active-class="active">
+                    <router-link :to="{ name: 'boards' }" tag="li" active-class="active">
                         <i class="fa fa-trello fa-lg"></i>&nbsp;&nbsp;&nbsp;Boards
                     </router-link>
                 <!-- </li> -->
@@ -172,12 +172,7 @@ export default {
         ...mapGetters({
                 cUser: 'currentUser'
             }),
-            styling(){
-
-            padding: 0;
-            backgroundsize: 'cover';
-            backgroundposition: 'center';
-            }
+           
     }
 
 }

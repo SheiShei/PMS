@@ -75,7 +75,7 @@
                         </div>
                         <br/>
                     </div>
-                    <div class="col-md-4 profilesec">
+                    <div v-if="user_info.role.id==1 || user_info.role.id==2 || user_info.role.id==3" class="col-md-4 profilesec">
                         <transition name="slide">
                             <div class="taskchart shadow">
                                 <p class="no-margin txt-bold"><span class="fa fa-plus-square-o text-info"></span> Create New Board</p>
@@ -190,7 +190,8 @@ export default {
 
     computed: {
         ...mapGetters({
-                userBoards: 'userBoards'
+                userBoards: 'userBoards',
+                user_info: 'currentUser'
             }),
     },
 

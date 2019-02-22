@@ -169,7 +169,7 @@
                                                                 <!-- <span class="fa fa-circle-thin"></span> -->
                                                                 <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" ><span class="fa fa-circle"></span> {{ task.name | taskLength }}</router-link></li>
                                                             
-                                                            <li @click.stop="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
+                                                            <router-link :to="{name: 'deltask', params: {ustask_id: task.id}}" class="pull-right us-task-del"><span class="fa fa-trash"></span></router-link>
                                                             <li class="us-task-assigned pull-right" :title="'Assigned to: ' + task.assigned_to.name">
                                                                 <div>
                                                                     <span>
@@ -265,13 +265,6 @@ export default {
             this.updateUS()
         }, 1000),
 
-        deleteUStask(id) {
-            this.$store.dispatch('deleteSprintTask', {id: id, board_id: this.$route.params.board_id})
-                .then((response) => {
-                    this.$store.commit('deleteCusTask', response)
-                    this.$toaster.warning('Task deleted succesfully!.')
-                })
-        },
 
         deleteUS() {
             this.$router.push({name: 'd_conf', params: {us_id: this.usData.id}})

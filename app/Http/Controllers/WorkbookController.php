@@ -107,8 +107,8 @@ class WorkbookController extends Controller
             }
         }
 
-        $user= User::find($origWB->created_by);
-        $user->notify(new ReviewedWorkbook($origWB->toArray()));
+        // $user= User::find($origWB->created_by);
+        // $user->notify(new ReviewedWorkbook($origWB->toArray()));
         return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
 
