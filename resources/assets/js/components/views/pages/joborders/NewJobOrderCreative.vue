@@ -15,8 +15,9 @@
                         <div class="col-md-12">
                             <h4 class="noprint"><span class="fa fa-file-photo-o"></span> Job Order Form <small>(Creatives)</small>
                             &nbsp;&nbsp;&nbsp;
-                                <span class="pull-right">
+                                <span class="pull-right" v-if="false">
                                     <small>
+                                        <span>Status:</span>
                                         <select v-model="brand.status" class="my-input">
                                             <option value="1">Active</option>
                                             <option value="2">Completed</option>
@@ -31,11 +32,11 @@
                 <div class="jo-body">
                     <form @submit.prevent="newCreativeJO">
                         <div class="row form-row">
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-6 form-group">
                                 <label for="jo_name">Name </label>
                                 <input required v-model="brand.name" name="jo_name" id="jo_name" type="text" class="form-control">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <label for="brand">Brand:</label>
                                 <!-- <div class="btn-group bootstrap-select"> -->
                                     <select v-model="brand.brand_id" required class="my-thin-select my-inp-blk" type="text">
@@ -44,23 +45,7 @@
                                     </select>
                                 <!-- </div> -->
                             </div>
-                            <div class="col-md-3" v-if="boards">
-                                <label for="brand">Board:</label>
-                                <div v-if="justNewBoard==false">
-                                    <select required @change="getJOBoardUsers" v-model="brand.board_id" name="board_id" class="my-thin-select my-inp-blk">
-                                        <option value="">---</option>
-                                        <!-- <option value="new">New Board</option> -->
-                                        <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
-                                    </select>
-                                    <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
-                                </div>
-                                <div v-if="justNewBoard==true">
-                                    <div class="form-group is-empty">
-                                        <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
-                                        <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
-                                    </div>
-                                </div>
-                            </div>
+
                             <!-- <div class="col-md-3 form-group">
                                 <label for="">ACMA / Brand Owner:</label>
                                 <div class="btn-group bootstrap-select">
@@ -71,10 +56,10 @@
                                     </select>
                                 </div>
                             </div> -->
-                            <div class="col-md-3 form-group">
+                            <!-- <div class="col-md-3 form-group">
                                 <label for="" class="align-right">JO No.</label>
                                 <img class="pull-right" style="height: 70px" src="/images/above-art1.jpg" alt="">
-                            </div>
+                            </div> -->
                         </div>
                         <hr />
                         <div class="row form-row">
@@ -97,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="checkbox">
                                             <label>
                                                 <input v-model="details.media" type="checkbox" name="optionsCheckboxes" value="1"><span class="check"></span>
@@ -117,7 +102,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="checkbox">
                                             <label>
                                                 <input v-model="details.media" type="checkbox" name="optionsCheckboxes" value="4"><span class="check"></span>
@@ -136,15 +121,6 @@
                                                 Trademark Form
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input v-model="details.media" type="checkbox" name="optionsCheckboxes" value="7"><span class="check"></span>
-                                                Others
-                                            </label>
-                                        </div>
-                                        <textarea rows="2" class="my-text-area btn-block" placeholder="Clearly specify here"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -242,7 +218,7 @@
                                 </div>
                             </div>
                         </div>
-                        <hr>
+                        <!-- <hr> -->
                         <div class="row" v-if="false">
                             <div class="col-md-12">
                                 <label class="">Copy on Artwork:</label>
@@ -250,23 +226,41 @@
                             </div>
                         </div>
                         <hr />
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-6" v-if="boards">
+                                <label for="">Board: </label>
+                                <p class="text-gray no-margin"><small>Select a board to where all tasks here should be managed.</small></p>
+                                <div v-if="justNewBoard==false">
+                                    <select required @change="getJOBoardUsers" v-model="brand.board_id" name="board_id" class="my-input my-inp-blk">
+                                        <option value="">---</option>
+                                        <!-- <option value="new">New Board</option> -->
+                                        <option v-for="board in boards" :key="board.id" :value="board.id">{{ board.name }}</option>
+                                    </select>
+                                    <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or Add New Board</small></a>
+                                </div>
+                                <div v-if="justNewBoard==true">
+                                    <div class="form-group is-empty">
+                                        <input @blur="getJOBoardUsers" required v-model="brand.newBoard.name" type="text" class="form-control" placeholder="New Board Name ">
+                                        <a @click="toggleJustNewBoard" style="cursor:pointer"><small>or just select from existing boards</small></a>
+                                    </div>
+                                </div>
+                                   
+                            </div>
+                            <div class="col-md-6">
+                                <label>New Task: </label>
+                                <button type="button" @click="addNewTask" class="btn btn-success btn-md btn-block">+ Add Tasks</button>
+                            </div>
+                        </div>
+                        <br/>
                         <div class="jo-body" style="background-color: whitesmoke">
                             <div class="row pb-10">
-                                <div class="col-md-12">
-                                    <h5>Add Task 
-                                    <span>
-                                        <button type="button" @click="addNewTask" class="btn btn-success btn-fab btn-fab-mini"
-                                            rel="tooltip" data-original-title="Click to add new task form" data-placement="right">
-                                        +
-                                        </button>
-                                    </span>
-                                    </h5>
-                                </div>
                                 <div class="col-md-1">
                                 </div>
                                 <div class="col-md-10">
                                     <div class="row" id="addtaskdiv">
                                         <div class="col-md-12">
+                                            <br/>
                                             <div class="card taskcard" v-for="(task, index) in tasks" :key="index">
                                                 <span class="pull-right" @click="deleteTaskForm(index)" style="cursor:pointer"><i class="fa fa-times"></i></span>
                                                 <h5 class="text-gray"><span class="fa fa-tasks"></span> Task #{{index+1}}</h5>
@@ -298,14 +292,14 @@
                                 </div>
                             </div>
                         </div>
-                        <hr />
+                        <!-- <hr /> -->
                         <div class="row" v-if="false">
                             <div class="col-md-12">
                                 <label class="">Post Caption:</label>
                                 <textarea v-model="details.post_caption" class="my-text-area btn-block" rows="3" placeholder="Write here. Indicate if any..."></textarea>
                             </div>
                         </div>
-                        <hr />
+                        <!-- <hr /> -->
                         <div class="row" v-if="false">
                             <!-- <div class="col-md-3">
                                 <label for="rqst_type">Status:</label> 
@@ -360,7 +354,7 @@
         <div class="col-md-1">
         </div>
 
-        <div class="modal fade" id="SuccesNewJoWeb" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="SuccesNewJoC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-small ">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -446,7 +440,8 @@ export default {
     computed: {
         ...mapGetters({
                 brands: 'getBrands',
-                boards: 'userBoards'
+                boards: 'userBoards',
+                cUser: 'currentUser',
             }),        
     },
     methods: {
@@ -483,16 +478,16 @@ export default {
                 .then ((response) => {
                     const jodata = response.data;
                     this.joid = jodata.id;
-                    $('#SuccesNewJoWeb').modal('show');
+                    $('#SuccesNewJoC').modal('show');
                 })  
         },
         notsuccess() {
-            $('#SuccesNewJoWeb').modal('hide');
+            $('#SuccesNewJoC').modal('hide');
             this.$router.push({name: 'all_jo_list'})
 
         },
         success() {
-            $('#SuccesNewJoWeb').modal('hide');
+            $('#SuccesNewJoC').modal('hide');
             this.$router.push({name: 'viewjocreative', params: {jo_id: this.joid}})
 
         },
@@ -524,7 +519,10 @@ export default {
                     .then(response => {
                         // console.log(response);
                         this.boardNotMembers = response.data;
-                        this.boardMembers = []
+                        this.boardMembers = [];
+                        this.boardMembers.push(this.cUser);
+                        var index = _.findIndex(this.boardNotMembers, {id: this.cUser.id});
+                        this.boardNotMembers.splice(index, 1);
                     })
 
             }

@@ -13,8 +13,9 @@
                                 <div class="col-md-8">
                                     <h4 class="no-margin "><span class="fa fa-copy"></span> {{ details.name }}&nbsp;
                                         <span v-if="details.status == 1" class="txt-bold text-info" title="Job Order Status: Active"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger" title="Job Order Status: Blocked"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 2" class="txt-bold text-danger" title="Job Order Status: Overdue"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 3" class="txt-bold text-warning" title="Job Order Status: Pending"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 4" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
                                     </h4>
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
@@ -137,7 +138,7 @@
                                         </div>
                                     </div>
                                     <br/>
-                                    <div class="row">
+                                    <div class="row" v-if="false">
                                         <div class="col-md-12">
                                             <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Copy on Artwork:</p>
                                             <p class="no-margin" v-if="details.jocreatives.copy == null ">
@@ -164,6 +165,7 @@
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
+                            <br/>
                             <div class="row">
                                 <div class="col-md-7">
                                     <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">({{ completedTasks }} / {{ details.tasks.length }})</span></small></p>
@@ -246,7 +248,7 @@
                         <div class="taskchart shadow">
                             <div class="row" v-if="details.jocreatives">
                                 <div class="col-md-12">
-                                    <div class="row">
+                                    <div class="row" v-if="false">
                                         <div class="col-md-6" v-if="details.jocreatives.post_caption">
                                             <p class="no-margin txt-bold"><span class="fa fa-align-left"></span> Post Caption</p>
                                             <!-- <hr/> -->
@@ -257,7 +259,7 @@
                                             <p>{{ details.jocreatives.revisions }}</p>
                                         </div>
                                     </div>
-                                    <br/>
+                                    <!-- <br/> -->
                                      <div class="row" v-if="details.jocreatives.signed_by">
                                         <div class="col-md-12">
                                             <p><span class="txt-bold">Final Signed Off by: </span>{{ details.jocreatives.signedby.name }}</p>
@@ -314,7 +316,7 @@
                 <div class="row mt-4" v-if="show">
                     <div class="col-md-12">
                         <div class="taskchart shadow">
-                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> {{ details.name }}'s Workload</span></p>
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-align-right"></span> {{ details.name }}'s Workload</span></p>
                             <gantt-elastic v-if="show" ref="shei" :tasks="tasks" :options="options">
                                 <gantt-header slot="header"></gantt-header>
                             </gantt-elastic>
@@ -322,6 +324,14 @@
                     </div>
                 </div>
                 <br/>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Burndown Chart</span></p>
+                            <bd-crea-chart></bd-crea-chart>
+                        </div>
+                    </div>
+                </div>
 
 
             </div>
@@ -355,11 +365,13 @@ import dayjs from "dayjs";
 import GanttElastic from './../workload/GanttElastic.vue';
 import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
+import BurnCreaChart from './BurnCreaChart.vue';
 export default {
     components: {
         'gantt-header': Header,
         'gantt-elastic': GanttElastic,
-        'gantt-footer': { template: `` }
+        'gantt-footer': { template: `` },
+        bdCreaChart : BurnCreaChart
     },
     props: ['header', 'footer'],
     data(){
@@ -433,12 +445,15 @@ export default {
             if(this.details) {
                 var done = 0;
                 var total = 0;
-                this.details.tasks.forEach(task => {
-                    total++;
-                    if(task.card.isDone) {
-                        done++;
-                    }
-                });
+                if(this.details.tasks) {
+                    this.details.tasks.forEach(task => {
+                        total++;
+                        if(task.card.isDone) {
+                            done++;
+                        }
+                    });
+                }
+                
                 return Math.round((done/total) * 100);
             }
         },
@@ -549,13 +564,18 @@ export default {
         },
 
         signOff() {
-            this.$store.dispatch('creativeSignOff', {sign: this.sign_off, id: this.$route.params.jo_id})
-                .then ((response) => {
-                    $('#SuccesCreativeSignOff').modal('show');
-                })
-                .catch( error => {
-                    this.error = true;
-                })
+            if(this.taskPercent == 100) {
+                this.$store.dispatch('creativeSignOff', {sign: this.sign_off, id: this.$route.params.jo_id})
+                    .then ((response) => {
+                        $('#SuccesCreativeSignOff').modal('show');
+                    })
+                    .catch( error => {
+                        this.error = true;
+                    })
+            }
+            else {
+                alert('Di pa pwede, tapusin niyo task niyo, Gagu!')
+            }
         },
 
         success() {
@@ -591,7 +611,7 @@ export default {
                 else if(moment(today).isBefore(moment(task.due), 'days')) {
                     // console.log('before');
                     var diff = moment(task.due).diff(moment(today), 'days')
-                    console.log(diff);
+                    // console.log(diff);
                     
                     if(diff == 1) {
                         // console.log('due tomorrow');

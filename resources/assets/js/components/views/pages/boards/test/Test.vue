@@ -11,13 +11,7 @@
                         <router-link :to="{name: 'test', params: {board_id: $route.params.board_id}}" style="color: #ffff"><h4 class="" style=""><span class="fa fa-trello"></span>&nbsp;&nbsp;<span class="fa fa-angle-right"></span>&nbsp;&nbsp;{{ cSprint.name }}</h4></router-link>
                     </div>
                     <div class="board-info">
-                        <p title="Total Tasks"><span class="fa fa-tasks"></span>&nbsp;12</p>
-                    </div>
-                    <div class="board-info">
-                        <p title="Members"><span class="fa fa-user-o"></span>&nbsp;7</p>
-                    </div>
-                    <div class="board-info">
-                        <a @click="$router.push({name: 'sprint_stats'})" class="btn btn-white btn-simple btn-xs"><span class="fa fa-bar-chart"></span> View Stats</a>
+                        <a @click="$router.push({name: 'sprint_stats'})" class="btn btn-white btn-simple btn-xs"><span class="fa fa-line-chart"></span> Stats</a>
                     </div>
                 </div>
                 <div class="board-body-wrapper">

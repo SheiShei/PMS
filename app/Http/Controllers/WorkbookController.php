@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Brand;
 use App\Workbook;
 use App\WorkbookFile;
+use App\User;
 use App\Notifications\ReviewedWorkbook;
 use App\Notifications\SendforRevision;
 
@@ -64,21 +65,58 @@ class WorkbookController extends Controller
     }
 
     public function getAllWorkbooks(Request $request) {
-        if(auth()->user()->role_id == 1) {
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->get();
+        if($request->isArchive) {
+            if(auth()->user()->role_id == 1) {
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+            }
+            if(auth()->user()->role_id == 2) {
+                $callback = function($q) {
+                    $q->where('acma_id', auth()->user()->id);
+                };
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
+            if(auth()->user()->role_id == 4) {
+                $callback = function($q) {
+                    $q->where('id', auth()->user()->brand_id);
+                };
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
         }
-        if(auth()->user()->role_id == 2) {
-            $callback = function($q) {
-                $q->where('acma_id', auth()->user()->id);
-            };
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        else {
+            if(auth()->user()->role_id == 1) {
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+            }
+            if(auth()->user()->role_id == 2) {
+                $callback = function($q) {
+                    $q->where('acma_id', auth()->user()->id);
+                };
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
+            if(auth()->user()->role_id == 4) {
+                $callback = function($q) {
+                    $q->where('id', auth()->user()->brand_id);
+                };
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
         }
-        if(auth()->user()->role_id == 4) {
-            $callback = function($q) {
-                $q->where('id', auth()->user()->brand_id);
-            };
-            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+
+        if($request->search) {
+            $query->where('name', 'like', $request->search.'%');
         }
+
+        if($request->status == 'reviewed') {
+            $query->where('reviewed_at', '!=', null);
+        }
+
+        if($request->status == 'for_reviewed') {
+            $query->where('reviewed_at', null);
+        }
+
+        if($request->brand) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        $workbooks = $query->get();
         return $workbooks;
     }
 
@@ -90,10 +128,6 @@ class WorkbookController extends Controller
 
     public function reviewWB(Request $request) {
         $origWB = Workbook::with(['brand:id,name'])->find($request->id);
-
-        $origWB->update([
-            'reviewed_at' => Carbon::now()
-        ]);
 
         foreach ($request->get('files') as $key => $rfiles) { 
             foreach ($origWB->files as $key => $ofiles) {
@@ -107,7 +141,23 @@ class WorkbookController extends Controller
             }
         }
 
-        // $user= User::find($origWB->created_by);
+        $fileLength = 0;
+        $rating = 0;
+
+        foreach ($origWB->files as $key => $filer) {
+            $fileLength++;
+            $lrev = $filer->revisions()->orderBy('created_at', 'desc')->first();
+            $rating = $rating + $lrev->rating;
+        }
+
+        $aveR = $rating / $fileLength;
+
+        $origWB->update([
+            'reviewed_at' => Carbon::now(),
+            'overall_rating' => $aveR
+        ]);
+
+        $user= User::find($origWB->created_by);
         // $user->notify(new ReviewedWorkbook($origWB->toArray()));
         return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
@@ -150,9 +200,69 @@ class WorkbookController extends Controller
 
         return $workbooks;
       
+    }
+
+    public function deleteWB(Request $request) {
+        $wb = Workbook::find($request->id);
+        $wb->delete();
+    }
+    
+    public function restoreWB(Request $request) {
+        $wb = Workbook::onlyTrashed()->where('id' , $request->id)->restore();
+
+        if($request->data['isArchive']) {
+            if(auth()->user()->role_id == 1) {
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+            }
+            if(auth()->user()->role_id == 2) {
+                $callback = function($q) {
+                    $q->where('acma_id', auth()->user()->id);
+                };
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
+            if(auth()->user()->role_id == 4) {
+                $callback = function($q) {
+                    $q->where('id', auth()->user()->brand_id);
+                };
+                $query = Workbook::onlyTrashed()->with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
+        }
+        else {
+            if(auth()->user()->role_id == 1) {
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }]);
+            }
+            if(auth()->user()->role_id == 2) {
+                $callback = function($q) {
+                    $q->where('acma_id', auth()->user()->id);
+                };
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
+            if(auth()->user()->role_id == 4) {
+                $callback = function($q) {
+                    $q->where('id', auth()->user()->brand_id);
+                };
+                $query = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback);
+            }
         }
 
+        if($request->data['search']) {
+            $query->where('name', 'like', $request->data['search'].'%');
+        }
 
-    
+        if($request->data['status'] == 'reviewed') {
+            $query->where('reviewed_at', '!=', null);
+        }
+
+        if($request->data['status'] == 'for_reviewed') {
+            $query->where('reviewed_at', null);
+        }
+
+        if($request->data['brand']) {
+            $query->where('brand_id', $request->data['brand']);
+        }
+
+        $workbooks = $query->get();
+        return $workbooks;
+    }
   
 }

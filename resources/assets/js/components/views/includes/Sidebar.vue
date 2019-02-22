@@ -1,16 +1,19 @@
 <template>
-    <section class="nav-side-menu" style="">
+    <section class="nav-side-menu" style="" v-if="cUser">
         <div class="brand">
-            <img src="/images/logooo2.png" width="100px"/>
+            <img v-if="cUser.role.id === 1" src="/images/caplogo-admin.png" width="100px"/>
+            <img v-else-if="cUser.role.id === 2" src="/images/caplogo-acma.png" width="100px"/>
+            <img v-else-if="cUser.role.id === 3" src="/images/caplogo-emp.png" width="100px"/>
+            <img v-else-if="cUser.role.id === 4" src="/images/caplogo-client.png" width="100px"/>
         </div>
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
-        <div class="menu-list"  v-if="cUser">
+        <div class="menu-list">
             <ul id="menu-content" class="menu-content collapse out">
 
                 <li class="profile-li" :style="{ 'background-image': 'url('+cUser.bg_image+')', padding: 0, backgroundSize: 'cover', backgroundPosition: 'center', }">
-                    <div class="profile-link" style="width: 100%; height: 100%; background-color: rgba(0,0,0,0.5)">
-                        <a href="/profile"><img :src="cUser.picture" alt="profile-picture"/></a>
-                        <p>{{ cUser.name }}<span>{{ cUser.role.name }}</span></p>
+                    <div class="profile-link">
+                        <img :src="cUser.picture" alt="profile-picture"/>
+                        <p class="no-margin">{{ cUser.name }}</p>
                     </div>
                     <!-- <p><small>ACMA</small></p> -->
                 </li>
@@ -180,7 +183,11 @@ export default {
 
 <style scoped lang="scss">
 .profile-link{
-    padding: 10px auto !important;
+    // padding: 10px auto !important;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
     text-align: center;
     img{
         margin-top: 5px;
@@ -189,17 +196,16 @@ export default {
         border-radius: 50%;
     }
     p{
-        margin-top: 3px;
-        margin-bottom: 5px;
+        line-height: 22px;
     }
-    p span{
-        display: block;
-    }
-    span{
-        line-height: 10px;
-        font-size: 9px;
-        text-transform: uppercase;
-    }
+    // p span{
+    //     display: block;
+    // }
+    // span{
+    //     line-height: 10px;
+    //     font-size: 9px;
+    //     text-transform: uppercase;
+    // }
 }
 .profile-li:hover{
     background-color: unset;

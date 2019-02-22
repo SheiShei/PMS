@@ -12,8 +12,9 @@
                                 <div class="col-md-8">
                                     <h4 class="no-margin "><span class="fa fa-copy"></span> {{ details.name }}&nbsp;
                                         <span v-if="details.status == 1" class="txt-bold text-info" title="Job Order Status: Active"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 2" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
-                                        <span v-if="details.status == 3" class="txt-bold text-danger" title="Job Order Status: Blocked"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 2" class="txt-bold text-danger" title="Job Order Status: Overdue"><i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 3" class="txt-bold text-warning" title="Job Order Status: Pending"> <i class="fa fa-circle"></i></span>
+                                        <span v-if="details.status == 4" class="txt-bold text-success" title="Job Order Status: Completed"><i class="fa fa-circle"></i></span>
                                     </h4>
                                     <p class="no-margin"><small class="text-gray">Job Order ID: {{ details.id }}</small></p>
                                     <!-- <p class="no-margin"><small class="text-gray">Brand: {{ details.brand.name }} </small></p> -->
@@ -322,6 +323,7 @@
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
+                            <br/>
                             <div class="row">
                                 <div class="col-md-7">
                                     <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> Tasks List</span>&nbsp;<small><span class="text-gray">({{ completedTasks }} / {{ details.tasks.length }})</span></small></p>
@@ -383,7 +385,7 @@
                                             </div>
 
                                             <!-- if overdued & not yet completed -->
-                                            <div class="torev-content divoverdued" v-if="taskStatus(task) == 'overdue'">
+                                            <div class="torev-content divoverdued" v-if="taskStatus(task).message == 'overdue'">
                                                 <h6 class="no-margin txt-bold" text-danger><span class="fa fa-circle text-danger"></span> {{ task.name }} </h6>
                                                 <p class="no-margin">
                                                     <small><span class="fa fa-user-o"></span> {{ task.assigned_to.name }}</small> . 
@@ -538,7 +540,7 @@
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-tasks"></span> {{ details.name }}'s Workload</span></p>
+                                    <p class="no-margin"><span class="txt-bold"><span class="fa fa-align-right"></span> {{ details.name }}'s Workload</span></p>
                                     <hr/>
                                 </div>
                                 <!-- <div class="col-md-5 text-right">
@@ -552,10 +554,24 @@
                                     </gantt-elastic>
                                 </div>
                             </div>
+                            <br/>
                         </div>
                     </div>
                 </div>
-                <br/>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-bar-chart"></span> Burndown Chart</span></p>
+                            <bd-web-chart></bd-web-chart>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="taskchart shadow">
+                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Cumulative Chart</span></p>
+                            <cum-web-chart></cum-web-chart>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -585,11 +601,16 @@ import dayjs from "dayjs";
 import GanttElastic from './../workload/GanttElastic.vue';
 import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
+import BurnWebChart from './BurnWebChart.vue';
+import CumuWebChart from './CumuWebChart.vue';
+
 export default {
     components: {
         'gantt-header': Header,
         'gantt-elastic': GanttElastic,
-        'gantt-footer': { template: `` }
+        'gantt-footer': { template: `` },
+        bdWebChart : BurnWebChart,
+        cumWebChart : CumuWebChart
     },
     props: ['header', 'footer'],
     data(){
@@ -608,28 +629,7 @@ export default {
             webProofedError: false,
             acmaAprovedError: false,
             show: true,
-            tasks: [
-                {
-                    id: 1,
-                    label: 'Make some noise',
-                    user: '<a><span><img class="small-avatar" src="/images/default"></span> shei</a>',
-                    duration: 5 * 24 * 60 * 60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task',
-                },
-                {
-                    id: 2,
-                    label: 'Make some noise 22',
-                    user: '<a>shei</a>',
-                    parentId: 1,
-                    dependentOn: [1],
-                    duration: 5*24*60*60,
-                    progress: 85,
-                    status: 'Completed',
-                    type: 'task'
-                }
-            ],
+            tasks: [],
             options: {
       title: {
         label: 'Team Workload',
@@ -691,12 +691,21 @@ export default {
             if(this.details) {
                 var done = 0;
                 var total = 0;
-                this.details.tasks.forEach(task => {
-                    total++;
-                    if(task.status == 4) {
-                        done++;
-                    }
-                });
+                if(this.details.tasks) {
+                    this.details.tasks.forEach(task => {
+                        total++;
+                        if(task.card_id) {
+                            if(task.card.isDone) {
+                                done++;
+                            }
+                        }
+                        else {
+                            if(task.status == 4) {
+                                done++;
+                            }
+                        }
+                    });
+                }
                 return Math.round((done/total) * 100);
             }
         },
@@ -803,20 +812,25 @@ export default {
         },
         
         signed() {
-            this.$store.dispatch('webSignOff', {id: this.$route.params.jo_id, proofed: this.proofed, approved: this.approved})
-                .then (response => {
-                    $('#SuccesWebSignOff').modal('show');
-                })
-                .catch (error => {
-                    if(error == 'web') {
-                        this.webProofedError = true;
-                        this.acmaAprovedError = false;
-                    }
-                    else {
-                        this.acmaAprovedError = true;
-                        this.webProofedError = false;
-                    }
-                })
+            if(this.taskPercent == 100) {
+                this.$store.dispatch('webSignOff', {id: this.$route.params.jo_id, proofed: this.proofed, approved: this.approved})
+                    .then (response => {
+                        $('#SuccesWebSignOff').modal('show');
+                    })
+                    .catch (error => {
+                        if(error == 'web') {
+                            this.webProofedError = true;
+                            this.acmaAprovedError = false;
+                        }
+                        else {
+                            this.acmaAprovedError = true;
+                            this.webProofedError = false;
+                        }
+                    })
+            }
+            else {
+                alert('Di pa pwede, tapusin niyo task niyo, Gagu!');
+            }
         },
 
         success() {
@@ -853,7 +867,7 @@ export default {
                     else if(moment(today).isBefore(moment(task.due), 'days')) {
                         // console.log('before');
                         var diff = moment(task.due).diff(moment(today), 'days')
-                        console.log(diff);
+                        // console.log(diff);
                         
                         if(diff == 1) {
                             // console.log('due tomorrow');

@@ -10,7 +10,7 @@
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <h6 class="nm-top"><strong><span class="fa fa-book"></span> WORKBOOKS LIST</strong>&nbsp;<span><small>| <a @click.prevent="changeArchive" href="">Archive</a></small></span></h6>
+                                    <h6 class="nm-top"><strong><span class="fa fa-book"></span> WORKBOOKS LIST</strong>&nbsp;<span><small>| <a v-if="cuser.role.id != 4" @click.prevent="changeArchive" href="">Archive</a></small></span></h6>
                                 </div>
                                 <div class="col-md-8 text-right">
                                     <select @change="getAllWorkbooks" v-model="data.status" class="my-input my-thin-select" name="" id="">
@@ -37,12 +37,20 @@
                                                     <div class="torev-right">
                                                         <h6 class="wb-title txt-bold"><a>{{ workbook.name }}</a> <span v-if="workbook.reviewed_at" title="Reviewed by Client" class="fa fa-check-circle text-success"></span></h6> 
                                                         <p><small>by: {{ workbook.created_by.name }} . {{ workbook.created_at | moment('ll') }} . {{ workbook.brand.name }}</small></p>
-                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
-                                                    </div>
-                                                    <div class="very-right hidden-sm hidden-xs text-right">
-                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
-                                                            <span class="fa fa-trash-o"></span> Archive
-                                                        </a>
+                                                        <p v-if="workbook.reviewed_at" class="no-margin"><small>
+                                                            <fa-rating :glyph="star"
+                                                                :read-only="true"
+                                                                :item-size="12" 
+                                                                :spacing="3"  
+                                                                inactive-color="#e2e2e2" 
+                                                                active-color="#ffc815"
+                                                                :border-width=2
+                                                                border-color="#fff"
+                                                                :increment="0.01"
+                                                                v-model="workbook.overall_rating"
+                                                                >
+                                                            </fa-rating>
+                                                        </small></p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -65,15 +73,19 @@
                                                                 active-color="#ffc815"
                                                                 :border-width=2
                                                                 border-color="#fff"
-                                                                :increment="1"
-                                                                v-model="overallrating"
+                                                                :increment="0.01"
+                                                                v-model="workbook.overall_rating"
                                                                 >
                                                             </fa-rating>
                                                         </small></p>
-                                                        <p class="hidden-lg hidden-md"><span><a class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
+                                                        <p v-if="data.isArchive" class="hidden-lg hidden-md"><span><a @click.stop="rWB(workbook.id)" href="#child" class="btn btn-info btn-simple btn-xs">Restore</a></span></p>
+                                                        <p v-else class="hidden-lg hidden-md"><span><a @click.stop="dWB(workbook.id)" href="#child" class="btn btn-danger btn-simple btn-xs">Archive</a></span></p>
                                                     </div>
                                                     <div class="very-right hidden-sm hidden-xs text-right">
-                                                        <a @click.stop href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
+                                                        <a v-if="data.isArchive" @click.stop="rWB(workbook.id)" href="#child" title="Archive" class="btn btn-info btn-simple btn-xs">
+                                                            <span class="fa fa-undo"></span> Restore
+                                                        </a>
+                                                        <a v-else @click.stop="dWB(workbook.id)" href="#child" title="Archive" class="btn btn-danger btn-simple btn-xs">
                                                             <span class="fa fa-trash-o"></span> Archive
                                                         </a>
                                                     </div>
@@ -156,6 +168,20 @@ export default {
             this.data.isArchive = !this.data.isArchive;
             this.getAllWorkbooks();
         },
+        dWB(wid) {
+            this.$store.dispatch('deleteWB', {id: wid})
+                .then(() => {
+                    this.$store.commit('deleteWB', wid)
+                    this.$toaster.warning('Workbook Deleted!.')
+                })
+        },
+        rWB(wid) {
+            this.$store.dispatch('restoreWB', {id: wid, data: this.data})
+                .then(() => {
+                    this.$store.commit('restoreWB', wid)
+                    this.$toaster.info('Workbook Restored.')
+                })
+        }
     }
 }
 </script>

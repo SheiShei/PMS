@@ -10,6 +10,8 @@ use App\UserStory;
 use App\Progress;
 use App\BPermission;
 use App\BRole;
+use App\Brand;
+use App\JobOrder;
 
 use Carbon\Carbon;
 
@@ -848,34 +850,39 @@ class BoardController extends Controller
         // $days  = $date2->diff($date1)->format('%a');
         // return $days+1;
         $dateNow = Carbon::now()->toDateString();
-
         $query = User::with(['task_assigned_to' => function($q) use ($dateNow) {
-            $q->whereDate('due', '>=', $dateNow)->orderBy('created_at', 'asc');
+            $q->orderBy('created_at', 'asc');
         },'tasks']);
 
-        if($request->team) {
+        if($request->type == 'byteam') {
+            
 
-            $query1= $query->where('department_id', $request->team);
-
-            if($request->team==1)
-            {
-                $query1->tasks()->whereHas('sprint', function($q){
-                    $q->where('status', $request->task_status);});
+            if($request->team) {
+                $query->where('department_id', $request->team);
             }
-            else if($request->team==2){
-               $query1->tasks()->whereHas('card', function($q){
-                    $q->where('isDone', $request->task_status);});
-             
-            }
-           
-            $users = $query1->get();
-        }
-        else{
-            $users = $query->get();
         }
 
+        else {
+            if($request->jo) {
+                $jo = JobOrder::find($request->jo);
+                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo) {
+                    $q->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
+                }]);
+            }
+            if($request->brand && !$request->jo) {
+                $brand = Brand::find($request->brand);
 
-      
+                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $brand) {
+                    $q->orderBy('created_at', 'asc')->whereHas('joborder', function($jq) use ($brand) {
+                        $jq->where('brand_id', $brand->id);
+                    });
+                }]);
+                
+            }
+        }
+
+        
+        $users = $query->get();
 
         // return $users;
 
@@ -904,6 +911,69 @@ class BoardController extends Controller
                 $durationDays ++;
 
                 $pPer = ($progressDays/$durationDays) * 100;
+
+                if($task['card_id']) {
+                    if($task['card']['isDone']) {
+                        $status = 'Completed';
+                    }
+                    else {
+                        $due = new Carbon($task['due']);
+                        $dueDate = $due->toDatestring();
+
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+
+                        if($dueDate < $todayDate) {
+                            $status = 'Overdue';
+                        }
+
+                        else {
+                            if($dueDate == $todayDate) {
+                                $status = 'Due Today';
+                            }
+                            else {
+                                $diff = $today->diffInDays($due) + 1;
+                                if($diff == 1) {
+                                   $status = 'Due Tomorrow';
+                                }
+                                if($diff > 1) {
+                                   $status = 'Active';
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    if($task['status'] == 4) {
+                        $status = 'Completed';
+                    }
+                    else {
+                        $due = new Carbon($task['due']);
+                        $dueDate = $due->toDatestring();
+
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+
+                        if($dueDate < $todayDate) {
+                            $status = 'Overdue';
+                        }
+
+                        else {
+                            if($dueDate == $todayDate) {
+                                $status = 'Due Today';
+                            }
+                            else {
+                                $diff = $today->diffInDays($due) + 1;
+                                if($diff == 1) {
+                                    $status = 'Due Tomorrow';
+                                }
+                                if($diff > 1) {
+                                    $status = 'Active';
+                                }
+                            }
+                        }
+                    }
+                }
                 
                 if($key == 0) {
                     $parentId = $task['id'];
@@ -917,6 +987,7 @@ class BoardController extends Controller
                         'progress' => round($pPer, 0),
                         'key' => $key,
                         'type' => 'task',
+                        'status' => $status
                     );
                 }
                 else {
@@ -932,6 +1003,7 @@ class BoardController extends Controller
                         'parentId' => $parentId,
                         'dependentOn' => $dependentOn,
                         'type' => 'task',
+                        'status' => $status
                     );
                 }
 
@@ -1487,12 +1559,14 @@ class BoardController extends Controller
     }
 
     public function verifyListKanban(Request $request) {
-        
-
-        
-
         // echo $userRoleID;
 
         return response()->json($all, 200);
+    }
+
+    public function onWorkloadCreate(Request $request) {
+        $brands = Brand::all();
+
+        return $brands->load('jos');
     }
 }
