@@ -18,15 +18,20 @@ class SettingsController extends Controller
 
 public function updatemyself(Request $request) {
 
-        // $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|string|email|max:255|unique:users,email,'.$request->id,
-        //     'password' => 'string|min:6|nullable',
-        // ]);
-        //dd($request);
-        $userinfo = User::findOrFail($request->id);
+        $userinfo = User::findOrFail(auth()->user()->id);
         $input=$request->all();
         
+        if($request->picture){
+            $filename_path = md5(time().uniqid()).".png"; 
+            $data1 = explode( ',', $request->picture);
+            $file1 = base64_decode( $data1[ 1 ] );
+            file_put_contents("storage/".$filename_path, $file1);
+           }
+        else{
+            $name= $request->pic;
+            $filename_path = str_replace('/storage/', '', $name);
+           
+        }
 
         if($file = $request->file('bg_image')){
             $name = time() . $file->getClientOriginalName();
@@ -36,20 +41,7 @@ public function updatemyself(Request $request) {
         else{
            $name= $input['bg_image'];
            $input['bg_image'] = str_replace('/storage/', '', $name);
-        //    echo($input['bg_image']);
         }
-        // if($files = $request->file('picture')){
-        //     $name = time() . $files->getClientOriginalName();
-        //     $files->make($input['picture'])->resize(300, 300)->save(public_path('storage/' . $name));
-        //     // $files->move('storage/', $name);
-        //     $input['picture'] = $name;
-        //     echo($request->file('picture'));
-        // }
-        // else{
-        //    $name= $input['picture'];
-        //    $input['picture'] = str_replace('/storage/', '', $name);
-        // //    echo($input['bg_image']);
-        // }
 
         if($input['password'])
         {
@@ -58,7 +50,7 @@ public function updatemyself(Request $request) {
                 'email' => $input['email'],
                 'password' => bcrypt($input['password']),
                 'bg_image' => $input['bg_image'],
-                // 'picture' => $input['picture'],
+                'picture' => $filename_path,
 
             ]);
         }
@@ -67,8 +59,7 @@ public function updatemyself(Request $request) {
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'bg_image' => $input['bg_image'],
-                // 'picture' => $input['picture']
-
+                'picture' => $filename_path,
             ]);
         }
         //   $userinfo->update($input);

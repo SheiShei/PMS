@@ -28,6 +28,20 @@ export default {
             localStorage.setItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f', JSON.stringify(state.loggedUser));
             setAuthorization(state.loggedUser.token);
         },
+        updatemyself (state, payload) {
+            const var_name = JSON.parse(localStorage.getItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f'));
+          
+            console.log(var_name);
+            console.log(payload);
+            var_name.bg_image = payload.bg_image;
+            var_name.picture = payload.picture;
+            var_name.name = payload.name;
+            var_name.email = payload.email;
+            // var_name.password = payload.password;
+            state.loggedUser = Object.assign(var_name);
+            localStorage.setItem('5f414e475f554c4f4c5f4e415f53495f4b57494e495f', JSON.stringify(var_name));
+
+        },
 
         removeToken(state) {
             state.loggedUser = null;
@@ -40,6 +54,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios.post('/api/login', credentials)
                     .then(response => {
+                        console.log(response.data);
                         commit('storeTokenLogin', response.data);
                         resolve(response);
 

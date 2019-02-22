@@ -17,15 +17,15 @@
 	                        </div>
 	                         <div class="name">
 	                            <h4><b>{{user_info.name}}</b></h4>
-								<p v-if="user_info.role_id==1" ><small> Admin </small></p>
-								<p v-if="user_info.role_id==2"><small> ACMA </small></p>
-								<p v-if="user_info.role_id==3 && user_info.department_id==1" ><small>Employee | Web Team</small></p>
-								<p v-if="user_info.role_id==3 && user_info.department_id==2" ><small>Employee | Creatives Team</small></p>								<p v-if="user_info.role_id==4"><small> Client </small></p>
+								<p v-if="user_info.role.id===1" ><small> Admin </small></p>
+								<p v-if="user_info.role.id===2"><small> ACMA </small></p>
+								<p v-if="user_info.role.id===3 && user_info.department_id===1" ><small>Employee | Web Team</small></p>
+								<p v-if="user_info.role.id===3 && user_info.department_id===2" ><small>Employee | Creatives Team</small></p>								<p v-if="user_info.role.id==4"><small> Client </small></p>
                                 <hr/>
 
                                 <!--For ACMA--> 
 								
-                                <div v-if="user_info.role_id==2" class="text-left work-summary">
+                                <div v-if="user_info.role.id===2" class="text-left work-summary">
                                     <div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -71,7 +71,7 @@
 
 								<!--For Regular Employee -->
 								
-								<div v-if="user_info.role_id==3" class="text-left work-summary">
+								<div v-if="user_info.role.id===3" class="text-left work-summary">
                                     <div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -104,7 +104,7 @@
 
 								<!--For Client-->
 								
-								<div v-if="user_info.role_id==4" class="text-left work-summary">
+								<div v-if="user_info.role.id===4" class="text-left work-summary">
 									<div class="ws-wrapper">
                                         <div class="ws-info">
                                             <div class="ws-info-title">
@@ -300,7 +300,8 @@ export default {
 				email: '',
 				password: '',
 				bg_image: '',
-				picture: ''
+				picture: '',
+				pic: ''
 
 			},
 			hasBG: false,
@@ -325,18 +326,20 @@ export default {
                 this.data.name = user_data.name;
 				this.data.email = user_data.email;
 				this.data.bg_image= user_data.bg_image;
-				// this.data.picture= user_data.picture;
+				this.data.pic= user_data.picture;
             })
         this.$store.dispatch('dashboard_admin')
         this.$store.dispatch('dashboard_acma')
         this.$store.dispatch('dashboard_emp')
-        this.$store.dispatch('dashboard_client')
+		this.$store.dispatch('dashboard_client')
+		const token = this.$store.getters.currentUser;
+		
 		
 	},
 
 	computed: {
          ...mapGetters({
-                user_info: 'getuser_info',
+                user_info: 'currentUser',
 				dashboard_acma: 'dashboard_acma',
 				dashboard_emp: 'dashboard_emp',
 				dashboard_client: 'dashboard_client',
@@ -359,7 +362,8 @@ export default {
 				
                 }
             form.append('name', this.data.name);
-            // form.append('picture', this.data.picture);
+            form.append('picture', this.data.picture);
+            form.append('pic', this.data.pic);
 			form.append('email', this.data.email);
 			form.append('password', this.data.password);
 			
@@ -406,6 +410,7 @@ export default {
 		cropSuccess(imgDataUrl, field){
 			console.log('-------- crop success --------');
 			this.imgDataUrl = imgDataUrl;
+			this.data.picture = imgDataUrl;
 		},
 		/**
 		 * upload success
