@@ -32,6 +32,7 @@ import KanbanGallery from './components/views/pages/boards/kanban/Gallery.vue';
 import USAddTask from './components/views/pages/boards/test/AddTask.vue';
 import USViewTask from './components/views/pages/boards/test/ViewTask.vue';
 import dConf from './components/views/pages/boards/test/dConf.vue';
+import dustask from './components/views/pages/boards/test/UStaskdel.vue';
 import dSprintConf from './components/views/pages/boards/test/SprintDConf.vue';
 import ScrumNewSprint from './components/views/pages/boards/test/AddSprint.vue';
 import Test from './components/views/pages/boards/Test.vue';
@@ -740,7 +741,31 @@ export const routes = [
                                 })
                         },
                     },
-                    
+                    {
+                        path: 'deltask/:ustask_id',
+                        name: 'deltask',
+                        component: dustask,
+                        meta: {
+                            requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.board_id;
+                            axios.post('/api/verifyKanbanTask', {
+                                board_id: param,
+                                action: 'Delete',
+                                type: 'us'
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
+                        },
+                    },
                     {
                         path: 'us/:sprint_id/:us_id',
                         name: 'us_view',
