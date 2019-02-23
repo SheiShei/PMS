@@ -559,16 +559,10 @@
                     </div>
                 </div>
                 <div class="row mt-4">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="taskchart shadow">
                             <p class="no-margin"><span class="txt-bold"><span class="fa fa-bar-chart"></span> Burndown Chart</span></p>
-                            <bd-web-chart></bd-web-chart>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="taskchart shadow">
-                            <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Cumulative Chart</span></p>
-                            <cum-web-chart></cum-web-chart>
+                            <bd-crea-chart v-if="chart" :chart="chart"></bd-crea-chart>
                         </div>
                     </div>
                 </div>
@@ -601,16 +595,15 @@ import dayjs from "dayjs";
 import GanttElastic from './../workload/GanttElastic.vue';
 import Header from './../workload/Header.vue';
 import style from "gantt-elastic/src/style.js";
-import BurnWebChart from './BurnWebChart.vue';
-import CumuWebChart from './CumuWebChart.vue';
+import BurnCreaChart from './BurnCreaChart.vue';
+// import CumuWebChart from './CumuWebChart.vue';
 
 export default {
     components: {
         'gantt-header': Header,
         'gantt-elastic': GanttElastic,
         'gantt-footer': { template: `` },
-        bdWebChart : BurnWebChart,
-        cumWebChart : CumuWebChart
+        bdCreaChart : BurnCreaChart
     },
     props: ['header', 'footer'],
     data(){
@@ -626,6 +619,7 @@ export default {
                 email: '',
                 password: ''
             },
+            chart: null,
             webProofedError: false,
             acmaAprovedError: false,
             show: true,
@@ -734,6 +728,17 @@ export default {
                 .then ((response) => {
                     this.show = false;
                     this.details = response.jobor;
+
+                    var max = 0;
+                    response.bdData.forEach(date => {
+                        if(date.y > max) {
+                            max = date.y
+                        }
+                    });
+                    this.chart = {
+                        data: response.bdData,
+                        max: max
+                    }
 
                     if(response.joweb) {
                         let target_list = [], request_type = [];

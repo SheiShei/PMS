@@ -546,7 +546,7 @@ class BoardController extends Controller
     }
     
     public function getCBoard(Request $request) {
-        $board = Board::where('id',$request->id)->with(['bu', 'notifications' => function($q) {$q->orderBy('created_at', 'desc');}])->first();
+        $board = Board::where('id',$request->id)->with(['bu' => function($q) {$q->orderBy('isAdmin', 'desc');}, 'notifications' => function($q) {$q->orderBy('created_at', 'desc');}])->first();
         if($board->type == 1) {
             $permissions = BPermission::where('type','task')->orWhere('type', 'list')->get();
             $checkedPer = $board->roles()->where('name', 'Member')->with('permissions')->first();
@@ -611,7 +611,7 @@ class BoardController extends Controller
     public function getScrumLists(Request $request) {
         $board = Board::find($request->id);
 
-        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks'])->orderBy('created_at', 'asc')->get();
         foreach ($sprints as $key => $sprint) {
             if($sprint->due_date == Carbon::now()->toDateString()){
                 $sprint->update([
@@ -850,8 +850,33 @@ class BoardController extends Controller
         // $days  = $date2->diff($date1)->format('%a');
         // return $days+1;
         $dateNow = Carbon::now()->toDateString();
-        $query = User::with(['task_assigned_to' => function($q) use ($dateNow) {
+        $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $request) {
+            // $task = $q->with('card')->first();
             $q->orderBy('created_at', 'asc');
+
+            if($request->task_status) {
+                if($request->task_status == 'Active') {
+                        $q->whereDate('due', '>=', $dateNow)->where(function ($wq) {
+                            $wq->whereHas('card', function($cq) {
+                                $cq->where('isDone', false);
+                            })->orWhere('status', '!=', 4);
+                        });
+                }
+                if($request->task_status == 'Overdue') {
+                        $q->whereDate('due', '<=', $dateNow)->where(function ($wq) {
+                            $wq->whereHas('card', function($cq) {
+                                $cq->where('isDone', false);
+                            })->orWhere('status', '!=', 4);
+                        });
+                }
+                if($request->task_status == 'Completed') {
+                        $q->where(function ($wq) {
+                            $wq->whereHas('card', function($cq) {
+                                $cq->where('isDone', true);
+                            })->orWhere('status', 4);
+                        });
+                }
+            }
         },'tasks']);
 
         if($request->type == 'byteam') {
@@ -865,17 +890,67 @@ class BoardController extends Controller
         else {
             if($request->jo) {
                 $jo = JobOrder::find($request->jo);
-                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo) {
+                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo, $request) {
                     $q->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
+
+                    if($request->task_status) {
+                        if($request->task_status == 'Active') {
+                                $q->whereDate('due', '>=', $dateNow)->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', false);
+                                    })->orWhere('status', '!=', 4);
+                                });
+                        }
+                        if($request->task_status == 'Overdue') {
+                                $q->whereDate('due', '<=', $dateNow)->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', false);
+                                    })->orWhere('status', '!=', 4);
+                                });
+                        }
+                        if($request->task_status == 'Completed') {
+                                $q->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', true);
+                                    })->orWhere('status', 4);
+                                });
+                        }
+                    }
+
                 }]);
             }
             if($request->brand && !$request->jo) {
                 $brand = Brand::find($request->brand);
 
-                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $brand) {
+                $query = User::with(['task_assigned_to' => function($q) use ($dateNow, $brand, $request) {
                     $q->orderBy('created_at', 'asc')->whereHas('joborder', function($jq) use ($brand) {
                         $jq->where('brand_id', $brand->id);
                     });
+
+                    if($request->task_status) {
+                        if($request->task_status == 'Active') {
+                                $q->whereDate('due', '>=', $dateNow)->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', false);
+                                    })->orWhere('status', '!=', 4);
+                                });
+                        }
+                        if($request->task_status == 'Overdue') {
+                                $q->whereDate('due', '<=', $dateNow)->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', false);
+                                    })->orWhere('status', '!=', 4);
+                                });
+                        }
+                        if($request->task_status == 'Completed') {
+                                $q->where(function ($wq) {
+                                    $wq->whereHas('card', function($cq) {
+                                        $cq->where('isDone', true);
+                                    })->orWhere('status', 4);
+                                });
+                        }
+                    }
+                    
                 }]);
                 
             }
@@ -1133,6 +1208,11 @@ class BoardController extends Controller
                 'closed' => $closed,
             ]);
         // }
+        
+        Progress::create([
+            'jo_id' => $request->task['jo_id'] ,
+            'remaining_points' => $todo+$in_progress+$for_test
+        ]);
 
         if($request->task['status'] == 1) {
             $status = 'To do';
@@ -1378,6 +1458,24 @@ class BoardController extends Controller
                 'board_id' => $card->board_id ,
                 'completed_tasks' => $totalDoneTask
             ]);
+
+            if($request->task['jo_id']) {
+                $jo = JobOrder::find($request->task['jo_id'])->load('tasks.card');
+                $totalRemainingTask = 0;
+    
+                foreach ($jo->tasks as $key => $task) {
+                    if($task->card_id) {
+                        if(!$task->card->isDone) {
+                            $totalRemainingTask++;
+                        }
+                    }
+                }
+    
+                Progress::create([
+                    'jo_id' => $jo->id ,
+                    'remaining_points' => $totalRemainingTask
+                ]);
+            }
         }
 
         Board::find($card->board_id)->notify(new BoardCardMove(auth()->user()->name, $request->task['name'], $card->name, 'task'));
@@ -1393,7 +1491,25 @@ class BoardController extends Controller
                 'board_id' => $card->board_id ,
                 'completed_tasks' => $totalDoneTask
             ]);
+            if($request->task['jo_id']) {
+                $jo = JobOrder::find($request->task['jo_id'])->load('tasks.card');
+                $totalRemainingTask = 0;
+    
+                foreach ($jo->tasks as $key => $task) {
+                    if($task->card_id) {
+                        if(!$task->card->isDone) {
+                            $totalRemainingTask++;
+                        }
+                    }
+                }
+    
+                Progress::create([
+                    'jo_id' => $jo->id ,
+                    'remaining_points' => $totalRemainingTask
+                ]);
+            }
         }
+
     }
 
     public function getBUData(Request $request) {
@@ -1568,5 +1684,9 @@ class BoardController extends Controller
         $brands = Brand::all();
 
         return $brands->load('jos');
+    }
+
+    public function filterWorkloadStatus(Request $request) {
+        return $request;
     }
 }

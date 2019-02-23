@@ -46,8 +46,18 @@ export default {
                 // categories: ['2018 Jan 1', '2018 Jan 2', '2018 Jan 3', '2018 Jan 4', '2018 Jan 5', '2018 Jan 6', '2018 Jan 7'],
             },
             yaxis:{
-                min: 0 ,
-                max: this.chartData.max
+                forceNiceScale: true,
+                title: {
+                    text: 'User Story Points Remaining'
+                },
+                labels: {
+                    formatter: function(val, index) {
+                        if(val % 1 === 0) {
+                            return val;
+                        }
+                        return val.toFixed(1);
+                    }
+                }
             }
             }
         }

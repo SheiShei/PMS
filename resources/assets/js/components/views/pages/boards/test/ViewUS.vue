@@ -32,9 +32,9 @@
                                     <span v-if="usPermission.delete" class="pull-right"><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span> -->
                                     <span></span>
                                     <!-- <span class=""><router-link :to="{ name: 'test'}" class="btn btn-simple btn-close"><i class="fa fa-close"></i></router-link></span> -->
-                                    <span v-if="!editUSDetails"><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
-                                    <span v-else><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
-                                    <span class=""><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span>
+                                    <span v-if="!editUSDetails && usPermission.modify"><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
+                                    <span v-if="editUSDetails"><a href="" @click.prevent="editUSDetails=!editUSDetails" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
+                                    <span v-if="usPermission.delete" class=""><a href="" @click.prevent="deleteUS" class="btn btn-simple btn-close" title="Delete This User Story"><i class="fa fa-trash-o"></i></a></span>
                                 </h4>
                             </div>
                         </div>
@@ -87,6 +87,10 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                         <option value="8">8</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="40">40</option>
                                     </select>
                                 </div>
 
@@ -164,12 +168,12 @@
                                                             
                                                             <li v-if="taskPermission.delete" @click="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li> -->
                                                         <!-- <ul> -->
-                                                        <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" tag="ul">
+                                                        <router-link v-if="taskPermission.view" :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" tag="ul">
                                                             <li class="us-task-name" style="padding-left: 0; ">
-                                                                <!-- <span class="fa fa-circle-thin"></span> -->
-                                                                <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" ><span class="fa fa-circle"></span> {{ task.name | taskLength }}</router-link></li>
+                                                                <router-link :to="{name: 'us_viewtask', params: {task_id: task.id}}" :title="task.name" ><span class="fa fa-circle"></span> {{ task.name | taskLength }}</router-link>
+                                                            </li>
                                                             
-                                                            <li @click.stop="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
+                                                            <li v-if="taskPermission.delete" @click.stop="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
                                                             <li class="us-task-assigned pull-right" :title="'Assigned to: ' + task.assigned_to.name">
                                                                 <div>
                                                                     <span>
@@ -180,6 +184,21 @@
                                                             </li>
                                                             
                                                         </router-link>
+                                                        <ul v-if="!taskPermission.view">
+                                                            <li class="us-task-name" style="padding-left: 0; ">
+                                                                <span class="fa fa-circle"></span> {{ task.name | taskLength }}
+                                                            </li>
+                                                            
+                                                            <li v-if="taskPermission.delete" @click.stop="deleteUStask(task.id)" class="pull-right us-task-del"><span class="fa fa-trash"></span></li>
+                                                            <li class="us-task-assigned pull-right" :title="'Assigned to: ' + task.assigned_to.name">
+                                                                <div>
+                                                                    <span>
+                                                                        <img :src="task.assigned_to.picture" alt="">
+                                                                    </span>
+                                                                    <p style="font-size: 11px; padding: 0 20px;">{{ task.assigned_to.name | unLength }}</p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
                                                     <!-- </div> -->
                                                 </div>
                                             </div>

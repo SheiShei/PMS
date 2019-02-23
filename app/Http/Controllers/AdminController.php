@@ -14,6 +14,7 @@ use App\BPermission;
 use App\Card;
 use App\Sprint;
 use App\UserStory;
+use App\Progress;
 
 use App\Events\AddListTaskEvent;
 use App\Events\AddSprintEvent;
@@ -273,6 +274,10 @@ class AdminController extends Controller
             }
         }
 
+        $newjo->progress()->create([
+            'remaining_points' => $newjo->tasks()->count()
+        ]);
+
         $media = '';
         foreach ($joDetails['media'] as $key => $e) {
             if(count($joDetails['media']) != $key+1) {
@@ -526,7 +531,60 @@ class AdminController extends Controller
                     $board->notify(new BoardCreateTask($newtask->load('created_by', 'us')->toJson()));
                 }
             }
+
+            $totalSprintPoints = 0;
+            $pointsFinished = 0;
+            foreach ($sprint->us()->get() as $key => $story) {
+                $totalSprintPoints = $totalSprintPoints + $story->points;
+                $tUSTask = count($story->tasks()->get());
+                $tUSTaskCompleted = 0;
+                if($tUSTask) {
+                    foreach ($story->tasks()->get() as $key => $usTask) {
+                        if($usTask->status == 4) {
+                            $tUSTaskCompleted++;
+                        }
+                    }
+                    if($tUSTask == $tUSTaskCompleted) {
+                        $pointsFinished = $pointsFinished + $story->points;
+                    }
+                }
+            }
+
+            $totalSprintPoints = $totalSprintPoints - $pointsFinished;
+
+            $todo = 0;
+            $in_progress = 0;
+            $for_test = 0;
+            $closed = 0;
+
+            foreach ($sprint->tasks()->get() as $key => $task) {
+                if($task->status == 1) {
+                    $todo++;
+                }
+                if($task->status == 2) {
+                    $in_progress++;
+                }
+                if($task->status == 3) {
+                    $for_test++;
+                }
+                if($task->status == 4) {
+                    $closed++;
+                }
+            }
+
+            Progress::create([
+                'sprint_id' => $sprint->id,
+                'remaining_points' => $totalSprintPoints,
+                'todo' => $todo,
+                'in_progress' => $in_progress,
+                'for_test' => $for_test,
+                'closed' => $closed,
+            ]);
         }
+
+        $newjo->progress()->create([
+            'remaining_points' => $newjo->tasks()->count()
+        ]);
 
         $target_list = '';
         foreach ($joDetails['target_list'] as $key => $e) {
@@ -583,6 +641,8 @@ class AdminController extends Controller
         $jo = JobOrder::find($request->id);
         $type = $jo->type;
         $dateNow = Carbon::now()->toDateString();
+
+        #start of get Workload Data
         $users = User::with(['task_assigned_to' => function($q) use ($dateNow, $jo) {
             $q->orderBy('created_at', 'asc')->where('jo_id', $jo->id);
         }])->get();
@@ -714,17 +774,52 @@ class AdminController extends Controller
                 
                 array_push($tasks, $mT);
             }
+        } #end of get Workload Data
+
+        #start of get Burndown Chart Data
+        $startDate = new Carbon($jo->date_in);
+        $endDate = new Carbon($jo->date_due);
+
+        // $startDate = $startDate->toDateString();
+        // $endDate = $endDate->toDateString();
+
+        $datesArray = [];
+        $cd = new Carbon($startDate);
+
+        while ($cd <= $endDate) {
+            array_push($datesArray, $cd->toDateString());
+            $cd->addDay();
         }
 
-        // return $tasks;
+        $bdData = [];
+
+        foreach ($datesArray as $key => $date) {
+            $newdate = Carbon::parse($date);
+            if($newdate <= Carbon::now()) {
+                $statData = Progress::where('jo_id', $jo->id)->orderBy('created_at', 'desc')->whereDate('created_at', '<=', $date)->first();
+                $singleData = array(
+                    'x' => $date,
+                    'y' => $statData->remaining_points
+                );
+            }
+            else {
+                $singleData = array(
+                    'x' => $date,
+                    'y' => null
+                );
+            }
+            array_push($bdData, $singleData);
+        }
+
+        #end of get Burndown Chart Data
 
         if($type === 1) {
             $jobor = JobOrder::with(['brand.acma', 'board'])->with(['jocreatives.signedby', 'tasks.files', 'tasks.card', 'tasks.assigned_to'])->where('id', $request->id)->first();
-            return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
+            return response()->json(['jobor' => $jobor, 'workload' => $tasks, 'bdData' => $bdData]);
         }
         else if($type === 2) {
             $jobor = JobOrder::with(['brand.acma', 'board'])->with(['joweb.web_signed_by','joweb.acma_signed_by', 'tasks.card', 'tasks.files', 'tasks.assigned_to'])->where('id', $request->id)->first();
-            return response()->json(['jobor' => $jobor, 'workload' => $tasks]);
+            return response()->json(['jobor' => $jobor, 'workload' => $tasks, 'bdData' => $bdData]);
         }
     }
 

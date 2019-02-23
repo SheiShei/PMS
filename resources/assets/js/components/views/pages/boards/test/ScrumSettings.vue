@@ -110,16 +110,16 @@
 	                                            <td><span v-if="member.pivot.isAdmin" class="fa fa-star text-warning" rel="tooltip" title="Board Admin"></span>&nbsp;{{ member.name }}</td>
 	                                            <td>{{ member.pivot.role.name }}</td>
 	                                            <td>
-                                                    <select @change="changeRole(member.id, member.pivot.role.id, member.pivot.isAdmin)" v-model="member.pivot.role.id" name="" id="" class="my-thin-select">
+                                                    <select v-if="member.id != boardData.created_by || (cUser.id == boardData.created_by && member.pivot.isAdmin)" @change="changeRole(member.id, member.pivot.role.id, member.pivot.isAdmin)" v-model="member.pivot.role.id" name="" id="" class="my-thin-select">
                                                         <option v-for="role in role_permissions" :key="role.id" :value="role.id">{{ role.name }}</option>
                                                     </select>
 	                                            </td>
                                                 <td class="td-actions text-right">
-                                                    <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-if="!member.pivot.isAdmin" class="btn btn-xs btn-info btn-simple">Set as Admin</button>
+                                                    <span v-if="member.id != boardData.created_by"><button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-if="!member.pivot.isAdmin" class="btn btn-xs btn-info btn-simple">Set as Admin</button>
                                                     <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-else class="btn btn-xs btn-info btn-danger">Remove as Admin</button>
 	                                                <button @click="removeBoardMember(member.id)" type="button" rel="tooltip" class="btn btn-danger btn-xs btn-just-icon btn-simple btn-round" data-original-title="Remove Member" title="Remove Member">
 	                                                    <i class="fa fa-times"></i>
-	                                                </button>
+	                                                </button></span>
 	                                            </td>
 	                                        </tr>
 	                                    </tbody>
@@ -156,7 +156,7 @@
 
 <script>
 export default {
-	props: ['boardData', 'boardMembers', 'permissions', 'role_permissions', 'not_members'],
+	props: ['boardData', 'boardMembers', 'permissions', 'role_permissions', 'not_members', 'cUser'],
 	data() {
 		return {
 			image: '',

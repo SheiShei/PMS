@@ -4,7 +4,7 @@
             <div class="board-background-overlay">
             </div>
             <div class="board-wrapper">
-                <router-view :per="task"></router-view>
+                <router-view :per="task" :cTasks="computeTaskCompleted" :tTasks="computeTaskLength"></router-view>
                 <kanban-settings v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></kanban-settings>
                 <div class="board-header">
                     <div class="board-name">
@@ -16,7 +16,7 @@
                             <span class="hidden-sm hidden-xs"> Details</span>
                         </button>
                     </div>
-                    <div class="board-info">
+                    <div class="board-info" v-if="isAdmin">
                         <button @click="viewBSettings = true" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings">
                             <span class="fa fa-gear"></span> 
                             <span class="hidden-sm hidden-xs"> Board Settings</span>
@@ -72,13 +72,15 @@ export default {
                 add: false,
                 delete: false,
                 comment: false
-            }
+            },
+            isAdmin: false
         }
     },
     created() {
         this.$store.dispatch('getBoardLists', this.$route.params.board_id);
         this.getCuBoard();
         this.getBoardNotMembers();
+        
     },
     mounted() {
         this.stopListen();
@@ -95,6 +97,7 @@ export default {
                 permissions: 'getPermissionsList',
                 role_permissions: 'getRolePermissions',
                 not_members: 'getBoardNotMembers',
+                cUser: 'currentUser'
             }),
         boardLists: {
             get () {
@@ -112,6 +115,15 @@ export default {
             });
             return totalTask;
         },
+        computeTaskCompleted() {
+            let totalTask = 0
+            this.boardLists.forEach(list => {
+                if(list.isDone) {
+                    totalTask = list.tasks.length
+                }
+            });
+            return totalTask;
+        }
     },
     methods: {
         addNewList(){
@@ -136,6 +148,7 @@ export default {
                 .then((response) => {
                     this.userPermit = response;
                     this.checkListPerm();
+                    this.checkIfAdmin();
                 })
         },
         
@@ -175,6 +188,16 @@ export default {
                 // this.addList = false;
                 // return false;
             }
+        },
+
+        checkIfAdmin() {
+            this.board.bu.forEach(user => {
+                if(user.id == this.cUser.id) {
+                    if(user.pivot.isAdmin) {
+                        this.isAdmin = true;
+                    }
+                }
+            });
         },
 
         listenList() {

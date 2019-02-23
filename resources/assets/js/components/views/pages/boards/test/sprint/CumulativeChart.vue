@@ -47,6 +47,20 @@ export default {
             // categories: ["01 Jan", "02 Jan", "03 Jan", "04 Jan", "05 Jan", "06 Jan", "07 Jan"
             // ],
           },
+          yaxis:{
+                forceNiceScale: true,
+                title: {
+                    text: 'No. of Tasks'
+                },
+                labels: {
+                    formatter: function(val, index) {
+                        if(val % 1 === 0) {
+                            return val;
+                        }
+                        return val.toFixed(1);
+                    }
+                }
+            },
           tooltip: {
             x: {
               // format: 'DD/MM/YYYY'

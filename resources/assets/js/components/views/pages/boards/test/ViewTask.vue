@@ -15,10 +15,10 @@
                                 </div>
                                 <div class="col-md-3 col-xs-3 col-sm-3 text-right">
                                     <h4 class="nm-bottom">
-                                        <span v-if="!editTaskDet"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
-                                        <span v-else><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
+                                        <span v-if="!editTaskDet && taskPermission.modify"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Edit Details"><span class="fa fa-pencil"></span></a></span>
+                                        <span v-if="editTaskDet"><a href="" @click.prevent="editTaskDet=!editTaskDet" class="btn btn-simple btn-close" title="Save and Close"><span class="fa fa-check text-success"></span></a></span>
                                         <!-- <span class="pull-right"><router-link :to="{name: 'us_view', params: {us_id: this.$route.params.us_id, sprint_id: this.$route.params.sprint_id}}" class="btn btn-simple btn-close" title="Close"><i class="fa fa-close"></i></router-link></span> -->
-                                        <span class=""><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
+                                        <span v-if="taskPermission.delete" class=""><a @click="dT" class="btn btn-simple btn-close" title="Delete This Task"><i class="fa fa-trash-o"></i></a></span>
                                     </h4>
                                 </div>
                             </div>
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="taskPermission.modify">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
                                 <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
@@ -177,7 +177,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap">
+                                    <div class="form-group is-empty comment-input-wrap" v-if="taskPermission.comment">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
                                         <button @click="openCFile" type="button" class="btn btn-md btn-info btn-simple">
                                             <i class="fa fa-paperclip"></i>

@@ -57,7 +57,7 @@
                     <div class="col-md-6">
                         <label for="">Due: </label>
                         <!-- <input v-model="taskData.due" type="date" class="my-input my-inp-blk"> -->
-                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en"></date-picker>
+                        <date-picker @change="changeDateFormat" v-model="taskData.due" format="YYYY-MM-DD" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date().setDate(new Date().getDate()+7)" lang="en"></date-picker>
                     </div>
                 </div>
                 <br/>

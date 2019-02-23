@@ -16,9 +16,9 @@
                     <div class="col-md-12">
                         <div class="board-info" style="width: 100%">
                             <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Board Progress</p>
-                            <p class="text-gray"><small>Task Completed: 1/30 Completed<span class="pull-right txt-bold">35%</span></small></p>
+                            <p class="text-gray"><small>Task Completed: {{ cTasks }}/{{ tTasks }} Completed<span class="pull-right txt-bold">{{ Math.round((cTasks / tTasks) * 100) }}%</span></small></p>
                             <div class="no-margin progress progress-line-info">
-                                <div class="progress-bar progress-bar-info" style="width: 35%;">
+                                <div class="progress-bar progress-bar-info" :style="'width: '+Math.round((cTasks / tTasks) * 100)+'%;'">
                                 </div>
                             </div>
                         </div>
@@ -28,8 +28,8 @@
                 <br/>
                 <div class="row">
                     <div class="col-md-12">
-                        <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Burndown Chart
-                        </p>
+                        <!-- <p class="txt-bold no-margin"><span class="fa fa-circle text-gray"></span> Burndown Chart
+                        </p> -->
                         <kanban-chart v-if="data" :data="data"></kanban-chart>
                     </div>
                 </div>
@@ -45,6 +45,7 @@ export default {
     components: {
         kanbanChart: KanbanChart,
     },
+    props: ['tTasks', 'cTasks'],
     data() {
         return {
             data: null,

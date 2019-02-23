@@ -7,7 +7,7 @@
             <div class="board-wrapper">
                 <router-view :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
                 <scrum-about  v-if="viewBAbout" @close="viewBAbout = false" :board="board"></scrum-about>
-                <scrum-setting  v-if="viewBSettings" @close="viewBSettings = false" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></scrum-setting>
+                <scrum-setting  v-if="viewBSettings" @close="viewBSettings = false" :cUser="cUser" :boardData="board" :permissions="permissions" :role_permissions="role_permissions" :not_members="not_members"></scrum-setting>
 
                 <div class="board-header">
                     <div class="board-name">
@@ -19,7 +19,7 @@
                             Details
                         </button>
                     </div>
-                    <div class="board-info">
+                    <div class="board-info" v-if="isAdmin">
                         <a @click.prevent="viewBSettings = !viewBSettings" class="btn btn-white btn-simple btn-round btn-xs" title="Board Settings"><span class="fa fa-gears fa-xs"></span> Board Settings</a>
                     </div>
                     <div class="board-info">
@@ -87,7 +87,8 @@ export default {
                 view: false,
                 add: false,
                 delete: false,
-            }
+            },
+            isAdmin: false
         }
     },
     created() {
@@ -96,6 +97,7 @@ export default {
         this.$store.dispatch('getCBoard', this.$route.params.board_id)
             .then(response => {
                 this.manageUserPermissions(response);
+                this.checkIfAdmin();
             })
         this.getBoardNotMembers();
     },
@@ -115,7 +117,8 @@ export default {
                 board: 'getCBoard',
                 permissions: 'getPermissionsList',
                 role_permissions: 'getRolePermissions',
-                not_members: 'getBoardNotMembers'
+                not_members: 'getBoardNotMembers',
+                cUser: 'currentUser'
             }),
         computeUSLength() {
             let totalTask = 0
@@ -181,6 +184,16 @@ export default {
                 }
                 if(permit.type == "task" && permit.name == "Comment" && permit.isAuthenticated) {
                     this.taskPermission.comment = true
+                }
+            });
+        },
+
+        checkIfAdmin() {
+            this.board.bu.forEach(user => {
+                if(user.id == this.cUser.id) {
+                    if(user.pivot.isAdmin) {
+                        this.isAdmin = true;
+                    }
                 }
             });
         },

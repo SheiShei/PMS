@@ -80,7 +80,7 @@
                                                     <button @click.prevent="setAsAdmin(member.pivot.isAdmin, member.id, member.pivot.role.id)" v-else class="btn btn-xs btn-info btn-danger">Remove as Admin</button></span>
                                                 </td>
                                                 <td class="td-actions text-right">
-	                                                <button @click="removeBoardMember(member.id)" type="button" rel="tooltip" class="btn btn-danger btn-xs btn-just-icon btn-simple btn-round" data-original-title="Remove Member" title="Remove Member">
+	                                                <button v-if="member.id != boardData.created_by" @click="removeBoardMember(member.id)" type="button" rel="tooltip" class="btn btn-danger btn-xs btn-just-icon btn-simple btn-round" data-original-title="Remove Member" title="Remove Member">
 	                                                    <i class="fa fa-times"></i>
 	                                                </button>
 	                                            </td>

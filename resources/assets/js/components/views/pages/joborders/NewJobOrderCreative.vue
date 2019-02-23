@@ -67,12 +67,14 @@
                                 <div class="form-group">
                                     <label for=""><span class="fa fa-calendar-o text-success"></span> Date In
                                         <small><i> (dd-mm-yyyy)</i></small></label>
-                                    <input required v-model="brand.date_in" class="form-control" type="date" />
+                                    <!-- <input required v-model="brand.date_in" class="form-control" type="date" /> -->
+                                    <date-picker @change="changeDateFormat(brand.date_in, 'in')" v-model="brand.date_in" format="MM-DD-YYYY" :not-after="new Date().setDate(new Date().getDate())" lang="en" class="my-inp-blk"></date-picker>
                                 </div>
                                 <div class="form-group">
                                     <label for=""><span class="fa fa-calendar-o text-danger"></span> Date Due
                                         <small><i> (dd-mm-yyyy)</i></small></label>
-                                    <input required v-model="brand.date_due" class="form-control" type="date" />
+                                    <!-- <input required v-model="brand.date_due" class="form-control" type="date" /> -->
+                                    <date-picker @change="changeDateFormat(brand.date_due, 'due')" v-model="brand.date_due" format="MM-DD-YYYY" :not-before="new Date(brand.date_in).setDate(new Date(brand.date_in).getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                                 </div>
                             </div>
                             <div class="col-md-8">
@@ -279,7 +281,7 @@
                                                         </select>
                                                         <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
                                                         <label for=""><span class="fa fa-clock-o"></span> Due </label>
-                                                        <date-picker @change="changeDateFormat(task.due)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
+                                                        <date-picker @change="changeDateFormat(task.due, 'task', index)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date(brand.date_due).setDate(new Date(brand.date_due).getDate())" lang="en" class="my-inp-blk"></date-picker>
                                                         <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
                                                         <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
                                                     </div>
@@ -408,7 +410,7 @@ export default {
                     ids: []
                 },
                 status: 1,
-                date_in: '',
+                date_in: new Date(),
                 date_due: ''
             },
             details: {
@@ -436,6 +438,16 @@ export default {
             .then(() => {
                 $(this.$el).find('.selectpicker').selectpicker('refresh');
             })
+    },
+    watch: {
+        justNewBoard(nv, ov) {
+            this.boardMembers = [];
+            this.boardNotMembers = [];
+            if(nv == false) {
+                this.brand.newBoard.name = '';
+                this.brand.newBoard.ids = [];
+            }
+        }
     },
     computed: {
         ...mapGetters({
@@ -548,10 +560,20 @@ export default {
             this.boardMembers =  e.member;
             this.boardNotMembers = e.not
         },
-        changeDateFormat(date) {
+        changeDateFormat(date, type, i) {
+            // console.log(date);
             // this.taskData.due = new Date(this.taskData.due).toISOString().slice(0, 10).replace('T', ' ');
             date = moment(date).format('YYYY-MM-DD')
-            console.log(date);
+            if(type == 'in') {
+                this.brand.date_in = date;
+            }
+            if(type == 'due') {
+                this.brand.date_due = date;
+            }
+            if(type == 'task') {
+                this.tasks[i].due = date;
+            }
+            // console.log(date);
             
         }
     }

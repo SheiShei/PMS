@@ -52,4 +52,8 @@ class JobOrder extends Model
         return Carbon::parse($date)->format('M d, Y');
     }
 
+    public function progress() {
+        return $this->hasMany('App\Progress', 'jo_id');
+    }
+
 }

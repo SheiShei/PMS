@@ -17,6 +17,7 @@ class CreateProgressesTable extends Migration
             $table->increments('id');
             $table->char('board_id', 36)->index()->nullable();
             $table->char('sprint_id', 36)->index()->nullable();
+            $table->char('jo_id', 36)->index()->nullable();
             $table->tinyInteger('remaining_points')->nullable();
             $table->tinyInteger('completed_tasks')->nullable();
             $table->tinyInteger('todo')->nullable();
