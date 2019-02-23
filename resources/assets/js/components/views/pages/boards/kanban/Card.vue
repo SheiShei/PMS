@@ -12,7 +12,7 @@
                 <button v-if="modifyList" class="" @click="revert"><span class="fa fa-edit"></span></button>
                 <router-link tag="button" v-if="delList" :to="{ name: 'deletecard', params: {cardid: list.id} }"><span class="fa fa-trash-o"></span></router-link>
 
-                <button  v-if="!list.isDone" @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
+                <button  v-if="!list.isDone && modifyList" @click="setAsDoneList(list.id)" title="Set as Done List"><span class="fa fa-thumbs-o-up"></span></button>
             </div>
         </div>
         <div class="list-edit" v-if="showEditList">
@@ -119,7 +119,7 @@ export default {
                         this.monitorAddTask(e.added.element)
                     }
                     if(e.removed) {
-                        this.monitorRemovedTask(list_id)
+                        this.monitorRemovedTask(list_id, e.removed.element)
                     }
                 })
 
@@ -146,8 +146,8 @@ export default {
                     
                 })
         },
-        monitorRemovedTask(e) {
-            axios.post('/api/monitorRemovedTask', {list_id: e})
+        monitorRemovedTask(e, task) {
+            axios.post('/api/monitorRemovedTask', {list_id: e, task: task})
                 .then((response) => {
                     // console.log(response);
                     

@@ -65,12 +65,11 @@
 
 			<div class="workload-info">
 				<div class="btn-group bootstrap-select">
-					<select v-model="task_status"  @change="filterStatus" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
+					<select v-model="task_status"  @change="initializeTask" class="selectpicker" data-style="btn btn-sm btn-info" type="text">
 						<option value="">All</option>
 						<option value="Active">Active</option>
 						<option value="Overdue">Overdue</option>
 						<option value="Completed">Completed</option>
-				
 					</select>
 				</div>
 			</div>
@@ -208,14 +207,16 @@ export default {
 						type: this.filterby,
 						team: this.team ,
 						brand: this.selectedBrand.id,
-						jo: this.selectedjo	
+						jo: this.selectedjo,
+						task_status: this.task_status	
 					}
 				}
 				else {
 					var data = { 
 						type: this.filterby,
 						team: this.team ,
-						jo: this.selectedjo	
+						jo: this.selectedjo,
+						task_status: this.task_status	
 					}
 				}
 			}
@@ -223,7 +224,8 @@ export default {
 				var data = { 
 						type: this.filterby,
 						team: this.team ,
-						jo: this.selectedjo	
+						jo: this.selectedjo	,
+						task_status: this.task_status
 				}
 			}
 			axios.post('/api/testFunc', data) 
@@ -301,25 +303,6 @@ export default {
 			this.selectedjo = '';
 			this.initializeTask();
 		},
-
-		filterStatus() {
-			// this.tasks = [];
-			// this.show = false;
-			// this.tasks = [];
-			// this.show = false;
-			// // this.tasks.forEach((task, index) => {
-			// 	// if(task.status != this.task_status) {
-			// 	// 	this.tasks.splice(index, 1);
-			// 	// }
-			// // });
-			// this.tasks = [];
-			// // this.setTrue();
-			// this.show = true;
-		},
-
-		setTrue() {
-			this.show = true;
-		}
 
 	}
 }

@@ -138,7 +138,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input ref="files" v-show="false" @change="onFileChange" type="file" id="addAttachmentInput" multiple class="form-control">
-                                <p style="cursor: pointer"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
+                                <p style="cursor: pointer" v-if="per.modify"><a @click.prevent="chooseFile" class="btn-default btn-simple btn-sm"><span class="fa fa-plus"></span> Add an Attachment</a></p>
                             </div>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group is-empty comment-input-wrap">
+                                    <div class="form-group is-empty comment-input-wrap" v-if="per.comment">
                                         <input ref="files" v-show="false" @change="cFile" type="file" id="cFile" multiple class="form-control">
                                         <button @click="openCFile" type="button" class="btn btn-md btn-info btn-simple">
                                             <i class="fa fa-paperclip"></i>

@@ -4,7 +4,7 @@
             <div class="board-background-overlay">
             </div>
             <div class="board-wrapper" >
-                <router-view :usPermission="usPermission" :taskPermission="taskPermission"></router-view>
+                <router-view :usPermission="usPermission" :taskPermission="taskPermission" :cTasks="computeTaskCompleted" :tTasks="computeTaskLength"></router-view>
                 
                 <div class="board-header">
                     <div class="board-name">
@@ -82,6 +82,22 @@ export default {
                 cSprint: 'getSprint',
                 board: 'getCBoard',
             }),
+        computeTaskLength() {
+            let totalTask = 0
+            this.cSprint.tasks.forEach(task => {
+                totalTask++;
+            });
+            return totalTask;
+        },
+        computeTaskCompleted() {
+            let totalTask = 0
+            this.cSprint.tasks.forEach(task => {
+                if(task.status == 4) {
+                    totalTask++;
+                }
+            });
+            return totalTask;
+        }
     },
 
     methods: {

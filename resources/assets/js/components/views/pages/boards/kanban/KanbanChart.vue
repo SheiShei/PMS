@@ -46,8 +46,18 @@ export default {
                 // categories: ['2018 Jan 1-4', '2018 Jan 5-9', '2018 Jan 10-20', '2018 Jan 21-Feb 20', '2018 Feb 21- 2019 Jan 1', '2019 Jan 2-10'],
             },
             yaxis:{
-                min: 0 ,
-                max: this.data.max
+                forceNiceScale: true,
+                title: {
+                    text: 'Tasks Completed'
+                },
+                labels: {
+                    formatter: function(val, index) {
+                        if(val % 1 === 0) {
+                            return val;
+                        }
+                        return val.toFixed(1);
+                    }
+                }
             }
             }
         }

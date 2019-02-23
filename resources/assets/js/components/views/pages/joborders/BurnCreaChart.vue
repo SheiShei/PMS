@@ -11,11 +11,12 @@ export default {
     components: {
         apexchart: VueApexCharts
     },
+    props: ['chart'],
     data(){
         return{
             series: [{
-                name: "Task Done",
-                data: [160, 134, 120, 50, 37, 0]
+                name: "Tasks Remaining",
+                data: this.chart.data
             }],
             chartOptions: {
                 chart: {
@@ -41,11 +42,22 @@ export default {
                 },
             },
             xaxis: {
-                categories: ['2018 Jan 1-4', '2018 Jan 5-9', '2018 Jan 10-20', '2018 Jan 21-Feb 20', '2018 Feb 21- 2019 Jan 1', '2019 Jan 2-10'],
+                type: "datetime",
+                // categories: ['2018 Jan 1', '2018 Jan 2', '2018 Jan 3', '2018 Jan 4', '2018 Jan 5', '2018 Jan 6', '2018 Jan 7'],
             },
             yaxis:{
-                min: 0 ,
-                max: 160
+                forceNiceScale: true,
+                title: {
+                    text: 'Tasks Remaining'
+                },
+                labels: {
+                    formatter: function(val, index) {
+                        if(val % 1 === 0) {
+                            return val;
+                        }
+                        return val.toFixed(1);
+                    }
+                }
             }
             }
         }

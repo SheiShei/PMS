@@ -328,7 +328,7 @@
                     <div class="col-md-12">
                         <div class="taskchart shadow">
                             <p class="no-margin"><span class="txt-bold"><span class="fa fa-line-chart"></span> Burndown Chart</span></p>
-                            <bd-crea-chart></bd-crea-chart>
+                            <bd-crea-chart v-if="chart" :chart="chart"></bd-crea-chart>
                         </div>
                     </div>
                 </div>
@@ -385,6 +385,7 @@ export default {
             error: false,
             show: true,
             tasks: [],
+            chart: null,
             options: {
                 title: {
                     label: 'Team Workload',
@@ -482,6 +483,17 @@ export default {
                 .then ((response) => {
                     this.show = false;
                     this.details = response.jobor;
+
+                    var max = 0;
+                    response.bdData.forEach(date => {
+                        if(date.y > max) {
+                            max = date.y
+                        }
+                    });
+                    this.chart = {
+                        data: response.bdData,
+                        max: max
+                    }
 
                     if(response.jocreatives) {
                         let media = [], ad_type = [], file_type = [];
