@@ -62,7 +62,7 @@
                             <hr/>
                            <div class="row" v-if="!editTaskDet">
                                 <div class="col-md-12">
-                                    <p v-if="data.jo_id"><small>Task from JO no. 237874910</small></p>
+                                    <p v-if="data.jo_id"><small>Task from JO '{{ data.joborder.name }}'</small></p>
                                     <p class="text-gray"><small>{{ data.description }}</small></p>
                                     
                                 </div>

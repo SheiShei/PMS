@@ -268,7 +268,7 @@ class BoardController extends Controller
     }
     
     public function getBoardLists(Request $request) {
-        $lists = Card::where('board_id', $request->id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        $lists = Card::where('board_id', $request->id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('order' , 'asc')->get();
 
         return $lists;
     }
@@ -350,7 +350,7 @@ class BoardController extends Controller
     }
 
     public function getTaskData(Request $request) {
-        $task = Task::with('assigned_to', 'files')->where('id', $request->id)->first();
+        $task = Task::with('assigned_to', 'files', 'joborder')->where('id', $request->id)->first();
         return $task;
     }
 
@@ -611,7 +611,7 @@ class BoardController extends Controller
     public function getScrumLists(Request $request) {
         $board = Board::find($request->id);
 
-        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks'])->orderBy('created_at', 'asc')->get();
+        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks', 'us.tasks.joborder'])->orderBy('created_at', 'asc')->get();
         foreach ($sprints as $key => $sprint) {
             if($sprint->due_date == Carbon::now()->toDateString()){
                 $sprint->update([
@@ -902,7 +902,7 @@ class BoardController extends Controller
                                 });
                         }
                         if($request->task_status == 'Overdue') {
-                                $q->whereDate('due', '<=', $dateNow)->where(function ($wq) {
+                                $q->whereDate('due', '<', $dateNow)->where(function ($wq) {
                                     $wq->whereHas('card', function($cq) {
                                         $cq->where('isDone', false);
                                     })->orWhere('status', '!=', 4);
