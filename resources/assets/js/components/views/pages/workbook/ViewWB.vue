@@ -186,7 +186,7 @@
                             <br/>
                         </div>
 
-                        <div class="taskchart shadow mt-4">
+                        <div v-if="getCurrentImage.revisions.length!=1" class="taskchart shadow mt-4">
                             <div class="row">
                                 <div class="col-md-12">
                                     <p><span class="fa fa-circle text-gray"></span>
@@ -194,7 +194,8 @@
                                     <span v-if="getCurrentImage.revisions[0].rating!=null" v-for="n in getCurrentImage.revisions[0].rating" :key="n.id" class="fa fa-star text-warning"></span>
                                     <span v-if="getCurrentImage.revisions[0].rating==null" v-for="m in 5" :key="m.id" class="fa fa-star-o"></span>
                                 &nbsp;.
-                                    <small>{{getCurrentImage.revisions[0].created_at | moment("MMM D, YYYY")}}.&nbsp;<a style="cursor: pointer" v-if="!openDetails" @click="openDetails=!openDetails">View Details</a>
+                                    <small>{{getCurrentImage.revisions[0].created_at | moment("MMM D, YYYY")}}.&nbsp;
+                                        <a style="cursor: pointer" v-if="!openDetails" @click="openDetails=!openDetails">View Details</a>
                                     <a v-if="openDetails" style="cursor: pointer" @click="openDetails=!openDetails">Close Details</a>
                                     <span class="text-gray"><i>{{getCurrentImage.revisions[0].comment}}</i></span></small>
                                     </p>

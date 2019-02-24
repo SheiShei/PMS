@@ -147,7 +147,8 @@
                                                 <img :src="messages.sender.picture" class="medium-avatar" alt="">
                                             </div>
                                             <router-link :to="{ name: 'convo-view', params: {convo_id: messages.sender.slug} }" class="msg-right">
-                                                <p class="txt-bold text-default msgsender">{{messages.sender.name}} {{messages.message_date}} {{messages.message_sent}}</p>
+                                                <p class="msgsender"><span class="txt-bold text-default">{{messages.sender.name}}</span>
+                                                <small class="text-gray">&nbsp;{{messages.message_date| moment("MMM D, YYYY")}}, {{messages.message_sent}}</small></p>
                                                 <p class="mainmsg">{{messages.text}}</p>
                                             </router-link>
                                         </div>

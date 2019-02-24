@@ -193,10 +193,7 @@ class WorkbookController extends Controller
             };
             $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
         }
-        // $workbook=$nfile->workbook()->
-        // return $user= User::with('workbooks');
-        // find($nfile->workbook()->brand_id);
-        // $user->notify(new SendforRevision($origname->toArray()));
+        
 
         return $workbooks;
       

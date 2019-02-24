@@ -74,7 +74,7 @@ class BrandsController extends Controller
             $input['logo'] = $name;
         }
         if(!$request->hasFile('logo')){
-            $input['logo'] = 'logooo2.png';
+            $input['logo'] = 'default.png';
         }
 
         $brand = Brand::create([
@@ -96,7 +96,7 @@ class BrandsController extends Controller
             'password'=>bcrypt($request->password),
             'role_id'=>4,
             'picture'=>$input['logo'],
-            'bg_image'=>'1549014873pug.jpg' //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
+            'bg_image'=>'bg-default.jpeg' //pwede kasing di magupload ng picture so may defaul dun sa if, hindi pwedeng $name lang
         ]);
 
         $acma = User::find($request->acma_id);
@@ -108,12 +108,14 @@ class BrandsController extends Controller
 
     public function deleteBrands(Request $request) {
        
-        $brand = Brand::findOrFail($request->id);
-        $brand->delete();
+        $brand = Brand::with('jos')->findOrFail($request->id);
         $user = User::where('brand_id', $request->id)->first();
+        $jo = JobOrder::where('brand_id', $request->id)->get();
+        $brand->delete();
         $user->delete();
-        $jo = JobOrder::where('brand_id', $request->id)->first();
-        $jo->delete();
+        foreach ($jo as $key => $jos) {
+            $jos->delete();
+        }
         return response()->json(['status' => 'success', 'message' => 'deleted succesfully'], 200);
     }
 
@@ -133,7 +135,14 @@ class BrandsController extends Controller
     public function getBrandJos(Request $request) {
         $sort_key = explode(".",$request->sort)[0];
         $sort_type = explode(".",$request->sort)[1];
-        $query = JobOrder::where('brand_id', $request->id)->with('brand:id,name')->orderBy($sort_key, $sort_type);
+        if($request->notArchive){
+
+            $query = JobOrder::where('brand_id', $request->id)->with('brand:id,name')->orderBy($sort_key, $sort_type);
+        }
+        else{
+            $query = JobOrder::onlyTrashed()->where('brand_id', $request->id)->with('brand:id,name')->orderBy($sort_key, $sort_type);
+
+        }
 
         if($request->search) {
             $query->where('name', 'like', $request->search.'%');

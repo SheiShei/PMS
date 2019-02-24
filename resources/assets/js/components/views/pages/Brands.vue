@@ -195,7 +195,7 @@ export default {
         const ndata = {
             search: '',
             sort: 'created_at.desc',
-            notArchive: true
+            notArchive: true,
         }
         this.$store.dispatch('getJobOrders', ndata);
         this.$store.dispatch('getuser_info');

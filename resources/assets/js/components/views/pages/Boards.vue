@@ -28,6 +28,7 @@
                                 </span>
                             </h6>
                             <hr/>
+                            <p v-if="userBoards==0" class="note">No boards to show</p>
                             <div class="boardlist" style="max-height: 70vh; overflow-y:auto" is="transition-group" name="list-complete">
                                 <div v-for="board in userBoards" :key="board.id" class="list-complete-item">
                                     <router-link v-if="board.type == 1" :to="{ name: 'kanboard', params: {board_id: board.id} }" class="boarddiv">

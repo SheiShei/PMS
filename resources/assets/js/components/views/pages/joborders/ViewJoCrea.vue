@@ -347,7 +347,8 @@
                         <h3>Success!!</h3>
                     </div>
                     <div class="modal-body text-center">
-                        <h5>Go to JO List? </h5>
+                        <p class="txt-bold">This job order was successfully signed off</p>
+                        <p class="">Do you want to go to Job Order List?</p>
                     </div>
                     <div class="modal-footer text-center">
                         <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>
@@ -586,7 +587,7 @@ export default {
                     })
             }
             else {
-                alert('Di pa pwede, tapusin niyo task niyo, Gagu!')
+                alert('Finish your tasks first!!')
             }
         },
 
