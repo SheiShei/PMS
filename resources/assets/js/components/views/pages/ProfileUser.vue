@@ -359,7 +359,6 @@ export default {
             else{
 				form.append('bg_image', this.data.bg_image);
 				console.log(this.data.bg_image);
-				
                 }
             form.append('name', this.data.name);
             form.append('picture', this.data.picture);

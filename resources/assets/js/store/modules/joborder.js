@@ -131,7 +131,7 @@ const actions = {
             notArchive: data.notArchive,
         }})
             .then ((response) => {
-                //  console.log(response.data);
+                 console.log(response.data);
                 commit('setJOs', response.data);
             })
             .catch ((error) => {
