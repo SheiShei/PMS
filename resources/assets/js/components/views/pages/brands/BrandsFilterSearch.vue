@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th>Brand Name</th>
+                    <th>Logo</th>
                     <th>Date Added</th>
                     <th>Total JO</th>
                     <th>Total Workbook</th>

@@ -64,37 +64,50 @@
                 <div class="col-md-8">
                     <div class="taskchart shadow" v-if="brandJOs">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span></h6>
                             </div>
-                            <div class="col-md-8 text-right">
+                            <div class="col-md-6 text-right">
+                                <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-xs">
+                                    New Web JO
+                                </router-link>
+                                <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-xs">
+                                    New Creatives JO
+                                </router-link>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
                                 <select @change="getBrandJOs" v-model="jofilter" class="my-input my-thin-select">
                                     <option value="created_at.desc">Date (Descending)</option>
                                     <option value="created_at.asc">Date (Ascending)</option>
                                     <option value="name.asc">Name (Ascending)</option>
                                     <option value="name.desc">Name (Descending)</option>
                                 </select>
+                            </div>
+                            <div class="col-md-6 col-sm-6 text-right">
                                 <input @input="searched" v-model="josearch" type="search" class="my-thin-input" placeholder="Search...">
                                 &nbsp;&nbsp;<span class="fa fa-search text-gray"></span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="table-responsive" style="margin-top: 10px; max-height: 30vh; overflow:auto">
-                                    <table class="table table-bordered table-brands">
+                                <!-- <div class="table-responsive" style="margin-top: 10px; max-height: 30vh; overflow:auto"> -->
+                                <div class="v2-table" style="margin-top: 10px;">
+                                    <table>
                                         <thead>
                                             <tr>
-                                                <th class="">Date Created</th>
                                                 <th>Title</th>
-                                                <th>Team</th>
+                                                <th class="">Date Due</th>
+                                                <th>Type</th>
                                                 <th>Status</th>
                                                 <th class="text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody name="list-complete" is="transition-group" style="height: 10vh; overflow:auto">
                                             <tr v-for="jo in brandJOs" :key="jo.id" class="list-complete-item">
-                                                <td>{{ jo.created_at }}</td>
-                                                <td>{{ jo.name }}</td>
+                                                <td><span class="fa fa-copy"></span>&nbsp;{{ jo.name }}</td>
+                                                <td><span class="fa fa-clock-o text-gray"></span>&nbsp;{{ jo.duedate }}</td>
                                                 <td v-if="jo.type == 1">Creatives</td>
                                                 <td v-if="jo.type == 2">Web</td>
                                                 <td>
@@ -104,12 +117,14 @@
                                                     <span v-if="jo.status == 4" class="label label-success">Completed</span>
                                                 </td>
                                                 <td class="td-actions text-right" v-if="cUser">
-                                                    <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
+                                                    <!-- <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
                                                         <i class="fa fa-eye"></i>
-                                                    </button>
-                                                    <button v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                    </button> -->
+                                                    <a @click="view(jo.id, jo.type)" style="cursor:pointer" class="text-info"><span class="fa fa-eye"></span></a>&nbsp;
+                                                    <!-- <button v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                         <i class="fa fa-trash-o"></i>
-                                                    </button>
+                                                    </button> -->
+                                                    <a v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" style="cursor:pointer" class="text-danger"><span class="fa fa-trash-o"></span></a>
                                                 </td>
                                             </tr>
                                         </tbody>
