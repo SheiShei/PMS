@@ -52,9 +52,10 @@
                                                 <option value="">All</option>
                                                 <option value="1">Active</option>
                                                 <option value="2">Completed</option>
-                                                <option value="3">Blocked</option>
+                                                <option value="3">Undone</option>
+                                                <option value="4">Overdue</option>
                                             </select>
-                                            <input @input="search()" v-model="data.search" type="search" class="my-thin-input" placeholder="Search...">
+                                            <input @input="filterjo()" v-model="data.search" type="search" class="my-thin-input" placeholder="Search...">
                                             &nbsp;&nbsp;<span class="fa fa-search text-gray"></span>
                                         </div>
                                     </div>
@@ -78,11 +79,11 @@
                                                         <td v-if="jo.status==1"><span class="label label-info">Active</span></td>
                                                         <td v-if="jo.status==2"><span class="label label-success">Completed</span></td>
                                                         <td v-if="jo.status==3" ><span class="label label-warning">Undone</span></td>
-                                                        <td v-if="jo.status==4"><span class="label label-danger">Overdued</span></td>
+                                                        <td v-if="jo.status==4"><span class="label label-danger">Overdue</span></td>
 
                                                         <td>
-                                                            <p class="text-gray no-margin"><small>Completed: 1/30<span class="pull-right txt-bold">80%</span></small></p>
-                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" style="width: 35%;">
+                                                            <p class="text-gray no-margin"><small>{{ completedTasks(jo) }}/{{ jo.tasks.length }}<span class="pull-right txt-bold">{{ joPercent(jo) }}%</span></small></p>
+                                                            <div class="no-margin progress progress-line-info"><div class="progress-bar progress-bar-info" :style="'width: '+joPercent(jo)+'%;'">
                                                             </div></div>
                                                         </td>
                                                         <td>
@@ -175,10 +176,11 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_rworkbooks==0" class="note">No workbooks to show</p>
                                 </div>
                                 <br/>
                                 <div class="taskchart shadow">
-                                    <p><span class="fa fa-star-o"></span> Waiting Client's Review</p>
+                                    <p><span class="fa fa-star-o"></span> Waiting for Client's Review</p>
                                     <hr>
                                     <div v-for="(urwb, index) in display_urworkbooks" :key="urwb.id"  class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
@@ -196,6 +198,7 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_urworkbooks==0" class="note">No workbooks to show</p>
                                 </div>
                                 <br/>
                                
@@ -237,10 +240,12 @@ export default {
     // },
     data() {
         return {
-        data: {
-            jo_status: '',
-            search: ''
-        }
+        data:{
+            sort: 'created_at.desc',
+            search: '',
+            notArchive: true,
+            jo_status: ''
+        },
        
         }
     },
@@ -279,9 +284,43 @@ export default {
     filterjo(){
         this.$store.dispatch('display_joborders',this.data)
     },
-    // search:_.debounce(function (e) {
-    //         this.filterjo();
-    //     }, 500)
+     joPercent(jo) {
+            var done = 0;
+            var total = 0;
+            jo.tasks.forEach(task => {
+                total++;
+                if(task.card_id) {
+                    if(task.card.isDone) {
+                        done++;
+                    }
+                }
+                else {
+                    if(task.status == 4) {
+                        done++;
+                    }
+                }
+            });
+
+            return Math.round((done/total) * 100);
+        },
+        completedTasks(jo) {
+            var ctasks = 0
+            jo.tasks.forEach(task => {
+                if(task.card_id) {
+                    if(task.card.isDone) {
+                        ctasks++;
+                    }
+                }
+                else {
+                    if(task.status == 4) {
+                        ctasks++;
+                    }
+                }
+            });
+
+            return ctasks;
+        }
+       
      }
 }
 </script>

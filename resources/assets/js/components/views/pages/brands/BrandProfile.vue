@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-12 col-sm-12 col-xs-12" v-if="cUser.role.id == 2">
                                 <router-link :to="{name: 'add_workbook'}" class="btn btn-success btn-md btn-block">Create New Workbook</router-link>
                             </div>
                         </div>
@@ -112,8 +112,9 @@
                                                 <td v-if="jo.type == 2">Web</td>
                                                 <td>
                                                     <span v-if="jo.status == 1" class="label label-info">Active</span>
-                                                    <span v-if="jo.status == 2" class="label label-success">Completed</span>
-                                                    <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
+                                                    <span v-if="jo.status == 2" class="label label-danger">Overdue</span>
+                                                    <span v-if="jo.status == 3" class="label label-warning">Pending</span>
+                                                    <span v-if="jo.status == 4" class="label label-success">Completed</span>
                                                 </td>
                                                 <td class="td-actions text-right" v-if="cUser">
                                                     <!-- <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">

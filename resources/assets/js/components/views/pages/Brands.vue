@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="user_info.role_id == 2">
                             <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
                             <hr/>
                             <div class="row">
@@ -91,7 +91,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;</p>
                             <hr/>
                             <div class="row" v-if="jos!=0">
                                 <div class="col-md-12">
@@ -249,8 +249,12 @@ export default {
             let ndata = this.ndata;
             this.ndata.notArchive = !this.ndata.notArchive;
             this.$store.dispatch('getJobOrders', ndata); 
-            console.log('archive');
-                   },
+            // console.log('archive');
+        },
+
+        search: _.debounce(function() {
+            this.getsData();
+        }, 500)
     }
 }
 </script>

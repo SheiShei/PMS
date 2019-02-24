@@ -54,7 +54,7 @@ class AdminController extends Controller
             $query->where('name', 'like', $request->search . '%');
         }
 
-        $user = $query->paginate(10);
+        $user = $query->get();
         // dd($request);
         return $user;
         // return $request;
@@ -895,7 +895,7 @@ class AdminController extends Controller
                             }
                         }
                         else { #if Job Order type is Web
-                            if($jo->joweb()->first()->web_proofed_at && $jo->joweb()->first()->acma_proofed_at) {
+                            if($jo->joweb()->first()->acma_proofed_at) {
                                 $jo->update([
                                     'status' => 4
                                 ]);

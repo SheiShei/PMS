@@ -59,6 +59,8 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_urworkbooks==0" class="note">No workbooks to show</p>
+
                                 </div>
                                 <br/>
                                 <div class="taskchart shadow">
@@ -124,6 +126,8 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_rworkbooks==0" class="note">No workbooks to show</p>
+
                                 </div>
 
                             </div>
@@ -133,7 +137,7 @@
                                     <!-- <span><a href="#" title="Create New JO" class="btn btn-just-icon btn-round btn-xs"><i class="fa fa-plus"></i></a></span> -->
                                     </p>
                                     <hr>
-                                    <p v-if="dashboard_client.jocount==0" class="note">No created JO to show</p>
+                                    <p v-if="dashboard_client.jocount==0" class="note">No Job Orders to show</p>
                                     <div class="mess">
                                     <ul v-for="jo in display_joborders" :key="jo.id" class="list-unstyled">
                                         <li><span class="fa fa-circle text-info"></span>

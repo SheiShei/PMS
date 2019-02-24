@@ -103,7 +103,7 @@
                                 </div>
                                 <br/>
                                 <div class="taskdisp shadow">
-                                    <p><span class="fa fa-clock-o text-danger"></span> Overdued Task</p>
+                                    <p><span class="fa fa-clock-o text-danger"></span> Overdue Task</p>
                                     <hr>
                                     <div class="taskrem">
                                         <div v-if="overdued_tasks" v-for="taskdue in overdued_tasks" :key="taskdue.id" class="taskremdiv">
@@ -116,7 +116,7 @@
                                                     <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
                                             </div>
                                         </div>
-                                        <p v-if="overdued_tasks==0" class="note"> There still no overdued tasks</p>
+                                        <p v-if="overdued_tasks==0" class="note"> There still no overdue tasks</p>
                                           
                                        
                                     </div>

@@ -40,7 +40,7 @@
                                             </form>
                                         </div>
 
-                                        <router-link ref="you_convo" :to="{ name: 'convo-view', params: {convo_id: currentUser.slug} }" href="" class="cont-name">
+                                        <!-- <router-link ref="you_convo" :to="{ name: 'convo-view', params: {convo_id: currentUser.slug} }" href="" class="cont-name">
                                             <div class="media">
 		        					            <a @click.prevent class="pull-left" href="">
 		        						            <div class="avatar">
@@ -48,11 +48,11 @@
 		        						            </div>
 		        					            </a>
 		        					            <div class="media-body">
-		        						            <h4 class="media-head">You</h4>
-		        						            <!-- <p class="prev-msg"> Don't forget, You're Aweso...</p> -->
+		        						            <h4 class="media-head">You <small class=""><span class="label label-success unread-label">2</span></small></h4>
+		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
                                                 </div>
 		        					        </div>
-                                        </router-link>
+                                        </router-link> -->
 
                                         <router-link ref="dm_convo1"  v-for="user in users" :key="user.id" v-if="currentUser.id != user.id" :to="{ name: 'convo-view', params: {convo_id: user.slug} }"  href="" class="cont-name">
                                             <div class="media">
