@@ -100,7 +100,8 @@
                                                 <td>
                                                     <span v-if="jo.status == 1" class="label label-info">Active</span>
                                                     <span v-if="jo.status == 2" class="label label-success">Completed</span>
-                                                    <span v-if="jo.status == 3" class="label label-danger">Blocked</span>
+                                                    <span v-if="jo.status == 3" class="label label-warning">Undone</span>
+                                                    <span v-if="jo.status == 4" class="label label-danger">Overdue</span>
                                                 </td>
                                                 <td class="td-actions text-right" v-if="cUser">
                                                     <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">

@@ -145,7 +145,12 @@ const actions = {
         return new Promise ((resolve, reject) => {
             axios.post('/api/display_joborders',{
                 status: data.jo_status,
-                search: data.search})
+                search: data.search,
+                notArchive: data.notArchive,
+                sort: data.sort,
+               
+
+            })
                 .then((response) => {
                     console.log('display_joborders',response.data);
                     commit('display_joborders', response.data);
