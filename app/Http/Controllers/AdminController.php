@@ -54,7 +54,7 @@ class AdminController extends Controller
             $query->where('name', 'like', $request->search . '%');
         }
 
-        $user = $query->paginate(10);
+        $user = $query->get();
         // dd($request);
         return $user;
         // return $request;

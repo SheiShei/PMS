@@ -246,8 +246,12 @@ export default {
             let ndata = this.ndata;
             this.ndata.notArchive = !this.ndata.notArchive;
             this.$store.dispatch('getJobOrders', ndata); 
-            console.log('archive');
-                   },
+            // console.log('archive');
+        },
+
+        search: _.debounce(function() {
+            this.getsData();
+        }, 500)
     }
 }
 </script>
