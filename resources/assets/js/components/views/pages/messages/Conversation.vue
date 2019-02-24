@@ -289,6 +289,7 @@ export default {
         this.getMessages();
     },
     mounted () {
+        this.stopListening()
         this.listenMessages();
     },
     destroyed () {

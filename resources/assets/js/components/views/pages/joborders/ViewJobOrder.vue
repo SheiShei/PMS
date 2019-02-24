@@ -450,7 +450,7 @@
                         <div class="taskchart shadow" v-if="details.joweb">
                             <div class="row">
                         
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <form @submit.prevent="signed">
                                     <div class="row" v-if="details.joweb.acma_proofed_at">
                                         <div class="col-md-12">
@@ -487,16 +487,16 @@
                                         </div>
                                     </div>
                                     </form>
-                                </div>
+                                </div> -->
 
 
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <form @submit.prevent="signed">
                                     <div class="row" v-if="details.joweb.acma_proofed_at">
                                         <div class="col-md-12">
                                             <div>
                                                 <p><span class="txt-bold">Approved by :</span> {{ details.joweb.acma_signed_by.email }}</p>
-                                                <p><span class="txt-bold">Date Approved :</span> {{ details.joweb.acma_proofed_at }}</p>
+                                                <p><span class="txt-bold">Date Approved :</span> {{ details.joweb.acma_proofed_at | moment('calendar') }}</p>
                                             </div>
                                         </div>
                                     </div>

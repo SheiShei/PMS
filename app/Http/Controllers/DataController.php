@@ -293,20 +293,20 @@ class DataController extends Controller
             'receiver_id' => $request->receiver
         ]);
 
-        // if(!$convo) {
-        //     $receiverData = User::find($request->receiver);
-        //     $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-        //     // event(new DirectMessageEvent($message, $receiverData, NULL));
-        //     broadcast(new DirectMessageEvent($message, $receiverData, NULL))->toOthers();
-        // }
-        // else {
-        //     $convoData = Conversation::find($request->convo);
-        //     $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
-        //     // event(new DirectMessageEvent($message, NULL, $convoData));
-        //     broadcast(new DirectMessageEvent($message, NULL, $convoData))->toOthers();
-        // }
-        $receivers = User::findOrFail($request->receiver);  
-        $receivers->notify(new ReceiveMessage($receivers->toArray()));        
+        if(!$convo) {
+            $receiverData = User::find($request->receiver);
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+            // event(new DirectMessageEvent($message, $receiverData, NULL));
+            event(new DirectMessageEvent($message, $receiverData, NULL));
+        }
+        else {
+            $convoData = Conversation::find($request->convo);
+            $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
+            // event(new DirectMessageEvent($message, NULL, $convoData));
+            event(new DirectMessageEvent($message, NULL, $convoData));
+        }
+        // $receivers = User::findOrFail($request->receiver);  
+        // $receivers->notify(new ReceiveMessage($receivers->toArray()));        
 
         $newM = Message::where('id', $messages->id)->with('sender:id,slug,name,picture')->with('receiver:id,slug,name,picture')->first();
 

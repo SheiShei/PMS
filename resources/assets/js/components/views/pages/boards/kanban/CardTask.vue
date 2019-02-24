@@ -1,9 +1,9 @@
 <template>
     <!-- simple card -->
-    <div class="t-card" @mouseout="openTaskOpt=false" @drag="checkMove" v-if="!task.task_cover">
+    <div class="t-card" @mouseout="openTaskOpt=false" @drag="checkMove" v-if="!task.task_cover" :class="task.jo_id ? (task.joborder.status == 4 ? '' : 'not-finished') : 'not-finished'">
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
-                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">jo name here</span>
+                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">{{ task.joborder.name }}</span>
             </div>
             <div class="t-name">
                 <b>{{ task.name }}</b>
@@ -27,10 +27,10 @@
     </div>
 
     <!-- card with image -->
-    <div class="t-card" @mouseout="openTaskOpt=false" v-else>
+    <div class="t-card" @mouseout="openTaskOpt=false" v-else :class="task.jo_id ? (task.joborder.status == 4 ? '' : 'not-finished') : 'not-finished'">
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
-                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">jo name here</span>
+                <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">{{ task.joborder.name }}</span>
             </div>
             <div class="t-name">
                 <b>{{ task.name }}</b>

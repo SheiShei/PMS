@@ -143,6 +143,7 @@ class AdminController extends Controller
 
     //Job Order
     public function createJOCreative(Request $request) {
+        // return $request;
         $joMain = json_decode($request->brand, true);
         $joDetails = json_decode($request->details, true);
         $joTasks = json_decode($request->tasks, true);
@@ -895,7 +896,7 @@ class AdminController extends Controller
                             }
                         }
                         else { #if Job Order type is Web
-                            if($jo->joweb()->first()->web_proofed_at && $jo->joweb()->first()->acma_proofed_at) {
+                            if($jo->joweb()->first()->acma_proofed_at) {
                                 $jo->update([
                                     'status' => 4
                                 ]);
