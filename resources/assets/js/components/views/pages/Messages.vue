@@ -62,8 +62,7 @@
 		        						            </div>
 		        					            </a>
 		        					            <div class="media-body">
-		        						            <h4 class="media-head">{{ user.name }} <small class=""><span class="label label-success unread-label">2</span></small></h4>
-		        						            <p class="prev-msg"> Don't forget, You're Aweso...</p>
+		        						            <h4 class="media-head">{{ user.name }}</h4>
                                                 </div>
 		        					        </div>
                                         </router-link>

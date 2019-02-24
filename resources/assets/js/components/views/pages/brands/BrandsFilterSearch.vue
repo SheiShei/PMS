@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th>Brand Name</th>
+                    <th>Logo</th>
                     <th>Date Added</th>
                     <th>Total JO</th>
                     <th>Total Workbook</th>
@@ -34,9 +35,7 @@ export default {
             this.$store.dispatch('setBrands', {url : '/api/getbrands', data});
        
         },
-        search: _.debounce(function (e) {
-            this.getsData();
-        }, 500),
+       
     }
 }
 </script>

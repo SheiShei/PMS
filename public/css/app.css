@@ -12156,11 +12156,11 @@ hr {
 
 #message-component .media-head {
   font-size: 13px;
-  line-height: 1.55em;
+  line-height: 3em;
   margin-top: 5px;
-  margin-bottom: 1px;
-  font-weight: bold;
-  color: #252525;
+  margin-bottom: 5px;
+  /* font-weight: bold; */
+  color: #585858;
 }
 
 #message-component .media p.prev-msg {
@@ -12247,9 +12247,12 @@ hr {
 }
 
 #message-component .head-name {
-  vertical-align: middle;
-  /* margin: 14px 10px; */
-  color: black;
+  font-size: 13px;
+  line-height: 1.50em;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #585858;
 }
 
 #message-component .msg-display {
@@ -12278,6 +12281,7 @@ hr {
   justify-items: self-start;
   /* background-color: rgb(231, 231, 231); */
   -webkit-box-shadow-top: 0 6px 10px 0 rgba(0, 0, 0, 0.14);
+  border-top: 1px solid lightgrey;
 }
 
 /* display: block; */
@@ -13893,7 +13897,7 @@ foreignObject > * {
 }
 
 .v2-table tr > th {
-  background-color: #f5f5f5;
+  background-color: #e5e9ea;
 }
 
 .mx-datepicker {

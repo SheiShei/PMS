@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="main2">
                 <div class="row mt-4">
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-4">
@@ -33,6 +33,7 @@
                                     <brands-filter-search :data="data">
                                         <tr v-for="brand in brands" :key="brand.id" class="list-complete-item">
                                             <td>{{ brand.name }}</td>
+                                            <td class="text-center"><img class="text-center" style="width: 30px" :alt="brand.name+' logo'" :src="brand.logo"></td>
                                             <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
                                             <td>{{brand.jos.length}}</td>
                                             <td>{{brand.workbooks.length}}</td>
@@ -55,7 +56,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         <div v-if="user_info.role_id==1" class="taskchart shadow mb-4">
                             <div class="row">
                                 <div class="col-md-12">
@@ -65,19 +66,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="user_info.role_id == 2">
                             <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="note">Select a JO type to create new Job Order form.</p>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-sm full-btn">
                                                 Web JO
                                             </router-link>
                                         </div>
-                                        <div class="col-md-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
                                             <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-sm full-btn">
                                                 Creatives JO
                                             </router-link>
@@ -88,7 +91,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;</p>
                             <hr/>
                             <div class="row" v-if="jos!=0">
                                 <div class="col-md-12">
@@ -192,7 +195,7 @@ export default {
         const ndata = {
             search: '',
             sort: 'created_at.desc',
-            notArchive: true
+            notArchive: true,
         }
         this.$store.dispatch('getJobOrders', ndata);
         this.$store.dispatch('getuser_info');
@@ -246,8 +249,12 @@ export default {
             let ndata = this.ndata;
             this.ndata.notArchive = !this.ndata.notArchive;
             this.$store.dispatch('getJobOrders', ndata); 
-            console.log('archive');
-                   },
+            // console.log('archive');
+        },
+
+        search: _.debounce(function() {
+            this.getsData();
+        }, 500)
     }
 }
 </script>

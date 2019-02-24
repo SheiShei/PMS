@@ -350,7 +350,7 @@ class BoardController extends Controller
     }
 
     public function getTaskData(Request $request) {
-        $task = Task::with('assigned_to', 'files')->where('id', $request->id)->first();
+        $task = Task::with('assigned_to', 'files', 'joborder')->where('id', $request->id)->first();
         return $task;
     }
 
@@ -902,7 +902,7 @@ class BoardController extends Controller
                                 });
                         }
                         if($request->task_status == 'Overdue') {
-                                $q->whereDate('due', '<=', $dateNow)->where(function ($wq) {
+                                $q->whereDate('due', '<', $dateNow)->where(function ($wq) {
                                     $wq->whereHas('card', function($cq) {
                                         $cq->where('isDone', false);
                                     })->orWhere('status', '!=', 4);

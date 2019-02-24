@@ -452,11 +452,11 @@
                         
                                 <!-- <div class="col-md-6">
                                     <form @submit.prevent="signed">
-                                    <div class="row" v-if="details.joweb.acma_proofed_at">
+                                    <div class="row" v-if="details.joweb.web_proofed_at">
                                         <div class="col-md-12">
                                             <div>
-                                                <p><span class="txt-bold">Proofed by :</span> {{ details.joweb.acma_signed_by.email }}</p>
-                                                <p><span class="txt-bold">Date Approved :</span> {{ details.joweb.acma_proofed_at }}</p>
+                                                <p><span class="txt-bold">Proofed by :</span> {{ details.joweb.web_signed_by.email }}</p>
+                                                <p><span class="txt-bold">Date Approved :</span> {{ details.joweb.web_proofed_at | moment('calendar')  }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -576,8 +576,9 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
                         <h3>Success!!</h3>
                     </div>
-                    <div class="modal-body text-center">
-                        <h5>Go to JO List? </h5>
+                     <div class="modal-body text-center">
+                        <p class="txt-bold">This job order was successfully signed off</p>
+                        <p class="">Do you want to go to Job Order List?</p>
                     </div>
                     <div class="modal-footer text-center">
                         <button type="button" class="btn btn-simple" data-dismiss="modal">Cancel</button>

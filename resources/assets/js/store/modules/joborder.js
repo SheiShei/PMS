@@ -129,9 +129,10 @@ const actions = {
             search: data.search,
             sort: data.sort,
             notArchive: data.notArchive,
+            brand: data.brand
         }})
             .then ((response) => {
-                //  console.log(response.data);
+                 console.log(response.data);
                 commit('setJOs', response.data);
             })
             .catch ((error) => {

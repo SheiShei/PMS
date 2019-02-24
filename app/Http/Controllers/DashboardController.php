@@ -31,13 +31,14 @@ class DashboardController extends Controller
     {
         $users= User::with(['role:id,name', 'notifications'])->get();
         $no_users= $users->count();
+        $wb= Workbook::count();
 
         $no_jo= JobOrder::count();
 
         $dash_admin= ([
             'users' => $no_users,
             'jos' => $no_jo,
-            // 'notif' => $users
+            'wb' => $wb
 
         ]);        
         return $dash_admin;
@@ -65,29 +66,108 @@ class DashboardController extends Controller
     }
     public function display_joborders(Request $request)
     {
-        $user = User::where('id', auth()->user()->id)->first();
+        // $sort_key = explode(".",$request->sort)[0];
+        // $sort_type = explode(".",$request->sort)[1];
+        if($request->notArchive=="true"){
+        
+               if(auth()->user()->role_id==2) 
+               {
+                $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id);                         
+                    
+               }
+               if(auth()->user()->role_id==4)
+               {
+                    
+                    $query= JobOrder::where('brand_id', auth()->user()->id);
+                
+                }
+               
+            }        
 
-        if($user['role_id']==2)
-        {
-           if($request->status) {
-            $display_jo = JobOrder::where('created_by', auth()->user()->id)->where('status',$request->status)->with(['brand:id,name','tasks']);
-            
-           }
-           else{
-            $display_jo = JobOrder::where('created_by', auth()->user()->id)->with(['brand:id,name','tasks']);
-           }
-        }
-        if($user['role_id']==4)
-        {
-            
-            $display_jo = JobOrder::where('brand_id', $user['brand_id']);
-        }
 
         if($request->search) {
-            $display_jo->where('name', 'like', $request->search . '%');
+            $query->where('name', 'like', $request->search.'%');
         }
-        return $display_jo->get();
 
+
+        $jos = $query->get();
+
+        if($request->notArchive=="true"){
+            foreach ($jos as $key => $jo) {
+                if($jo->date_due) {
+                    $nTD = 0;
+
+                    foreach ($jo->tasks as $key => $task) {
+                        if($task->card_id) {
+                            if($task->card->isDone) {
+                                $nTD++;
+                            }
+                        }
+                        else {
+                            if($task->status == 4) {
+                                $nTD++;
+                            }
+                        }
+                    }
+
+                    // echo $nTD;
+                    
+                    if($nTD == $jo->tasks()->count()) { #Check if all JO tasks is complete;
+                        if($jo->type == 1) { #if Job Order type is Creative
+                            if($jo->jocreatives()->first()->signed_by) {
+                                $jo->update([
+                                    'status' => 4 #if signed in, set JO status to 4; 4=Complete
+                                ]);
+                            }
+                            else {
+                                // echo '3';
+                                $jo->update([
+                                    'status' => 3 #if not, set JO status to 3; 3=task Completed (No signoff)
+                                ]);
+                            }
+                        }
+                        else { #if Job Order type is Web
+                            if($jo->joweb()->first()->web_proofed_at && $jo->joweb()->first()->acma_proofed_at) {
+                                $jo->update([
+                                    'status' => 4
+                                ]);
+                            }
+                            else {
+                                // echo '3';
+                                $jo->update([
+                                    'status' => 3
+                                ]);
+                            }
+                        }
+                    }
+                    else { #if all JO tasks is not yet Done; hence JO status is = 1; 1=Active
+                        $due = new Carbon($jo->date_due);
+                        $dueDate = $due->toDatestring();
+            
+                        $today = new Carbon();
+                        $todayDate = $today->toDateString();
+                        
+                        if($dueDate < $todayDate) { #check if Job Order is already Overdue
+                            $jo->update([
+                                'status' => 2 #set JO status to 2; 2=Overdue
+                            ]);
+                        }
+
+                        else {
+                            $jo->update([
+                                'status' => 1
+                            ]);
+                        }
+                    }
+                }
+            }  
+        }
+        if($request->status){
+            $jos= $jos->where('status',$request->status);
+            
+           }
+ 
+        return $jos;
     }
     public function dashboard_emp()
     {
@@ -103,20 +183,13 @@ class DashboardController extends Controller
 
         $boards = BoardUser::where('user_id', auth()->user()->id)->count();
 
-        // $query= Task::with('card:id,board_id')->where('assigned_to', auth()->user()->id)->whereDate('due', '<', Carbon::today()->toDateString());
-        // $duetaskcount = $query->count();
-
-        // $messcount = Message::with('sender')->where('receiver_id', auth()->user()->id)->where('action', 1)->count();
-
-        // $messcount = Board::with(['notifications'])->where('created_by',auth()->user()->id)->first();
-
+        
         $emp_dash = [];
         $emp_dash=([
             'activetasks' => $activetasks,
             'totaltasks' => $tasks,
             'totalboards' => $boards, 
-            // 'duetaskcount' => $duetaskcount,
-            // 'messcount' => $messcount
+
         ]);
       
         return $emp_dash;   

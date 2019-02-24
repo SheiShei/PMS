@@ -25,6 +25,7 @@
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <p v-if="workbooks==0" class="note">No workbooks to show</p>
                                     <div style="max-height: 75vh; overflow-y: auto" v-if="workbooks">
                                         <div class="torev2" v-for="workbook in workbooks" :key="workbook.id">
                                             <a v-if="cuser.role.id == 4" href="" @click.prevent="$router.push({name:'review_workbook', params: {wb_id: workbook.id}})" class="torev2">

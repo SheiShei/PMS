@@ -204,7 +204,25 @@ const actions = {
                 })
         })
     },
+    restorebrandJO({commit}, id) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/restorejo', { 
+                data: { id: id}
+            })
+                .then((response) => {
+                    // console.log(response.data);
+                    commit('deleteBrandjo',id);
+                    resolve(response);
+                })
 
+                .catch((error) => {
+                    if(error.response.status == 422){
+                        console.log(error);
+                        reject(error);
+                    }
+                })
+        });
+    },
     UpdateBrand({commit}, databrand) {
         const config = { headers : {'Content-Type': 'multipart/form-data'} }
         return new Promise((resolve, reject) => {

@@ -45,7 +45,7 @@
                                     <hr>
                                      <div v-for="(urwb, index) in display_urworkbooks" :key="urwb.id"  class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: urwb.id}}"><a><div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'review_workbook', params:{wb_id: urwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -59,6 +59,8 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_urworkbooks==0" class="note">No workbooks to show</p>
+
                                 </div>
                                 <br/>
                                 <div class="taskchart shadow">
@@ -94,7 +96,8 @@
                                                 <img :src="messages.sender.picture" class="medium-avatar" alt="">
                                             </div>
                                             <router-link :to="{ name: 'convo-view', params: {convo_id: messages.sender.slug} }" class="msg-right">
-                                                <p class="txt-bold text-default msgsender">{{messages.sender.name}} {{messages.message_date}} {{messages.message_sent}}</p>
+                                                <p class="msgsender"><span class="txt-bold text-default">{{messages.sender.name}}</span>
+                                                <small class="text-gray">&nbsp;{{messages.message_date| moment("MMM D, YYYY")}}, {{messages.message_sent}}</small></p>
                                                 <p class="mainmsg">{{messages.text}}</p>
                                             </router-link>
                                         </div>
@@ -110,7 +113,7 @@
                                     <hr>
                                    <div v-for="(rwb, index) in display_rworkbooks" :key="rwb.id" class="torev">
                                         <!-- <p class="note">No notifications to show</p> -->
-                                    <router-link v-if="index<=3" :to="{name: 'view_workbook', params:{wb_id: rwb.id}}"><a><div class="torevdiv">
+                                    <router-link v-if="index<=3" :to="{name: 'review_workbook', params:{wb_id: rwb.id}}"><a><div class="torevdiv">
                                         <div class="torev-left">
                                             <div class="torev-icon">
                                                 <i class="fa fa-book medium-avatar" alt=""></i>
@@ -124,16 +127,18 @@
                                     </div></a></router-link>
                                     <!--Please see DashboardNotifs.vue for other kinds of notifs-->
                                     </div>
+                                    <p v-if="display_rworkbooks==0" class="note">No workbooks to show</p>
+
                                 </div>
 
                             </div>
                             <div class="col-md-4">
                                 <div class="taskdisp shadow">
-                                    <p><span class="fa fa-files-o"></span> Job Orders ( {{dashboard_client.jocount}} ) 
+                                    <p><span class="fa fa-files-o"></span> Job Orders ( {{display_joborders.length}} ) 
                                     <!-- <span><a href="#" title="Create New JO" class="btn btn-just-icon btn-round btn-xs"><i class="fa fa-plus"></i></a></span> -->
                                     </p>
                                     <hr>
-                                    <p v-if="dashboard_client.jocount==0" class="note">No created JO to show</p>
+                                    <p v-if="dashboard_client.jocount==0" class="note">No Job Orders to show</p>
                                     <div class="mess">
                                     <ul v-for="jo in display_joborders" :key="jo.id" class="list-unstyled">
                                         <li><span class="fa fa-circle text-info"></span>
@@ -159,17 +164,17 @@ export default {
     // }
     data() {
         return {
-        data: {
-            jo_status: '',
-            search: ''
-        }
+        data:{
+            sort: 'created_at.desc',
+            search: '',
+            notArchive: true,
+            jo_status: ''
+        },
        
         }
     },
      created() {
-        // this.$store.dispatch('getuser_info')
         this.$store.dispatch('display_joborders',this.data)
-        // this.$store.dispatch('display_joborders')
         this.$store.dispatch('dashboard_client')
         this.$store.dispatch('display_messages')
         this.$store.dispatch('display_notifs')
