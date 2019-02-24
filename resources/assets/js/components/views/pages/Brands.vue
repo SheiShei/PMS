@@ -24,7 +24,7 @@
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'asc', category:'deleted_at'}">Deleted (Ascending)</option>
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'desc', category:'deleted_at'}">Deleted (Descending)</option>
                                     </select>
-                                    <input @input="search()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    <input @input="searched()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
                                     <span class="fa fa-search text-gray"></span>
                                 </div>
                             </div>
@@ -248,6 +248,10 @@ export default {
             this.$store.dispatch('getJobOrders', ndata); 
             console.log('archive');
                    },
+
+         searched: _.debounce(function (e) {
+            this.getsData();
+        }, 500),
     }
 }
 </script>

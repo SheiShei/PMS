@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="box-half-2">
                                         <p class="boxtitle">Workbooks</p>
-                                        <p class="number">75</p>
+                                        <p class="number">{{dashboard_admin.wb}}</p>
                                     </div>
                                 </div>
                             </div>
