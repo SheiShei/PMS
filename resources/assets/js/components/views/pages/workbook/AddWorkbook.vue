@@ -240,6 +240,7 @@ export default {
     display: inline-block;
     vertical-align: middle;
     width: 75%;
+    padding-left:5px;
     .file-name{
         white-space:pre-line;
     }
