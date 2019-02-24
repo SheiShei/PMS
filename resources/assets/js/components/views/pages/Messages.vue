@@ -196,6 +196,7 @@ export default {
 
     },
     mounted () {
+        Echo.leave('addconvo');
         this.listenEcho();
     },
     destroyed() {

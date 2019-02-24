@@ -143,6 +143,7 @@ class AdminController extends Controller
 
     //Job Order
     public function createJOCreative(Request $request) {
+        // return $request;
         $joMain = json_decode($request->brand, true);
         $joDetails = json_decode($request->details, true);
         $joTasks = json_decode($request->tasks, true);

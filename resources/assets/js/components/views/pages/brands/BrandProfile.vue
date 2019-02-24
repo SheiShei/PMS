@@ -120,13 +120,13 @@
                                                     <span v-if="jo.status == 4" class="label label-success">Completed</span>
                                                 </td>
                                                 <td class="td-actions text-right" v-if="cUser">
-                                                    <button v-if="jo.created_by == cUser.id && notArchive" @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
+                                                    <button v-if="(jo.created_by == cUser.id || cUser.role.id == 1) && notArchive" @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
                                                         <i class="fa fa-eye"></i>
                                                     </button>
-                                                    <button v-if="jo.created_by == cUser.id && notArchive" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                    <button v-if="(jo.created_by == cUser.id || cUser.role.id == 1) && notArchive" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
-                                                    <button v-if="jo.created_by == cUser.id && !notArchive" @click="restoreJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                    <button v-if="(jo.created_by == cUser.id || cUser.role.id == 1) && !notArchive" @click="restoreJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                         <i class="fa fa-refresh"></i>
                                                     </button>
                                                 </td>

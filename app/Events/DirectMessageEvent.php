@@ -27,6 +27,7 @@ class DirectMessageEvent implements ShouldBroadcast
         $this->message = $message;
         $this->receiver = $receiver;
         $this->conversation = $conversation;
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**

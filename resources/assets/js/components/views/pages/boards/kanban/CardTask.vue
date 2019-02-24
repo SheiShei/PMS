@@ -27,7 +27,7 @@
     </div>
 
     <!-- card with image -->
-    <div class="t-card" @mouseout="openTaskOpt=false" v-else>
+    <div class="t-card" @mouseout="openTaskOpt=false" v-else :class="task.jo_id ? (task.joborder.status == 4 ? '' : 'not-finished') : 'not-finished'">
         <div class="t-card-wrap" @mouseover="openTaskOpt=!openTaskOpt">
             <div class="if-fr-jo">
                 <span class="text-success">Task #{{ i+1 }}</span> <span v-if="task.jo_id">{{ task.joborder.name }}</span>

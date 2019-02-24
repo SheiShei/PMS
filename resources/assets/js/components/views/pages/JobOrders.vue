@@ -96,7 +96,7 @@
                                                         <!-- <button @click="update(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-success btn-simple btn-xs" data-original-title="" title="Edit">
                                                             <i class="fa fa-edit"></i>
                                                         </button> -->
-                                                        &nbsp;<a v-if="jo.created_by == cUser.id && data.notArchive" @click="deleteJO(jo.id)" style="cursor:pointer" class="text-danger"><span class="fa fa-trash-o"></span></a>
+                                                        &nbsp;<a v-if="(jo.created_by == cUser.id || cUser.role.id == 1) && data.notArchive" @click="deleteJO(jo.id)" style="cursor:pointer" class="text-danger"><span class="fa fa-trash-o"></span></a>
 
                                                         <!-- <button v-if="jo.created_by == cUser.id && data.notArchive" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                             <i class="fa fa-trash-o"></i>

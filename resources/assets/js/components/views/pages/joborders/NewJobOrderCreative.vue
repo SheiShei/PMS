@@ -68,7 +68,7 @@
                                     <label for=""><span class="fa fa-calendar-o text-success"></span> Date In
                                         <small><i> (dd-mm-yyyy)</i></small></label>
                                     <!-- <input required v-model="brand.date_in" class="form-control" type="date" /> -->
-                                    <date-picker @change="changeDateFormat(brand.date_in, 'in')" v-model="brand.date_in" format="MM-DD-YYYY" :not-after="new Date().setDate(new Date().getDate())" lang="en" class="my-inp-blk"></date-picker>
+                                    <date-picker disabled @change="changeDateFormat(brand.date_in, 'in')" v-model="brand.date_in" format="MM-DD-YYYY" :not-after="new Date().setDate(new Date().getDate())" lang="en" class="my-inp-blk"></date-picker>
                                 </div>
                                 <div class="form-group">
                                     <label for=""><span class="fa fa-calendar-o text-danger"></span> Date Due
@@ -477,8 +477,12 @@ export default {
         },
         newCreativeJO() {
             if(!this.brand.board_id) {
+                var index = _.findIndex(this.boardMembers, {id: this.cUser.id});
+                this.boardMembers.splice(index, 1);
                 this.brand.newBoard.ids = this.boardMembers;
             }
+            // console.log(this.brand);
+            this.brand.date_in = moment(this.brand.date_in).format('YYYY-MM-DD')
             let form = new FormData;
             form.append('brand', JSON.stringify(this.brand));
             form.append('details', JSON.stringify(this.details));

@@ -611,7 +611,7 @@ class BoardController extends Controller
     public function getScrumLists(Request $request) {
         $board = Board::find($request->id);
 
-        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks', 'us.tasks.joborder'])->orderBy('created_at', 'asc')->get();
+        $sprints = $board->sprints()->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks.joborder', 'us.tasks.joborder'])->orderBy('created_at', 'asc')->get();
         foreach ($sprints as $key => $sprint) {
             if($sprint->due_date == Carbon::now()->toDateString()){
                 $sprint->update([

@@ -245,17 +245,11 @@ class BrandsController extends Controller
       
     }
     public function verifyJOusers(Request $request) {
-        $jo = JobOrder::find($request->jo);
-        $user = User::where('id', auth()->user()->id)->where('role_id',1)->orWhere('role_id',2)->first();
+        $users =  JobOrder::where('id', $request->jo)->with('brand')->where('acma_id',auth()->user()->id);
+        $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
+       
             
-            if($user) {
-                if($user->role_id == 2) {
-                    $brand = Brand::where('id', $jo->brand_id)->where('acma_id', auth()->user()->id)->first();
-                    if($brand) {
-                        return response()->json(['status' => 'authenticated'], 200);
-                    }
-                    return response()->json(['status' => 'error'], 200);
-                }
+            if($users||$user) {
                 return response()->json(['status' => 'authenticated'], 200);
             }
             return response()->json(['status' => 'error'], 200);
@@ -278,30 +272,6 @@ class BrandsController extends Controller
             }
             return response()->json(['status' => 'error'], 200);
       
-    }
-
-    public function verifyWorkbook(Request $request) {
-        $user = User::where('id', auth()->user()->id)->where('role_id', 4)->orWhere('role_id', 2)->first();
-       
-            if($user) {
-                $wb = Workbook::find($request->wb_id);
-                if($wb) {
-                    return response()->json(['status' => 'authenticated'], 200);
-                }
-                return response()->json(['status' => 'error'], 200);
-            }
-            return response()->json(['status' => 'error'], 200);
-    }
-
-    public function verifyCreateJO() {
-        // $user = User::where('id', auth()->user()->id)->where('role_id',1)->first();
-        $user2 = User::where('id', auth()->user()->id)->where('role_id',2)->first();
-       
-            // $verify2 = User:
-            if($user2) {
-                return response()->json(['status' => 'authenticated'], 200);
-            }
-            return response()->json(['status' => 'error'], 200);
     }
 
 }
