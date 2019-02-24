@@ -12,7 +12,7 @@
                                     <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span>
                                     | <span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                                 </div>
-                                <div class="col-md-6 text-right">
+                                <div class="col-md-6 text-right" v-if="cUser.role.id == 2">
                                     <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-xs">
                                                 New Web JO
                                     </router-link>

@@ -24,7 +24,7 @@
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'asc', category:'deleted_at'}">Deleted (Ascending)</option>
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'desc', category:'deleted_at'}">Deleted (Descending)</option>
                                     </select>
-                                    <input @input="searched()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    <input @input="search()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
                                     <span class="fa fa-search text-gray"></span>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="user_info.role_id == 2">
                             <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
                             <hr/>
                             <div class="row">
@@ -88,7 +88,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;</p>
                             <hr/>
                             <div class="row" v-if="jos!=0">
                                 <div class="col-md-12">

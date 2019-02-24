@@ -895,7 +895,7 @@ class AdminController extends Controller
                             }
                         }
                         else { #if Job Order type is Web
-                            if($jo->joweb()->first()->web_proofed_at && $jo->joweb()->first()->acma_proofed_at) {
+                            if($jo->joweb()->first()->acma_proofed_at) {
                                 $jo->update([
                                     'status' => 4
                                 ]);

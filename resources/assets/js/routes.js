@@ -153,7 +153,8 @@ export const routes = [
                 beforeEnter: (to, from, next) => {
                     let param = to.params.brandId;
                     axios.post('/api/verifybrandUsers', {
-                        brand: param
+                        brand: param,
+                        type: 'view'
                     })
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
@@ -176,7 +177,8 @@ export const routes = [
                 beforeEnter: (to, from, next) => {
                     let param = to.params.brand_Id;
                     axios.post('/api/verifybrandUsers', {
-                        brand: param
+                        brand: param,
+                        type: 'update'
                     })
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
@@ -235,7 +237,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyCreateJO')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -256,7 +258,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyCreateJO')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -409,7 +411,9 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyworkloadusers')
+                    axios.get('/api/verifyWorkbook', {
+                        wb_id: to.params.wb_id
+                    })
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();

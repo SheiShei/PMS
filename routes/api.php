@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/verifyAdminAcma', 'BrandsController@verifyAdminAcma');
     Route::get('/verifyworkloadusers', 'BrandsController@verifyworkloadusers');
     Route::get('/verifyworkbookclient', 'BrandsController@verifyworkbookusers');
+    Route::get('/verifyWorkbook', 'BrandsController@verifyWorkbook');
 
     //messages
     Route::post('/addconversation', 'DataController@addconvo');
