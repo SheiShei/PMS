@@ -37,10 +37,10 @@
                                     <p v-else class="no-margin text-gray"><i>Waiting for review</i></p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <button v-if="!revMode" class="btn btn-default btn-sm">Close</button>
+                                    <!-- <button v-if="!revMode" class="btn btn-default btn-sm">Close</button> -->
                                     <button v-if="revMode" @click="revMode=!revMode" class="btn btn-default btn-sm">Cancel</button>
-                                    <button v-if="!revMode" @click="revMode=!revMode" class="btn btn-success btn-sm">Add Revision</button>
-                                    <button v-if="revMode" @click="UpdateWorkbook(getCurrentImage.id)" class="btn btn-success btn-sm">Submit Revision <span class="fa fa-check"></span></button>
+                                    <button v-if="!revMode && workbook.reviewed_at" @click="revMode=!revMode" class="btn btn-success btn-sm">Add Revision</button>
+                                    <button v-if="revMode" @click="SubmitRevision" class="btn btn-success btn-sm">Submit Revision <span class="fa fa-check"></span></button>
                                 </div>
                             <br/>
                             </div>
@@ -139,16 +139,19 @@
 											<span class="btn btn-success btn-md btn-block btn-file">
 												<span class="fileinput-new"><span class="fa fa-camera"></span> Upload File</span>
 												<span class="fileinput-exists"><span class="fa fa-camera"></span> Change</span>
-												<input type="file" @change="onChanged" name="..."  format="jpeg" ><div class="ripple-container"></div></span>
-											<a href="" class="btn btn-md btn-default btn-block fileinput-exists" data-dismiss="fileinput"> Remove</a>
-                                            <p class="txt-bold">
+												<input type="file" @change="onChanged" name="..." id="newrevimage"  format="jpeg" ><div class="ripple-container"></div></span>
+											<a id="linkToClick" v-show="false" href="" class="btn btn-md btn-default btn-block fileinput-exists" data-dismiss="fileinput"> Remove</a>
+                                            <p class="txt-bold"> 
                                         <span class="fa fa-edit"></span> 
                                         Caption
                                     </p>
-                                    <textarea v-model="change_workbook.caption" rows="5" class="my-text-area my-inp-blk"></textarea>
+                                    <textarea v-model="getCurrentImage.newRev.caption" rows="5" class="my-text-area my-inp-blk"></textarea>
 										</div>
                                         <div class="col-md-6">
-                                            <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                                            <div v-if="!getCurrentImage.newRev.new_filename" class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                                            <!-- <div class="fileinput-new thumbnail img-raised"> -->
+                                                <img v-if="getCurrentImage.newRev.new_filename" :src="'/storage/workbook/'+getCurrentImage.newRev.new_filename" style="width:100%"/>
+                                            <!-- </div> -->
                                         </div>
 										</div>
 										<!-- <div class="fileinput-new thumbnail img-raised">
@@ -186,7 +189,7 @@
                             <br/>
                         </div>
 
-                        <div v-if="getCurrentImage.revisions.length!=1" class="taskchart shadow mt-4">
+                        <!-- <div v-if="getCurrentImage.revisions.length!=1" class="taskchart shadow mt-4">
                             <div class="row">
                                 <div class="col-md-12">
                                     <p><span class="fa fa-circle text-gray"></span>
@@ -207,6 +210,28 @@
                                     <img :src="getCurrentImage.revisions[ind].new_filename" :alt="getCurrentImage.revisions[ind].original_filename"  :title="getCurrentImage.revisions[ind].original_filename" class="img-rounded img-responsive img-raised" style="max-width: 50%; margin: 0 auto">
                                 </div>
                             </div>
+                        </div> -->
+                        <a style="cursor: pointer" v-if="!openDetails" @click="openDetails=!openDetails">View Details</a>
+                                    <a v-if="openDetails" style="cursor: pointer" @click="openDetails=!openDetails">Close Details</a>
+                        <div v-if="getCurrentImage.revisions.length!=1 && index" class="taskchart shadow mt-4" v-for="(rev, index) in getCurrentImage.revisions" :key="rev.id">
+                            <!-- <div v-if="index"> -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p><span class="fa fa-circle text-gray"></span>
+                                        &nbsp;<span class="txt-bold">Revision {{ getCurrentImage.revisions.length-index }}</span>&nbsp;
+                                        <span v-for="(n, i) in rev.rating" :key="i" class="fa fa-star text-warning"></span>&nbsp;.
+                                        <small>{{ rev.created_at | moment('calendar') }}.&nbsp;
+                                        <span class="text-gray"><i>"{{ rev.comment }}"</i></span></small>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="openDetails">
+                                    <div class="col-md-12">
+                                        <p class="text-gray">Caption <span class="fa fa-pencil"></span> . {{ rev.caption }}</p>
+                                        <img :src="rev.new_filename" :alt="rev.original_filename"  :title="rev.original_filename" class="img-rounded img-responsive img-raised" style="max-width: 50%; margin: 0 auto">
+                                    </div>
+                                </div>
+                            <!-- </div> -->
                         </div>
                         
 
@@ -225,6 +250,7 @@ import {HeartRating} from 'vue-rate-it';
 import {FaRating} from 'vue-rate-it';
 import {ImageRating} from 'vue-rate-it';
 import Star from 'vue-rate-it/glyphs/star';
+import Vue from 'vue'
 // import StarRating from 'vue-rate-it';
 export default {
     components:{
@@ -259,19 +285,49 @@ export default {
     },
     methods: {
         nextSlide(){
+            if(this.revMode) {
+                document.getElementById('newrevimage').value=[];
+                document.getElementById('linkToClick').click();
+            }
+            
             let max = this.workbook.files.length - 1
             let current = this.currentSlide
             if(current != max) this.currentSlide++
         },
         prevSlide(){
+            if(this.revMode) {
+                document.getElementById('newrevimage').value=[];
+                document.getElementById('linkToClick').click();
+            }
             let min = 0
             let current = this.currentSlide
             if(current >= min) this.currentSlide--
         },
         onChanged (event) {
-                this.change_workbook.files = event.target.files
-                // console.log(this.brand.logo);
-                this.haschange=true;
+            // this.change_workbook.files = event.target.files
+            // console.log(this.brand.logo);
+            // this.haschange=true;
+            let newrevfile = event.target.files;
+            let form = new FormData;
+            if(!newrevfile.length){
+                return false;
+            }
+            form.append('file', newrevfile[0]);
+
+            const config = { headers : {'Content-Type': 'multipart/form-data'} }
+            axios.post('/api/uploadWorkbookFiles', form, config)
+                .then(response => {
+                    // console.log(response);
+                    // Vue.set(state.scrumLists[sprint_index].us, us_index, data);
+                    // Vue.set(this.workbook.files[this.currentSlide].newRev.new_filename, response.data.new_filename);
+                    this.getCurrentImage.newRev.new_filename = response.data.new_filename;
+                    this.getCurrentImage.newRev.original_filename = response.data.original_filename;
+                })
+                .catch(error => {
+                    console.error(error);
+                    
+                })
+            
         },
         UpdateWorkbook(id) {
             let form = new FormData;
@@ -279,7 +335,7 @@ export default {
             if(this.haschange==true)
             {
                 form.append('files', this.change_workbook.files[0]);
-                console.log('in if',this.change_workbook.files[0]);
+                // console.log('in if',this.change_workbook.files[0]);
             }
             form.append('name', this.change_workbook.name);
             form.append('caption', this.change_workbook.caption);
@@ -299,6 +355,27 @@ export default {
                     //   this.errors = error;
                 })
         },
+        SubmitRevision() {
+            axios.post('/api/SubmitRevision', this.workbook)
+                .then(response => {
+                    // console.log(response);
+                    this.$store.commit('setWorkbooks', response.data)
+                    this.$store.commit('setCWorkbook', this.$route.params.wb_id)
+                    this.workbook.files.forEach(file => {
+                        file.newRev = {
+                            new_filename: '',
+                            original_filename: '',
+                            caption: ''
+                        }
+                    });
+                    this.revMode=false;
+                    this.$toaster.success('Revision added succesfully!.')
+                })
+                .catch(error => {
+                    console.error(error);
+                    
+                })
+        }
 
     },
     created(){

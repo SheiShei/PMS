@@ -32,6 +32,13 @@ export default {
         this.$store.dispatch('getWorkbooks', this.data)
             .then(() => {
                 this.$store.commit('setCWorkbook', this.$route.params.wb_id)
+                this.workbook.files.forEach(file => {
+                    file.newRev = {
+                        new_filename: '',
+                        original_filename: '',
+                        caption: ''
+                    }
+                });
             })
     },
     computed: {

@@ -12,7 +12,7 @@
             </div>
         </div>
         <!-- <div class="list-body"> -->
-            <draggable class="list-body" v-model="uStory.tasks" :options="{animation:200, group:'status', disabled: false, draggable: '.not-finished'}" :element="'div'" @change="test($event, status.id, uStory.id)">
+            <draggable class="list-body" v-model="uStory.tasks" :options="{animation:200, group:'status', disabled: !taskPermission.modify, draggable: '.not-finished'}" :element="'div'" @change="test($event, status.id, uStory.id)">
                 <card-task v-for="(task, index) in uStory.tasks" v-if="task.status == status.id" :key="index" :task="task" :usPermission="usPermission" :taskPermission="taskPermission" :index="index"></card-task>
                 <!-- <div class="" v-if="noCard" style="background-color: transparent; height: 5px"></div> -->
             </draggable>

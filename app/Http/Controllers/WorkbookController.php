@@ -8,6 +8,7 @@ use App\Brand;
 use App\Workbook;
 use App\WorkbookFile;
 use App\User;
+use App\FileRevision;
 use App\Notifications\ReviewedWorkbook;
 use App\Notifications\SendforRevision;
 use App\Notifications\UserNewWorkbook;
@@ -74,6 +75,51 @@ class WorkbookController extends Controller
         $brands = Brand::where('acma_id', auth()->user()->id)->get();
 
         return response()->json(['brands' => $brands]);
+    }
+
+    public function SubmitRevision(Request $request) {
+        $wb = Workbook::find($request->id);
+        foreach ($request->get('files') as $key => $file) {
+            if($file['newRev']['new_filename']) {
+                FileRevision::create([
+                    'original_filename' =>$file['newRev']['original_filename'],
+                    'new_filename' => $file['newRev']['new_filename'],
+                    'caption' => $file['newRev']['caption'],
+                    'wfile_id' => $file['id']
+                ]);
+            }
+        }
+
+        // return $rev;
+        if(auth()->user()->role_id == 1) {
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->get();
+        }
+        if(auth()->user()->role_id == 2) {
+            $callback = function($q) {
+                $q->where('acma_id', auth()->user()->id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        }
+        if(auth()->user()->role_id == 4) {
+            $callback = function($q) {
+                $q->where('id', auth()->user()->brand_id);
+            };
+            $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        }
+
+        $users = User::where('brand_id', $wb->brand_id)->orWhere('role_id', 1)->get();
+
+        foreach ($users as $key => $user) {
+            if($user->brand_id) {
+                $user->notify(new SendforRevision($wb->load('brand')->toArray(), 'client'));
+            }
+            else {
+                $user->notify(new SendforRevision($wb->load('brand')->toArray(), 'admin'));
+            }
+        }
+
+        return $workbooks;
+
     }
 
     public function getAllWorkbooks(Request $request) {
