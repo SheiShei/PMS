@@ -32,7 +32,7 @@ class BoardUserAdded extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -62,6 +62,18 @@ class BoardUserAdded extends Notification implements ShouldQueue
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        $name = (string)$this->board['created_by']['name'];
+        // var_dump($name);
+        // $name = 'shei';
+        return [
+            'text' => $this->user.' added you to '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
     {
         $name = (string)$this->board['created_by']['name'];
         // var_dump($name);

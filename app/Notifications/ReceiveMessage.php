@@ -11,7 +11,9 @@ class ReceiveMessage extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public $cuser;
     public $receivers;
+    public $message;
     
 
     /**
@@ -19,10 +21,11 @@ class ReceiveMessage extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($receivers)
+    public function __construct($cuser, $message, $receivers)
     {
-        //
+        $this->cuser = $cuser;
         $this->receivers = $receivers;
+        $this->message = $message;
 
     }
 
@@ -34,7 +37,7 @@ class ReceiveMessage extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -62,7 +65,19 @@ class ReceiveMessage extends Notification implements ShouldQueue
         // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
         return [
             'text' => 'You have new message received!',
-            'action' => '/messages/'.$this->receivers['slug'],
+            'action' => '/messages/'.$this->receivers,
+            'color' => 'notif-icon bg-info',
+            'icon' => 'fa fa-envelope-o medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
+    {
+        // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
+        return [
+            'text' => 'You have new message received!',
+            'action' => '/messages/'.$this->receivers,
+            'message' => $this->message,
+            'sender' => $this->receivers,
             'color' => 'notif-icon bg-info',
             'icon' => 'fa fa-envelope-o medium-avatar'
         ];

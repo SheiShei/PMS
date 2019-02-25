@@ -14,6 +14,7 @@ class UserBoardSetRole extends Notification implements ShouldQueue
     public $user;
     public $role;
     public $board;
+    public $type;
 
 
     /**
@@ -21,11 +22,12 @@ class UserBoardSetRole extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user,$role,$board)
+    public function __construct($user,$role,$board, $type)
     {
         $this->user = $user;
         $this->role = $role;
         $this->board = $board;
+        $this->type = $type;
 
     }
 
@@ -37,7 +39,7 @@ class UserBoardSetRole extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -64,10 +66,10 @@ class UserBoardSetRole extends Notification implements ShouldQueue
     {
         if($this->role==null){
             return [
-                'text' => $this->user . ' assigned you as an Admin in board: '.$this->board['name'],
+                'text' => $this->user . ' '.$this->type.' you as an Admin in board: '.$this->board['name'],
                 'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
-                'color' => 'notif-icon bg-success',
-                'icon' => 'fa fa-trello medium-avatar'
+                'color' => $this->type == 'assigned' ? 'notif-icon bg-warning' : 'notif-icon bg-danger',
+                'icon' => 'fa fa-star medium-avatar'
             ];
 
         }
@@ -75,7 +77,27 @@ class UserBoardSetRole extends Notification implements ShouldQueue
         return [
             'text' => $this->user . ' set your role to ' . $this->role.' in board: '.$this->board['name'],
             'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
-            'color' => 'notif-icon bg-success',
+            'color' => 'notif-icon bg-info',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
+         }
+    }
+    public function toBroadcast($notifiable)
+    {
+        if($this->role==null){
+            return [
+                'text' => $this->user . ' '.$this->type.' you as an Admin in board: '.$this->board['name'],
+                'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+                'color' => $this->type == 'assigned' ? 'notif-icon bg-warning' : 'notif-icon bg-danger',
+                'icon' => 'fa fa-star medium-avatar'
+            ];
+
+        }
+        else{
+        return [
+            'text' => $this->user . ' set your role to ' . $this->role.' in board: '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-info',
             'icon' => 'fa fa-trello medium-avatar'
         ];
          }

@@ -212,7 +212,9 @@ class BoardController extends Controller
 
 
         foreach ($board->boardUsers()->get() as $key => $user) {
-            $user->notify(new UserBoardDetailsUpdate($board->toArray(), auth()->user()->name));
+            if($user->id != auth()->user()->id) {
+                $user->notify(new UserBoardDetailsUpdate($board->toArray(), auth()->user()->name));
+            }
         }
 
         $board->notify(new BoardDetailsUpdate(auth()->user()->name));
@@ -339,7 +341,8 @@ class BoardController extends Controller
 // 
         Board::find($card->board_id)->notify(new BoardCreateTask($task->load('created_by', 'card')->toJson()));
         Board::find($card->board_id)->notify(new BoardAssignTask(auth()->user()->name, $task->name, $user->name));
-        $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $boardname->toArray(), $update));
+        if($user->id != auth()->user()->id)
+            $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $boardname->toArray(), $update));
 
         if($request->assigned_to) {
             
@@ -379,6 +382,7 @@ class BoardController extends Controller
             $user = User::find($request->assign_to);
             $update=false;
 
+            if($user->id != auth()->user()->id)
             $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
 
             $board->notify(new BoardAssignTask(auth()->user()->name, $task->name, $user->name));
@@ -386,13 +390,16 @@ class BoardController extends Controller
 
         $task->update($ta);
 
-        event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
-        $user = User::find($task->assigned_to);
-        $update = true;
+        if($request->assign_to == $task->assigned_to) {
+            event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+            $user = User::find($task->assigned_to);
+            $update = true;
 
-        $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
+            if($user->id != auth()->user()->id)
+            $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
 
-        $board->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
+            $board->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
+        }
 
         return $task->load('assigned_to');
     }
@@ -431,6 +438,7 @@ class BoardController extends Controller
         $update = true;
         $board =  Board::find($task->card->board->id);
 
+        if($user->id != auth()->user()->id)
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->card->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));   
         }
@@ -439,6 +447,7 @@ class BoardController extends Controller
         $update = true;
         $board =  Board::find($task->sprint->board->id);
 
+        if($user->id != auth()->user()->id)
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
         }
@@ -474,6 +483,7 @@ class BoardController extends Controller
         $update = true;
         $board =  Board::find($task->sprint->board->id);
 
+        if($user->id != auth()->user()->id)
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
         }
@@ -1642,8 +1652,15 @@ class BoardController extends Controller
         $user = User::find($request->user_id);
         $role = null;
 
-        $user->notify(new UserBoardSetRole(auth()->user()->name, $role, $board->toArray()));
-        $board->notify(new BoardSetAsAdmin($user->name, auth()->user()->name));
+        if((bool) !$request->isAdmin) {
+            $type = 'assigned';
+        }
+        else {
+            $type = 'removed';
+        }
+
+        $user->notify(new UserBoardSetRole(auth()->user()->name, $role, $board->toArray(), $type));
+        $board->notify(new BoardSetAsAdmin($user->name, auth()->user()->name, $type));
     }
     
     public function changeRole(Request $request) {
@@ -1653,7 +1670,7 @@ class BoardController extends Controller
         $user = User::find($request->user_id);
         $role = BRole::find($request->role_id);
 
-        $user->notify(new UserBoardSetRole(auth()->user()->name, $role->name, $board->toArray()));
+        $user->notify(new UserBoardSetRole(auth()->user()->name, $role->name, $board->toArray(), ''));
         
         $board->notify(new BoardSetRole(auth()->user()->name, $user->name, $role->name));
     }

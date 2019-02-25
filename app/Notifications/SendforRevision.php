@@ -12,7 +12,7 @@ class SendforRevision extends Notification implements ShouldQueue
     use Queueable;
 
     public $workbook;
-    // public $taskname;
+    public $type;
     // public $boardname;
     // public $update;
     /**
@@ -20,10 +20,11 @@ class SendforRevision extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($workbook)
+    public function __construct($workbook, $type)
     {
         //
         $this->workbook = $workbook;
+        $this->type = $type;
     }
 
     /**
@@ -34,7 +35,7 @@ class SendforRevision extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -61,7 +62,18 @@ class SendforRevision extends Notification implements ShouldQueue
     {
       return [
                 'text' => 'The new revision in workbook '.$this->workbook['name'].' has been submitted.',
-                'action' => '/workbook/'.$this->workbook['id'],
+                'action' => $this->type == 'admin' ? '/workbook/'.$this->workbook['id'] : '/workbook/'.$this->workbook['id'].'/review',
+                'color' => 'notif-icon bg-warning',
+                'icon' => 'fa fa-star medium-avatar'
+            ];
+       
+        
+    }
+    public function toBroadcast($notifiable)
+    {
+      return [
+                'text' => 'The new revision in workbook '.$this->workbook['name'].' has been submitted.',
+                'action' => $this->type == 'admin' ? '/workbook/'.$this->workbook['id'] : '/workbook/'.$this->workbook['id'].'/review',
                 'color' => 'notif-icon bg-warning',
                 'icon' => 'fa fa-star medium-avatar'
             ];

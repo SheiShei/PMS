@@ -34,7 +34,7 @@ class ReviewedWorkbook extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -60,7 +60,18 @@ class ReviewedWorkbook extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
       return [
-                'text' => 'The workbook '.$this->workbook['name'].' has been reviewed by'.$this['brand']['name'],
+                'text' => 'The workbook '.$this->workbook['name'].' has been reviewed by'.$this->workbook['brand']['name'],
+                'action' => '/workbook/'.$this->workbook['id'],
+                'color' => 'notif-icon bg-warning',
+                'icon' => 'fa fa-star medium-avatar'
+            ];
+       
+        
+    }
+    public function toBroadcast($notifiable)
+    {
+      return [
+                'text' => 'The workbook '.$this->workbook['name'].' has been reviewed by'.$this->workbook['brand']['name'],
                 'action' => '/workbook/'.$this->workbook['id'],
                 'color' => 'notif-icon bg-warning',
                 'icon' => 'fa fa-star medium-avatar'

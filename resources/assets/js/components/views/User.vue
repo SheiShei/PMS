@@ -3,7 +3,7 @@
         <user-sidebar></user-sidebar>
         <!-- <user-topnav></user-topnav> -->
         <div>
-        <!-- <notif-div></notif-div> -->
+        <notif-div v-if="notifs.length" :notifs="notifs"></notif-div>
             <router-view></router-view>
         </div>
     </div>
@@ -12,17 +12,40 @@
 <script>
 // import Topnav from './includes/Topnav.vue';
 import Sidebar from './includes/Sidebar.vue';
-import Notifdiv from './includes/Notif.vue'
+import Notifdiv from './includes/Notif.vue';
+import {mapGetters} from 'vuex';
 export default {
     components: {
         // userTopnav : Topnav,
         userSidebar : Sidebar,
         notifDiv : Notifdiv
     },
+    computed: {
+        ...mapGetters({
+                cUser: 'currentUser'
+            }),
+    },
+    data() {
+        return {
+            notifs: []
+        }
+    },
 
     updated () {
         $(this.$el).find('.selectpicker').selectpicker('refresh');
     },
+    mounted() {
+        this.listenUserNotifs();
+    },
+    methods: {
+        listenUserNotifs() {
+            Echo.private('App.User.' + this.cUser.id)
+                .notification((notification) => {
+                    console.log(notification);
+                    this.notifs.push(notification);
+                });
+        }
+    }
 }
 </script>
 

@@ -33,7 +33,7 @@ class JOCreativeCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -67,6 +67,16 @@ class JOCreativeCreated extends Notification implements ShouldQueue
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
+        return [
+            'text' => $this->auth . ' has created new Job Order: '.$this->newjo['name'],
+            'action' => $this->newjo['type'] == 1 ? '/jo/creative/'.$this->newjo['id'] : '/jo/web/'.$this->newjo['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
     {
         // $name = (string)$this->board['created_by']['name']; /boards/kanban/'.$this->board['id']
         return [

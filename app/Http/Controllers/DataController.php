@@ -298,12 +298,18 @@ class DataController extends Controller
             $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
             // event(new DirectMessageEvent($message, $receiverData, NULL));
             event(new DirectMessageEvent($message, $receiverData, NULL));
+            $receiverData->notify(new ReceiveMessage(auth()->user()->name, $message, auth()->user()->slug));
         }
         else {
             $convoData = Conversation::find($request->convo);
             $message = Message::where('id', $messages->id)->with('sender:id,name,picture')->first();
             // event(new DirectMessageEvent($message, NULL, $convoData));
             event(new DirectMessageEvent($message, NULL, $convoData));
+            foreach ($convoData->users()->get() as $key => $user) {
+                if($user->id != auth()->user()->id) {
+                    $user->notify(new ReceiveMessage(auth()->user()->name, $message, $convoData->id));
+                }
+            }
         }
         // $receivers = User::findOrFail($request->receiver);  
         // $receivers->notify(new ReceiveMessage($receivers->toArray()));        

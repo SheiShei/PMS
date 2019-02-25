@@ -10,6 +10,7 @@ use App\WorkbookFile;
 use App\User;
 use App\Notifications\ReviewedWorkbook;
 use App\Notifications\SendforRevision;
+use App\Notifications\UserNewWorkbook;
 
 
 use Carbon\Carbon;
@@ -53,6 +54,17 @@ class WorkbookController extends Controller
                 'new_filename' => $file['response']['new_filename'],
                 'caption' => $file['caption'],
             ]);
+        }
+
+        $users = User::where('brand_id', $wBID)->orWhere('role_id', 1)->get();
+
+        foreach ($users as $key => $user) {
+            if($user->brand_id) {
+                $user->notify(new UserNewWorkbook(auth()->user()->name, $newWB->toArray(), 'client'));
+            }
+            else {
+                $user->notify(new UserNewWorkbook(auth()->user()->name, $newWB->toArray(), 'admin'));
+            }
         }
 
         return $newWB->load(['brand', 'created_by', 'files.revisions']);
@@ -158,7 +170,7 @@ class WorkbookController extends Controller
         ]);
 
         $user= User::find($origWB->created_by);
-        // $user->notify(new ReviewedWorkbook($origWB->toArray()));
+        $user->notify(new ReviewedWorkbook($origWB->load('brand')->toArray()));
         return Workbook::find($request->id)->load(['brand', 'created_by', 'files.revisions']);
     }
 
@@ -192,6 +204,19 @@ class WorkbookController extends Controller
                 $q->where('id', auth()->user()->brand_id);
             };
             $workbooks = Workbook::with(['brand', 'created_by', 'files.revisions'=> function($q1){$q1->orderBy('created_at','desc'); }])->whereHas('brand', $callback)->get();
+        }
+
+        $wbook = Workbook::where('id', $nfile->workbook_id)->first();
+        
+        $users = User::where('brand_id', $wbook->brand_id)->orWhere('role_id', 1)->get();
+
+        foreach ($users as $key => $user) {
+            if($user->brand_id) {
+                $user->notify(new SendforRevision($wbook->load('brand')->toArray(), 'client'));
+            }
+            else {
+                $user->notify(new SendforRevision($wbook->load('brand')->toArray(), 'admin'));
+            }
         }
         
 
