@@ -161,7 +161,7 @@
                                 <div class="col-md-5">
                                     <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
                                 </div>
-                                <div class="col-md-7 text-right">
+                                <div class="col-md-7 text-right" v-if="cUser.role.id != 4">
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
@@ -266,7 +266,7 @@
                                             <p><span class="txt-bold">Date:</span> {{ details.jocreatives.completed_at | moment('calendar') }}</p>
                                         </div>
                                     </div>
-                                    <div class="row" v-if="!details.jocreatives.signed_by">
+                                    <div class="row" v-if="!details.jocreatives.signed_by && cUser.role.id != 4">
                                         <div class="col-md-12">
                                             <p class="no-margin txt-bold"><span class="fa fa-pencil"></span> Final Sign Off</p>
                                             <button class="btn btn-success btn-md btn-block" v-if="!sign_off.check" @click="sign_off.check = !sign_off.check">Sign Off JO</button>
@@ -443,6 +443,9 @@ export default {
         this.getJoDetails();
     },
     computed: {
+        ...mapGetters({
+                cUser: 'currentUser',
+            }),
         taskPercent() {
             if(this.details) {
                 var done = 0;

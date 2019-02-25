@@ -827,7 +827,7 @@ class BoardController extends Controller
         $board = Board::where('id',$request->id)->where('type',$request->type)->first();
 
         if($board) {
-            $verify = $board->boardUsers()->whereIn('user_id', [auth()->user()->id]);
+            $verify = $board->boardUsers()->where('user_id', auth()->user()->id)->first();
             if($verify) {
                 if($request->sprint_id) {
                     $sprint = $board->sprints()->where('id', $request->sprint_id)->first();

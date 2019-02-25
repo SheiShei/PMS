@@ -10,7 +10,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span>
-                                    | <span><small><a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
+                                    | <span v-if="cUser.role.id != 4"><small><a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                                 </div>
                                 <div class="col-md-6 text-right" v-if="cUser.role.id == 2">
                                     <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-xs">
@@ -33,7 +33,7 @@
                                         <option v-if="!data.notArchive" value="deleted_at.asc">Deleted (Ascending)</option>
                                     </select>
                                     
-				                    <select @input="searched" v-model="data.brand" class="my-thin-select">
+				                    <select v-if="cUser.role.id != 4" @input="searched" v-model="data.brand" class="my-thin-select">
                                         <option value="">-- BRAND NAME --</option>
                                         <option v-for="brand in brands" :key="brand.id" :value="brand.id" >{{brand.name}}</option>
                                      </select>

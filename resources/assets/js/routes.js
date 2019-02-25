@@ -108,7 +108,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyBrands')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -152,7 +152,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     let param = to.params.brandId;
-                    axios.post('/api/verifybrandUsers', {
+                    axios.post('/api/verifyBrandProfile', {
                         brand: param
                     })
                         .then((response) => {
@@ -175,7 +175,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     let param = to.params.brand_Id;
-                    axios.post('/api/verifybrandUsers', {
+                    axios.post('/api/verifyBrandProfile', {
                         brand: param
                     })
                         .then((response) => {
@@ -196,6 +196,18 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    axios.get('/api/verifyAllJOList')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'brands/jo/:id',
@@ -235,7 +247,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyAddJO')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -256,7 +268,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyAddJO')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -277,7 +289,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     let param = to.params.jo_id;
-                    axios.post('/api/verifyJOusers', {
+                    axios.post('/api/verifyJOView', {
                         jo: param
                     })
                         .then((response) => {
@@ -300,7 +312,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     let param = to.params.jo_id;
-                    axios.post('/api/verifyJOusers', {
+                    axios.post('/api/verifyJOView', {
                         jo: param
                     })
                         .then((response) => {
@@ -365,7 +377,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyworkloadusers')
+                    axios.get('/api/verifyAllJOList')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -387,7 +399,7 @@ export const routes = [
                 },
                 beforeEnter: (to, from, next) => {
                     // let param = to.params.brandId;
-                    axios.get('/api/verifyAdminAcma')
+                    axios.get('/api/verifyAddJO')
                         .then((response) => {
                             if(response.data.status === 'authenticated') {
                                 next();
@@ -407,19 +419,6 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
-                beforeEnter: (to, from, next) => {
-                    // let param = to.params.brandId;
-                    axios.get('/api/verifyworkloadusers')
-                        .then((response) => {
-                            if(response.data.status === 'authenticated') {
-                                next();
-                            }
-                            else{
-                                next({ name: 'error404' });
-                            }
-                            
-                        })
-                },
                 children: [
                     {
                         path: '',
@@ -427,6 +426,21 @@ export const routes = [
                         component: ViewWB,
                         meta: {
                             requiresAuth: true
+                        },
+                        beforeEnter: (to, from, next) => {
+                            let param = to.params.wb_id;
+                            axios.post('/api/verifyViewWorkbook', {
+                                wb: param
+                            })
+                                .then((response) => {
+                                    if(response.data.status === 'authenticated') {
+                                        next();
+                                    }
+                                    else{
+                                        next({ name: 'error404' });
+                                    }
+                                    
+                                })
                         }
                     },
                     {
@@ -437,8 +451,10 @@ export const routes = [
                             requiresAuth: true
                         },
                         beforeEnter: (to, from, next) => {
-                            // let param = to.params.brandId;
-                            axios.get('/api/verifyworkbookclient')
+                            let param = to.params.wb_id;
+                            axios.post('/api/verifyReviewWorkbook', {
+                                wb: param
+                            })
                                 .then((response) => {
                                     if(response.data.status === 'authenticated') {
                                         next();
@@ -505,6 +521,19 @@ export const routes = [
                 meta: {
                     requiresAuth: true
                 },
+                beforeEnter: (to, from, next) => {
+                    // let param = to.params.brandId;
+                    axios.get('/api/verifyworkloadusers')
+                        .then((response) => {
+                            if(response.data.status === 'authenticated') {
+                                next();
+                            }
+                            else{
+                                next({ name: 'error404' });
+                            }
+                            
+                        })
+                }
             },
             {
                 path: 'boards/kanban/:board_id',
@@ -628,6 +657,8 @@ export const routes = [
                         type: 2
                     })
                         .then((response) => {
+                            console.log(response);
+                            
                             if(response.data.status === 'authenticated') {
                                 next();
                             }
