@@ -36,7 +36,7 @@ const actions = {
             axios.post('/api/shittycaptivateusers', data)
                 .then((response) => {
                     // console.log(response.data);
-                    commit('setUsers', response.data.data)
+                    commit('setUsers', response.data)
                     resolve(response)
                 })
                 .catch((error) => {

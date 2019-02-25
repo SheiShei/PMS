@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="main2">
                 <div class="row mt-4">
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="taskchart shadow">
                             <div class="row">
                                 <div class="col-md-4">
@@ -24,7 +24,7 @@
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'asc', category:'deleted_at'}">Deleted (Ascending)</option>
                                         <option v-if="!data.notArchive" v-bind:value="{position: 'desc', category:'deleted_at'}">Deleted (Descending)</option>
                                     </select>
-                                    <input @input="searched()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
+                                    <input @input="search()" v-model="data.search" type="search" class="my-input my-thin-input" placeholder="Search...">
                                     <span class="fa fa-search text-gray"></span>
                                 </div>
                             </div>
@@ -33,6 +33,7 @@
                                     <brands-filter-search :data="data">
                                         <tr v-for="brand in brands" :key="brand.id" class="list-complete-item">
                                             <td>{{ brand.name }}</td>
+                                            <td class="text-center"><img class="text-center" style="width: 30px" :alt="brand.name+' logo'" :src="brand.logo"></td>
                                             <td>{{  brand.created_at | moment("MMM D, YYYY") }}</td>
                                             <td>{{brand.jos.length}}</td>
                                             <td>{{brand.workbooks.length}}</td>
@@ -55,7 +56,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         <div v-if="user_info.role_id==1" class="taskchart shadow mb-4">
                             <div class="row">
                                 <div class="col-md-12">
@@ -65,19 +66,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="taskchart shadow">
+                        <div class="taskchart shadow" v-if="user_info.role_id == 2">
                             <p class="txt-bold nm-top"><span class="fa fa-plus-square-o text-info"></span> Create New Job Order</p>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="note">Select a JO type to create new Job Order form.</p>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <router-link :to="{name: 'new_jo_web'}" type="button" rel="tooltip" class="btn btn-info btn-sm full-btn">
                                                 Web JO
                                             </router-link>
                                         </div>
-                                        <div class="col-md-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
                                             <router-link :to="{name: 'new_jo_creative'}" type="button" rel="tooltip" class="btn btn-info btn-sm full-btn">
                                                 Creatives JO
                                             </router-link>
@@ -88,7 +91,7 @@
                         </div>
                         <br/>
                         <div class="taskchart shadow">
-                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;<span><small>| <a @click.prevent="archiveJO" href="">Archive</a></small></span></p>
+                            <p class="txt-bold nm-top"><span class="fa fa-copy text-info"></span> Active Job Orders&nbsp;</p>
                             <hr/>
                             <div class="row" v-if="jos!=0">
                                 <div class="col-md-12">
@@ -246,12 +249,12 @@ export default {
             let ndata = this.ndata;
             this.ndata.notArchive = !this.ndata.notArchive;
             this.$store.dispatch('getJobOrders', ndata); 
-            console.log('archive');
-                   },
+            // console.log('archive');
+        },
 
-         searched: _.debounce(function (e) {
+        search: _.debounce(function() {
             this.getsData();
-        }, 500),
+        }, 500)
     }
 }
 </script>

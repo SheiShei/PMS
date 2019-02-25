@@ -263,7 +263,7 @@
                                      <div class="row" v-if="details.jocreatives.signed_by">
                                         <div class="col-md-12">
                                             <p><span class="txt-bold">Final Signed Off by: </span>{{ details.jocreatives.signedby.name }}</p>
-                                            <p><span class="txt-bold">Date:</span> {{ details.jocreatives.completed_at }}</p>
+                                            <p><span class="txt-bold">Date:</span> {{ details.jocreatives.completed_at | moment('calendar') }}</p>
                                         </div>
                                     </div>
                                     <div class="row" v-if="!details.jocreatives.signed_by">
