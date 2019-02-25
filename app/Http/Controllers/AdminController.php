@@ -854,24 +854,27 @@ class AdminController extends Controller
         $sort_type = explode(".",$request->sort)[1];
         if($request->notArchive=="true"){
             if($sort_key){
-               if(auth()->user()->role_id==1) 
-               {
-                if($request->brand){
-                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
+                if(auth()->user()->role_id==1) 
+                {
+                    if($request->brand){
+                        $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
                     }
-                else{
-                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->orderBy($sort_key, $sort_type);         
+                    else{
+                        $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->orderBy($sort_key, $sort_type);         
                     }
-                 }
-               else
-               {
-                if($request->brand){
-                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
                 }
-                else{
-                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
+                else if(auth()->user()->role_id==2)
+                {
+                    if($request->brand){
+                        $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
+                    }
+                    else{
+                        $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
+                    }
                 }
-               }
+                else if(auth()->user()->role_id == 4) {
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('brand_id',auth()->user()->brand_id)->orderBy($sort_key, $sort_type);
+                }
             }
         }
         else { 

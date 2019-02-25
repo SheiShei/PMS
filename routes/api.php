@@ -176,5 +176,15 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/display_urworkbooks', 'DashboardController@display_urworkbooks');
     Route::get('/display_rworkbooks', 'DashboardController@display_rworkbooks');
 
+    //For Verification
+    Route::get('/verifyBrands', 'VerifierController@verifyBrands');
+    Route::get('/verifyAddJO', 'VerifierController@verifyAddJO');
+    Route::get('/verifyAllJOList', 'VerifierController@verifyAllJOList');
+    Route::get('/verifyWorkbookList', 'VerifierController@verifyWorkbookList');
+    Route::post('/verifyReviewWorkbook', 'VerifierController@verifyReviewWorkbook');
+    Route::post('/verifyViewWorkbook', 'VerifierController@verifyViewWorkbook');
+    Route::post('/verifyBrandProfile', 'VerifierController@verifyBrandProfile');
+    Route::post('/verifyJOView', 'VerifierController@verifyJOView');
+    Route::post('/verifyCWorkbook', 'VerifierController@verifyCWorkbook');
 
 });

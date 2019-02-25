@@ -256,9 +256,8 @@ class BrandsController extends Controller
       
     }
     public function verifyworkloadusers() {
-        $user = User::where('id', auth()->user()->id)->where('role_id','!=',4);
        
-            if($user) {
+            if(auth()->user()->role_id != 4) {
                 return response()->json(['status' => 'authenticated'], 200);
             }
             return response()->json(['status' => 'error'], 200);

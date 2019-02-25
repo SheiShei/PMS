@@ -319,7 +319,7 @@
                                 <div class="col-md-5">
                                     <p class="no-margin text-gray"><span class="txt-bold"><span class="fa fa-trello"></span>&nbsp;Board</span><small></small></p>
                                 </div>
-                                <div class="col-md-7 text-right">
+                                <div class="col-md-7 text-right" v-if="cUser.role.id != 4">
                                     <router-link :to="{name: details.board.type == 1 ? 'kanboard' : 'test', params: {board_id: details.board.id}}" class="no-margin text-gray"><small>{{ details.board.name }}</small></router-link>
                                 </div>
                             </div>
@@ -517,7 +517,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row" v-if="!details.joweb.acma_proofed_at">
+                                    <div class="row" v-if="!details.joweb.acma_proofed_at && cUser.role.id != 4">
                                         <div class="col-md-12" v-if="!approved.check">
                                             <button type="reset" @click="approved.check = !approved.check" class="btn btn-success btn-md btn-block">Approve</button>
                                         </div>
@@ -682,6 +682,9 @@ export default {
         this.getJoDetails();
     },
     computed: {
+        ...mapGetters({
+                cUser: 'currentUser',
+            }),
         taskPercent() {
             if(this.details) {
                 var done = 0;

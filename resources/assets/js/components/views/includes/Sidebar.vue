@@ -34,7 +34,7 @@
                         <i class="fa fa-user-o fa-lg"></i>&nbsp;&nbsp;&nbsp;Users
                     </router-link>
                 <!-- </li> -->
-                    <router-link :to="{ name: 'workbook' }" tag="li" active-class="active">
+                    <router-link v-if="cUser.role.id !== 3" :to="{ name: 'workbook' }" tag="li" active-class="active">
                         <i class="fa fa-book fa-lg"></i>&nbsp;&nbsp;&nbsp;Workbook
                     </router-link>
 
@@ -49,7 +49,7 @@
                         <!-- <span class="arrow"></span> -->
                     </router-link>
 
-                    <router-link :to="{ name: 'all_jo_list' }" v-if="cUser.role.id !== 4 && cUser.role.id !== 3" tag="li" active-class="active">
+                    <router-link :to="{ name: 'all_jo_list' }" v-if="cUser.role.id !== 3" tag="li" active-class="active">
                         <i class="fa fa-copy fa-lg"></i>&nbsp;&nbsp;&nbsp;Job Order 
                         <!-- <span class="arrow"></span> -->
                     </router-link>
@@ -68,7 +68,7 @@
                 </ul> -->
 
                 <!-- <li class="" v-if="cUser.role.id !== 4"> -->
-                    <router-link :to="{ name: 'boards' }" tag="li" active-class="active">
+                    <router-link v-if="cUser.role.id !== 4" :to="{ name: 'boards' }" tag="li" active-class="active">
                         <i class="fa fa-trello fa-lg"></i>&nbsp;&nbsp;&nbsp;Boards
                     </router-link>
                 <!-- </li> -->
