@@ -36,7 +36,7 @@
             </form>
         </div>
         <!-- <div class="list-body"> -->
-            <draggable class="list-body" v-model="sprint.us" :options="{animation:200, group:'status', disabled: !sprintPermission.modify}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
+            <draggable class="list-body" v-model="sprint.us" :options="{animation:200, group:'status', disabled: !usPermission.modify}" :element="'div'" @change="usChange($event, sprint.id, sprint.type)">
                 <card-task 
                     v-for="(us, index) in sprint.us" 
                     :key="us.id" :us="us" :i="index" 

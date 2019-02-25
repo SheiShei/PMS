@@ -31,7 +31,7 @@
         <!-- <div class="list-body"> -->
                             
 
-            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks', draggable: '.not-finished'}" :element="'div'" @change="taskListUpdate($event, li, list.id)" class="list-body">
+            <draggable v-model="list.tasks" :options="{animation:200, group:'tasks', disabled: !taskPerm.modify, draggable: '.not-finished'}" :element="'div'" @change="taskListUpdate($event, li, list.id)" class="list-body">
                 <card-task v-for="(task, index) in list.tasks" :key="index" :list_id="list.id" :task="task" :i="index" :taskPerm="taskPerm"></card-task>
             </draggable>
         <!-- </div> -->

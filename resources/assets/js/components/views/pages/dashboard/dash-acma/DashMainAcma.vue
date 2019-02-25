@@ -77,9 +77,9 @@
                                                            <td><span class="fa fa-copy"></span>&nbsp;{{jo.name}}</td>
                                                         <td><span class="fa fa-clock-o"></span>&nbsp;{{jo.date_due | moment("MMM D, YYYY")}}</td>
                                                         <td v-if="jo.status==1"><span class="label label-info">Active</span></td>
-                                                        <td v-if="jo.status==2"><span class="label label-success">Completed</span></td>
-                                                        <td v-if="jo.status==3" ><span class="label label-warning">Undone</span></td>
-                                                        <td v-if="jo.status==4"><span class="label label-danger">Overdue</span></td>
+                                                        <td v-if="jo.status==2"><span class="label label-danger">Overdue</span></td>
+                                                        <td v-if="jo.status==3" ><span class="label label-warning">Pending</span></td>
+                                                        <td v-if="jo.status==4"><span class="label label-success">Completed</span></td>
 
                                                         <td>
                                                             <p class="text-gray no-margin"><small>{{ completedTasks(jo) }}/{{ jo.tasks.length }}<span class="pull-right txt-bold">{{ joPercent(jo) }}%</span></small></p>
@@ -96,7 +96,7 @@
 
                                                 <!--dont show if selected is active/warning; all active&warning should be all shown-->
                                                 <!--Due Tomorrow/warning is still an active status though -->
-                                                <div class="row">
+                                                <div class="row" v-if="false">
                                                     <div class="col-md-12 text-center">
                                                         <button class="btn btn-info btn-simple btn-sm">Load More</button>
                                                     </div>

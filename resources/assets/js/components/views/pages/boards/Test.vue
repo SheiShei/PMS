@@ -29,10 +29,17 @@
 
                 <div>
                     <router-link v-if="sprintPermission.add" :to="{name: 'scrumboard_newsprint'}" class="btn btn-success btn-sm"> + Add New Sprint</router-link>
-                    <div id="scrumListDiv" class="board-body">
+                    <!-- <div id="scrumListDiv" class="board-body">
+                        <sprint-card v-for="sprint in sprints" :key="sprint.id" :sprint="sprint" :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></sprint-card>
+                    </div> -->
+                    <div v-if="vFS" id="scrumListDiv" class="board-body">
                         <sprint-card v-for="sprint in sprints" :key="sprint.id" :sprint="sprint" :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></sprint-card>
                     </div>
+                    <div v-else id="scrumListDiv" class="board-body">
+                        <sprint-card v-for="sprint in sprints" v-if="sprint.finished_at == null" :key="sprint.id" :sprint="sprint" :sprintPermission="sprintPermission" :usPermission="usPermission" :taskPermission="taskPermission"></sprint-card>
+                    </div>
                 </div>
+                
 
                 
 
