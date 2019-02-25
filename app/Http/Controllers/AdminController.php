@@ -843,7 +843,7 @@ class AdminController extends Controller
                     $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
                 }
                 else{
-                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);                         
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
                 }
                }
             }
