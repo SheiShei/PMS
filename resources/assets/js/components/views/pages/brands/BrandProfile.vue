@@ -65,12 +65,15 @@
                     <div class="taskchart shadow" v-if="brandJOs">
                         <div class="row">
                             <div class="col-md-4">
-                                <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span></h6>
+                                <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span>
+                                | <span><small> <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                             </div>
                             <div class="col-md-8 text-right">
                                 <select @change="getBrandJOs" v-model="jofilter" class="my-input my-thin-select">
-                                    <option value="created_at.desc">Date (Descending)</option>
-                                    <option value="created_at.asc">Date (Ascending)</option>
+                                    <option v-if="notArchive" value="created_at.desc">Date (Descending)</option>
+                                    <option v-if="!notArchive" value="deleted_at.desc">Date Deleted (Descending)</option>
+                                    <option v-if="notArchive" value="created_at.asc">Date (Ascending)</option>
+                                    <option v-if="!notArchive" value="deleted_at.asc">Date Deleted (Ascending)</option>
                                     <option value="name.asc">Name (Ascending)</option>
                                     <option value="name.desc">Name (Descending)</option>
                                 </select>
@@ -104,16 +107,20 @@
                                                     <span v-if="jo.status == 4" class="label label-danger">Overdue</span>
                                                 </td>
                                                 <td class="td-actions text-right" v-if="cUser">
-                                                    <button @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
+                                                    <button v-if="jo.created_by == cUser.id && notArchive" @click="view(jo.id, jo.type)" type="button" rel="tooltip" class="btn btn-info btn-simple btn-xs" data-original-title="" title="Open">
                                                         <i class="fa fa-eye"></i>
                                                     </button>
-                                                    <button v-if="jo.created_by == cUser.id" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                    <button v-if="jo.created_by == cUser.id && notArchive" @click="deleteJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
                                                         <i class="fa fa-trash-o"></i>
+                                                    </button>
+                                                    <button v-if="jo.created_by == cUser.id && !notArchive" @click="restoreJO(jo.id)" type="button" rel="tooltip" class="btn btn-danger btn-simple btn-xs" data-original-title="" title="Archive">
+                                                        <i class="fa fa-refresh"></i>
                                                     </button>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <p v-if="brandJOs==0" class="note">No Job Order to show</p>
                                 </div>
                             </div>
                         </div>
@@ -139,6 +146,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
+                                <p v-if="brandProfile.workbooks==0" class="note">No Workbook to show</p>
                                 <div style="max-height: 30vh; overflow-y: auto">
                                         <div class="torev2" v-for="workbook in brandProfile.workbooks" :key="workbook.id">
                                             <a href="" @click.prevent="$router.push({name:'review_workbook', params: {wb_id: workbook.id}})" class="torev2">
@@ -229,6 +237,7 @@ export default {
             id: this.$route.params.brandId,
             josearch: '',
             jofilter: 'created_at.desc',
+            notArchive: true,
             brandJOs: null,
             data: {
                 search: '',
@@ -258,11 +267,33 @@ export default {
             let data = {
                 id: this.$route.params.brandId,
                 search: this.josearch,
-                sort: this.jofilter
+                sort: this.jofilter,
+                notArchive: this.notArchive
             }
             this.$store.dispatch('brandJos', data)
                 .then (response => {
                     this.brandJOs = response
+                })
+        },
+        archiveJO() {
+           // let _this = this;
+            this.notArchive = !this.notArchive;
+            if(this.notArchive==false){
+            this.jofilter= 'deleted_at.desc';
+            }
+            else{
+            this.jofilter= 'created_at.desc';
+            }
+            this.getBrandJOs();
+                   },
+
+        restoreJO(id) {
+            this.$store.dispatch('restorebrandJO', id)
+                .then(() => {
+                    this.$toaster.success('Job Order restored succesfully!.')
+                })
+                .catch(() => {
+                    alert('Something went wrong, try reloading the page');
                 })
         },
 

@@ -830,11 +830,21 @@ class AdminController extends Controller
             if($sort_key){
                if(auth()->user()->role_id==1) 
                {
-                $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->orderBy($sort_key, $sort_type);         
-               }
+                if($request->brand){
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
+                    }
+                else{
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->orderBy($sort_key, $sort_type);         
+                    }
+                 }
                else
                {
-                $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);                         
+                if($request->brand){
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);         
+                }
+                else{
+                    $query = JobOrder::with('brand:id,name')->with(['tasks.card'])->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);                         
+                }
                }
             }
         }
@@ -842,12 +852,21 @@ class AdminController extends Controller
            if($sort_key){
                if(auth()->user()->role_id==1)
                {
-                 $query = JobOrder::onlyTrashed()->with('brand:id,name')->orderBy($sort_key, $sort_type);
+                if($request->brand){
+                    $query = JobOrder::onlyTrashed()->with('brand:id,name')->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);
+                }
+                else{
+                    $query = JobOrder::onlyTrashed()->with('brand:id,name')->orderBy($sort_key, $sort_type);
+                }
                    
                }
                else{
+                if($request->brand){
+                    $query = JobOrder::onlyTrashed()->with('brand:id,name')->where('created_by',auth()->user()->id)->where('brand_id',$request->brand)->orderBy($sort_key, $sort_type);
+                }
+                else{
                 $query = JobOrder::onlyTrashed()->with('brand:id,name')->where('created_by',auth()->user()->id)->orderBy($sort_key, $sort_type);
-
+                }
                }
            }
          }
