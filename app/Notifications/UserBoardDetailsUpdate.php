@@ -33,7 +33,7 @@ class UserBoardDetailsUpdate extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -57,6 +57,15 @@ class UserBoardDetailsUpdate extends Notification implements ShouldQueue
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        return [
+            'text' => 'Admin ' . $this->user . ' updated the settings of board: '.$this->board['name'],
+            'action' => $this->board['type'] == 1 ? '/boards/kanban/'.$this->board['id'] : '/boards/scrum/'.$this->board['id'],
+            'color' => 'notif-icon bg-success',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
     {
         return [
             'text' => 'Admin ' . $this->user . ' updated the settings of board: '.$this->board['name'],

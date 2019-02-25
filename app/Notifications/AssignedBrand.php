@@ -33,7 +33,7 @@ class AssignedBrand extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -57,6 +57,16 @@ class AssignedBrand extends Notification implements ShouldQueue
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        
+        return [
+            'text' => $this->user.' assigned you to brand: '.$this->brand['name'],
+            'action' => '/brands/brand-profile-'.$this->brand['id'],
+            'color' => 'notif-icon bg-info',
+            'icon' => 'fa fa-suitcase medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
     {
         
         return [

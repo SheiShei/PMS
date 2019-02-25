@@ -34,7 +34,7 @@ class UserRemovefromBoard extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -59,21 +59,21 @@ class UserRemovefromBoard extends Notification implements ShouldQueue
      */
     public function toDatabase($notifiable)
     {
-       if($this->user['role_id']==1){
-        return [
-            'text' => $this->cuser.' removed you as an Admin from the board: '.$this->board['name'],
-            'action' => '',
-            'color' => 'notif-icon bg-danger',
-            'icon' => 'fa fa-trello medium-avatar'
-        ];
-       }
-       else{
         return [
             'text' => $this->cuser.' removed you from the board: '.$this->board['name'],
             'action' => '',
             'color' => 'notif-icon bg-danger',
             'icon' => 'fa fa-trello medium-avatar'
         ];
-        }
+    }
+    
+    public function toBroadcast($notifiable)
+    {
+        return [
+            'text' => $this->cuser.' removed you from the board: '.$this->board['name'],
+            'action' => '',
+            'color' => 'notif-icon bg-danger',
+            'icon' => 'fa fa-trello medium-avatar'
+        ];
     }
 }

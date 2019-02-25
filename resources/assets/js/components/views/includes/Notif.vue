@@ -4,29 +4,29 @@
     <!-- <button class="" @click="newNotif">New Notif</button> -->
     <transition-group name="list-complete">
         <div v-for="(notif,index) in notifs" :key="index" class="list-complete-item">
-            <router-link :to="{name: 'new_jo_web'}" tag="div" class="notif-indiv shadow list-complete-item">
+            <router-link v-if="notif.message" :to="notif.action" tag="div" class="notif-indiv shadow list-complete-item">
                 <div class="row">
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <img src="/images/default.png" class="large-avatar"/>
                     </div>
                     <div class="col-md-10 col-sm-10 col-xs-10">
-                        <p class="txt-bold no-margin notif-high"><span class="fa fa-envelope-o"></span> Samantha Millos: {{index+1}}</p>
-                        <p class="">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam, totam maxime!...</p>                        
+                        <p class="txt-bold no-margin notif-high"><span class="fa fa-envelope-o"></span> {{ notif.sender }}: </p>
+                        <p class=""><span>{{ notif.message.text.slice(0, 100) + '...' }}</span></p>                        
                     </div>
                 </div>
                 <!-- <p>{{notif.name}}</p> -->
                 <button @click.prevent="closeNotif(this.index)" type="button" class="notif-close"><i class="fa fa-times"></i></button>
             </router-link>
 
-            <router-link :to="{name: 'new_jo_web'}" tag="div" class="notif-indiv shadow list-complete-item">
+            <router-link v-else :to="notif.action" tag="div" class="notif-indiv shadow list-complete-item">
                 <div class="notifnotifdiv">
                     <div class="notif-left">
-                        <div class="notif-icon bg-success">
-                            <i class="fa fa-trello medium-avatar" alt=""></i>
+                        <div :class="notif.color">
+                            <i :class="notif.icon" alt=""></i>
                     </div>
                     </div>
                     <div class="notif-right">
-                        <p><span class="notif-high">Sam</span> added you to board <span class="notif-high">Board Name Here</span></p>
+                        <p>{{ notif.text }}</p>
                     </div>
                 </div>
                 
@@ -40,21 +40,22 @@
 </template>
 <script>
 export default {
+    props: ['notifs'],
     data(){
         return{
             showNotif: false,
-            notifs: [{
-                name:'Notif 1',
-                link:''
-            },
-            {
-                name:'Notif2',
-                link:''
-            },
-            {
-                name:'Notif3',
-                link:''
-            }]
+            // notifs: [{
+            //     name:'Notif 1',
+            //     link:''
+            // },
+            // {
+            //     name:'Notif2',
+            //     link:''
+            // },
+            // {
+            //     name:'Notif3',
+            //     link:''
+            // }]
         }
     },
     methods:{

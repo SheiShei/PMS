@@ -35,7 +35,7 @@ class UserNewWorkbook extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -59,6 +59,15 @@ class UserNewWorkbook extends Notification implements ShouldQueue
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        return [
+            'text' => $this->cuser . ' has submitted the workbook: '.$this->workbook['name'],
+            'action' => $this->type == 'admin' ? '/workbook/'.$this->workbook['id'] : '/workbook/'.$this->workbook['id'].'/review',
+            'color' => 'notif-icon bg-warning',
+            'icon' => 'fa fa-star medium-avatar'
+        ];
+    }
+    public function toBroadcast($notifiable)
     {
         return [
             'text' => $this->cuser . ' has submitted the workbook: '.$this->workbook['name'],

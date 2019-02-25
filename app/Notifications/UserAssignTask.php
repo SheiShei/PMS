@@ -38,7 +38,7 @@ class UserAssignTask extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -74,12 +74,33 @@ class UserAssignTask extends Notification implements ShouldQueue
         }
         else{
             return [
-                'text' =>'A new task named: '.$this->taskname.' has been assigned to you on board: '.$this->boardname['name'].'by '.$this->assignee,
+                'text' =>'A new task named: '.$this->taskname.' has been assigned to you on board: '.$this->boardname['name'].' by '.$this->assignee,
                 'action' => $this->boardname['type'] == 1 ? '/boards/kanban/'.$this->boardname['id'] : '/boards/scrum/'.$this->boardname['id'],
                 'color' => 'notif-icon bg-success',
                 'icon' => 'fa fa-trello medium-avatar'
             ];
         }
         
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        if($this->update==true)
+        {
+            return [
+                'text' => $this->assignee.' updated the details of your task: '.$this->taskname.', on board: '.$this->boardname['name'],
+                'action' => $this->boardname['type'] == 1 ? '/boards/kanban/'.$this->boardname['id'] : '/boards/scrum/'.$this->boardname['id'],
+                'color' => 'notif-icon bg-success',
+                'icon' => 'fa fa-trello medium-avatar'
+            ];
+        }
+        else{
+            return [
+                'text' =>'A new task named: '.$this->taskname.' has been assigned to you on board: '.$this->boardname['name'].' by '.$this->assignee,
+                'action' => $this->boardname['type'] == 1 ? '/boards/kanban/'.$this->boardname['id'] : '/boards/scrum/'.$this->boardname['id'],
+                'color' => 'notif-icon bg-success',
+                'icon' => 'fa fa-trello medium-avatar'
+            ];
+        }
     }
 }

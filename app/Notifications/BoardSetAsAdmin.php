@@ -13,16 +13,18 @@ class BoardSetAsAdmin extends Notification implements ShouldQueue
 
     public $user;
     public $cuser;
+    public $type;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user, $cuser)
+    public function __construct($user, $cuser, $type)
     {
         $this->user = $user;
         $this->cuser = $cuser;
+        $this->type = $type;
     }
 
     /**
@@ -59,9 +61,9 @@ class BoardSetAsAdmin extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'text' => $this->cuser . ' assgined '.$this->user. ' as admin',
+            'text' => $this->cuser . ' '.$this->type.' '.$this->user. ' as admin',
             'action' => '',
-            'color' => 'bg-warning',
+            'color' => $this->type == 'assigned' ? 'bg-warning' : 'bg-danger',
             'icon' => 'fa-star'
         ];
     }

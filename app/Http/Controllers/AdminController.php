@@ -26,6 +26,7 @@ use App\Notifications\AddBoardMember;
 use App\Notifications\BoardCreateListSprint;
 use App\Notifications\BoardCreateTask;
 use App\Notifications\BoardAddUS;
+use App\Notifications\UserAssignTask;
 
 
 use Hash;
@@ -251,6 +252,11 @@ class AdminController extends Controller
                     'assigned_by' => auth()->user()->id,
                     'jo_id' => $newjo->id
                 ]);
+
+                $ui = User::find($task['assign']);
+
+                if($ui->id != auth()->user()->id)
+                $ui->notify(new UserAssignTask(auth()->user()->name, $newTask->name, Board::find($joMain['board_id'])->toArray(), false));
                 
                 if ($files = $request->file('files')) {
                     if($taskFiles = $task['files']) {
@@ -318,7 +324,11 @@ class AdminController extends Controller
         
         // $newjo2 = User::where('id',auth()->user()->id);
 
-        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+        // auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+        $users = User::where('role_id', 1)->orWhere('brand_id', $joMain['brand_id'])->get();
+        foreach ($users as $key => $user) {
+            $user->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+        }
 
         return JobOrder::with('jocreatives', 'tasks.files')->where('id', $newjo->id)->first();
     }
@@ -440,6 +450,12 @@ class AdminController extends Controller
                         'assigned_by' => auth()->user()->id,
                         'jo_id' => $newjo->id
                     ]);
+
+                    // User::find($task['assign'])->notify(new UserAssignTask(auth()->user()->name, $newTask->name, Board::find($joMain['board_id'])->toArray(), false));
+                    $ui = User::find($task['assign']);
+
+                    if($ui->id != auth()->user()->id)
+                    $ui->notify(new UserAssignTask(auth()->user()->name, $newTask->name, Board::find($joMain['board_id'])->toArray(), false));
                     
                     if ($files = $request->file('files')) {
                         if($taskFiles = $task['files']) {
@@ -507,6 +523,12 @@ class AdminController extends Controller
                         'due' => $task['due'],
                         'jo_id' => $newjo->id
                     ]);
+
+                    // User::find($task['assign'])->notify(new UserAssignTask(auth()->user()->name, $newtask->name, Board::find($joMain['board_id'])->toArray(), false));
+                    $ui = User::find($task['assign']);
+
+                    if($ui->id != auth()->user()->id)
+                    $ui->notify(new UserAssignTask(auth()->user()->name, $newtask->name, Board::find($joMain['board_id'])->toArray(), false));
 
                     if ($files = $request->file('files')) {
                         if($taskFiles = $task['files']) {
@@ -621,7 +643,10 @@ class AdminController extends Controller
             'date_ended' => $joDetails['date_ended'],
         ]);
 
-        auth()->user()->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+        $users = User::where('role_id', 1)->orWhere('brand_id', $joMain['brand_id'])->get();
+        foreach ($users as $key => $user) {
+            $user->notify(new JOCreativeCreated($newjo->toArray(), auth()->user()->name));
+        }
 
         return JobOrder::with('joweb', 'tasks.files')->where('id', $newjo->id)->first();
     }
