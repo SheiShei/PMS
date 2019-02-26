@@ -47,6 +47,7 @@ export default {
             },
             yaxis:{
                 forceNiceScale: true,
+                min: 0,
                 title: {
                     text: 'User Story Points Remaining'
                 },

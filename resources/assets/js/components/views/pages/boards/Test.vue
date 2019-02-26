@@ -229,7 +229,7 @@ export default {
                 })
                 .listen('SprintTaskOrderEvent', (e) => {
                     // console.log(e);
-                    this.$store.commit('setScrumLists', JSON.parse(e.sprints));
+                    this.$store.dispatch('getScrumLists', this.$route.params.board_id)
                 })
                 .listen('DeleteUSEvent', (e) => {
                     // console.log(e);

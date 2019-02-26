@@ -64,7 +64,7 @@
                 <div class="col-md-8">
                     <div class="taskchart shadow" v-if="brandJOs">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <h6 class="nm-top"><span class="txt-bold"> <span class="fa fa-copy text-info"></span> JOB ORDERS LIST</span>
                                 | <span><small> <a @click.prevent="archiveJO" href="">Archive</a></small></span></h6>
                             </div>

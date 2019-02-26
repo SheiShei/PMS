@@ -164,7 +164,7 @@ export default {
                     // console.log(e);
                     this.$store.commit('setScrumLists', JSON.parse(e.sprints));
                     this.$store.commit('getSprintTasks', this.$route.params.sprint_id);
-                })
+                }) 
                 .listen('DeleteListTaskEvent', (e) => {
                     // console.log(e);
                     this.$store.commit('deleteSprintTask', e.task_id);

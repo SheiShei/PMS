@@ -15,16 +15,14 @@ class UpdateListOrderEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $lists;
     public $board_id;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($lists, $board_id)
+    public function __construct($board_id)
     {
-        $this->lists = $lists;
         $this->board_id = $board_id;
         $this->dontBroadcastToCurrentUser();
     }

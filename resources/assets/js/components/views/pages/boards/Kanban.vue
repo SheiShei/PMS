@@ -216,7 +216,7 @@ export default {
                 })
                 .listen('UpdateListOrderEvent', (e) => {
                     // console.log(JSON.parse(e.lists));
-                    this.$store.commit('setBoardLists', JSON.parse(e.lists))
+                    this.$store.dispatch('getBoardLists', this.$route.params.board_id);
                 })
                 .listen('AddListTaskEvent', (e) => {
                     // console.log(e);
