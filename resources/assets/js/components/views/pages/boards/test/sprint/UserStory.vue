@@ -92,6 +92,7 @@ export default {
     .story-body {
         height: 40vh; 
         background-color: rgb(234,234,234);
+        white-space: pre-line;
         // padding: 10px;
         .story-content{
             display: flex;

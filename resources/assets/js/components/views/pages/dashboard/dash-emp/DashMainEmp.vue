@@ -93,6 +93,7 @@
                                             <div class="taskremdue">
                                                 <p>
                                                     <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskrem.due}}</small> | 
+                                                    <span class="fa fa-trello"></span> <small><a href="" style="color: inherit" @click.prevent="gotoboard(taskrem)">{{ taskrem.card_id ? taskrem.card.board.name.slice(0, 20) : taskrem.sprint.board.name.slice(0, 20) }}</a></small>
                                                     <!-- <span v-if="taskrem.card!=0" class="fa fa-trello"></span> <small>{{ taskrem.card.board.name }}</small> -->
                                                     <!-- <span v-if="taskrem.sprint!=0" class="fa fa-trello"></span> <small>{{ taskrem.sprint.board.name }}</small> -->
                                                 </p>
@@ -114,7 +115,7 @@
                                             <div class="taskremdue">
                                                 <p>
                                                     <span class="fa fa-calendar text-danger"></span>&nbsp;<small>{{taskdue.due}}</small> | 
-                                                    <span class="fa fa-trello"></span> <small>Board Name Here</small></p>
+                                                    <span class="fa fa-trello"></span> <small><a href="" style="color: inherit" @click.prevent="gotoboard(taskdue)">{{ taskdue.card_id ? taskdue.card.board.name.slice(0, 20) : taskdue.sprint.board.name.slice(0, 20) }}</a></small></p>
                                             </div>
                                         </div>
                                         <p v-if="overdued_tasks==0" class="note"> There still no overdue tasks</p>
@@ -192,6 +193,16 @@ export default {
 
         })
         
+    },
+    methods: {
+        gotoboard(task) {
+            if(task.card_id) {
+                this.$router.push({name: 'kanboard', params: {board_id: task.card.board.id}})
+            }
+            else {
+                this.$router.push({name: 'test', params: {board_id: task.sprint.board.id}})
+            }
+        }
     }
 
 }

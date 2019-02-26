@@ -1,5 +1,5 @@
 <template>
-    <div class="table-responsive" style="margin-top: 10px; max-height: 35vh; overflow:auto">
+    <div class="table-responsive" style="margin-top: 10px; max-height: 100vh; overflow:auto">
         <table class="table table-bordered table-brands">
             <thead>
                 <tr>

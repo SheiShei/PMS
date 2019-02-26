@@ -147,9 +147,20 @@ export default {
                 })
                 .listen('SprintTaskOrderEvent', (e) => {
                     // console.log(e);
-                    this.$store.commit('setScrumLists', JSON.parse(e.sprints));
-                    this.$store.commit('getSprint', this.$route.params.sprint_id);
+                    this.$store.dispatch('getScrumLists', this.$route.params.board_id)
+                    .then(() => {
+                        this.$store.commit('getSprintTasks', this.$route.params.sprint_id);
+                        this.$store.commit('getSprint', this.$route.params.sprint_id);
+                    })
                 })
+                .listen('ISprintTaskOrderEvent', (e) => {
+                    // console.log(e);
+                    this.$store.dispatch('getScrumLists', this.$route.params.board_id)
+                    .then(() => {
+                        this.$store.commit('getSprintTasks', this.$route.params.sprint_id);
+                        this.$store.commit('getSprint', this.$route.params.sprint_id);
+                    })
+                }) 
                 .listen('UpdateUSEvent', (e) => {
                     // console.log(e);
                     this.$store.commit('updateUS', e.us);

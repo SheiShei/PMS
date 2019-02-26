@@ -15,7 +15,6 @@ class SprintTaskOrderEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $sprints;
     public $board_id;
 
     /**
@@ -23,9 +22,8 @@ class SprintTaskOrderEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($sprints, $board_id)
+    public function __construct($board_id)
     {
-        $this->sprints = $sprints;
         $this->board_id = $board_id;
         $this->dontBroadcastToCurrentUser();
     }

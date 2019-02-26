@@ -56,12 +56,12 @@
                             <div class="form-group">
                                 <label for=""><span class="fa fa-calendar-o text-success"></span> Date In
                                     <small><i> (dd-mm-yyyy)</i></small></label>
-                                <date-picker disabled @change="changeDateFormat(brand.date_in, 'in')" v-model="brand.date_in" format="MM-DD-YYYY" :not-after="new Date().setDate(new Date().getDate())" lang="en" class="my-inp-blk"></date-picker>
+                                <date-picker required disabled @change="changeDateFormat(brand.date_in, 'in')" v-model="brand.date_in" format="MM-DD-YYYY" :not-after="new Date().setDate(new Date().getDate())" lang="en" class="my-inp-blk"></date-picker>
                             </div>
                             <div class="form-group">
                                 <label for=""><span class="fa fa-calendar-o text-danger"></span> Date Due
                                     <small><i> (dd-mm-yyyy)</i></small></label>
-                                <date-picker @change="changeDateFormat(brand.date_due, 'due')" v-model="brand.date_due" format="MM-DD-YYYY" :not-before="new Date(brand.date_in).setDate(new Date(brand.date_in).getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
+                                <date-picker required @change="changeDateFormat(brand.date_due, 'due')" v-model="brand.date_due" format="MM-DD-YYYY" :not-before="new Date(brand.date_in).setDate(new Date(brand.date_in).getDate()+1)" lang="en" class="my-inp-blk"></date-picker>
                             </div>
                         </div>
                         <!--./end of TIME IN and DUE -->
@@ -346,7 +346,7 @@
                                                 </select>
                                                 <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
                                                 <label for=""><span class="fa fa-clock-o"></span> Due </label>
-                                                <date-picker @change="changeDateFormat(task.due, 'ustask', i, index)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date(brand.date_due).setDate(new Date(brand.date_due).getDate())" lang="en" class="my-inp-blk"></date-picker>
+                                                <date-picker required @change="changeDateFormat(task.due, 'ustask', i, index)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date(brand.date_due).setDate(new Date(brand.date_due).getDate())" lang="en" class="my-inp-blk"></date-picker>
                                                 <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
                                                 <input id="taskFiles" @change="usOnFileChange($event, i, userstory)" class="btn-block" type="file" multiple>
                                             </div>
@@ -390,7 +390,7 @@
                                                         </select>
                                                         <a @click="toggleJustNewMember" style="cursor:pointer"><small>or Add Member</small></a> <br>
                                                         <label for=""><span class="fa fa-clock-o"></span> Due </label>
-                                                        <date-picker @change="changeDateFormat(task.due, 'task', index)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date(brand.date_due).setDate(new Date(brand.date_due).getDate())" lang="en" class="my-inp-blk"></date-picker>
+                                                        <date-picker required @change="changeDateFormat(task.due, 'task', index)" v-model="task.due" format="MM-DD-YYYY" :not-before="new Date().setDate(new Date().getDate())" :not-after="new Date(brand.date_due).setDate(new Date(brand.date_due).getDate())" lang="en" class="my-inp-blk"></date-picker>
                                                         <label for="" style="margin-top: 8px"><span class="fa fa-file-o"></span> Attach File</label>
                                                         <input id="taskFiles" @change="onFileChange($event, index)" class="btn-block" type="file" multiple>
                                                     </div>

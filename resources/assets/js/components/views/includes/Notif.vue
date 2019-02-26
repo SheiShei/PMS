@@ -7,11 +7,11 @@
             <router-link v-if="notif.message" :to="notif.action" tag="div" class="notif-indiv shadow list-complete-item">
                 <div class="row">
                     <div class="col-md-2 col-sm-2 col-xs-2">
-                        <img src="/images/default.png" class="large-avatar"/>
+                        <img :src="notif.message.sender.picture" class="large-avatar"/>
                     </div>
                     <div class="col-md-10 col-sm-10 col-xs-10">
                         <p class="txt-bold no-margin notif-high"><span class="fa fa-envelope-o"></span> {{ notif.sender }}: </p>
-                        <p class=""><span>{{ notif.message.text.slice(0, 100) + '...' }}</span></p>                        
+                        <p class=""><span>{{ notif.message.text.slice(0, 100) }}</span></p>                        
                     </div>
                 </div>
                 <!-- <p>{{notif.name}}</p> -->

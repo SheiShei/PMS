@@ -247,11 +247,11 @@ class BoardController extends Controller
             'created_by' => auth()->user()->id,
             'order' => $request->order,
         ]);
-        event(new AddListEvent($list->load('tasks.assigned_to')));
+        event(new AddListEvent($list->load(['tasks.assigned_to', 'tasks.joborder'])));
 
         Board::find($request->board_id)->notify(new BoardCreateListSprint($list->load('created_by')->toJson(), 'list'));
 
-        return $list->load('tasks.assigned_to');
+        return $list->load(['tasks.assigned_to', 'tasks.joborder']);
     }
 
     public function updateList(Request $request) {
@@ -295,9 +295,9 @@ class BoardController extends Controller
                 }
             }
         }
-        $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        // $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('order' , 'asc')->get();
         // print_r($nlists);
-        event(new UpdateListOrderEvent($nlists->toJson(), $request->board_id));
+        event(new UpdateListOrderEvent($request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -348,8 +348,8 @@ class BoardController extends Controller
             
         }
 
-        event(new AddListTaskEvent($task->load('assigned_to'), $request->board_id));
-        return $task->load('assigned_to');
+        event(new AddListTaskEvent($task->load('assigned_to', 'joborder'), $request->board_id));
+        return $task->load('assigned_to', 'joborder');
     }
 
     public function getTaskData(Request $request) {
@@ -391,7 +391,7 @@ class BoardController extends Controller
         $task->update($ta);
 
         if($request->assign_to == $task->assigned_to) {
-            event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+            event(new UpdateListTaskEvent($task->load('assigned_to', 'joborder'), $request->board_id));
             $user = User::find($task->assigned_to);
             $update = true;
 
@@ -401,7 +401,7 @@ class BoardController extends Controller
             $board->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
         }
 
-        return $task->load('assigned_to');
+        return $task->load('assigned_to', 'joborder');
     }
 
     public function addAttachment(Request $request) {
@@ -468,7 +468,7 @@ class BoardController extends Controller
             ]);
         }
 
-        event(new UpdateListTaskEvent($task->load('assigned_to'), $request->board_id));
+        event(new UpdateListTaskEvent($task->load('assigned_to', 'joborder'), $request->board_id));
         if($task->card_id)
         {
         $user = User::find($task->assigned_to);
@@ -487,7 +487,7 @@ class BoardController extends Controller
         $user->notify(new UserAssignTask(auth()->user()->name, $task->name, $board->toArray(), $update));
         Board::find($task->sprint->board->id)->notify(new BoardUpdateTask($task->load('created_by')->toJson()));
         }
-        return $task->load('assigned_to'); 
+        return $task->load('assigned_to', 'joborder'); 
     }
 
     public function deleteTask(Request $request) {
@@ -509,9 +509,9 @@ class BoardController extends Controller
             ]);
         }
 
-        $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
+        // $nlists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('order' , 'asc')->get();
         // print_r($nlists);
-        event(new UpdateListOrderEvent($nlists->toJson(), $request->board_id));
+        event(new UpdateListOrderEvent($request->board_id));
     }
 
     public function sendComment(Request $request) {
@@ -644,11 +644,11 @@ class BoardController extends Controller
             'type' => 2
         ]);
 
-        event(new AddSprintEvent($sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])));
+        event(new AddSprintEvent($sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'us.tasks.joborder'])));
 
         $board->notify(new BoardCreateListSprint($sprint->load('created_by')->toJson(), 'sprint'));
 
-        return $sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to']);
+        return $sprint->load(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'us.tasks.joborder']);
     }
 
     public function updateSprint(Request $request) {
@@ -688,7 +688,7 @@ class BoardController extends Controller
 
         Board::find($sprint->board_id)->notify(new BoardDeleteListSprint(auth()->user()->name, $sprint->name, 'sprint'));
 
-        $sprints = Sprint::where('board_id', $sprint->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        $sprints = Sprint::where('board_id', $sprint->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'us.tasks.joborder'])->orderBy('created_at', 'asc')->get();
 
         return $sprints;
     }
@@ -744,10 +744,10 @@ class BoardController extends Controller
             }
         }
 
-        event(new AddListTaskEvent($task->load('assigned_to'), Sprint::find($request->sprint_id)->board_id));
+        event(new AddListTaskEvent($task->load('assigned_to', 'joborder'), Sprint::find($request->sprint_id)->board_id));
         Board::find($sprint->board_id)->notify(new BoardCreateTask($task->load('created_by', 'us')->toJson()));
 
-        return $task->load('assigned_to');
+        return $task->load('assigned_to', 'joborder');
     }
 
     public function updateSprintOrder(Request $request) {
@@ -764,9 +764,9 @@ class BoardController extends Controller
             }
         }
 
-        $sprints = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        // $sprints = Sprint::where('board_id', $request->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'us.tasks.joborder'])->orderBy('created_at', 'asc')->get();
         // print_r($nlists);
-        event(new SprintTaskOrderEvent($sprints->toJson(), $request->board_id));
+        event(new SprintTaskOrderEvent($request->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -774,11 +774,12 @@ class BoardController extends Controller
     public function getSprintTasks(Request $request) {
         $board = Board::find($request->id);
 
-        return $board->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        return $board->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('created_at', 'asc')->get();
     }
 
     public function updateSprintTaskOrder(Request $request) {
-        $tasks = Sprint::find($request->sprint_id)->tasks()->get();
+        $sprint = Sprint::find($request->sprint_id);
+        $tasks = $sprint->tasks()->get();
 
         foreach ($tasks as $key => $task) {
             $id = $task->id;
@@ -792,9 +793,9 @@ class BoardController extends Controller
                 }
             }
         }
-        // $nlists = Sprint::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at' , 'asc')->get();
+        // $nlists = Sprint::where('board_id', $sprint->board_id)->with(['us' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks' => function($q) {$q->orderBy('order', 'asc');}, 'us.tasks.assigned_to', 'tasks.joborder', 'us.tasks.joborder'])->orderBy('created_at' , 'asc')->get();
         // print_r($nlists);
-        // event(new ISprintTaskOrderEvent($nlists->toJson(), $request->board_id));
+        event(new ISprintTaskOrderEvent($sprint->board_id));
 
         return response()->json('Updated Successfully.', 200);
     }
@@ -815,7 +816,7 @@ class BoardController extends Controller
             }
         }
 
-        $sprints = Board::find($sprint->board_id)->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('created_at', 'asc')->get();
+        $sprints = Board::find($sprint->board_id)->sprints()->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('created_at', 'asc')->get();
         
         event(new FinishSprintEvent($sprints->toJson(), $sprint->board_id));
         
@@ -1134,7 +1135,7 @@ class BoardController extends Controller
     }
 
     public function getUSData(Request $request) {
-        $us = UserStory::where('id', $request->us_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->first();
+        $us = UserStory::where('id', $request->us_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->first();
 
         return $us;
     }
@@ -1148,7 +1149,7 @@ class BoardController extends Controller
             'points' => $request->points
         ]);
 
-        event(new UpdateUSEvent($us->load(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to']), $request->board_id));
+        event(new UpdateUSEvent($us->load(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder']), $request->board_id));
 
         Board::find($us->sprint->board->id)->notify(new BoardUpdateUS(auth()->user()->name, $us->name));
 
@@ -1453,8 +1454,8 @@ class BoardController extends Controller
             'completed_tasks' => $totalDoneTask
         ]);
 
-        $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to'])->orderBy('order' , 'asc')->get();
-        event(new UpdateListOrderEvent($lists->toJson(), $request->board_id));
+        // $lists = Card::where('board_id', $request->board_id)->with(['tasks' => function($q) {$q->orderBy('order', 'asc');},'tasks.assigned_to', 'tasks.joborder'])->orderBy('order' , 'asc')->get();
+        event(new UpdateListOrderEvent($request->board_id));
 
         return $lists;
     }
