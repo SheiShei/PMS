@@ -838,7 +838,7 @@ export default {
                     })
             }
             else {
-                alert('Di pa pwede, tapusin niyo task niyo, Gagu!');
+                alert('All Tasks should be Completed first');
             }
         },
 

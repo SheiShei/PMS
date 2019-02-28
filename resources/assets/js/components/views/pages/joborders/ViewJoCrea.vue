@@ -590,7 +590,7 @@ export default {
                     })
             }
             else {
-                alert('Finish your tasks first!!')
+                alert('All Tasks should be Completed first')
             }
         },
 
