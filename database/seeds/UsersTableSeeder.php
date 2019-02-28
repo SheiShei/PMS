@@ -21,5 +21,15 @@ class UsersTableSeeder extends Seeder
             'picture'=>'sassy.jpg',
             'bg_image' => 'bg-default.jpeg'
         ]);
+
+        User::create([
+            'name'=>'Test Account',
+            'email'=>'test@test.com',
+            'password'=>bcrypt('testpass'),
+            'role_id'=>1,
+            'department_id'=>1,
+            'picture'=>'sassy.jpg',
+            'bg_image' => 'bg-default.jpeg'
+        ]);
     }
 }
