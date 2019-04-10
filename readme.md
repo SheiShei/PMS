@@ -30,6 +30,39 @@ Dashboard <br>
 Profile and Account Settings
 <img src="https://github.com/SheiShei/Captivate/blob/master/Views/3%20-%20Profile%20and%20Account%20Settings.png" />
  <br>
+ Job Orders
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/16%20-%20Job%20Orders.png" />
+ <br>
+View Job order
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/17%20-%20View%20Job%20Orders.png" />
+ <br>
+Boards
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/18%20-%20Boards.png" />
+ <br>
+Scrum Board Backlog
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/19%20-%20Scrum%20Board%20Backlog.png" />
+ <br>
+Sprint Backlog
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/20%20-%20Sprint%20Backog.PNG" />
+ <br>
+Sprint Burndown Chart
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/21%20-%20Sprint%20Burndown%20Chart%20Statistics.PNG" />
+ <br>
+Sprint Cummulative Chart
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/22%20-%20Sprint%20Cumulative%20Chart.PNG" />
+ <br>
+Board Details
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/23%20-%20Board%20Details.PNG" />
+ <br>
+Board Settings
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/24%20-%20Board%20Settings.PNG" />
+ <br>
+Kanban Board Backlog
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/25%20-%20Kanban%20Board%20Backlog.PNG" />
+ <br>
+Workload
+<img src="https://github.com/SheiShei/Captivate/blob/master/Views/26%20-%20Workload.PNG" />
+ <br>
 Users
 <img src="https://github.com/SheiShei/Captivate/blob/master/Views/4%20-%20Users.PNG" />
  <br>
@@ -63,39 +96,6 @@ Add Revision
  <br>
 Client Review
 <img src="https://github.com/SheiShei/Captivate/blob/master/Views/15%20-%20Client%20Review%20Workbook.png" />
- <br>
-Job Orders
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/16%20-%20Job%20Orders.png" />
- <br>
-View Job order
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/17%20-%20View%20Job%20Orders.png" />
- <br>
-Boards
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/18%20-%20Boards.png" />
- <br>
-Scrum Board Backlog
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/19%20-%20Scrum%20Board%20Backlog.png" />
- <br>
-Sprint Backlog
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/20%20-%20Sprint%20Backog.PNG" />
- <br>
-Sprint Burndown Chart
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/21%20-%20Sprint%20Burndown%20Chart%20Statistics.PNG" />
- <br>
-Sprint Cummulative Chart
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/22%20-%20Sprint%20Cumulative%20Chart.PNG" />
- <br>
-Board Details
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/23%20-%20Board%20Details.PNG" />
- <br>
-Board Settings
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/24%20-%20Board%20Settings.PNG" />
- <br>
-Kanban Board Backlog
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/25%20-%20Kanban%20Board%20Backlog.PNG" />
- <br>
-Workload
-<img src="https://github.com/SheiShei/Captivate/blob/master/Views/26%20-%20Workload.PNG" />
  <br>
 Sticky Notes
 <img src="https://github.com/SheiShei/Captivate/blob/master/Views/27%20-%20Sticky%20Notes.PNG" />
