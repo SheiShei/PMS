@@ -1,3 +1,20 @@
+<h1>Captivate Project Management System</h1>
+<p>CPMS is a system developed for captivate solutions, a web and advertising company.</p><br>
+CPMS automates and reorganizes the project processing of captivate's web and creatives department. CPMS provides graphical visualization of the project's progress, the remaining tasks left, and the individual workload of the team. CPMS also supports interaction and collaboration between the team, the project manager, and the clients.<br>
+
+<h3>Features</h3>
+<ul>
+ <li>Task Management Tools (Scrum or Kanban)</li>
+ <li>Client Review and Revisions</li>
+ <li>Job Order Monitoring (Progress Charts and Workload)</li>
+ <li>Messaging</li>
+ <li>Sticky Notes</li>
+</ul>
+   
+   
+
+
+
 Login
 <img src="https://github.com/SheiShei/Captivate/blob/master/Views/1%20-%20Login.png" />        <br>
 Dashboard <br>
